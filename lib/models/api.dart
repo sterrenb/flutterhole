@@ -38,4 +38,30 @@ class Api {
       throw Exception('Failed to set status');
     }
   }
+
+  static Future<Map<String, String>> fetchSummary() async {
+    const Map<String, String> _prettySummary = {
+      'dns_queries_today': 'Total Queries',
+      'ads_blocked_today': 'Queries Blocked',
+      'ads_percentage_today': 'Percent Blocked',
+      'domains_being_blocked': 'Domains on Blocklist',
+    };
+
+    final response = await http.get('http://pi.hole/admin/api.php?summary');
+    if (response.statusCode == 200) {
+      Map<String, dynamic> map = jsonDecode(response.body);
+      Map<String, String> finalMap = {};
+      if (map.isNotEmpty) {
+        _prettySummary.forEach((String oldKey, String newKey) {
+          if (newKey.contains('Percent')) {
+            map[oldKey] += '%';
+          }
+          finalMap[newKey] = map[oldKey];
+        });
+        return finalMap;
+      }
+    }
+
+    throw Exception('Failed to fetch summay');
+  }
 }

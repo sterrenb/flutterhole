@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/app_state_container.dart';
-import 'package:flutter_hole/models/StatusIcon.dart';
-import 'package:flutter_hole/models/ToggleButton.dart';
+import 'package:flutter_hole/models/dashboard/summary_tiles.dart';
+import 'package:flutter_hole/models/status_icon.dart';
+import 'package:flutter_hole/models/toggle_button.dart';
 
 class HomeScreen extends StatefulWidget {
   final String title;
@@ -15,7 +15,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final x = AppState.of(context);
     return Scaffold(
         appBar: AppBar(
           title: Row(
@@ -28,6 +27,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ToggleButton(),
           ],
         ),
-        body: Text('status: ${x.status}'));
+        body: SummaryTiles());
   }
 }
