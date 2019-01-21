@@ -32,21 +32,22 @@ class _AppStateState extends State<AppState> {
     });
   }
 
-  void setStatus(bool newStatus) {
+  void _setStatus(bool newStatus, {bool doneLoading = true}) {
     setState(() {
       _status = newStatus;
-      _statusLoading = false;
+      _statusLoading = !doneLoading;
     });
   }
 
   Future updateStatus() async {
     setLoading();
-    setStatus(await Api.fetchStatus());
+    _setStatus(await Api.fetchStatus());
   }
 
   toggleStatus() async {
     setLoading();
-    setStatus(await Api.setStatus(!_status));
+    _setStatus(await Api.setStatus(!_status));
+    // Api.fetchSummary();
   }
 
   @override

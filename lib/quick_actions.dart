@@ -1,0 +1,34 @@
+import 'package:flutter_hole/models/api.dart';
+import 'package:quick_actions/quick_actions.dart';
+
+void quickActions() {
+  final QuickActions quickActions = QuickActions();
+  quickActions.initialize((shortcutType) {
+    bool newStatus;
+    switch (shortcutType) {
+      case 'action_disable':
+        newStatus = false;
+        break;
+      case 'action_enable':
+        newStatus = true;
+        break;
+      default:
+        throw Exception('Invalid shortcutType: $shortcutType');
+    }
+
+    Api.setStatus(newStatus).then((bool updatedStatus) {
+      print("set new status to: $updatedStatus");
+    });
+  });
+
+  quickActions.setShortcutItems(<ShortcutItem>[
+    ShortcutItem(
+      type: 'action_disable',
+      localizedTitle: 'Disable',
+    ),
+    ShortcutItem(
+      type: 'action_enable',
+      localizedTitle: 'Enable',
+    ),
+  ]);
+}
