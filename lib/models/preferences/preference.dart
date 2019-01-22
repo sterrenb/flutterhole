@@ -28,41 +28,7 @@ abstract class Preference {
               title: Text(title),
               subtitle: Text(snapshot.data),
               onTap: () {
-                final _formKey = GlobalKey<FormState>();
-                final _controller = TextEditingController(text: snapshot.data);
-                return showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      final preferenceForm = PreferenceForm(
-                        formKey: _formKey,
-                        controller: _controller,
-                      );
-                      return AlertDialog(
-                        title: Text(title),
-                        content: preferenceForm,
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text('Cancel'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          FlatButton(
-                            child: Text('OK'),
-                            onPressed: () {
-                              if (preferenceForm.formKey.currentState
-                                  .validate()) {
-                                // TODO save preference
-                                _set(_controller.text).then((bool result) {
-                                  print('bool: $result');
-                                });
-                                Navigator.pop(context);
-                              }
-                            },
-                          )
-                        ],
-                      );
-                    });
+                return _onTap(snapshot, context);
               },
               onLongPress: () {
                 Fluttertoast.showToast(msg: description);
@@ -75,9 +41,50 @@ abstract class Preference {
     ;
   }
 
+  Future _onTap(AsyncSnapshot<String> snapshot, BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    final _controller = TextEditingController(text: snapshot.data);
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          final preferenceForm = PreferenceForm(
+            formKey: _formKey,
+            controller: _controller,
+          );
+          return _alertDialog(preferenceForm, context, _controller);
+        });
+  }
+
+  AlertDialog _alertDialog(PreferenceForm preferenceForm, BuildContext context,
+      TextEditingController _controller) {
+    return AlertDialog(
+      title: Text(title),
+      content: preferenceForm,
+      actions: <Widget>[
+        FlatButton(
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        FlatButton(
+          child: Text('OK'),
+          onPressed: () {
+            if (preferenceForm.formKey.currentState.validate()) {
+              set(_controller.text).then((bool result) {
+                print('bool: $result');
+              });
+              Navigator.pop(context);
+            }
+          },
+        )
+      ],
+    );
+  }
+
   Widget settingsWidget() => _defaultSettingsWidget();
 
-  Future<bool> _set(String value) async {
+  Future<bool> set(String value) async {
     return (await _sharedPreferences).setString(key, value);
   }
 
