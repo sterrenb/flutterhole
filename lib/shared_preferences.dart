@@ -11,7 +11,7 @@ abstract class Pref {
   Pref({@required this.key, @required this.title, @required this.iconData});
 
   static final Future<SharedPreferences> _sharedPreferences =
-  SharedPreferences.getInstance();
+      SharedPreferences.getInstance();
 
   Widget _defaultSettingsWidget() {
     return FutureBuilder<String>(
@@ -19,10 +19,10 @@ abstract class Pref {
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           return (snapshot.hasData)
               ? ListTile(
-            leading: Icon(iconData),
-            title: Text(title),
-            subtitle: Text(snapshot.data),
-          )
+                  leading: Icon(iconData),
+                  title: Text(title),
+                  subtitle: Text(snapshot.data),
+                )
               : Container();
         });
   }
