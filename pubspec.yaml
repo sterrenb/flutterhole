@@ -23,6 +23,7 @@ dependencies:
   http: ^0.12.0+1
   quick_actions: ^0.2.2
   shared_preferences: ^0.4.3
+  fluttertoast: ^2.2.6
 
 dev_dependencies:
   flutter_test:
