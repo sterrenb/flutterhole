@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hole/models/app_state.dart';
 import 'package:flutter_hole/models/preferences/preference_form.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,12 +24,13 @@ abstract class Preference {
         future: get(),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
+            final controller = TextEditingController(text: snapshot.data);
             return ListTile(
               leading: Icon(iconData),
               title: Text(title),
-              subtitle: Text(snapshot.data),
+              subtitle: Text(controller.text),
               onTap: () {
-                return _onTap(snapshot, context);
+                return _onTap(snapshot, context, controller);
               },
               onLongPress: () {
                 Fluttertoast.showToast(msg: description);
@@ -41,17 +43,17 @@ abstract class Preference {
     ;
   }
 
-  Future _onTap(AsyncSnapshot<String> snapshot, BuildContext context) {
+  Future _onTap(AsyncSnapshot<String> snapshot, BuildContext context,
+      TextEditingController controller) {
     final _formKey = GlobalKey<FormState>();
-    final _controller = TextEditingController(text: snapshot.data);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           final preferenceForm = PreferenceForm(
             formKey: _formKey,
-            controller: _controller,
+            controller: controller,
           );
-          return _alertDialog(preferenceForm, context, _controller);
+          return _alertDialog(preferenceForm, context, controller);
         });
   }
 
@@ -71,8 +73,7 @@ abstract class Preference {
           child: Text('OK'),
           onPressed: () {
             if (preferenceForm.formKey.currentState.validate()) {
-              set(_controller.text).then((bool result) {
-                print('bool: $result');
+              set(_controller.text, context).then((bool result) {
               });
               Navigator.pop(context);
             }
@@ -84,11 +85,16 @@ abstract class Preference {
 
   Widget settingsWidget() => _defaultSettingsWidget();
 
-  Future<bool> set(String value) async {
-    return (await _sharedPreferences).setString(key, value);
+  Future<bool> set(String value, BuildContext context) async {
+    print('setting sharedpref: $key => $value');
+    final bool didSave = await (await _sharedPreferences).setString(key, value);
+    if (!didSave) print('pref set failed');
+    AppState.of(context).updateStatus();
+    return didSave;
   }
 
   Future<String> get() async {
-    return (await _sharedPreferences).get(key).toString();
+    String result = (await _sharedPreferences).get(key).toString();
+    return result;
   }
 }

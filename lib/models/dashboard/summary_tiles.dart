@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/api.dart';
 import 'package:flutter_hole/models/dashboard/info_tile.dart';
+import 'package:flutter_hole/screens/settings_screen.dart';
 
 class SummaryTiles extends StatefulWidget {
   @override
@@ -31,22 +30,30 @@ class SummaryTilesState extends State<SummaryTiles> {
             children: infoTiles,
           );
         } else if (snapshot.hasError) {
-          String message;
-          final Object error = snapshot.error;
-          if (error.runtimeType == TimeoutException) {
-            message =
-                'The server timed out after ${(error as TimeoutException).duration.inSeconds} seconds.';
-          }
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(message),
-                IconButton(
-                    icon: Icon(Icons.refresh),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 32.0, vertical: 8.0),
+                  child: Text(
+                    snapshot.error.toString(),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RaisedButton(
+                    child: Text('View settings'),
                     onPressed: () {
-                      setState(() {});
-                    }),
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SettingsScreen()));
+                    },
+                  ),
+                ),
               ],
             ),
           );

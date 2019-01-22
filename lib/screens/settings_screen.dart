@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/default_scaffold.dart';
+import 'package:flutter_hole/models/dashboard/default_scaffold.dart';
 import 'package:flutter_hole/models/preferences/preference_hostname.dart';
 import 'package:flutter_hole/models/preferences/preference_port.dart';
 

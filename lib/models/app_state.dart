@@ -17,37 +17,65 @@ class AppState extends StatefulWidget {
 }
 
 class _AppStateState extends State<AppState> {
-  bool _status;
-  bool _statusLoading;
+  bool _enabled;
+  bool _connected;
+  bool _loading;
 
   // only expose a getter to prevent bad usage
-  bool get status => _status;
+  bool get enabled => _enabled;
 
-  bool get statusLoading => _statusLoading;
+  bool get connected => _connected;
+
+  bool get loading => _loading;
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _enabled = false;
+      _connected = false;
+      _loading = true;
+    });
+    updateStatus();
+  }
+
+  void _setConnected(bool newConnected, {bool doneLoading = true}) {
+    print('setting connected: $connected');
+    setState(() {
+      _connected = newConnected;
+      _loading = !doneLoading;
+    });
+  }
 
   void setLoading() {
     setState(() {
-      _status = _status;
-      _statusLoading = true;
+      _loading = true;
     });
   }
 
   void _setStatus(bool newStatus, {bool doneLoading = true}) {
+    print('setting status: $newStatus');
     setState(() {
-      _status = newStatus;
-      _statusLoading = !doneLoading;
+      _enabled = newStatus;
+      _loading = !doneLoading;
+      _connected = true;
     });
   }
 
-  Future updateStatus() async {
+  void updateStatus() async {
     setLoading();
-    _setStatus(await Api.fetchStatus());
+    try {
+      _setStatus(await Api.fetchStatus());
+      print('setStatus worked');
+    } catch (e) {
+      print(e.toString());
+      _setConnected(false);
+    }
   }
 
-  toggleStatus() async {
+  void toggleStatus() async {
     setLoading();
-    _setStatus(await Api.setStatus(!_status));
-    // Api.fetchSummary();
+    _setStatus(await Api.setStatus(!_enabled));
   }
 
   @override
@@ -56,13 +84,6 @@ class _AppStateState extends State<AppState> {
       data: this,
       child: widget.child,
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    setLoading();
-    updateStatus();
   }
 }
 
