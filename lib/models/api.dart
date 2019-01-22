@@ -1,9 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_hole/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 const TOKEN =
     '3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c';
+
+const String apiPath = 'admin/api.php';
 
 class Api {
   static _statusToBool(dynamic json) {
@@ -17,8 +21,30 @@ class Api {
     }
   }
 
+  static _domain() async {
+    final String hostname = await PrefHostname().get();
+
+    String port = await PrefPort().get();
+    if (port == '80') {
+      port = '';
+    } else {
+      port = port + ':';
+    }
+
+    // TODO debug
+    port = '';
+
+    return 'http://' + hostname + port + '/' + apiPath;
+  }
+
+  static Future<http.Response> _fetch(String params) async {
+    final String uriString = (await _domain()) + '?' + params;
+    print('fetch: $uriString');
+    return await http.get(uriString).timeout(Duration(seconds: 1));
+  }
+
   static Future<bool> fetchStatus() async {
-    final response = await http.get('http://pi.hole/admin/api.php?status');
+    final response = await _fetch('status');
     if (response.statusCode == 200) {
       final bool status = _statusToBool(json.decode(response.body));
       return status;
@@ -29,8 +55,7 @@ class Api {
 
   static Future<bool> setStatus(bool newStatus) async {
     final String activity = newStatus ? 'enable' : 'disable';
-    final response =
-        await http.get('http://pi.hole/admin/api.php?$activity&auth=$TOKEN');
+    final response = await _fetch('$activity&auth=$TOKEN');
     if (response.statusCode == 200) {
       final bool status = _statusToBool(json.decode(response.body));
       return status;
@@ -47,21 +72,30 @@ class Api {
       'domains_being_blocked': 'Domains on Blocklist',
     };
 
-    final response = await http.get('http://pi.hole/admin/api.php?summary');
-    if (response.statusCode == 200) {
-      Map<String, dynamic> map = jsonDecode(response.body);
-      Map<String, String> finalMap = {};
-      if (map.isNotEmpty) {
-        _prettySummary.forEach((String oldKey, String newKey) {
-          if (newKey.contains('Percent')) {
-            map[oldKey] += '%';
-          }
-          finalMap[newKey] = map[oldKey];
-        });
-        return finalMap;
+    print('fetchSummary: awaiting _fetch');
+    try {
+      final response = await _fetch('summary');
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> map = jsonDecode(response.body);
+        Map<String, String> finalMap = {};
+        if (map.isNotEmpty) {
+          _prettySummary.forEach((String oldKey, String newKey) {
+            if (newKey.contains('Percent')) {
+              map[oldKey] += '%';
+            }
+            finalMap[newKey] = map[oldKey];
+          });
+          return finalMap;
+        }
+      } else {
+        throw Exception(
+            'Failed to fetch summary, status code: ${response.statusCode}');
       }
+    } catch (e) {
+      throw e;
     }
 
-    throw Exception('Failed to fetch summay');
+//    throw Exception('Failed to fetch summary');
   }
 }
