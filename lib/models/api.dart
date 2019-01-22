@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_hole/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 const TOKEN =
@@ -17,6 +19,34 @@ class Api {
     }
   }
 
+  static _domain() async {
+    const String apiPath = 'admin/api.php';
+    final String hostname = await PrefHostname().get();
+
+    String port = await PrefPort().get();
+    if (port == '80') {
+      port = '';
+    } else {
+      port = port + ':';
+    }
+    // TODO debug
+//    port = '';
+
+    return 'http://' + port + hostname + '/' + apiPath;
+  }
+
+  static Future<http.Response> _fetch(String params) async {
+    final String uriString = (await _domain()) + '?' + params;
+    print('fetch: $uriString');
+    var timer = new Timer(new Duration(seconds: 1), () => print('done'));
+    return await http.get(uriString).timeout(Duration(seconds: 1));
+    onTimeout:
+        () {
+      throw Exception('timeout');
+    }
+    );
+  }
+
   static Future<bool> fetchStatus() async {
     final response = await http.get('http://pi.hole/admin/api.php?status');
     if (response.statusCode == 200) {
@@ -30,7 +60,7 @@ class Api {
   static Future<bool> setStatus(bool newStatus) async {
     final String activity = newStatus ? 'enable' : 'disable';
     final response =
-        await http.get('http://pi.hole/admin/api.php?$activity&auth=$TOKEN');
+    await http.get('http://pi.hole/admin/api.php?$activity&auth=$TOKEN');
     if (response.statusCode == 200) {
       final bool status = _statusToBool(json.decode(response.body));
       return status;
@@ -47,7 +77,8 @@ class Api {
       'domains_being_blocked': 'Domains on Blocklist',
     };
 
-    final response = await http.get('http://pi.hole/admin/api.php?summary');
+    print('fetchSummary: awaiting _fetch');
+    final response = await _fetch('summary');
     if (response.statusCode == 200) {
       Map<String, dynamic> map = jsonDecode(response.body);
       Map<String, String> finalMap = {};

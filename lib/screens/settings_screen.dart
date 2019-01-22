@@ -14,8 +14,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       title: 'Settings',
       body: Column(
         children: <Widget>[
-          Pref('pref1', String).widget,
-          Pref('pref2', int).widget,
+          PrefHostname().settingsWidget(),
+          PrefPort().settingsWidget(),
         ],
       ),
     );

@@ -1,93 +1,45 @@
 // Inspired by https://gist.github.com/slightfoot/d549282ac0a5466505db8ffa92279d25
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPreferencesBuilder<T> extends StatelessWidget {
-  final String pref;
-  final AsyncWidgetBuilder<T> builder;
+abstract class Pref {
+  final String key;
+  final String title;
+  final IconData iconData;
 
-  const SharedPreferencesBuilder({
-    Key key,
-    @required this.pref,
-    @required this.builder,
-  }) : super(key: key);
+  Pref({@required this.key, @required this.title, @required this.iconData});
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<T>(
-        future: _future(),
-        builder: (BuildContext context, AsyncSnapshot<T> snapshot) {
-          return this.builder(context, snapshot);
+  static final Future<SharedPreferences> _sharedPreferences =
+  SharedPreferences.getInstance();
+
+  Widget _defaultSettingsWidget() {
+    return FutureBuilder<String>(
+        future: get(),
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          return (snapshot.hasData)
+              ? ListTile(
+            leading: Icon(iconData),
+            title: Text(title),
+            subtitle: Text(snapshot.data),
+          )
+              : Container();
         });
   }
 
-  Future<T> _future() async {
-    return (await SharedPreferences.getInstance()).get(pref);
+  Widget settingsWidget() => _defaultSettingsWidget();
+
+  Future<String> get() async {
+    (await _sharedPreferences).setString(key, 'pi.hole');
+    return (await _sharedPreferences).get(key).toString();
   }
 }
 
-class DefaultPreference extends StatelessWidget {
-  final String pref;
-
-  const DefaultPreference({Key key, @required this.pref}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SharedPreferencesBuilder<String>(
-      pref: pref,
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-        return snapshot.hasData
-            ? Text(snapshot.data.toString())
-            : ListTile(
-                title: Text(pref),
-                subtitle: Text('none'),
-              );
-      },
-    );
-  }
+class PrefHostname extends Pref {
+  PrefHostname()
+      : super(key: 'hostname', title: 'Hostname', iconData: Icons.home);
 }
 
-class Pref {
-  final String key;
-  StatelessWidget _widget;
-
-  get widget => _widget;
-
-  factory Pref(
-    String key,
-    Type type,
-  ) {
-    StatelessWidget widget = DefaultPreference(
-      pref: key,
-    );
-
-    Function _setter;
-
-    SharedPreferences.getInstance().then((SharedPreferences sharedPreferences) {
-      switch (type) {
-        case String:
-          print("$key: string!");
-          _setter = sharedPreferences.setString;
-          break;
-        case int:
-          print("$key: int!");
-          _setter = sharedPreferences.setInt;
-          break;
-      }
-    });
-
-    final pref = Pref._internal(key: key, widget: widget, setter: _setter);
-    return pref;
-  }
-
-  Pref._internal(
-      {@required this.key,
-      @required StatelessWidget widget,
-      @required Function setter}) {
-    if (this._widget == null) {
-      this._widget = DefaultPreference(
-        pref: this.key,
-      );
-    }
-  }
+class PrefPort extends Pref {
+  PrefPort() : super(key: 'port', title: 'Port', iconData: Icons.adjust);
 }
