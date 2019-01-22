@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_hole/shared_preferences.dart';
+import 'package:flutter_hole/models/preferences/preference_hostname.dart';
+import 'package:flutter_hole/models/preferences/preference_port.dart';
 import 'package:http/http.dart' as http;
 
 const TOKEN =
@@ -22,17 +23,16 @@ class Api {
   }
 
   static _domain() async {
-    final String hostname = await PrefHostname().get();
+    // TODO debug
+    return 'http://pi.hole/admin/api.php';
 
-    String port = await PrefPort().get();
+    final String hostname = await PreferenceHostname().get();
+    String port = await PreferencePort().get();
     if (port == '80') {
       port = '';
     } else {
       port = port + ':';
     }
-
-    // TODO debug
-    port = '';
 
     return 'http://' + hostname + port + '/' + apiPath;
   }
@@ -40,7 +40,7 @@ class Api {
   static Future<http.Response> _fetch(String params) async {
     final String uriString = (await _domain()) + '?' + params;
     print('fetch: $uriString');
-    return await http.get(uriString).timeout(Duration(seconds: 1));
+    return await http.get(uriString).timeout(Duration(seconds: 10));
   }
 
   static Future<bool> fetchStatus() async {
