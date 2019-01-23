@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/default_scaffold.dart';
-import 'package:flutter_hole/shared_preferences.dart';
+import 'package:flutter_hole/models/dashboard/default_scaffold.dart';
+import 'package:flutter_hole/models/preferences/preference_hostname.dart';
+import 'package:flutter_hole/models/preferences/preference_port.dart';
+import 'package:flutter_hole/models/preferences/preference_token.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -14,8 +16,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       title: 'Settings',
       body: Column(
         children: <Widget>[
-          PrefHostname().settingsWidget(),
-          PrefPort().settingsWidget(),
+          PreferenceHostname().settingsWidget(),
+          PreferencePort().settingsWidget(),
+          PreferenceToken().settingsWidget(),
         ],
       ),
     );

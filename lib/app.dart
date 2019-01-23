@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/screens/settings_screen.dart';
+import 'package:flutter_hole/screens/home_screen.dart';
 
 class App extends StatelessWidget {
   @override
@@ -8,8 +8,8 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: title,
 //      theme: ThemeData.dark(),
-      theme: ThemeData(brightness: Brightness.dark),
-      home: SettingsScreen(),
+//      theme: ThemeData(brightness: Brightness.dark),
+      home: HomeScreen(),
     );
   }
 }
