@@ -66,16 +66,19 @@ class _AppStateState extends State<AppState> {
     setLoading();
     try {
       _setStatus(await Api.fetchStatus());
-      print('setStatus worked');
     } catch (e) {
-      print(e.toString());
       _setConnected(false);
     }
   }
 
   void toggleStatus() async {
     setLoading();
-    _setStatus(await Api.setStatus(!_enabled));
+    try {
+      _setStatus(await Api.setStatus(!_enabled));
+    } catch (e) {
+      _setConnected(false);
+      throw Exception('Failed to toggle status - is your API token correct?');
+    }
   }
 
   @override

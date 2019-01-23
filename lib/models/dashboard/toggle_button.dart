@@ -26,10 +26,9 @@ class ToggleButton extends StatelessWidget {
     final onPressed = appState.connected ? () => appState.toggleStatus() : null;
 
     return IconButton(
-        icon: Icon(data),
-        tooltip: 'Enable/disable Pi-hole',
+      icon: Icon(data),
+      tooltip: 'Enable/disable Pi-hole',
       onPressed: onPressed,
-
     );
   }
 }

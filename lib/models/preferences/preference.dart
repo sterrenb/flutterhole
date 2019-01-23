@@ -40,7 +40,6 @@ abstract class Preference {
 
           return Center(child: CircularProgressIndicator());
         });
-    ;
   }
 
   Future _onTap(AsyncSnapshot<String> snapshot, BuildContext context,

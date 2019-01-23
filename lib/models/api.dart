@@ -4,10 +4,9 @@ import 'dart:io';
 
 import 'package:flutter_hole/models/preferences/preference_hostname.dart';
 import 'package:flutter_hole/models/preferences/preference_port.dart';
+import 'package:flutter_hole/models/preferences/preference_token.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-
-const TOKEN =
-    '3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c';
 
 const String apiPath = 'admin/api.php';
 
@@ -67,12 +66,14 @@ class Api {
 
   static Future<bool> setStatus(bool newStatus) async {
     final String activity = newStatus ? 'enable' : 'disable';
-    final response = await _fetch('$activity&auth=$TOKEN');
-    if (response.statusCode == 200) {
+    String token = await PreferenceToken().get();
+    final response = await _fetch('$activity&auth=$token');
+    if (response.statusCode == 200 && response.contentLength > 2) {
       final bool status = _statusToBool(json.decode(response.body));
       return status;
     } else {
-      throw Exception('Failed to set status');
+      Fluttertoast.showToast(msg: 'Cannot $activity Pi-hole');
+      return false;
     }
   }
 
