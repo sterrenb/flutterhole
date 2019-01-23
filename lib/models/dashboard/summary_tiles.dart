@@ -26,7 +26,9 @@ class SummaryTilesState extends State<SummaryTiles> {
             ));
           });
 
-          return ListView(
+          return Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: infoTiles,
           );
         } else if (snapshot.hasError) {

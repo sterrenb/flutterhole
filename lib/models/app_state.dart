@@ -46,8 +46,8 @@ class _AppStateState extends State<AppState> {
   }
 
   Future<bool> updateAuthorized() async {
-    bool isAuthorized = await Api.isAuthorized();
     try {
+      bool isAuthorized = await Api.isAuthorized();
       _setAuthorized(isAuthorized);
       return isAuthorized;
     } catch (e) {
