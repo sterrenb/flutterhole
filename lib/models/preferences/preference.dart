@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/app_state.dart';
 import 'package:flutter_hole/models/preferences/preference_form.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,12 +8,15 @@ abstract class Preference {
   final String title;
   final String description;
   final IconData iconData;
+  final Function(bool, BuildContext) onSet;
 
-  Preference(
-      {@required this.key,
-      @required this.title,
-      @required this.description,
-      @required this.iconData});
+  Preference({
+    @required this.key,
+    @required this.title,
+    @required this.description,
+    @required this.iconData,
+    this.onSet,
+  });
 
   static final Future<SharedPreferences> _sharedPreferences =
       SharedPreferences.getInstance();
@@ -52,12 +54,12 @@ abstract class Preference {
             formKey: _formKey,
             controller: controller,
           );
-          return _alertDialog(preferenceForm, context, controller);
+          return _alertDialog(preferenceForm, context, controller, onSet);
         });
   }
 
   AlertDialog _alertDialog(PreferenceForm preferenceForm, BuildContext context,
-      TextEditingController _controller) {
+      TextEditingController _controller, Function onSet) {
     return AlertDialog(
       title: Text(title),
       content: preferenceForm,
@@ -72,7 +74,10 @@ abstract class Preference {
           child: Text('OK'),
           onPressed: () {
             if (preferenceForm.formKey.currentState.validate()) {
-              set(_controller.text, context).then((bool result) {
+              set(_controller.text, context).then((bool didSet) {
+                if (onSet != null) {
+                  onSet(didSet, context);
+                }
               });
               Navigator.pop(context);
             }
@@ -87,8 +92,6 @@ abstract class Preference {
   Future<bool> set(String value, BuildContext context) async {
     print('setting sharedpref: $key => $value');
     final bool didSave = await (await _sharedPreferences).setString(key, value);
-    if (!didSave) print('pref set failed');
-    AppState.of(context).updateStatus();
     return didSave;
   }
 

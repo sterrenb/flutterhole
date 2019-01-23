@@ -39,7 +39,12 @@ class Api {
     return 'http://' + hostname + port + '/' + apiPath;
   }
 
-  static Future<http.Response> _fetch(String params) async {
+  static Future<http.Response> _fetch(String params,
+      {bool authorization = false}) async {
+    if (authorization) {
+      String token = await PreferenceToken().get();
+      params = params + '&auth=$token';
+    }
     String uriString = (await _domain()) + '?' + params;
     print('fetch: $uriString');
     final result = await http.get(uriString).timeout(Duration(seconds: timeout),
@@ -66,8 +71,7 @@ class Api {
 
   static Future<bool> setStatus(bool newStatus) async {
     final String activity = newStatus ? 'enable' : 'disable';
-    String token = await PreferenceToken().get();
-    final response = await _fetch('$activity&auth=$token');
+    final response = await _fetch(activity, authorization: true);
     if (response.statusCode == 200 && response.contentLength > 2) {
       final bool status = _statusToBool(json.decode(response.body));
       return status;
@@ -75,6 +79,20 @@ class Api {
       Fluttertoast.showToast(msg: 'Cannot $activity Pi-hole');
       return false;
     }
+  }
+
+  static Future<bool> isAuthorized() async {
+    http.Response response;
+    try {
+      response = await _fetch('topItems', authorization: true);
+    } catch (e) {
+      rethrow;
+    }
+    if (response.statusCode == 200 && response.contentLength > 2) {
+      return true;
+    }
+
+    return false;
   }
 
   static Future<Map<String, String>> fetchSummary() async {
