@@ -8,6 +8,11 @@ class PreferencePort extends Preference {
             key: 'port',
             title: 'Port',
             description: 'The port of your Pi-hole admin dashboard',
+      help: RichText(
+          text: TextSpan(
+              style: Preference.helpStyle,
+              text:
+              'The port of the Pi-hole web browser. Defaults to 80 (http) or 443 (https/SSL)')),
       iconData: Icons.adjust,
       onSet: (bool didSet, BuildContext context) {
         AppState.of(context).updateStatus();

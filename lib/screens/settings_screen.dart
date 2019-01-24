@@ -10,16 +10,19 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  final List<Widget> piSettings = [
+    PreferenceHostname().settingsWidget(),
+    PreferencePort().settingsWidget(),
+    PreferenceToken().settingsWidget(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return DefaultScaffold(
       title: 'Settings',
       body: Column(
-        children: <Widget>[
-          PreferenceHostname().settingsWidget(),
-          PreferencePort().settingsWidget(),
-          PreferenceToken().settingsWidget(),
-        ],
+        children: ListTile.divideTiles(context: context, tiles: piSettings)
+            .toList(),
       ),
     );
   }

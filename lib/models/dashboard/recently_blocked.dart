@@ -72,16 +72,20 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
 
   void _onTimer(Timer timer) {
     print('onTimer ${timer.tick}');
-    Api.recentlyBlocked().then((String domain) {
-      if (domain != _lastDomain) {
-        _blockedDomains.update(domain, (int hits) {
-          print('updating existing one with $hits hits');
-          return hits + 1;
-        }, ifAbsent: () => 1);
-        _lastDomain = domain;
-        setState(() {});
-      }
-    });
+    try {
+      Api.recentlyBlocked().then((String domain) {
+        if (domain != _lastDomain) {
+          _blockedDomains.update(domain, (int hits) {
+            print('updating existing one with $hits hits');
+            return hits + 1;
+          }, ifAbsent: () => 1);
+          _lastDomain = domain;
+          setState(() {});
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   int _sliderToInt(double sliderValue) => (sliderValue * 1000).toInt();
@@ -107,7 +111,6 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
 
     const double _min = 0.1;
     const double _max = 5.0;
-
     final Widget _body = (_blockedDomains.length == 0)
         ? Expanded(child: Center(child: CircularProgressIndicator()))
         : Expanded(
@@ -124,7 +127,7 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(16.0),
           child: Row(
             children: <Widget>[
               Column(
@@ -158,6 +161,7 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
             ],
           ),
         ),
+//        ProgressIndicatorDemo(timeout: Duration(milliseconds: 50),),
         _body,
       ],
     );

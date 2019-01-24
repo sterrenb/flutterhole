@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/preferences/preference_hostname.dart';
 import 'package:flutter_hole/models/preferences/preference_port.dart';
 import 'package:flutter_hole/models/preferences/preference_token.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 const String apiPath = 'admin/api.php';
 
@@ -75,14 +78,14 @@ class Api {
     try {
       response = await _fetch(activity, authorization: true);
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Cannot connect to your Pi-hole');
+      Fluttertoast.instance.showToast(msg: 'Cannot connect to your Pi-hole');
       return false;
     }
     if (response.statusCode == 200 && response.contentLength > 2) {
       final bool status = _statusToBool(json.decode(response.body));
       return status;
     } else {
-      Fluttertoast.showToast(msg: 'Cannot $activity Pi-hole');
+      Fluttertoast.instance.showToast(msg: 'Cannot $activity Pi-hole');
       return false;
     }
   }
@@ -154,5 +157,25 @@ class Api {
     }
 
     return response.body;
+  }
+
+  static void launchURL(String url) async {
+    try {
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        Fluttertoast.instance.showToast(msg: 'URL could not be launched');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static TextSpan hyperLink(String urlString) {
+    return TextSpan(
+        text: urlString,
+        style: TextStyle(color: Colors.blue,),
+        recognizer: TapGestureRecognizer()
+          ..onTap = () => Api.launchURL(urlString));
   }
 }

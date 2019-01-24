@@ -4,12 +4,12 @@ import 'package:flutter_hole/screens/home_screen.dart';
 import 'package:flutter_hole/screens/recently_blocked_screen.dart';
 import 'package:flutter_hole/screens/settings_screen.dart';
 
-class _drawerTile extends StatelessWidget {
+class _DrawerTile extends StatelessWidget {
   final Widget screen;
   final String title;
   final IconData iconData;
 
-  const _drawerTile(
+  const _DrawerTile(
       {Key key, @required this.screen, @required this.title, @required this.iconData})
       : super(key: key);
 
@@ -43,12 +43,12 @@ class DefaultDrawer extends StatelessWidget {
                   title: 'FlutterHole',
                 )),
           ),
-          _drawerTile(
+          _DrawerTile(
               screen: HomeScreen(), title: 'Dashboard', iconData: Icons.home),
-          _drawerTile(screen: RecentlyBlockedScreen(),
+          _DrawerTile(screen: RecentlyBlockedScreen(),
               title: 'Recently Blocked',
               iconData: Icons.block),
-          _drawerTile(screen: SettingsScreen(),
+          _DrawerTile(screen: SettingsScreen(),
               title: 'Settings',
               iconData: Icons.settings),
         ],

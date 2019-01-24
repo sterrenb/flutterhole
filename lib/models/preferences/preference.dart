@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/preferences/preference_form.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:qrcode_reader/qrcode_reader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class Preference {
   final String key;
   final String title;
   final String description;
+  final Widget help;
   final IconData iconData;
   final Function(bool, BuildContext) onSet;
 
@@ -14,12 +16,15 @@ abstract class Preference {
     @required this.key,
     @required this.title,
     @required this.description,
+    @required this.help,
     @required this.iconData,
     this.onSet,
   });
 
+  static final TextStyle helpStyle = TextStyle(color: Colors.black87);
+
   static final Future<SharedPreferences> _sharedPreferences =
-      SharedPreferences.getInstance();
+  SharedPreferences.getInstance();
 
   Widget _defaultSettingsWidget() {
     return FutureBuilder<String>(
@@ -29,13 +34,26 @@ abstract class Preference {
             final controller = TextEditingController(text: snapshot.data);
             return ListTile(
               leading: Icon(iconData),
-              title: Text(title),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(title),
+                  IconButton(
+                    icon: Icon(
+                      Icons.help_outline,
+                      color: Colors.grey,
+                      size: 16.0,
+                    ),
+                    onPressed: () => _onHelpTap(context, help),
+                  )
+                ],
+              ),
               subtitle: Text(controller.text),
               onTap: () {
-                return _onTap(snapshot, context, controller);
+                return _onPrefTap(snapshot, context, controller);
               },
               onLongPress: () {
-                Fluttertoast.showToast(msg: description);
+                Fluttertoast.instance.showToast(msg: description);
               },
             );
           }
@@ -44,7 +62,7 @@ abstract class Preference {
         });
   }
 
-  Future _onTap(AsyncSnapshot<String> snapshot, BuildContext context,
+  Future _onPrefTap(AsyncSnapshot<String> snapshot, BuildContext context,
       TextEditingController controller) {
     final _formKey = GlobalKey<FormState>();
     return showDialog(
@@ -54,16 +72,47 @@ abstract class Preference {
             formKey: _formKey,
             controller: controller,
           );
-          return _alertDialog(preferenceForm, context, controller, onSet);
+          return _alertPrefDialog(preferenceForm, context, controller, onSet);
         });
   }
 
-  AlertDialog _alertDialog(PreferenceForm preferenceForm, BuildContext context,
+  Future _onHelpTap(BuildContext context, Widget help) {
+    return showDialog(context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: help,
+          );
+        });
+  }
+
+  AlertDialog _alertPrefDialog(PreferenceForm preferenceForm,
+      BuildContext context,
       TextEditingController _controller, Function onSet) {
     return AlertDialog(
       title: Text(title),
       content: preferenceForm,
       actions: <Widget>[
+        FlatButton(
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Icon(Icons.photo_camera),
+              ),
+              Text('Scan QR code')
+            ],
+          ),
+          onPressed: () {
+            Future<String> futureString = new QRCodeReader().scan();
+            futureString.then((String result) {
+              print('result: $result');
+              if (result != null) {
+                _controller.text = result;
+              }
+            });
+          },
+        ),
         FlatButton(
           child: Text('Cancel'),
           onPressed: () {
