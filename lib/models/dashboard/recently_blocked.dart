@@ -3,14 +3,22 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/api.dart';
 
-const Duration timeout = Duration(seconds: 1);
+const Duration defaultTimeout = Duration(seconds: 1);
 
-class _BlockedDomain extends StatelessWidget {
+class _BlockedDomain extends StatefulWidget {
   final String title;
   final int hits;
-  final DateTime hitAt = DateTime.now();
 
   _BlockedDomain({@required this.title, this.hits = 1});
+
+  @override
+  _BlockedDomainState createState() {
+    return new _BlockedDomainState();
+  }
+}
+
+class _BlockedDomainState extends State<_BlockedDomain> {
+  DateTime hitAt = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +26,10 @@ class _BlockedDomain extends StatelessWidget {
         child: ListTile(
           title: Row(
             children: <Widget>[
-              Expanded(child: Text(title)),
-              Tooltip(message: 'Blocked ${hits.toString()} times',
-                  child: Chip(label: Text(hits.toString())))
+              Expanded(child: Text(widget.title)),
+              Tooltip(
+                  message: 'Blocked ${widget.hits.toString()} times',
+                  child: Chip(label: Text(widget.hits.toString())))
             ],
           ),
           subtitle: Row(
@@ -31,12 +40,12 @@ class _BlockedDomain extends StatelessWidget {
                 size: 14.0,
               ),
               Tooltip(
-                message: 'Last blocked at ${hitAt.toLocal()}',
+                message: 'First blocked at ${hitAt.toLocal()}',
                 child: Text(hitAt.hour.toString().padLeft(2, '0') +
                     ':' +
                     hitAt.minute.toString().padLeft(2, '0') +
                     '.' +
-                    hitAt.millisecond.toString()),
+                    hitAt.second.toString().padLeft(2, '0')),
               ),
             ],
           ),
@@ -55,12 +64,14 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
   Timer _timer;
   static Map<String, int> _blockedDomains = Map();
   static String _lastDomain;
+  double _sliderValue = 1.0;
 
-  Timer _startTimer() {
+  Timer _startTimer({Duration timeout = defaultTimeout}) {
     return Timer.periodic(timeout, _onTimer);
   }
 
   void _onTimer(Timer timer) {
+    print('onTimer ${timer.tick}');
     Api.recentlyBlocked().then((String domain) {
       if (domain != _lastDomain) {
         _blockedDomains.update(domain, (int hits) {
@@ -68,20 +79,18 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
           return hits + 1;
         }, ifAbsent: () => 1);
         _lastDomain = domain;
-        setState(() {
-          _blockedDomains = _blockedDomains;
-        });
+        setState(() {});
       }
     });
   }
 
+  int _sliderToInt(double sliderValue) => (sliderValue * 1000).toInt();
+
   @override
   void initState() {
     super.initState();
-    print('initState');
     setState(() {
       _timer = _startTimer();
-      _blockedDomains = _blockedDomains;
     });
   }
 
@@ -92,22 +101,65 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
   }
 
   @override
-  void deactivate() {
-    print('deactivated!');
-    super.deactivate();
-  }
-
-  @override
   Widget build(BuildContext context) {
     Iterable<String> keys = _blockedDomains.keys;
     Iterable<int> values = _blockedDomains.values;
-    return ListView.builder(
-        itemCount: _blockedDomains.length,
-        itemBuilder: (BuildContext context, int index) {
-          return _BlockedDomain(
-            title: keys.elementAt(index),
-            hits: values.elementAt(index),
-          );
-        });
+
+    const double _min = 0.1;
+    const double _max = 5.0;
+
+    final Widget _body = (_blockedDomains.length == 0)
+        ? Expanded(child: Center(child: CircularProgressIndicator()))
+        : Expanded(
+      child: ListView.builder(
+          itemCount: _blockedDomains.length,
+          itemBuilder: (BuildContext context, int index) {
+            return _BlockedDomain(
+              title: keys.elementAt(index),
+              hits: values.elementAt(index),
+            );
+          }),
+    );
+
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Text('Polling rate'),
+                  Text('(${_sliderToInt(_sliderValue)}ms)'),
+                ],
+              ),
+              Expanded(
+                child: Slider(
+                  label: 'Ping rate',
+                  value: _sliderValue,
+                  min: _min,
+                  max: _max,
+                  onChanged: (double newValue) {
+                    setState(() {
+                      _sliderValue = newValue;
+                    });
+                  },
+                  onChangeEnd: (double newValue) {
+                    print('final value: ${_sliderToInt(newValue)}');
+                    _timer.cancel();
+                    setState(() {
+                      _timer = _startTimer(
+                          timeout:
+                          Duration(milliseconds: _sliderToInt(newValue)));
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        _body,
+      ],
+    );
   }
 }
