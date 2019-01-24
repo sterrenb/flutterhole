@@ -5,6 +5,45 @@ import 'package:flutter_hole/models/api.dart';
 
 const Duration timeout = Duration(seconds: 1);
 
+class _BlockedDomain extends StatelessWidget {
+  final String title;
+  final int hits;
+  final DateTime hitAt = DateTime.now();
+
+  _BlockedDomain({@required this.title, this.hits = 1});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+        child: ListTile(
+          title: Row(
+            children: <Widget>[
+              Expanded(child: Text(title)),
+              Tooltip(message: 'Blocked ${hits.toString()} times',
+                  child: Chip(label: Text(hits.toString())))
+            ],
+          ),
+          subtitle: Row(
+            children: <Widget>[
+              Icon(
+                Icons.access_time,
+                color: Colors.grey,
+                size: 14.0,
+              ),
+              Tooltip(
+                message: 'Last blocked at ${hitAt.toLocal()}',
+                child: Text(hitAt.hour.toString().padLeft(2, '0') +
+                    ':' +
+                    hitAt.minute.toString().padLeft(2, '0') +
+                    '.' +
+                    hitAt.millisecond.toString()),
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
 class RecentlyBlocked extends StatefulWidget {
   @override
   RecentlyBlockedState createState() {
@@ -14,8 +53,8 @@ class RecentlyBlocked extends StatefulWidget {
 
 class RecentlyBlockedState extends State<RecentlyBlocked> {
   Timer _timer;
-  static List<String> domains;
-  static int repeat = 0;
+  static Map<String, int> _blockedDomains = Map();
+  static String _lastDomain;
 
   Timer _startTimer() {
     return Timer.periodic(timeout, _onTimer);
@@ -23,15 +62,14 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
 
   void _onTimer(Timer timer) {
     Api.recentlyBlocked().then((String domain) {
-      if (domains.length == 0 || domains.first != domain) {
-        domains.insert(0, domain);
+      if (domain != _lastDomain) {
+        _blockedDomains.update(domain, (int hits) {
+          print('updating existing one with $hits hits');
+          return hits + 1;
+        }, ifAbsent: () => 1);
+        _lastDomain = domain;
         setState(() {
-          domains = domains;
-          repeat = 0;
-        });
-      } else {
-        setState(() {
-          repeat = repeat + 1;
+          _blockedDomains = _blockedDomains;
         });
       }
     });
@@ -43,8 +81,7 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
     print('initState');
     setState(() {
       _timer = _startTimer();
-      domains = domains == null ? List() : domains;
-      repeat = repeat;
+      _blockedDomains = _blockedDomains;
     });
   }
 
@@ -62,15 +99,15 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
 
   @override
   Widget build(BuildContext context) {
+    Iterable<String> keys = _blockedDomains.keys;
+    Iterable<int> values = _blockedDomains.values;
     return ListView.builder(
-        itemCount: domains.length,
+        itemCount: _blockedDomains.length,
         itemBuilder: (BuildContext context, int index) {
-          return Card(
-              child: ListTile(
-            title: Row(
-              children: <Widget>[Text(domains[index]), Chip(label: Text('K'))],
-            ),
-          ));
+          return _BlockedDomain(
+            title: keys.elementAt(index),
+            hits: values.elementAt(index),
+          );
         });
   }
 }
