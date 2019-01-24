@@ -19,12 +19,15 @@ class AppState extends StatefulWidget {
 class _AppStateState extends State<AppState> {
   bool _enabled;
   bool _connected;
+  bool _authorized;
   bool _loading;
 
   // only expose a getter to prevent bad usage
   bool get enabled => _enabled;
 
   bool get connected => _connected;
+
+  bool get authorized => _authorized;
 
   bool get loading => _loading;
 
@@ -34,15 +37,37 @@ class _AppStateState extends State<AppState> {
     setState(() {
       _enabled = false;
       _connected = false;
+      _authorized = false;
       _loading = true;
     });
+
     updateStatus();
+    updateAuthorized();
+  }
+
+  Future<bool> updateAuthorized() async {
+    try {
+      bool isAuthorized = await Api.isAuthorized();
+      _setAuthorized(isAuthorized);
+      return isAuthorized;
+    } catch (e) {
+      _setAuthorized(false);
+    }
+
+    return false;
+  }
+
+  void _setAuthorized(bool newAuthorized) {
+    setState(() {
+      _authorized = newAuthorized;
+    });
   }
 
   void _setConnected(bool newConnected, {bool doneLoading = true}) {
     print('setting connected: $connected');
     setState(() {
       _connected = newConnected;
+      _authorized = newConnected;
       _loading = !doneLoading;
     });
   }

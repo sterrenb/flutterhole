@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter_hole/models/preferences/preference_hostname.dart';
 import 'package:flutter_hole/models/preferences/preference_port.dart';
@@ -39,13 +38,18 @@ class Api {
     return 'http://' + hostname + port + '/' + apiPath;
   }
 
-  static Future<http.Response> _fetch(String params) async {
+  static Future<http.Response> _fetch(String params,
+      {bool authorization = false}) async {
+    if (authorization) {
+      String token = await PreferenceToken().get();
+      params = params + '&auth=$token';
+    }
     String uriString = (await _domain()) + '?' + params;
-    print('fetch: $uriString');
+//    print('fetch: $uriString');
     final result = await http.get(uriString).timeout(Duration(seconds: timeout),
         onTimeout: () =>
         throw Exception(
-            'Request timed out after $timeout seconds.\n\nIs your port correct?'));
+            'Request timed out after $timeout seconds - is your port correct?'));
     return result;
   }
 
@@ -54,6 +58,7 @@ class Api {
     try {
       response = await _fetch('status');
     } catch (e) {
+      print('fetchStatus: _fetch exception');
       rethrow;
     }
     if (response.statusCode == 200) {
@@ -66,8 +71,13 @@ class Api {
 
   static Future<bool> setStatus(bool newStatus) async {
     final String activity = newStatus ? 'enable' : 'disable';
-    String token = await PreferenceToken().get();
-    final response = await _fetch('$activity&auth=$token');
+    http.Response response;
+    try {
+      response = await _fetch(activity, authorization: true);
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Cannot connect to your Pi-hole');
+      return false;
+    }
     if (response.statusCode == 200 && response.contentLength > 2) {
       final bool status = _statusToBool(json.decode(response.body));
       return status;
@@ -75,6 +85,21 @@ class Api {
       Fluttertoast.showToast(msg: 'Cannot $activity Pi-hole');
       return false;
     }
+  }
+
+  static Future<bool> isAuthorized() async {
+    http.Response response;
+    try {
+      response = await _fetch('topItems', authorization: true);
+    } catch (e) {
+      print('isAuthorized: _fetch exception');
+      rethrow;
+    }
+    if (response.statusCode == 200 && response.contentLength > 2) {
+      return true;
+    }
+
+    return false;
   }
 
   static Future<Map<String, String>> fetchSummary() async {
@@ -89,7 +114,8 @@ class Api {
 
     try {
       response = await _fetch('summary');
-    } on SocketException catch (e) {
+    } catch (e) {
+      print('fetchSummary: _fetch exception');
       if (e.osError.errorCode == 7) {
         throw Exception(
             'Host lookup failed.\n\nIs your Pi-hole address correct?');
@@ -116,5 +142,17 @@ class Api {
     }
 
     throw Exception('Failed to fetch summary');
+  }
+
+  static Future<String> recentlyBlocked() async {
+    http.Response response;
+    try {
+      response = await _fetch('recentBlocked', authorization: false);
+    } catch (e) {
+      print('recentlyBlocked: _fetch exception');
+      rethrow;
+    }
+
+    return response.body;
   }
 }

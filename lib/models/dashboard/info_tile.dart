@@ -19,23 +19,24 @@ class InfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: _nextColor(),
-//      margin: EdgeInsets.all(5.0),
-      child: Center(
-        child: ListTile(
-          title: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
-          ),
-          subtitle: Text(
-            value,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold),
+    return Expanded(
+      child: Card(
+        color: _nextColor(),
+        child: Center(
+          child: ListTile(
+            title: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white),
+            ),
+            subtitle: Text(
+              value,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ),

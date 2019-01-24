@@ -23,7 +23,11 @@ class ToggleButton extends StatelessWidget {
 
     final IconData data = appState.enabled ? Icons.pause : Icons.play_arrow;
 
-    final onPressed = appState.connected ? () => appState.toggleStatus() : null;
+    Function onPressed = appState.authorized
+        ? () => appState.toggleStatus()
+        : null;
+
+    print('auth: ${appState.authorized}');
 
     return IconButton(
       icon: Icon(data),
