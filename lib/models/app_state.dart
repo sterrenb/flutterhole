@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/api.dart';
 
+/// A global state manager, used for sharing state within different Widgets with [child] as its root.
 class AppState extends StatefulWidget {
   final Widget child;
 
@@ -90,7 +91,7 @@ class _AppStateState extends State<AppState> {
   void updateStatus() async {
     setLoading();
     try {
-      _setStatus(await Api.fetchStatus());
+      _setStatus(await Api.fetchEnabled());
     } catch (e) {
       _setConnected(false);
     }

@@ -3,9 +3,8 @@ import 'package:flutter_hole/models/api.dart';
 import 'package:flutter_hole/models/app_state.dart';
 import 'package:flutter_hole/models/preferences/preference.dart';
 
+/// A [Preference] for storing the Pi-hole hostname.
 class PreferenceHostname extends Preference {
-//      TextSpan(text: 'pi.hole', recognizer: TapGestureRecognizer()..onTap = () => _launchURL('pi.hole')),
-
   PreferenceHostname()
       : super(
             key: 'hostname',

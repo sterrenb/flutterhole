@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hole/models/preferences/preference.dart';
 
+/// A form that allows users to edit a [Preference].
 class PreferenceForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController controller;
@@ -9,16 +11,16 @@ class PreferenceForm extends StatefulWidget {
       : super(key: key);
 
   @override
-  PreferenceFormState createState() {
-    return new PreferenceFormState(formKey, controller);
+  _PreferenceFormState createState() {
+    return new _PreferenceFormState(formKey, controller);
   }
 }
 
-class PreferenceFormState extends State<PreferenceForm> {
+class _PreferenceFormState extends State<PreferenceForm> {
   final GlobalKey<FormState> formKey;
   final TextEditingController controller;
 
-  PreferenceFormState(this.formKey, this.controller);
+  _PreferenceFormState(this.formKey, this.controller);
 
   @override
   Widget build(BuildContext context) {

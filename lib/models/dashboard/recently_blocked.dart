@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/api.dart';
 
+/// The default timeout [Duration] for retrieving the most recently blocked domain.
 const Duration defaultTimeout = Duration(seconds: 1);
 
 class _BlockedDomain extends StatefulWidget {
@@ -53,18 +54,19 @@ class _BlockedDomainState extends State<_BlockedDomain> {
   }
 }
 
+/// A widget that shows recently blocked domains and retrieves newly blocked domains based on the [defaultTimeout].
 class RecentlyBlocked extends StatefulWidget {
   @override
-  RecentlyBlockedState createState() {
-    return new RecentlyBlockedState();
+  _RecentlyBlockedState createState() {
+    return new _RecentlyBlockedState();
   }
 }
 
-class RecentlyBlockedState extends State<RecentlyBlocked> {
-  Timer _timer;
-  static Map<String, int> _blockedDomains = Map();
-  static String _lastDomain;
-  double _sliderValue = 1.0;
+class _RecentlyBlockedState extends State<RecentlyBlocked> {
+  Timer timer;
+  static Map<String, int> blockedDomains = Map();
+  static String lastDomain;
+  double sliderValue = 1.0;
 
   Timer _startTimer({Duration timeout = defaultTimeout}) {
     return Timer.periodic(timeout, _onTimer);
@@ -74,12 +76,12 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
     print('onTimer ${timer.tick}');
     try {
       Api.recentlyBlocked().then((String domain) {
-        if (domain != _lastDomain) {
-          _blockedDomains.update(domain, (int hits) {
+        if (domain != lastDomain) {
+          blockedDomains.update(domain, (int hits) {
             print('updating existing one with $hits hits');
             return hits + 1;
           }, ifAbsent: () => 1);
-          _lastDomain = domain;
+          lastDomain = domain;
           setState(() {});
         }
       });
@@ -94,34 +96,36 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
   void initState() {
     super.initState();
     setState(() {
-      _timer = _startTimer();
+      timer = _startTimer();
     });
   }
 
   @override
   void dispose() {
-    _timer.cancel();
+    timer.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Iterable<String> keys = _blockedDomains.keys;
-    Iterable<int> values = _blockedDomains.values;
+    Iterable<String> keys = blockedDomains.keys;
+    Iterable<int> values = blockedDomains.values;
 
     const double _min = 0.1;
     const double _max = 5.0;
-    final Widget _body = (_blockedDomains.length == 0)
+    final Widget _body = (blockedDomains.length == 0)
         ? Expanded(child: Center(child: CircularProgressIndicator()))
         : Expanded(
-      child: ListView.builder(
-          itemCount: _blockedDomains.length,
-          itemBuilder: (BuildContext context, int index) {
-            return _BlockedDomain(
-              title: keys.elementAt(index),
-              hits: values.elementAt(index),
-            );
-          }),
+      child: Scrollbar(
+        child: ListView.builder(
+            itemCount: blockedDomains.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _BlockedDomain(
+                title: keys.elementAt(index),
+                hits: values.elementAt(index),
+              );
+            }),
+      ),
     );
 
     return Column(
@@ -133,35 +137,37 @@ class RecentlyBlockedState extends State<RecentlyBlocked> {
               Column(
                 children: <Widget>[
                   Text('Polling rate'),
-                  Text('(${_sliderToInt(_sliderValue)}ms)'),
+                  Text('(${_sliderToInt(sliderValue)}ms)'),
                 ],
               ),
               Expanded(
                 child: Slider(
                   label: 'Ping rate',
-                  value: _sliderValue,
+                  value: sliderValue,
                   min: _min,
                   max: _max,
                   onChanged: (double newValue) {
                     setState(() {
-                      _sliderValue = newValue;
+                      sliderValue = newValue;
                     });
                   },
                   onChangeEnd: (double newValue) {
                     print('final value: ${_sliderToInt(newValue)}');
-                    _timer.cancel();
+                    timer.cancel();
                     setState(() {
-                      _timer = _startTimer(
+                      timer = _startTimer(
                           timeout:
                           Duration(milliseconds: _sliderToInt(newValue)));
                     });
                   },
                 ),
               ),
+              IconButton(
+                icon: Icon(Icons.pause_circle_outline), onPressed: () {},),
             ],
           ),
         ),
-//        ProgressIndicatorDemo(timeout: Duration(milliseconds: 50),),
+//        LinearProgressIndicator(),
         _body,
       ],
     );

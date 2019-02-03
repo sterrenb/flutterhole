@@ -10,11 +10,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
+/// The relative path to the Pi-hole API
 const String apiPath = 'admin/api.php';
 
-const int timeout = 2;
+/// The timeout duration for API requests.
+const Duration timeout = Duration(seconds: 2);
 
+/// A convenient wrapper for the Pi-hole PHP API.
 class Api {
+  /// Returns a bool depending on the Pi-hole status string
   static _statusToBool(dynamic json) {
     switch (json['status']) {
       case 'enabled':
@@ -26,10 +30,8 @@ class Api {
     }
   }
 
+  /// Returns the domain based on the [PreferenceHostname] and [PreferencePort].
   static _domain() async {
-    // TODO debug
-//    return 'http://pi.hole/admin/api.php';
-
     final String hostname = await PreferenceHostname().get();
     String port = await PreferencePort().get();
     if (port == '80') {
@@ -41,25 +43,36 @@ class Api {
     return 'http://' + hostname + port + '/' + apiPath;
   }
 
-  static Future<http.Response> _fetch(String params,
+  /// Returns the result of an API request based on the [params]. Set [authorization] to true when performing administrative tasks.
+  ///
+  /// Throws an [Exception] if the request times out.
+  ///
+  /// ```dart
+  /// Api.fetch('summaryRaw')
+  /// Api.fetch('enabled', authorization: true)
+  /// ```
+  static Future<http.Response> fetch(String params,
       {bool authorization = false}) async {
     if (authorization) {
-      String token = await PreferenceToken().get();
-      params = params + '&auth=$token';
+      String _token = await PreferenceToken().get();
+      params = params + '&auth=$_token';
     }
-    String uriString = (await _domain()) + '?' + params;
-//    print('fetch: $uriString');
-    final result = await http.get(uriString).timeout(Duration(seconds: timeout),
+    String _uriString = (await _domain()) + '?' + params;
+    final _result = await http.get(_uriString).timeout(timeout,
         onTimeout: () =>
         throw Exception(
-            'Request timed out after $timeout seconds - is your port correct?'));
-    return result;
+            'Request timed out after ${timeout.inSeconds
+                .toString()} seconds - is your port correct?'));
+    return _result;
   }
 
-  static Future<bool> fetchStatus() async {
+  /// Returns true if the Pi-hole is enabled, or false when disabled.
+  ///
+  /// Throws an [Exception] when the request fails.
+  static Future<bool> fetchEnabled() async {
     http.Response response;
     try {
-      response = await _fetch('status');
+      response = await fetch('status');
     } catch (e) {
       print('fetchStatus: _fetch exception');
       rethrow;
@@ -72,11 +85,16 @@ class Api {
     }
   }
 
+  /// Sets the status of the Pi-hole to 'enabled' or 'disabled' based on [newStatus].
+  ///
+  /// Returns the new status after performing the request.
+  ///
+  /// Shows a toast when any request fails.
   static Future<bool> setStatus(bool newStatus) async {
     final String activity = newStatus ? 'enable' : 'disable';
     http.Response response;
     try {
-      response = await _fetch(activity, authorization: true);
+      response = await fetch(activity, authorization: true);
     } catch (e) {
       Fluttertoast.instance.showToast(msg: 'Cannot connect to your Pi-hole');
       return false;
@@ -90,10 +108,11 @@ class Api {
     }
   }
 
+  /// Returns true if the request is authorized, or false when unauthorized.
   static Future<bool> isAuthorized() async {
     http.Response response;
     try {
-      response = await _fetch('topItems', authorization: true);
+      response = await fetch('topItems', authorization: true);
     } catch (e) {
       print('isAuthorized: _fetch exception');
       rethrow;
@@ -105,6 +124,9 @@ class Api {
     return false;
   }
 
+  /// Returns the summary of the Pi-hole.
+  ///
+  /// Throws an [Exception when the request fails.
   static Future<Map<String, String>> fetchSummary() async {
     const Map<String, String> _prettySummary = {
       'dns_queries_today': 'Total Queries',
@@ -116,7 +138,7 @@ class Api {
     http.Response response;
 
     try {
-      response = await _fetch('summary');
+      response = await fetch('summary');
     } catch (e) {
       print('fetchSummary: _fetch exception');
       if (e.osError.errorCode == 7) {
@@ -147,18 +169,25 @@ class Api {
     throw Exception('Failed to fetch summary');
   }
 
+  /// Returns the most recently blocked domain.
+  ///
+  /// The PHP API is limited to only the single most recently blocked domain, so unfortunately batching is not possible without frequently sending the same request.
+  ///
+  /// Throws an [Exception] when the request fails.
   static Future<String> recentlyBlocked() async {
     http.Response response;
     try {
-      response = await _fetch('recentBlocked', authorization: false);
+      response = await fetch('recentBlocked', authorization: false);
     } catch (e) {
-      print('recentlyBlocked: _fetch exception');
-      rethrow;
+      throw Exception('Failed to fetch recently blocked: ${e.toString()}');
     }
 
     return response.body;
   }
 
+  /// Launches the [url] in the default browser.
+  ///
+  /// Shows a toast if the url can not be launched.
   static void launchURL(String url) async {
     try {
       if (await canLaunch(url)) {
@@ -167,14 +196,17 @@ class Api {
         Fluttertoast.instance.showToast(msg: 'URL could not be launched');
       }
     } catch (e) {
-      print(e);
+      Fluttertoast.instance.showToast(msg: 'URL could not be launched');
     }
   }
 
+  /// Returns a widget with a hyperlink that can be tapped to launch using [launchURL].
   static TextSpan hyperLink(String urlString) {
     return TextSpan(
         text: urlString,
-        style: TextStyle(color: Colors.blue,),
+        style: TextStyle(
+          color: Colors.blue,
+        ),
         recognizer: TapGestureRecognizer()
           ..onTap = () => Api.launchURL(urlString));
   }

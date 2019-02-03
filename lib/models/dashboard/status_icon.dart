@@ -3,6 +3,7 @@ import 'package:flutter_hole/models/app_state.dart';
 
 const MaterialColor _defaultColor = Colors.grey;
 
+/// A widget that displays whether the Pi-hole is enabled (green), disabled (red), or unknown (grey).
 class StatusIcon extends StatelessWidget {
   static MaterialColor color = _defaultColor;
 
@@ -18,10 +19,6 @@ class StatusIcon extends StatelessWidget {
       case false:
         color = _defaultColor;
     }
-
-//    if (!appState.loading && appState.connected) {
-//      color = appState.enabled ? Colors.green : Colors.orange;
-//    }
 
     return Container(
       child: Icon(

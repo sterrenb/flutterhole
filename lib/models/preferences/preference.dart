@@ -4,13 +4,23 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// a scaffold for managing a preference that is saved between sessions, using [SharedPreferences].
 abstract class Preference {
+  /// The unique identifier used to store the preference.
   final String key;
+
+  /// The human friendly title.
   final String title;
+
+  // The human friendly description.
   final String description;
+
+  // The help widget that a user can select and view separately.
   final Widget help;
-  final IconData iconData;
+
+  // The callback for the save action.
   final Function(bool, BuildContext) onSet;
+  final IconData iconData;
 
   Preference({
     @required this.key,
@@ -21,6 +31,7 @@ abstract class Preference {
     this.onSet,
   });
 
+  /// The default style for the help widget. This should be added to the global theme someday...
   static final TextStyle helpStyle = TextStyle(color: Colors.black87);
 
   static final Future<SharedPreferences> _sharedPreferences =
@@ -77,7 +88,8 @@ abstract class Preference {
   }
 
   Future _onHelpTap(BuildContext context, Widget help) {
-    return showDialog(context: context,
+    return showDialog(
+        context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(title),
@@ -87,8 +99,7 @@ abstract class Preference {
   }
 
   AlertDialog _alertPrefDialog(PreferenceForm preferenceForm,
-      BuildContext context,
-      TextEditingController _controller, Function onSet) {
+      BuildContext context, TextEditingController _controller, Function onSet) {
     return AlertDialog(
       title: Text(title),
       content: preferenceForm,

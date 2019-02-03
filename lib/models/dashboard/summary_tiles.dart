@@ -3,14 +3,15 @@ import 'package:flutter_hole/models/api.dart';
 import 'package:flutter_hole/models/dashboard/info_tile.dart';
 import 'package:flutter_hole/screens/settings_screen.dart';
 
+/// A widget that shows a [List] of [InfoTile]s with statistics of the Pi-hole.
 class SummaryTiles extends StatefulWidget {
   @override
-  SummaryTilesState createState() {
-    return new SummaryTilesState();
+  _SummaryTilesState createState() {
+    return new _SummaryTilesState();
   }
 }
 
-class SummaryTilesState extends State<SummaryTiles> {
+class _SummaryTilesState extends State<SummaryTiles> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, String>>(

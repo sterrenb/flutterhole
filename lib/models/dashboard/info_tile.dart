@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 const _colors = [Colors.green, Colors.blue, Colors.orange, Colors.red];
 
+/// A Card that shows a small Text with the [title] and a large Text with the [value].
 class InfoTile extends StatelessWidget {
   final String title;
   final String value;
@@ -41,27 +42,5 @@ class InfoTile extends StatelessWidget {
         ),
       ),
     );
-
-    /*return Center(
-      child: Card(
-          color: _nextColor(),
-          child: Padding(
-            padding: EdgeInsets.all(4.0),
-            child: ListTile(
-              title: Text(
-                title,
-                textAlign: TextAlign.center,
-              ),
-              subtitle: Text(
-                value,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          )),
-    );*/
   }
 }

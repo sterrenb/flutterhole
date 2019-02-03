@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/dashboard/icon_text.dart';
+import 'package:flutter_hole/models/dashboard/status_title.dart';
 import 'package:flutter_hole/screens/home_screen.dart';
 import 'package:flutter_hole/screens/recently_blocked_screen.dart';
 import 'package:flutter_hole/screens/settings_screen.dart';
 
-class _DrawerTile extends StatelessWidget {
-  final Widget screen;
+/// The menu entry widget in a [DefaultDrawer].
+class DrawerTile extends StatelessWidget {
+  /// The screen to navigate to on tap.
+  final Widget onTapScreen;
   final String title;
   final IconData iconData;
 
-  const _DrawerTile(
-      {Key key, @required this.screen, @required this.title, @required this.iconData})
+  const DrawerTile({Key key,
+    @required this.onTapScreen,
+    @required this.title,
+    @required this.iconData})
       : super(key: key);
 
   @override
@@ -19,14 +23,14 @@ class _DrawerTile extends StatelessWidget {
       leading: Icon(iconData),
       title: Text(title),
       onTap: () {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => screen));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => onTapScreen));
       },
     );
   }
-
 }
 
+/// The default drawer menu, containing a list of [DrawerTile]s.
 class DefaultDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -39,16 +43,20 @@ class DefaultDrawer extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                 padding: EdgeInsets.only(bottom: 4.0),
 //                child: AppTitle(),
-                child: IconText(
+                child: StatusTitle(
                   title: 'FlutterHole',
                 )),
           ),
-          _DrawerTile(
-              screen: HomeScreen(), title: 'Dashboard', iconData: Icons.home),
-          _DrawerTile(screen: RecentlyBlockedScreen(),
+          DrawerTile(
+              onTapScreen: HomeScreen(),
+              title: 'Dashboard',
+              iconData: Icons.home),
+          DrawerTile(
+              onTapScreen: RecentlyBlockedScreen(),
               title: 'Recently Blocked',
               iconData: Icons.block),
-          _DrawerTile(screen: SettingsScreen(),
+          DrawerTile(
+              onTapScreen: SettingsScreen(),
               title: 'Settings',
               iconData: Icons.settings),
         ],

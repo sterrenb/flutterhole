@@ -1,6 +1,7 @@
 import 'package:flutter_hole/models/api.dart';
 import 'package:quick_actions/quick_actions.dart';
 
+/// Adds quick actions to the home screen app icon.
 void quickActions() {
   final QuickActions quickActions = QuickActions();
   quickActions.initialize((shortcutType) {

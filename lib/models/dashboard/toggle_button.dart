@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/app_state.dart';
 
+/// A button that allows users to enable or disable the Pi-hole.
 class ToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final appState = AppState.of(context);
+    final _appState = AppState.of(context);
 
-    if (appState.loading) {
+    if (_appState.loading) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 20.0),
         child: Center(
@@ -21,17 +22,17 @@ class ToggleButton extends StatelessWidget {
       );
     }
 
-    final IconData data = appState.enabled ? Icons.pause : Icons.play_arrow;
+    final IconData _data = _appState.enabled ? Icons.pause : Icons.play_arrow;
 
-    Function onPressed = appState.authorized
-        ? () => appState.toggleStatus()
+    /// If authorized, toggles the Pi-hole status.
+    Function onPressed = _appState.authorized
+        ? () => _appState.toggleStatus()
         : null;
 
-    print('auth: ${appState.authorized}');
-
+    final _enableDisablePiHole = 'Enable/disable Pi-hole';
     return IconButton(
-      icon: Icon(data),
-      tooltip: 'Enable/disable Pi-hole',
+      icon: Icon(_data),
+      tooltip: _enableDisablePiHole,
       onPressed: onPressed,
     );
   }
