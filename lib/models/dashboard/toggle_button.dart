@@ -24,7 +24,7 @@ class ToggleButton extends StatelessWidget {
 
     final IconData _data = _appState.enabled ? Icons.pause : Icons.play_arrow;
 
-    /// If authorized, toggles the Pi-hole status.
+    /// If authorized, toggles the Pi-hole® status.
     Function onPressed = _appState.authorized
         ? () => _appState.toggleStatus()
         : null;

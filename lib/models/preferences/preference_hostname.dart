@@ -3,7 +3,7 @@ import 'package:flutter_hole/models/api.dart';
 import 'package:flutter_hole/models/app_state.dart';
 import 'package:flutter_hole/models/preferences/preference.dart';
 
-/// A [Preference] for storing the Pi-hole hostname.
+/// A [Preference] for storing the Pi-hole® hostname.
 class PreferenceHostname extends Preference {
   PreferenceHostname()
       : super(
@@ -13,7 +13,7 @@ class PreferenceHostname extends Preference {
       help: RichText(
         text: TextSpan(
             text:
-            'If you are using Pi-hole as a DNS server, the hostname is usually ',
+            'If you are using Pi-hole® as a DNS server, the hostname is usually ',
             style: Preference.helpStyle,
             children: [
               Api.hyperLink('http://pi.hole'),

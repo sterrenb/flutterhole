@@ -1,3 +1,3 @@
-# Flutterhole
+# FlutterHole
 
-A third party Android application for the Pi-Hole® dashboard
+A third party Android application for the Pi-hole® dashboard

@@ -10,15 +10,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
-/// The relative path to the Pi-hole API
+/// The relative path to the Pi-hole® API
 const String apiPath = 'admin/api.php';
 
 /// The timeout duration for API requests.
 const Duration timeout = Duration(seconds: 2);
 
-/// A convenient wrapper for the Pi-hole PHP API.
+/// A convenient wrapper for the Pi-hole® PHP API.
 class Api {
-  /// Returns a bool depending on the Pi-hole status string
+  /// Returns a bool depending on the Pi-hole® status string
   static _statusToBool(dynamic json) {
     switch (json['status']) {
       case 'enabled':
@@ -66,7 +66,7 @@ class Api {
     return _result;
   }
 
-  /// Returns true if the Pi-hole is enabled, or false when disabled.
+  /// Returns true if the Pi-hole® is enabled, or false when disabled.
   ///
   /// Throws an [Exception] when the request fails.
   static Future<bool> fetchEnabled() async {
@@ -85,7 +85,7 @@ class Api {
     }
   }
 
-  /// Sets the status of the Pi-hole to 'enabled' or 'disabled' based on [newStatus].
+  /// Sets the status of the Pi-hole® to 'enabled' or 'disabled' based on [newStatus].
   ///
   /// Returns the new status after performing the request.
   ///
@@ -143,7 +143,7 @@ class Api {
       print('fetchSummary: _fetch exception');
       if (e.osError.errorCode == 7) {
         throw Exception(
-            'Host lookup failed.\n\nIs your Pi-hole address correct?');
+            'Host lookup failed.\n\nIs your Pi-hole® address correct?');
       }
 
       rethrow;
