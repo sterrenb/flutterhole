@@ -4,8 +4,9 @@ import 'package:flutter_hole/models/api.dart';
 /// A global state manager, used for sharing state within different Widgets with [child] as its root.
 class AppState extends StatefulWidget {
   final Widget child;
+  final Brightness brightness;
 
-  AppState({this.child});
+  AppState({@required this.child, @required this.brightness});
 
   @override
   _AppStateState createState() => _AppStateState();
@@ -80,7 +81,6 @@ class _AppStateState extends State<AppState> {
   }
 
   void _setStatus(bool newStatus, {bool doneLoading = true}) {
-    print('setting status: $newStatus');
     setState(() {
       _enabled = newStatus;
       _loading = !doneLoading;

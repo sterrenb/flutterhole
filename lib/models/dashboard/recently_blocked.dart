@@ -173,15 +173,11 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
                   },
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.pause_circle_outline),
-                onPressed: () {},
-              ),
             ],
           ),
         ),
-//        LinearProgressIndicator(),
         body,
+//        LinearProgressIndicator(),
       ],
     );
   }

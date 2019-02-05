@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/dashboard/default_scaffold.dart';
-import 'package:flutter_hole/models/preferences/preference_brightness.dart';
 import 'package:flutter_hole/models/preferences/preference_hostname.dart';
+import 'package:flutter_hole/models/preferences/preference_is_dark.dart';
 import 'package:flutter_hole/models/preferences/preference_port.dart';
 import 'package:flutter_hole/models/preferences/preference_token.dart';
 import 'package:flutter_hole/models/preferences/setting_widget.dart';
@@ -13,7 +13,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final List<Widget> piSettings = [
-    SettingWidget(preference: PreferenceBrightness()),
+    SettingWidget(preference: PreferenceIsDark(), isBool: true),
     SettingWidget(preference: PreferenceHostname()),
     SettingWidget(preference: PreferencePort()),
     SettingWidget(preference: PreferenceToken(), addScanButton: true),

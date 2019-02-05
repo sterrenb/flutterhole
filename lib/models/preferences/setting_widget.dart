@@ -1,3 +1,4 @@
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/dashboard/scan_button.dart';
 import 'package:flutter_hole/models/preferences/preference.dart';
@@ -7,9 +8,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 class SettingWidget extends StatefulWidget {
   final Preference preference;
   final bool addScanButton;
+  final bool isBool;
 
-  const SettingWidget(
-      {Key key, @required this.preference, this.addScanButton = false})
+  const SettingWidget({Key key,
+    @required this.preference,
+    this.addScanButton = false,
+    this.isBool = false})
       : super(key: key);
 
   @override
@@ -30,7 +34,7 @@ class SettingWidgetState extends State<SettingWidget> {
         });
   }
 
-  Future onPrefTap(AsyncSnapshot<String> snapshot, BuildContext context,
+  Future onPrefTap(AsyncSnapshot<dynamic> snapshot, BuildContext context,
       TextEditingController controller) {
     final _formKey = GlobalKey<FormState>();
     return showDialog(
@@ -71,7 +75,7 @@ class SettingWidgetState extends State<SettingWidget> {
       )
     ];
 
-    if (widget.addScanButton != null && widget.addScanButton) {
+    if (widget.addScanButton) {
       actions.insert(0, ScanButton(controller: controller));
     }
 
@@ -84,10 +88,23 @@ class SettingWidgetState extends State<SettingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
+    return FutureBuilder<dynamic>(
         future: widget.preference.get(),
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
+            if (widget.isBool && widget.preference.id == 'isDark') {
+              return SwitchListTile(
+                title: Text(widget.preference.title),
+                value: snapshot.data == 'true',
+                secondary: Icon(widget.preference.iconData),
+                onChanged: (bool value) {
+                  Brightness brightness =
+                  value ? Brightness.dark : Brightness.light;
+                  DynamicTheme.of(context).setBrightness(brightness);
+                  setState(() {});
+                },
+              );
+            }
             final controller = TextEditingController(text: snapshot.data);
             return ListTile(
               leading: Icon(widget.preference.iconData),

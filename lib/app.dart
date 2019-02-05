@@ -1,15 +1,35 @@
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/screens/settings_screen.dart';
 
-class App extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  MyAppState createState() {
+    return new MyAppState();
+  }
+}
+
+class MyAppState extends State<MyApp> {
+  Brightness brightness;
+
   @override
   Widget build(BuildContext context) {
     final title = 'FlutterHole';
-    return MaterialApp(
-      title: title,
-      theme: ThemeData.dark(),
-//      theme: ThemeData(brightness: Brightness.dark),
-      home: SettingsScreen(),
+
+    return DynamicTheme(
+      defaultBrightness: Brightness.light,
+      data: (brightness) =>
+          ThemeData(
+            primarySwatch: Colors.indigo,
+            brightness: brightness,
+          ),
+      themedWidgetBuilder: (context, theme) {
+        return MaterialApp(
+          title: title,
+          theme: theme,
+          home: SettingsScreen(),
+        );
+      },
     );
   }
 }
