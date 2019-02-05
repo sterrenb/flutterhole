@@ -4,6 +4,7 @@ import 'package:flutter_hole/models/preferences/preference_brightness.dart';
 import 'package:flutter_hole/models/preferences/preference_hostname.dart';
 import 'package:flutter_hole/models/preferences/preference_port.dart';
 import 'package:flutter_hole/models/preferences/preference_token.dart';
+import 'package:flutter_hole/models/preferences/setting_widget.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -12,18 +13,10 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final List<Widget> piSettings = [
-    SwitchListTile(
-      title: Text('Dark theme'),
-      value: false,
-      onChanged: (bool value) {
-        print('yay');
-      },
-      secondary: Icon(Icons.lightbulb_outline),
-    ),
-    PreferenceBrightness().settingsWidget(),
-    PreferenceHostname().settingsWidget(),
-    PreferencePort().settingsWidget(),
-    PreferenceToken().settingsWidget(),
+    SettingWidget(preference: PreferenceBrightness()),
+    SettingWidget(preference: PreferenceHostname()),
+    SettingWidget(preference: PreferencePort()),
+    SettingWidget(preference: PreferenceToken(), addScanButton: true),
   ];
 
   @override
@@ -31,8 +24,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return DefaultScaffold(
       title: 'Settings',
       body: Column(
-        children: ListTile.divideTiles(context: context, tiles: piSettings)
-            .toList(),
+        children:
+        ListTile.divideTiles(context: context, tiles: piSettings).toList(),
       ),
     );
   }

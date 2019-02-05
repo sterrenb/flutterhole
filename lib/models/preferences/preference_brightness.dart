@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PreferenceBrightness extends Preference {
   PreferenceBrightness()
       : super(
-            key: 'brightness',
+      id: 'brightness',
             title: 'Dark Theme',
             description: 'Use the global dark theme',
             help: Container(),

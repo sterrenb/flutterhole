@@ -7,7 +7,7 @@ import 'package:flutter_hole/models/preferences/preference.dart';
 class PreferenceHostname extends Preference {
   PreferenceHostname()
       : super(
-            key: 'hostname',
+      id: 'hostname',
             title: 'Hostname',
             description: 'The hostname or IP address of your Pi-hole',
       help: RichText(

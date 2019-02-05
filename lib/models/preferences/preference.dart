@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/dashboard/scan_button.dart';
-import 'package:flutter_hole/models/preferences/preference_form.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// a scaffold for managing a preference that is saved between sessions, using [SharedPreferences].
 abstract class Preference {
   /// The unique identifier used to store the preference.
-  final String key;
+  final String id;
 
   /// The human friendly title.
   final String title;
@@ -22,15 +19,12 @@ abstract class Preference {
   final Function(bool, BuildContext) onSet;
   final IconData iconData;
 
-  final bool addScanButton;
-
   Preference({
-    @required this.key,
+    @required this.id,
     @required this.title,
     @required this.description,
     @required this.help,
     @required this.iconData,
-    this.addScanButton = false,
     this.onSet,
   });
 
@@ -40,123 +34,25 @@ abstract class Preference {
   static final Future<SharedPreferences> _sharedPreferences =
   SharedPreferences.getInstance();
 
-  Widget _defaultSettingsWidget() {
-    return FutureBuilder<String>(
-        future: get(),
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          if (snapshot.hasData) {
-            final controller = TextEditingController(text: snapshot.data);
-            return ListTile(
-              leading: Icon(iconData),
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(title),
-                  IconButton(
-                    icon: Icon(
-                      Icons.help_outline,
-                      color: Colors.grey,
-                      size: 16.0,
-                    ),
-                    onPressed: () => _onHelpTap(context, help),
-                  )
-                ],
-              ),
-              subtitle: Text(controller.text),
-              onTap: () {
-                return _onPrefTap(snapshot, context, controller);
-              },
-              onLongPress: () {
-                Fluttertoast.instance.showToast(msg: description);
-              },
-            );
-          }
-
-          return Center(child: CircularProgressIndicator());
-        });
-  }
-
-  Future _onPrefTap(AsyncSnapshot<String> snapshot, BuildContext context,
-      TextEditingController controller) {
-    final _formKey = GlobalKey<FormState>();
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          final preferenceForm = PreferenceForm(
-            formKey: _formKey,
-            controller: controller,
-          );
-          return _alertPrefDialog(preferenceForm, context, controller, onSet);
-        });
-  }
-
-  Future _onHelpTap(BuildContext context, Widget help) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(title),
-            content: help,
-          );
-        });
-  }
-
-  AlertDialog _alertPrefDialog(PreferenceForm preferenceForm,
-      BuildContext context, TextEditingController controller, Function onSet) {
-    List<Widget> actions = [
-      FlatButton(
-        child: Text('Cancel'),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
-      FlatButton(
-        child: Text('OK'),
-        onPressed: () {
-          if (preferenceForm.formKey.currentState.validate()) {
-            set(controller.text, context).then((bool didSet) {
-              if (onSet != null) {
-                onSet(didSet, context);
-              }
-            });
-            Navigator.pop(context);
-          }
-        },
-      )
-    ];
-
-    if (addScanButton) {
-      actions.insert(0, ScanButton(controller: controller));
-    }
-
-    return AlertDialog(
-      title: Text(title),
-      content: preferenceForm,
-      actions: actions,
-    );
-  }
-
-  Widget settingsWidget() => _defaultSettingsWidget();
-
   Future<bool> set(String value, BuildContext context) async {
-    print('setting sharedpref: $key => $value');
-    final bool didSave = await (await _sharedPreferences).setString(key, value);
+    print('setting sharedpref: $id => $value');
+    final bool didSave = await (await _sharedPreferences).setString(id, value);
     return didSave;
   }
 
   Future<bool> setBool(bool value, BuildContext context) async {
-    print('setting sharedpref: $key => $value');
-    final bool didSave = await (await _sharedPreferences).setBool(key, value);
+    print('setting sharedpref: $id => $value');
+    final bool didSave = await (await _sharedPreferences).setBool(id, value);
     return didSave;
   }
 
   Future<String> get() async {
-    String result = (await _sharedPreferences).get(key).toString();
+    String result = (await _sharedPreferences).get(id).toString();
     return result;
   }
 
   Future<bool> getBool() async {
-    bool result = (await _sharedPreferences).getBool(key);
+    bool result = (await _sharedPreferences).getBool(id);
     return result;
   }
 }

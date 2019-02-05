@@ -8,7 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 class PreferenceToken extends Preference {
   PreferenceToken()
       : super(
-            key: 'token',
+      id: 'token',
             title: 'API token',
       description: 'Enabling/disabling Pi-hole',
       help: RichText(
@@ -28,9 +28,8 @@ class PreferenceToken extends Preference {
         AppState.of(context).updateAuthorized().then((bool isAuthorized) {
           String msg = isAuthorized
               ? 'Authorization succesful'
-              : 'Cannot authorize - is your API token correct?';
+              : 'Authorizated failed';
           Fluttertoast.instance.showToast(msg: msg);
         });
-      },
-      addScanButton: true);
+      });
 }
