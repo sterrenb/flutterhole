@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/dashboard/default_scaffold.dart';
+import 'package:flutter_hole/models/preferences/preference_brightness.dart';
 import 'package:flutter_hole/models/preferences/preference_hostname.dart';
 import 'package:flutter_hole/models/preferences/preference_port.dart';
 import 'package:flutter_hole/models/preferences/preference_token.dart';
@@ -11,6 +12,15 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final List<Widget> piSettings = [
+    SwitchListTile(
+      title: Text('Dark theme'),
+      value: false,
+      onChanged: (bool value) {
+        print('yay');
+      },
+      secondary: Icon(Icons.lightbulb_outline),
+    ),
+    PreferenceBrightness().settingsWidget(),
     PreferenceHostname().settingsWidget(),
     PreferencePort().settingsWidget(),
     PreferenceToken().settingsWidget(),

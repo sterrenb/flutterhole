@@ -31,5 +31,6 @@ class PreferenceToken extends Preference {
               : 'Cannot authorize - is your API token correct?';
           Fluttertoast.instance.showToast(msg: msg);
         });
-      });
+      },
+      addScanButton: true);
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/api.dart';
+import 'package:flutter_hole/models/dashboard/friendly_exception.dart';
 
 /// The default timeout [Duration] for retrieving the most recently blocked domain.
 const Duration defaultTimeout = Duration(seconds: 1);
@@ -67,6 +68,7 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
   static Map<String, int> blockedDomains = Map();
   static String lastDomain;
   double sliderValue = 1.0;
+  String errorMessage;
 
   Timer _startTimer({Duration timeout = defaultTimeout}) {
     return Timer.periodic(timeout, _onTimer);
@@ -74,20 +76,22 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
 
   void _onTimer(Timer timer) {
     print('onTimer ${timer.tick}');
-    try {
-      Api.recentlyBlocked().then((String domain) {
-        if (domain != lastDomain) {
-          blockedDomains.update(domain, (int hits) {
-            print('updating existing one with $hits hits');
-            return hits + 1;
-          }, ifAbsent: () => 1);
-          lastDomain = domain;
-          setState(() {});
-        }
+    Api.recentlyBlocked().then((String domain) {
+      if (domain != lastDomain) {
+        blockedDomains.update(domain, (int hits) {
+          print('updating existing one with $hits hits');
+          return hits + 1;
+        }, ifAbsent: () => 1);
+        lastDomain = domain;
+        setState(() {});
+      }
+    }, onError: (e) {
+      timer.cancel();
+      print('setting state with error: ${e.toString()}');
+      setState(() {
+        errorMessage = e.toString();
       });
-    } catch (e) {
-      print(e);
-    }
+    });
   }
 
   int _sliderToInt(double sliderValue) => (sliderValue * 1000).toInt();
@@ -113,20 +117,27 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
 
     const double _min = 0.1;
     const double _max = 5.0;
-    final Widget _body = (blockedDomains.length == 0)
-        ? Expanded(child: Center(child: CircularProgressIndicator()))
-        : Expanded(
-      child: Scrollbar(
-        child: ListView.builder(
-            itemCount: blockedDomains.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _BlockedDomain(
-                title: keys.elementAt(index),
-                hits: values.elementAt(index),
-              );
-            }),
-      ),
-    );
+    Widget body;
+
+    if (errorMessage != null) {
+      body = Expanded(
+          child: Center(child: FriendlyException(message: errorMessage)));
+    } else {
+      body = (blockedDomains.length == 0)
+          ? Expanded(child: Center(child: CircularProgressIndicator()))
+          : Expanded(
+        child: Scrollbar(
+          child: ListView.builder(
+              itemCount: blockedDomains.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _BlockedDomain(
+                  title: keys.elementAt(index),
+                  hits: values.elementAt(index),
+                );
+              }),
+        ),
+      );
+    }
 
     return Column(
       children: <Widget>[
@@ -163,12 +174,14 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.pause_circle_outline), onPressed: () {},),
+                icon: Icon(Icons.pause_circle_outline),
+                onPressed: () {},
+              ),
             ],
           ),
         ),
 //        LinearProgressIndicator(),
-        _body,
+        body,
       ],
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hole/models/dashboard/scan_button.dart';
 import 'package:flutter_hole/models/preferences/preference_form.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:qrcode_reader/qrcode_reader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// a scaffold for managing a preference that is saved between sessions, using [SharedPreferences].
@@ -22,12 +22,15 @@ abstract class Preference {
   final Function(bool, BuildContext) onSet;
   final IconData iconData;
 
+  final bool addScanButton;
+
   Preference({
     @required this.key,
     @required this.title,
     @required this.description,
     @required this.help,
     @required this.iconData,
+    this.addScanButton = false,
     this.onSet,
   });
 
@@ -99,51 +102,37 @@ abstract class Preference {
   }
 
   AlertDialog _alertPrefDialog(PreferenceForm preferenceForm,
-      BuildContext context, TextEditingController _controller, Function onSet) {
+      BuildContext context, TextEditingController controller, Function onSet) {
+    List<Widget> actions = [
+      FlatButton(
+        child: Text('Cancel'),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
+      FlatButton(
+        child: Text('OK'),
+        onPressed: () {
+          if (preferenceForm.formKey.currentState.validate()) {
+            set(controller.text, context).then((bool didSet) {
+              if (onSet != null) {
+                onSet(didSet, context);
+              }
+            });
+            Navigator.pop(context);
+          }
+        },
+      )
+    ];
+
+    if (addScanButton) {
+      actions.insert(0, ScanButton(controller: controller));
+    }
+
     return AlertDialog(
       title: Text(title),
       content: preferenceForm,
-      actions: <Widget>[
-        FlatButton(
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Icon(Icons.photo_camera),
-              ),
-              Text('Scan QR code')
-            ],
-          ),
-          onPressed: () {
-            Future<String> futureString = new QRCodeReader().scan();
-            futureString.then((String result) {
-              print('result: $result');
-              if (result != null) {
-                _controller.text = result;
-              }
-            });
-          },
-        ),
-        FlatButton(
-          child: Text('Cancel'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        FlatButton(
-          child: Text('OK'),
-          onPressed: () {
-            if (preferenceForm.formKey.currentState.validate()) {
-              set(_controller.text, context).then((bool didSet) {
-                if (onSet != null) {
-                  onSet(didSet, context);
-                }
-              });
-              Navigator.pop(context);
-            }
-          },
-        )
-      ],
+      actions: actions,
     );
   }
 
@@ -155,8 +144,19 @@ abstract class Preference {
     return didSave;
   }
 
+  Future<bool> setBool(bool value, BuildContext context) async {
+    print('setting sharedpref: $key => $value');
+    final bool didSave = await (await _sharedPreferences).setBool(key, value);
+    return didSave;
+  }
+
   Future<String> get() async {
     String result = (await _sharedPreferences).get(key).toString();
+    return result;
+  }
+
+  Future<bool> getBool() async {
+    bool result = (await _sharedPreferences).getBool(key);
     return result;
   }
 }

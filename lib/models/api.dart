@@ -141,11 +141,6 @@ class Api {
       response = await fetch('summary');
     } catch (e) {
       print('fetchSummary: _fetch exception');
-      if (e.osError.errorCode == 7) {
-        throw Exception(
-            'Host lookup failed.\n\nIs your Pi-hole® address correct?');
-      }
-
       rethrow;
     }
 
@@ -163,7 +158,7 @@ class Api {
       }
     } else {
       throw Exception(
-          'Failed to fetch summary, status code: ${response.statusCode}');
+          'Failed to fetch summary data, status code: ${response.statusCode}');
     }
 
     throw Exception('Failed to fetch summary');
@@ -179,7 +174,7 @@ class Api {
     try {
       response = await fetch('recentBlocked', authorization: false);
     } catch (e) {
-      throw Exception('Failed to fetch recently blocked: ${e.toString()}');
+      rethrow;
     }
 
     return response.body;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/dashboard/status_title.dart';
+import 'package:flutter_hole/screens/about_screen.dart';
 import 'package:flutter_hole/screens/home_screen.dart';
 import 'package:flutter_hole/screens/recently_blocked_screen.dart';
 import 'package:flutter_hole/screens/settings_screen.dart';
@@ -59,6 +60,10 @@ class DefaultDrawer extends StatelessWidget {
               onTapScreen: SettingsScreen(),
               title: 'Settings',
               iconData: Icons.settings),
+          DrawerTile(
+              onTapScreen: AboutScreen(),
+              title: 'About',
+              iconData: Icons.favorite),
         ],
       ),
     );

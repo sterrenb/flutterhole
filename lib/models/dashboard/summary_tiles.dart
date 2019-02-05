@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/api.dart';
+import 'package:flutter_hole/models/dashboard/friendly_exception.dart';
 import 'package:flutter_hole/models/dashboard/info_tile.dart';
-import 'package:flutter_hole/screens/settings_screen.dart';
 
 /// A widget that shows a [List] of [InfoTile]s with statistics of the Pi-hole.
 class SummaryTiles extends StatefulWidget {
@@ -33,33 +33,7 @@ class _SummaryTilesState extends State<SummaryTiles> {
             children: infoTiles,
           );
         } else if (snapshot.hasError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 32.0, vertical: 8.0),
-                  child: Text(
-                    snapshot.error.toString(),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: RaisedButton(
-                    child: Text('View settings'),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SettingsScreen()));
-                    },
-                  ),
-                ),
-              ],
-            ),
-          );
+          return FriendlyException(message: snapshot.error.toString());
         }
 
         return Center(child: CircularProgressIndicator());

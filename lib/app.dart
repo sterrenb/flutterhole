@@ -7,7 +7,7 @@ class App extends StatelessWidget {
     final title = 'FlutterHole';
     return MaterialApp(
       title: title,
-//      theme: ThemeData.dark(),
+      theme: ThemeData.dark(),
 //      theme: ThemeData(brightness: Brightness.dark),
       home: SettingsScreen(),
     );
