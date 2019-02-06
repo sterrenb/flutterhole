@@ -23,6 +23,7 @@ class _AppStateState extends State<AppState> {
   bool _connected;
   bool _authorized;
   bool _loading;
+  ApiProvider provider;
 
   // only expose a getter to prevent bad usage
   bool get enabled => _enabled;
@@ -41,6 +42,7 @@ class _AppStateState extends State<AppState> {
       _connected = false;
       _authorized = false;
       _loading = true;
+      provider = ApiProvider();
     });
 
     updateStatus();
@@ -49,7 +51,7 @@ class _AppStateState extends State<AppState> {
 
   Future<bool> updateAuthorized() async {
     try {
-      bool isAuthorized = await ApiProvider.isAuthorized();
+      bool isAuthorized = await provider.isAuthorized();
       _setAuthorized(isAuthorized);
       return isAuthorized;
     } catch (e) {
@@ -91,7 +93,7 @@ class _AppStateState extends State<AppState> {
   void updateStatus() async {
     setLoading();
     try {
-      _setStatus(await ApiProvider.fetchEnabled());
+      _setStatus(await provider.fetchEnabled());
     } catch (e) {
       _setConnected(false);
     }
@@ -100,7 +102,7 @@ class _AppStateState extends State<AppState> {
   void toggleStatus() async {
     setLoading();
     try {
-      _setStatus(await ApiProvider.setStatus(!_enabled));
+      _setStatus(await provider.setStatus(!_enabled));
     } catch (e) {
       _setConnected(false);
       throw Exception('Failed to toggle status - is your API token correct?');

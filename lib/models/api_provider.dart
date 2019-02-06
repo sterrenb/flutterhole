@@ -37,8 +37,33 @@ class ApiProvider {
     } else {
       port = ':' + port;
     }
-
     return 'http://' + hostname + port + '/' + apiPath;
+  }
+
+  /// Launches the [url] in the default browser.
+  ///
+  /// Shows a toast if the url can not be launched.
+  static void launchURL(String url) async {
+    try {
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        Fluttertoast.showToast(msg: 'URL could not be launched');
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'URL could not be launched');
+    }
+  }
+
+  /// Returns a widget with a hyperlink that can be tapped to launch using [launchURL].
+  static TextSpan hyperLink(String urlString) {
+    return TextSpan(
+        text: urlString,
+        style: TextStyle(
+          color: Colors.blue,
+        ),
+        recognizer: TapGestureRecognizer()
+          ..onTap = () => ApiProvider.launchURL(urlString));
   }
 
   /// Returns the result of an API request based on the [params]. Set [authorization] to true when performing administrative tasks.
@@ -49,7 +74,7 @@ class ApiProvider {
   /// Api.fetch('summaryRaw')
   /// Api.fetch('enabled', authorization: true)
   /// ```
-  static Future<http.Response> fetch(String params,
+  Future<http.Response> fetch(String params,
       {bool authorization = false}) async {
     if (authorization) {
       String _token = await PreferenceToken().get();
@@ -71,7 +96,7 @@ class ApiProvider {
   /// Returns true if the Pi-hole® is enabled, or false when disabled.
   ///
   /// Throws an [Exception] when the request fails.
-  static Future<bool> fetchEnabled() async {
+  Future<bool> fetchEnabled() async {
     http.Response response;
     try {
       response = await fetch('status');
@@ -92,7 +117,7 @@ class ApiProvider {
   /// Returns the new status after performing the request.
   ///
   /// Shows a toast when any request fails.
-  static Future<bool> setStatus(bool newStatus) async {
+  Future<bool> setStatus(bool newStatus) async {
     final String activity = newStatus ? 'enable' : 'disable';
     http.Response response;
     try {
@@ -111,7 +136,7 @@ class ApiProvider {
   }
 
   /// Returns true if the request is authorized, or false when unauthorized.
-  static Future<bool> isAuthorized() async {
+  Future<bool> isAuthorized() async {
     http.Response response;
     try {
       response = await fetch('topItems', authorization: true);
@@ -129,7 +154,7 @@ class ApiProvider {
   /// Returns the summary of the Pi-hole.
   ///
   /// Throws an [Exception when the request fails.
-  static Future<Map<String, String>> fetchSummary() async {
+  Future<Map<String, String>> fetchSummary() async {
     const Map<String, String> _prettySummary = {
       'dns_queries_today': 'Total Queries',
       'ads_blocked_today': 'Queries Blocked',
@@ -171,7 +196,7 @@ class ApiProvider {
   /// The PHP API is limited to only the single most recently blocked domain, so unfortunately batching is not possible without frequently sending the same request.
   ///
   /// Throws an [Exception] when the request fails.
-  static Future<String> recentlyBlocked() async {
+  Future<String> recentlyBlocked() async {
     http.Response response;
     try {
       response = await fetch('recentBlocked', authorization: false);
@@ -180,31 +205,5 @@ class ApiProvider {
     }
 
     return response.body;
-  }
-
-  /// Launches the [url] in the default browser.
-  ///
-  /// Shows a toast if the url can not be launched.
-  static void launchURL(String url) async {
-    try {
-      if (await canLaunch(url)) {
-        await launch(url);
-      } else {
-        Fluttertoast.showToast(msg: 'URL could not be launched');
-      }
-    } catch (e) {
-      Fluttertoast.showToast(msg: 'URL could not be launched');
-    }
-  }
-
-  /// Returns a widget with a hyperlink that can be tapped to launch using [launchURL].
-  static TextSpan hyperLink(String urlString) {
-    return TextSpan(
-        text: urlString,
-        style: TextStyle(
-          color: Colors.blue,
-        ),
-        recognizer: TapGestureRecognizer()
-          ..onTap = () => ApiProvider.launchURL(urlString));
   }
 }

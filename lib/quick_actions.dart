@@ -3,6 +3,7 @@ import 'package:quick_actions/quick_actions.dart';
 
 /// Adds quick actions to the home screen app icon.
 void quickActions() {
+  final ApiProvider provider = ApiProvider();
   final QuickActions quickActions = QuickActions();
   quickActions.initialize((shortcutType) {
     bool newStatus;
@@ -17,7 +18,7 @@ void quickActions() {
         throw Exception('Invalid shortcutType: $shortcutType');
     }
 
-    ApiProvider.setStatus(newStatus).then((bool updatedStatus) {
+    provider.setStatus(newStatus).then((bool updatedStatus) {
       print("set new status to: $updatedStatus");
     });
   });

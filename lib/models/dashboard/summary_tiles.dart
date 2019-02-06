@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/api_provider.dart';
+import 'package:flutter_hole/models/app_state.dart';
 import 'package:flutter_hole/models/dashboard/friendly_exception.dart';
 import 'package:flutter_hole/models/dashboard/info_tile.dart';
 
@@ -14,9 +14,10 @@ class SummaryTiles extends StatefulWidget {
 class _SummaryTilesState extends State<SummaryTiles> {
   @override
   Widget build(BuildContext context) {
+    final appState = AppState.of(context);
     return FutureBuilder<Map<String, String>>(
       // TODO maybe use AppState, so that we can trigger rebuilds on new API fetches
-      future: ApiProvider.fetchSummary(),
+      future: appState.provider.fetchSummary(),
       builder: ((BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           List<Widget> infoTiles = [];

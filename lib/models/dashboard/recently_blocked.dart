@@ -70,13 +70,15 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
   double sliderValue = 1.0;
   String errorMessage;
 
+  static final ApiProvider provider = ApiProvider();
+
   Timer _startTimer({Duration timeout = defaultTimeout}) {
     return Timer.periodic(timeout, _onTimer);
   }
 
   void _onTimer(Timer timer) {
     print('onTimer ${timer.tick}');
-    ApiProvider.recentlyBlocked().then((String domain) {
+    provider.recentlyBlocked().then((String domain) {
       if (domain != lastDomain) {
         blockedDomains.update(domain, (int hits) {
           print('updating existing one with $hits hits');
