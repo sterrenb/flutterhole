@@ -17,9 +17,9 @@ const String apiPath = 'admin/api.php';
 const Duration timeout = Duration(seconds: 2);
 
 /// A convenient wrapper for the Pi-hole® PHP API.
-class Api {
+class ApiProvider {
   /// Returns a bool depending on the Pi-hole® status string
-  static statusToBool(dynamic json) {
+  static bool statusToBool(dynamic json) {
     switch (json['status']) {
       case 'enabled':
         return true;
@@ -31,9 +31,7 @@ class Api {
   }
 
   /// Returns the domain based on the [PreferenceHostname] and [PreferencePort].
-  static _domain() async {
-    final String hostname = await PreferenceHostname().get();
-    String port = await PreferencePort().get();
+  static String domain(String hostname, String port) {
     if (port == '80') {
       port = '';
     } else {
@@ -57,7 +55,11 @@ class Api {
       String _token = await PreferenceToken().get();
       params = params + '&auth=$_token';
     }
-    String _uriString = (await _domain()) + '?' + params;
+
+    final String hostname = await PreferenceHostname().get();
+    String port = await PreferencePort().get();
+
+    String _uriString = (domain(hostname, port)) + '?' + params;
     final _result = await http.get(_uriString).timeout(timeout,
         onTimeout: () =>
         throw Exception(
@@ -203,6 +205,6 @@ class Api {
           color: Colors.blue,
         ),
         recognizer: TapGestureRecognizer()
-          ..onTap = () => Api.launchURL(urlString));
+          ..onTap = () => ApiProvider.launchURL(urlString));
   }
 }

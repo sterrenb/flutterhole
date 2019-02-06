@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/api.dart';
+import 'package:flutter_hole/models/api_provider.dart';
 import 'package:flutter_hole/models/dashboard/friendly_exception.dart';
 
 /// The default timeout [Duration] for retrieving the most recently blocked domain.
@@ -76,7 +76,7 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
 
   void _onTimer(Timer timer) {
     print('onTimer ${timer.tick}');
-    Api.recentlyBlocked().then((String domain) {
+    ApiProvider.recentlyBlocked().then((String domain) {
       if (domain != lastDomain) {
         blockedDomains.update(domain, (int hits) {
           print('updating existing one with $hits hits');

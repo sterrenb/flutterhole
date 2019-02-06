@@ -1,4 +1,4 @@
-import 'package:flutter_hole/models/api.dart';
+import 'package:flutter_hole/models/api_provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 /// Adds quick actions to the home screen app icon.
@@ -17,7 +17,7 @@ void quickActions() {
         throw Exception('Invalid shortcutType: $shortcutType');
     }
 
-    Api.setStatus(newStatus).then((bool updatedStatus) {
+    ApiProvider.setStatus(newStatus).then((bool updatedStatus) {
       print("set new status to: $updatedStatus");
     });
   });

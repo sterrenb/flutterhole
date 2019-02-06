@@ -10,6 +10,6 @@ FlutterHole is a third party Android application for interacting with your Pi-Ho
 - Summary overview - view the amount of queries sent and blocked.
 
 ##   Limitations
-This application interacts with the PHP API which has few features. For example, Recently Blocked has to frequently ping your API to imitate a stream of domains being blocked.
+This application interacts with the [PHP API](https://discourse.pi-hole.net/t/pi-hole-api/1863) which has few features. For example, the Recently Blocked screen has to frequently ping the API to imitate a stream of domains being blocked.
 
 A [new official API](https://github.com/pi-hole/api) is being built in Rust, but has no official documentation or release yet. Once the new API documentation becomes available, new cool features can be implemented so that FlutterHole is equal in capability to the dashboard.

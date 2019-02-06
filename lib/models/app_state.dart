@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/api.dart';
+import 'package:flutter_hole/models/api_provider.dart';
 
 /// A global state manager, used for sharing state within different Widgets with [child] as its root.
 class AppState extends StatefulWidget {
@@ -49,7 +49,7 @@ class _AppStateState extends State<AppState> {
 
   Future<bool> updateAuthorized() async {
     try {
-      bool isAuthorized = await Api.isAuthorized();
+      bool isAuthorized = await ApiProvider.isAuthorized();
       _setAuthorized(isAuthorized);
       return isAuthorized;
     } catch (e) {
@@ -91,7 +91,7 @@ class _AppStateState extends State<AppState> {
   void updateStatus() async {
     setLoading();
     try {
-      _setStatus(await Api.fetchEnabled());
+      _setStatus(await ApiProvider.fetchEnabled());
     } catch (e) {
       _setConnected(false);
     }
@@ -100,7 +100,7 @@ class _AppStateState extends State<AppState> {
   void toggleStatus() async {
     setLoading();
     try {
-      _setStatus(await Api.setStatus(!_enabled));
+      _setStatus(await ApiProvider.setStatus(!_enabled));
     } catch (e) {
       _setConnected(false);
       throw Exception('Failed to toggle status - is your API token correct?');
