@@ -8,6 +8,7 @@ import 'package:flutter_hole/models/preferences/preference_port.dart';
 import 'package:flutter_hole/models/preferences/preference_token.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The relative path to the Pi-hole® API
@@ -18,6 +19,14 @@ const Duration timeout = Duration(seconds: 2);
 
 /// A convenient wrapper for the Pi-hole® PHP API.
 class ApiProvider {
+  Client client;
+
+  ApiProvider({this.client}) {
+    if (this.client == null) {
+      this.client = Client();
+    }
+  }
+
   /// Returns a bool depending on the Pi-hole® status string
   static bool statusToBool(dynamic json) {
     switch (json['status']) {
@@ -84,8 +93,8 @@ class ApiProvider {
     final String hostname = await PreferenceHostname().get();
     String port = await PreferencePort().get();
 
-    String _uriString = (domain(hostname, port)) + '?' + params;
-    final _result = await http.get(_uriString).timeout(timeout,
+    String uriString = (domain(hostname, port)) + '?' + params;
+    final _result = await client.get(uriString).timeout(timeout,
         onTimeout: () =>
         throw Exception(
             'Request timed out after ${timeout.inSeconds
@@ -101,7 +110,7 @@ class ApiProvider {
     try {
       response = await fetch('status');
     } catch (e) {
-      print('fetchStatus: _fetch exception');
+      print('fetchEnabled: _fetch exception');
       rethrow;
     }
     if (response.statusCode == 200) {
@@ -123,15 +132,15 @@ class ApiProvider {
     try {
       response = await fetch(activity, authorization: true);
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Cannot connect to your Pi-hole');
-      return false;
+//      Fluttertoast.showToast(msg: 'Cannot connect to your Pi-hole');
+      rethrow;
     }
     if (response.statusCode == 200 && response.contentLength > 2) {
       final bool status = statusToBool(json.decode(response.body));
       return status;
     } else {
-      Fluttertoast.showToast(msg: 'Cannot $activity Pi-hole');
-      return false;
+//      Fluttertoast.showToast(msg: 'Cannot $activity Pi-hole');
+      throw Exception('Cannot $activity Pi-hole');
     }
   }
 
