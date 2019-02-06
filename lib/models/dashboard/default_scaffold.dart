@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/dashboard/default_drawer.dart';
 import 'package:flutter_hole/models/dashboard/status_title.dart';
-import 'package:flutter_hole/models/dashboard/toggle_button.dart';
+import 'package:flutter_hole/models/dashboard/toggle_status_button.dart';
 
-/// The default scaffold, using the [DefaultDrawer] and the [ToggleButton].
+/// The default scaffold, using the [DefaultDrawer] and the [ToggleStatusButton].
 class DefaultScaffold extends StatelessWidget {
   final String title;
   final Widget body;
@@ -17,7 +17,7 @@ class DefaultScaffold extends StatelessWidget {
         appBar: AppBar(
           title: StatusTitle(title: title),
           actions: <Widget>[
-            ToggleButton(),
+            ToggleStatusButton(),
           ],
         ),
         drawer: DefaultDrawer(),
