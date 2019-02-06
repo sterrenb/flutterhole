@@ -19,7 +19,7 @@ const Duration timeout = Duration(seconds: 2);
 /// A convenient wrapper for the Pi-hole® PHP API.
 class Api {
   /// Returns a bool depending on the Pi-hole® status string
-  static _statusToBool(dynamic json) {
+  static statusToBool(dynamic json) {
     switch (json['status']) {
       case 'enabled':
         return true;
@@ -78,7 +78,7 @@ class Api {
       rethrow;
     }
     if (response.statusCode == 200) {
-      final bool status = _statusToBool(json.decode(response.body));
+      final bool status = statusToBool(json.decode(response.body));
       return status;
     } else {
       throw Exception('Failed to fetch status');
@@ -96,14 +96,14 @@ class Api {
     try {
       response = await fetch(activity, authorization: true);
     } catch (e) {
-      Fluttertoast.instance.showToast(msg: 'Cannot connect to your Pi-hole');
+      Fluttertoast.showToast(msg: 'Cannot connect to your Pi-hole');
       return false;
     }
     if (response.statusCode == 200 && response.contentLength > 2) {
-      final bool status = _statusToBool(json.decode(response.body));
+      final bool status = statusToBool(json.decode(response.body));
       return status;
     } else {
-      Fluttertoast.instance.showToast(msg: 'Cannot $activity Pi-hole');
+      Fluttertoast.showToast(msg: 'Cannot $activity Pi-hole');
       return false;
     }
   }
@@ -188,10 +188,10 @@ class Api {
       if (await canLaunch(url)) {
         await launch(url);
       } else {
-        Fluttertoast.instance.showToast(msg: 'URL could not be launched');
+        Fluttertoast.showToast(msg: 'URL could not be launched');
       }
     } catch (e) {
-      Fluttertoast.instance.showToast(msg: 'URL could not be launched');
+      Fluttertoast.showToast(msg: 'URL could not be launched');
     }
   }
 

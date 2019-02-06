@@ -127,7 +127,7 @@ class SettingWidgetState extends State<SettingWidget> {
                 return onPrefTap(snapshot, context, controller);
               },
               onLongPress: () {
-                Fluttertoast.instance
+                Fluttertoast
                     .showToast(msg: widget.preference.description);
               },
             );

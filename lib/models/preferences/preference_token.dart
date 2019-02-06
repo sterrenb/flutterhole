@@ -29,7 +29,7 @@ class PreferenceToken extends Preference {
           String msg = isAuthorized
               ? 'Authorization succesful'
               : 'Authorizated failed';
-          Fluttertoast.instance.showToast(msg: msg);
+          Fluttertoast.showToast(msg: msg);
         });
       });
 }

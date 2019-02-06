@@ -5,10 +5,12 @@ import 'package:flutter_hole/quick_actions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
-  Brightness brightness;
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  brightness =
-  (prefs.getBool("isDark") ?? false) ? Brightness.dark : Brightness.light;
+  Brightness brightness = await getBrightness();
   quickActions();
   runApp(AppState(child: MyApp(), brightness: brightness));
+}
+
+Future<Brightness> getBrightness({String id = 'isDark'}) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return (prefs.getBool(id) ?? false) ? Brightness.dark : Brightness.light;
 }
