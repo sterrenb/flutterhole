@@ -60,9 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         SharedPreferences.getInstance().then((preferences) {
                           preferences.clear().then((didClear) {
                             if (didClear) {
-                              for (Preference preference in prefList) {
-                                preference.set(context);
-                              }
+                              Preference.clearAll();
                               Fluttertoast.showToast(msg: 'Factory reset');
                               AppState.of(context).updateStatus();
                               Navigator.pushReplacement(

@@ -18,14 +18,4 @@ class PreferenceIsDark extends PreferenceBool {
         DynamicTheme.of(context).setBrightness(
             value as bool ? Brightness.dark : Brightness.light);
       });
-
-//  @override
-//  Future<bool> set(BuildContext context, {String value}) {
-//    if (value == '') {
-//      value = defaultValue;
-//    }
-//    DynamicTheme.of(context)
-//        .setBrightness(value == 'true' ? Brightness.dark : Brightness.light);
-//    return Future.value(true);
-//  }
 }

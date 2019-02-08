@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hole/models/preferences/preference_hostname.dart';
+import 'package:flutter_hole/models/preferences/preference_is_dark.dart';
+import 'package:flutter_hole/models/preferences/preference_port.dart';
+import 'package:flutter_hole/models/preferences/preference_token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// a scaffold for managing a preference that is saved between sessions, using [SharedPreferences].
@@ -38,12 +42,20 @@ abstract class Preference {
   /// The default style for the help widget. This should be added to the global theme someday...
   static final TextStyle helpStyle = TextStyle(color: Colors.black87);
 
+  static Future<bool> clearAll() async {
+    await PreferenceHostname().set();
+    await PreferencePort().set();
+    await PreferenceIsDark().set();
+    await PreferenceToken().set();
+    return true;
+  }
+
   Future<dynamic> get() async {
-    String result = (await _preferences).get(id).toString();
+    String result = (await _preferences).get(id);
     return result;
   }
 
-  Future<bool> set(BuildContext context, {dynamic value}) async {
+  Future<bool> set({dynamic value}) async {
     if (value == null) {
       value = defaultValue;
     }
@@ -78,7 +90,7 @@ class PreferenceInt extends Preference {
   }
 
   @override
-  Future<bool> set(BuildContext context, {dynamic value}) async {
+  Future<bool> set({dynamic value}) async {
     int typedValue;
     if (value == null) {
       typedValue = defaultValue;
@@ -116,7 +128,7 @@ class PreferenceBool extends Preference {
   }
 
   @override
-  Future<bool> set(BuildContext context, {dynamic value}) async {
+  Future<bool> set({dynamic value}) async {
     bool typedValue = value;
     if (value == null) {
       typedValue = defaultValue;

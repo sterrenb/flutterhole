@@ -57,11 +57,11 @@ class SettingWidgetState extends State<SettingWidget> {
         },
       ),
       FlatButton(
-        child: Text('OK 2'),
+        child: Text('OK'),
         onPressed: () {
           if (preferenceForm.formKey.currentState.validate()) {
             widget.preference
-                .set(context, value: controller.value.text)
+                .set(value: controller.value.text)
                 .then((bool didSet) {
               if (didSet) {
                 setState(() {});
@@ -108,7 +108,7 @@ class SettingWidgetState extends State<SettingWidget> {
                 secondary: Icon(widget.preference.iconData),
                 onChanged: (bool value) {
                   widget.preference
-                      .set(context, value: value)
+                      .set(value: value)
                       .then((bool didSet) {
                     if (widget.preference.onSet != null) {
                       // Trigger rebuild with the newly edited controller.text

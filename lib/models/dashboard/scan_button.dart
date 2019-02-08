@@ -21,7 +21,6 @@ class ScanButton extends StatelessWidget {
       onPressed: () {
         Future<String> futureString = new QRCodeReader().scan();
         futureString.then((String result) {
-          print('result: $result');
           if (result != null) {
             controller.text = result;
           }
