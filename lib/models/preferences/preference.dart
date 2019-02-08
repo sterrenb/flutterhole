@@ -48,10 +48,8 @@ abstract class Preference {
       value = defaultValue;
     }
 
-    print('preference: set ${value.toString()}');
     final bool didSave =
     await (await _preferences).setString(id, value.toString());
-    print('set result: $didSave');
     return didSave;
   }
 }
@@ -127,7 +125,6 @@ class PreferenceBool extends Preference {
       typedValue = bool.fromEnvironment(value);
     }
 
-    print('prefBool: set $typedValue');
     final bool didSave = await (await _preferences).setBool(id, typedValue);
     return didSave;
   }

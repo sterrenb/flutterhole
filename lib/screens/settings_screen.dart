@@ -69,7 +69,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   context, MaterialPageRoute(
                                   builder: (context) => SettingsScreen()));
                             } else {
-                              print('no luck');
+                              Fluttertoast.showToast(
+                                  msg: 'Failed to factory reset');
                             }
                           });
                         });

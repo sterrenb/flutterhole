@@ -110,7 +110,6 @@ class ApiProvider {
     try {
       response = await fetch('status');
     } catch (e) {
-      print('fetchEnabled: _fetch exception');
       rethrow;
     }
     if (response.statusCode == 200) {
@@ -148,7 +147,6 @@ class ApiProvider {
     try {
       response = await fetch('topItems', authorization: true);
     } catch (e) {
-      print('isAuthorized: _fetch exception');
       rethrow;
     }
     if (response.statusCode == 200 && response.contentLength > 2) {
@@ -174,7 +172,6 @@ class ApiProvider {
     try {
       response = await fetch('summary');
     } catch (e) {
-      print('fetchSummary: _fetch exception');
       rethrow;
     }
 

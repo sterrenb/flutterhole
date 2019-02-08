@@ -78,10 +78,8 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
 
   void _onTimer(Timer timer) {
     provider.recentlyBlocked().then((String domain) {
-      print('looking at $domain');
       if (domain != lastDomain) {
         blockedDomains.update(domain, (int hits) {
-          print('updating existing one with $hits hits');
           return hits + 1;
         }, ifAbsent: () => 1);
         lastDomain = domain;
@@ -89,7 +87,6 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
       }
     }, onError: (e) {
       timer.cancel();
-      print('setting state with error: ${e.toString()}');
       setState(() {
         errorMessage = e.toString();
       });

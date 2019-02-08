@@ -18,9 +18,7 @@ void quickActions() {
         throw Exception('Invalid shortcutType: $shortcutType');
     }
 
-    provider.setStatus(newStatus).then((bool updatedStatus) {
-      print("set new status to: $updatedStatus");
-    });
+    provider.setStatus(newStatus);
   });
 
   quickActions.setShortcutItems(<ShortcutItem>[
