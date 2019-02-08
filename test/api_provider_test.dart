@@ -110,4 +110,20 @@ void main() {
           throwsException);
     });
   });
+  group('isAuthorized', () {
+    test('authorized', () async {
+      final MockClient client = MockClient((request) async {
+        return Response('valid', 200);
+      });
+      final bool response = await ApiProvider(client: client).isAuthorized();
+      expect(response, true);
+    });
+    test('not authorized', () async {
+      final MockClient client = MockClient((request) async {
+        return Response('[]', 403);
+      });
+      final bool response = await ApiProvider(client: client).isAuthorized();
+      expect(response, false);
+    });
+  });
 }

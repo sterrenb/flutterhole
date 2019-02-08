@@ -132,14 +132,12 @@ class ApiProvider {
     try {
       response = await fetch(activity, authorization: true);
     } catch (e) {
-//      Fluttertoast.showToast(msg: 'Cannot connect to your Pi-hole');
       rethrow;
     }
     if (response.statusCode == 200 && response.contentLength > 2) {
       final bool status = statusToBool(json.decode(response.body));
       return status;
     } else {
-//      Fluttertoast.showToast(msg: 'Cannot $activity Pi-hole');
       throw Exception('Cannot $activity Pi-hole');
     }
   }
