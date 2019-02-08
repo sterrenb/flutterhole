@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hole/models/api_provider.dart';
 import 'package:flutter_hole/models/dashboard/default_scaffold.dart';
 import 'package:package_info/package_info.dart';
 
@@ -8,6 +9,26 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
+  List<Widget> _aboutTiles(info) =>
+      [
+        ListTile(
+          title: Text('FlutterHole'),
+          subtitle: Text('v' + info.version + '+' + info.buildNumber),
+        ),
+        ListTile(
+          leading: Icon(Icons.code),
+          title: Text('View the source'),
+          onTap: () =>
+              ApiProvider.launchURL(
+                  'https://github.com/sterrenburg/flutterhole'),
+        ),
+        ListTile(
+          leading: Icon(Icons.star),
+          title: Text('Rate the app'),
+          onTap: () => print('yay rating'),
+        )
+      ];
+
   @override
   Widget build(BuildContext context) {
     return DefaultScaffold(
@@ -19,17 +40,9 @@ class _AboutScreenState extends State<AboutScreen> {
               if (snapshot.hasData) {
                 PackageInfo info = snapshot.data;
                 return Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text('FlutterHole'),
-                      subtitle:
-                          Text('v' + info.version + '+' + info.buildNumber),
-                    ),
-                    ListTile(
-                      title: Text('Rate the app'),
-                      onTap: () => print('yay rating'),
-                    )
-                  ],
+                  children: ListTile.divideTiles(
+                      context: context, tiles: _aboutTiles(info))
+                      .toList(),
                 );
               }
 

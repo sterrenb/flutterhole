@@ -77,7 +77,6 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
   }
 
   void _onTimer(Timer timer) {
-    print('onTimer ${timer.tick}');
     provider.recentlyBlocked().then((String domain) {
       if (domain != lastDomain) {
         blockedDomains.update(domain, (int hits) {
