@@ -29,7 +29,6 @@ dependencies:
   package_info: ^0.4.0
   dynamic_theme: ^1.0.0
   mockito: ^4.0.0
-  coveralls: *
 
 dev_dependencies:
   flutter_test:
