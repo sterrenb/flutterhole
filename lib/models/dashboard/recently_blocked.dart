@@ -78,6 +78,7 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
 
   void _onTimer(Timer timer) {
     provider.recentlyBlocked().then((String domain) {
+      print('looking at $domain');
       if (domain != lastDomain) {
         blockedDomains.update(domain, (int hits) {
           print('updating existing one with $hits hits');
@@ -164,7 +165,6 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
                     });
                   },
                   onChangeEnd: (double newValue) {
-                    print('final value: ${_sliderToInt(newValue)}');
                     timer.cancel();
                     setState(() {
                       timer = _startTimer(
@@ -174,11 +174,17 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
                   },
                 ),
               ),
+              FlatButton(child: Text('Reset'), onPressed: () {
+                setState(() {
+                  blockedDomains = Map();
+                  lastDomain = '';
+                });
+              })
             ],
           ),
         ),
         body,
-//        LinearProgressIndicator(),
+        LinearProgressIndicator(),
       ],
     );
   }
