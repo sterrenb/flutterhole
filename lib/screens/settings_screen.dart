@@ -22,9 +22,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     PreferenceToken()
   ];
   final List<Widget> piSettings = [
-    SettingWidget(preference: PreferenceIsDark(), isBool: true),
+    SettingWidget(preference: PreferenceIsDark(), type: bool),
     SettingWidget(preference: PreferenceHostname()),
-    SettingWidget(preference: PreferencePort()),
+    SettingWidget(preference: PreferencePort(), type: int),
     SettingWidget(preference: PreferenceToken(), addScanButton: true),
   ];
 

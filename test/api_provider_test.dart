@@ -13,7 +13,7 @@ void main() {
 
   const Map<String, dynamic> kTestValues = <String, dynamic>{
     'flutter.hostname': 'hello world',
-    'flutter.port': '80',
+    'flutter.port': 80,
   };
 
   final List<MethodCall> log = <MethodCall>[];
@@ -44,18 +44,18 @@ void main() {
 
   group('domain', () {
     test('default hostname', () {
-      expect(ApiProvider.domain('pi.hole', '80'), 'http://pi.hole/' + apiPath);
+      expect(ApiProvider.domain('pi.hole', 80), 'http://pi.hole/' + apiPath);
     });
     test('default address', () {
       expect(
-          ApiProvider.domain('10.0.1.1', '80'), 'http://10.0.1.1/' + apiPath);
+          ApiProvider.domain('10.0.1.1', 80), 'http://10.0.1.1/' + apiPath);
     });
     test('specified port', () {
-      expect(ApiProvider.domain('pi.hole', '5000'),
+      expect(ApiProvider.domain('pi.hole', 5000),
           'http://pi.hole:5000/' + apiPath);
     });
     test('specified host', () {
-      expect(ApiProvider.domain('my.hole', '80'), 'http://my.hole/' + apiPath);
+      expect(ApiProvider.domain('my.hole', 80), 'http://my.hole/' + apiPath);
     });
   });
 

@@ -1,4 +1,3 @@
-import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hole/models/dashboard/scan_button.dart';
 import 'package:flutter_hole/models/preferences/preference.dart';
@@ -8,12 +7,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 class SettingWidget extends StatefulWidget {
   final Preference preference;
   final bool addScanButton;
-  final bool isBool;
+  final Type type;
 
   const SettingWidget({Key key,
     @required this.preference,
-    this.addScanButton = false,
-    this.isBool = false})
+    this.type = String,
+    this.addScanButton = false})
       : super(key: key);
 
   @override
@@ -36,21 +35,20 @@ class SettingWidgetState extends State<SettingWidget> {
 
   Future onPrefTap(AsyncSnapshot<dynamic> snapshot, BuildContext context,
       TextEditingController controller) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          final preferenceForm = PreferenceForm(
-            formKey: _formKey,
-            controller: controller,
-          );
           return alertPrefDialog(
-              preferenceForm, context, controller, widget.preference.onSet);
+              PreferenceForm(
+                  formKey: formKey, controller: controller, type: widget.type),
+              context,
+              controller);
         });
   }
 
   AlertDialog alertPrefDialog(PreferenceForm preferenceForm,
-      BuildContext context, TextEditingController controller, Function onSet) {
+      BuildContext context, TextEditingController controller) {
     List<Widget> actions = [
       FlatButton(
         child: Text('Cancel'),
@@ -59,15 +57,24 @@ class SettingWidgetState extends State<SettingWidget> {
         },
       ),
       FlatButton(
-        child: Text('OK'),
+        child: Text('OK 2'),
         onPressed: () {
           if (preferenceForm.formKey.currentState.validate()) {
-            widget.preference.set(context, value: controller.text).then((
-                bool didSet) {
-              if (onSet != null) {
-                // Trigger rebuild with the newly edited controller.text
+            widget.preference
+                .set(context, value: controller.value.text)
+                .then((bool didSet) {
+              if (didSet) {
                 setState(() {});
-                onSet(didSet, context);
+                if (widget.preference.onSet != null) {
+                  // Trigger rebuild with the newly edited controller.text
+
+                  widget.preference.onSet(
+                      context: context,
+                      didSet: didSet,
+                      value: controller.value.text);
+                }
+              } else {
+                print('non didSet...');
               }
             });
             Navigator.pop(context);
@@ -93,20 +100,32 @@ class SettingWidgetState extends State<SettingWidget> {
         future: widget.preference.get(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
-            if (widget.isBool && widget.preference.id == 'isDark') {
+            // TODO this looks terrible
+            if (widget.type == bool) {
               return SwitchListTile(
                 title: Text(widget.preference.title),
-                value: snapshot.data == 'true',
+                value: snapshot.data,
                 secondary: Icon(widget.preference.iconData),
                 onChanged: (bool value) {
-                  Brightness brightness =
-                  value ? Brightness.dark : Brightness.light;
-                  DynamicTheme.of(context).setBrightness(brightness);
-                  setState(() {});
+                  widget.preference
+                      .set(context, value: value)
+                      .then((bool didSet) {
+                    if (widget.preference.onSet != null) {
+                      // Trigger rebuild with the newly edited controller.text
+                      setState(() {});
+                      widget.preference.onSet(
+                          context: context, didSet: didSet, value: value);
+                    }
+                  });
+//                  Brightness brightness =
+//                      value ? Brightness.dark : Brightness.light;
+//                  DynamicTheme.of(context).setBrightness(brightness);
+//                  setState(() {});
                 },
               );
             }
-            final controller = TextEditingController(text: snapshot.data);
+            final controller =
+            TextEditingController(text: snapshot.data.toString());
             return ListTile(
               leading: Icon(widget.preference.iconData),
               title: Row(
@@ -128,8 +147,7 @@ class SettingWidgetState extends State<SettingWidget> {
                 return onPrefTap(snapshot, context, controller);
               },
               onLongPress: () {
-                Fluttertoast
-                    .showToast(msg: widget.preference.description);
+                Fluttertoast.showToast(msg: widget.preference.description);
               },
             );
           }

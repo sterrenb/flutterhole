@@ -3,8 +3,8 @@ import 'package:flutter_hole/models/app_state.dart';
 import 'package:flutter_hole/models/preferences/preference.dart';
 
 /// A [Preference] for storing the Pi-hole® port.
-class PreferencePort extends Preference {
-  final String defaultValue = '80';
+class PreferencePort extends PreferenceInt {
+  final int defaultValue = 80;
 
   PreferencePort()
       : super(
@@ -17,7 +17,7 @@ class PreferencePort extends Preference {
               text:
               'The port of the Pi-hole® web browser. Defaults to 80 (http) or 443 (https/SSL).')),
       iconData: Icons.adjust,
-      onSet: (bool didSet, BuildContext context) {
+      onSet: ({BuildContext context, bool didSet, dynamic value}) {
         AppState.of(context).updateStatus();
         AppState.of(context).updateAuthorized();
       });

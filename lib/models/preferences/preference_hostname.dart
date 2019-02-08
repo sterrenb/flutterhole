@@ -28,7 +28,7 @@ class PreferenceHostname extends Preference {
             ]),
       ),
       iconData: Icons.home,
-      onSet: (bool didSet, BuildContext context) {
+      onSet: ({BuildContext context, bool didSet, dynamic value}) {
         AppState.of(context).updateStatus();
         AppState.of(context).updateAuthorized();
       });

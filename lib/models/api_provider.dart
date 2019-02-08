@@ -40,13 +40,14 @@ class ApiProvider {
   }
 
   /// Returns the domain based on the [PreferenceHostname] and [PreferencePort].
-  static String domain(String hostname, String port) {
-    if (port == '80') {
-      port = '';
+  static String domain(String hostname, int port) {
+    String portString;
+    if (port == 80) {
+      portString = '';
     } else {
-      port = ':' + port;
+      portString = ':' + port.toString();
     }
-    return 'http://' + hostname + port + '/' + apiPath;
+    return 'http://' + hostname + portString + '/' + apiPath;
   }
 
   /// Launches the [url] in the default browser.
@@ -91,8 +92,7 @@ class ApiProvider {
     }
 
     final String hostname = await PreferenceHostname().get();
-    String port = await PreferencePort().get();
-
+    int port = await PreferencePort().get();
     String uriString = (domain(hostname, port)) + '?' + params;
     final _result = await client.get(uriString).timeout(timeout,
         onTimeout: () =>
