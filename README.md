@@ -1,6 +1,8 @@
 # FlutterHole
 
-[![Build Status](https://api.travis-ci.com/sterrenburg/flutterhole.svg?branch=master)](https://api.travis-ci.com/sterrenburg/flutterhole)
+[![Build Status](https://travis-ci.org/sterrenburg/flutterhole.svg?branch=master)](https://travis-ci.org/sterrenburg/flutterhole)
+
+[![Coverage Status](https://coveralls.io/repos/github/sterrenburg/flutterhole/badge.svg?branch=master)](https://coveralls.io/github/sterrenburg/flutterhole?branch=master)
 
 FlutterHole is a third party Android application for interacting with your Pi-Hole® server.
 
