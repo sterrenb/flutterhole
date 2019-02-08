@@ -17,7 +17,10 @@ abstract class Preference {
 
   // The callback for the save action.
   final Function(bool, BuildContext) onSet;
+
   final IconData iconData;
+
+  Future<SharedPreferences> preferences;
 
   Preference({
     @required this.id,
@@ -26,33 +29,32 @@ abstract class Preference {
     @required this.help,
     @required this.iconData,
     this.onSet,
-  });
+  }) {
+    this.preferences = SharedPreferences.getInstance();
+  }
 
   /// The default style for the help widget. This should be added to the global theme someday...
   static final TextStyle helpStyle = TextStyle(color: Colors.black87);
 
-  static final Future<SharedPreferences> _sharedPreferences =
-  SharedPreferences.getInstance();
-
   Future<bool> set(String value, BuildContext context) async {
     print('setting sharedpref: $id => $value');
-    final bool didSave = await (await _sharedPreferences).setString(id, value);
+    final bool didSave = await (await preferences).setString(id, value);
     return didSave;
   }
 
   Future<bool> setBool(bool value, BuildContext context) async {
     print('setting sharedpref: $id => $value');
-    final bool didSave = await (await _sharedPreferences).setBool(id, value);
+    final bool didSave = await (await preferences).setBool(id, value);
     return didSave;
   }
 
   Future<String> get() async {
-    String result = (await _sharedPreferences).get(id).toString();
+    String result = (await preferences).get(id).toString();
     return result;
   }
 
   Future<bool> getBool() async {
-    bool result = (await _sharedPreferences).getBool(id);
+    bool result = (await preferences).getBool(id);
     return result;
   }
 }

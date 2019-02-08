@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hole/models/api_provider.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -18,7 +17,6 @@ void main() {
   };
 
   final List<MethodCall> log = <MethodCall>[];
-  SharedPreferences preferences;
 
   setUp(() async {
     channel.setMockMethodCallHandler((MethodCall methodCall) async {
@@ -28,12 +26,7 @@ void main() {
       }
       return null;
     });
-    preferences = await SharedPreferences.getInstance();
     log.clear();
-  });
-
-  tearDown(() {
-    preferences.clear();
   });
 
   group('statusToBool', () {
@@ -66,6 +59,23 @@ void main() {
     });
   });
 
+  group('fetch', () {
+    test('default', () async {
+      final MockClient client = MockClient((request) async {
+        return Response('test', 200);
+      });
+      final response = await ApiProvider(client: client).fetch('params');
+      expect(response.body, 'test');
+    });
+    test('timeout', () async {
+      final MockClient client = MockClient((request) async {
+        await Future.delayed(Duration(seconds: 10), () {});
+        return Response('test', 200);
+      });
+      expect(ApiProvider(client: client).fetch('params'), throwsException);
+    });
+  });
+
   group('fetchEnabled', () {
     test('true', () async {
       final MockClient client = MockClient((request) async {
@@ -83,35 +93,21 @@ void main() {
     });
   });
 
-  group('fetch', () {
-    test('default', () async {
+  group('setStatus', () {
+    test('true valid auth', () async {
       final MockClient client = MockClient((request) async {
-        return Response('test', 200);
+        return Response(json.encode({'status': 'disabled'}), 200);
       });
-      final response = await ApiProvider(client: client).fetch('params');
-      expect(response.body, 'test');
+      final bool response = await ApiProvider(client: client).setStatus(true);
+      expect(response, false);
     });
-    test('timeout', () async {
+    test('true no auth', () async {
       final MockClient client = MockClient((request) async {
-        await Future.delayed(Duration(seconds: 10), () {});
-        return Response('test', 200);
+        return Response('[]', 403);
       });
-      expect(ApiProvider(client: client).fetch('params'), throwsException);
+      expect(
+              () => ApiProvider(client: client).setStatus(true),
+          throwsException);
     });
-
-//    test('setStatus true valid auth', () async {
-//      final MockClient client = MockClient((request) async {
-//        return Response(json.encode({'status': 'disabled'}), 200);
-//      });
-//      final bool response = await ApiProvider(client: client).setStatus(true);
-//      expect(response, false);
-//    });
-//    test('setStatus true no auth', () async {
-//      final MockClient client = MockClient((request) async {
-//        return Response('[]', 403);
-//      });
-//      final bool response = await ApiProvider(client: client).setStatus(true);
-//      expect(response, false);
-//    });
   });
 }
