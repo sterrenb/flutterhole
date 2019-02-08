@@ -5,11 +5,13 @@ import 'package:flutter_hole/models/preferences/preference.dart';
 
 /// A [Preference] for storing the Pi-hole® hostname.
 class PreferenceHostname extends Preference {
+  final String defaultValue = 'pi.hole';
+
   PreferenceHostname()
       : super(
       id: 'hostname',
-            title: 'Hostname',
-            description: 'The hostname or IP address of your Pi-hole',
+      title: 'Hostname',
+      description: 'The hostname or IP address of your Pi-hole',
       help: RichText(
         text: TextSpan(
             text:

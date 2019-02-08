@@ -33,28 +33,21 @@ abstract class Preference {
     this.preferences = SharedPreferences.getInstance();
   }
 
+  final defaultValue = '';
+
   /// The default style for the help widget. This should be added to the global theme someday...
   static final TextStyle helpStyle = TextStyle(color: Colors.black87);
-
-  Future<bool> set(String value, BuildContext context) async {
-    print('setting sharedpref: $id => $value');
-    final bool didSave = await (await preferences).setString(id, value);
-    return didSave;
-  }
-
-  Future<bool> setBool(bool value, BuildContext context) async {
-    print('setting sharedpref: $id => $value');
-    final bool didSave = await (await preferences).setBool(id, value);
-    return didSave;
-  }
 
   Future<String> get() async {
     String result = (await preferences).get(id).toString();
     return result;
   }
 
-  Future<bool> getBool() async {
-    bool result = (await preferences).getBool(id);
-    return result;
+  Future<bool> set(BuildContext context, {String value}) async {
+    if (value == null) {
+      value = defaultValue;
+    }
+    final bool didSave = await (await preferences).setString(id, value);
+    return didSave;
   }
 }

@@ -95,6 +95,7 @@ class _AppStateState extends State<AppState> {
     try {
       _setStatus(await provider.fetchEnabled());
     } catch (e) {
+      print('failed to setStatus');
       _setConnected(false);
     }
   }

@@ -11,6 +11,7 @@ class StatusIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = AppState.of(context);
 
+    print('connected: ${appState.connected}');
     switch (appState.connected) {
       case true:
         if (!appState.loading)

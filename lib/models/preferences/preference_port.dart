@@ -4,10 +4,12 @@ import 'package:flutter_hole/models/preferences/preference.dart';
 
 /// A [Preference] for storing the Pi-hole® port.
 class PreferencePort extends Preference {
+  final String defaultValue = '80';
+
   PreferencePort()
       : super(
       id: 'port',
-            title: 'Port',
+      title: 'Port',
       description: 'The port of your Pi-hole® admin dashboard',
       help: RichText(
           text: TextSpan(

@@ -62,7 +62,8 @@ class SettingWidgetState extends State<SettingWidget> {
         child: Text('OK'),
         onPressed: () {
           if (preferenceForm.formKey.currentState.validate()) {
-            widget.preference.set(controller.text, context).then((bool didSet) {
+            widget.preference.set(context, value: controller.text).then((
+                bool didSet) {
               if (onSet != null) {
                 // Trigger rebuild with the newly edited controller.text
                 setState(() {});
