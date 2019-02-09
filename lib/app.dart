@@ -27,6 +27,7 @@ class MyAppState extends State<MyApp> {
         return MaterialApp(
           title: title,
           theme: theme,
+          debugShowCheckedModeBanner: false,
           home: SettingsScreen(),
         );
       },
