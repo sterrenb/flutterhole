@@ -1,0 +1,2 @@
+json_key_file("secret.json")
+package_name("flutterhole")
