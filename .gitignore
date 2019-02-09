@@ -284,3 +284,8 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/git,osx,swift,linux,windows,android,flutter
+
+# Custom
+android/app/src/main/res/
+android/key.properties
+secret.json
