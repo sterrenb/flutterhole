@@ -10,6 +10,8 @@
 #     https://docs.fastlane.tools/plugins/available-plugins
 #
 
+setup_travis
+
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
@@ -19,6 +21,16 @@ platform :android do
   desc "Runs all the tests"
   lane :test do
     gradle(task: "test")
+  end
+
+  lane :internal do
+    gradle(
+      task: 'clean assembleRelease'
+    )
+    supply(
+      track: 'internal',
+      apk: lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH].to_s
+    )
   end
 
   desc "Submit a new Beta Build to Crashlytics Beta"
