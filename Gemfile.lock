@@ -135,7 +135,7 @@ GEM
     uber (0.1.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.5)
+    unf_ext (0.0.7.5-x64-mingw32)
     unicode-display_width (1.4.1)
     word_wrap (1.0.0)
     xcodeproj (1.8.0)
@@ -150,7 +150,7 @@ GEM
       xcpretty (~> 0.2, >= 0.0.7)
 
 PLATFORMS
-  ruby
+  x64-mingw32
 
 DEPENDENCIES
   fastlane
