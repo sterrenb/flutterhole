@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/api_provider.dart';
-import 'package:flutter_hole/models/dashboard/friendly_exception.dart';
+import 'package:sterrenburg.github.flutterhole/models/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/models/dashboard/friendly_exception.dart';
 
 /// The default timeout [Duration] for retrieving the most recently blocked domain.
 const Duration defaultTimeout = Duration(seconds: 1);

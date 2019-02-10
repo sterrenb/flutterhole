@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/dashboard/status_icon.dart';
+import 'package:sterrenburg.github.flutterhole/models/dashboard/status_icon.dart';
 
 /// A widget creating a [Row] of a [StatusIcon] and [Text] with a [title].
 class StatusTitle extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/api_provider.dart';
-import 'package:flutter_hole/models/dashboard/default_scaffold.dart';
+import 'package:sterrenburg.github.flutterhole/models/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/models/dashboard/default_scaffold.dart';
 import 'package:package_info/package_info.dart';
 
 class AboutScreen extends StatefulWidget {

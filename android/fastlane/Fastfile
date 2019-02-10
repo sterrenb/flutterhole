@@ -24,12 +24,15 @@ platform :android do
   end
 
   lane :internal do
+    android_set_version_code(
+      gradle_file: 'app/build.gradle'
+    )
     gradle(
       task: 'clean assembleRelease'
     )
     supply(
       track: 'internal',
-      apk: lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH].to_s
+      apk: '../build/app/outputs/apk/release/app-release.apk'
     )
   end
 

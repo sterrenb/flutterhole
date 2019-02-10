@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_hole/models/preferences/preference.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference.dart';
 
 /// A form that allows users to edit a [Preference].
 class PreferenceForm extends StatefulWidget {

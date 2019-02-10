@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/app_state.dart';
-import 'package:flutter_hole/models/dashboard/default_scaffold.dart';
-import 'package:flutter_hole/models/preferences/preference.dart';
-import 'package:flutter_hole/models/preferences/preference_hostname.dart';
-import 'package:flutter_hole/models/preferences/preference_is_dark.dart';
-import 'package:flutter_hole/models/preferences/preference_port.dart';
-import 'package:flutter_hole/models/preferences/preference_token.dart';
-import 'package:flutter_hole/models/preferences/setting_widget.dart';
+import 'package:sterrenburg.github.flutterhole/models/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/models/dashboard/default_scaffold.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_hostname.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_is_dark.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_port.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_token.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/setting_widget.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

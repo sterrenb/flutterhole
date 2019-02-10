@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/dashboard/scan_button.dart';
-import 'package:flutter_hole/models/preferences/preference.dart';
-import 'package:flutter_hole/models/preferences/preference_form.dart';
+import 'package:sterrenburg.github.flutterhole/models/dashboard/scan_button.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_form.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class SettingWidget extends StatefulWidget {

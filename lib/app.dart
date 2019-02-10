@@ -1,6 +1,6 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/screens/settings_screen.dart';
+import 'package:sterrenburg.github.flutterhole/screens/settings_screen.dart';
 
 class MyApp extends StatefulWidget {
   @override

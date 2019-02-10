@@ -1,4 +1,4 @@
-import 'package:flutter_hole/models/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/models/api_provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 /// Adds quick actions to the home screen app icon.

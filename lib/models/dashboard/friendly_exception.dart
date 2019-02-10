@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/screens/settings_screen.dart';
+import 'package:sterrenburg.github.flutterhole/screens/settings_screen.dart';
 
 class FriendlyException extends StatelessWidget {
   final String message;

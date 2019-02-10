@@ -289,4 +289,5 @@ $RECYCLE.BIN/
 android/app/src/main/res/
 android/key.properties
 android/fastlame/report.xml
+.idea/modules.xml
 secret.json

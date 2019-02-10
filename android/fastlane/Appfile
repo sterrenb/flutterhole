@@ -1,2 +1,2 @@
 json_key_file("secret.json")
-package_name("flutterhole")
+package_name("sterrenburg.github.flutterhole")

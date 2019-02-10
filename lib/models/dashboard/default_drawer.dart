@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/dashboard/status_title.dart';
-import 'package:flutter_hole/screens/about_screen.dart';
-import 'package:flutter_hole/screens/home_screen.dart';
-import 'package:flutter_hole/screens/recently_blocked_screen.dart';
-import 'package:flutter_hole/screens/settings_screen.dart';
+import 'package:sterrenburg.github.flutterhole/models/dashboard/status_title.dart';
+import 'package:sterrenburg.github.flutterhole/screens/about_screen.dart';
+import 'package:sterrenburg.github.flutterhole/screens/home_screen.dart';
+import 'package:sterrenburg.github.flutterhole/screens/recently_blocked_screen.dart';
+import 'package:sterrenburg.github.flutterhole/screens/settings_screen.dart';
 
 /// The menu entry widget in a [DefaultDrawer].
 class DrawerTile extends StatelessWidget {

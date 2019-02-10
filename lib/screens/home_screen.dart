@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/dashboard/default_scaffold.dart';
-import 'package:flutter_hole/models/dashboard/summary_tiles.dart';
+import 'package:sterrenburg.github.flutterhole/models/dashboard/default_scaffold.dart';
+import 'package:sterrenburg.github.flutterhole/models/dashboard/summary_tiles.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

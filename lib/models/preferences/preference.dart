@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/preferences/preference_hostname.dart';
-import 'package:flutter_hole/models/preferences/preference_is_dark.dart';
-import 'package:flutter_hole/models/preferences/preference_port.dart';
-import 'package:flutter_hole/models/preferences/preference_token.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_hostname.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_is_dark.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_port.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// a scaffold for managing a preference that is saved between sessions, using [SharedPreferences].

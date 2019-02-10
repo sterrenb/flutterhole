@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/models/app_state.dart';
 
 /// A button that allows users to enable or disable the Pi-hole.
 class ToggleStatusButton extends StatelessWidget {

@@ -3,9 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hole/models/preferences/preference_hostname.dart';
-import 'package:flutter_hole/models/preferences/preference_port.dart';
-import 'package:flutter_hole/models/preferences/preference_token.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_hostname.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_port.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_token.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
