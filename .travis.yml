@@ -1,6 +1,8 @@
 os:
 - linux
 sudo: false
+install:
+- bundle install
 addons:
   apt:
     # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
@@ -16,6 +18,9 @@ script:
 - ./flutter/bin/flutter test --coverage
 after_success:
 - coveralls-lcov coverage/lcov.info
+- flutter packages get
+- flutter packages pub run flutter_launcher_icons:main
+- flutter build apk --release
 - cd android
 - fastlane internal
 cache:
