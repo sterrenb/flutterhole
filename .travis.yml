@@ -2,6 +2,7 @@ os:
 - linux
 sudo: false
 install:
+- gem install bundler
 - bundle install
 addons:
   apt:
