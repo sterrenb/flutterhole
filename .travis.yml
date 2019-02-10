@@ -16,6 +16,7 @@ script:
 - ./flutter/bin/flutter test --coverage
 after_success:
 - coveralls-lcov coverage/lcov.info
+- cd android
 - fastlane internal
 cache:
   directories:
