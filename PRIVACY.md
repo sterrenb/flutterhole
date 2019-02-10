@@ -8,6 +8,13 @@ If you choose to use my Service, then you agree to the collection and use of inf
 
 The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which is accessible at FlutterHole unless otherwise defined in this Privacy Policy.
 
+**Permissions**
+
+This application requests permissions for the following reasons:
+
+* Camera: can be used to scan the QR code for your API token;
+* Internet: for obtaining data from your Pi-hole.
+
 **Information Collection and Use**
 
 For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information. The information that I request will be retained on your device and is not collected by me in any way.
