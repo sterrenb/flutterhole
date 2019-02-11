@@ -46,7 +46,6 @@ class _PreferenceFormState extends State<PreferenceForm> {
       inputFormatters: <TextInputFormatter>[
         WhitelistingTextInputFormatter.digitsOnly
       ],
-      decoration: InputDecoration(hintText: 'Hint text here'),
       validator: (value) {
         if (value.isEmpty) {
           return 'Please enter a number';
