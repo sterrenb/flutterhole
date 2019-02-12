@@ -3,12 +3,12 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_hostname.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_port.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_token.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_hostname.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_port.dart';
+import 'package:sterrenburg.github.flutterhole/models/preferences/preference_token.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The relative path to the Pi-hole® API
@@ -94,6 +94,8 @@ class ApiProvider {
     final String hostname = await PreferenceHostname().get();
     int port = await PreferencePort().get();
     String uriString = (domain(hostname, port)) + '?' + params;
+    print('fetch: $uriString');
+
     final _result = await client.get(uriString).timeout(timeout,
         onTimeout: () =>
         throw Exception(
@@ -122,14 +124,21 @@ class ApiProvider {
 
   /// Sets the status of the Pi-hole® to 'enabled' or 'disabled' based on [newStatus].
   ///
+  /// Optionally, specify a duration for the action.
+  ///
   /// Returns the new status after performing the request.
   ///
   /// Shows a toast when any request fails.
-  Future<bool> setStatus(bool newStatus) async {
+  Future<bool> setStatus(bool newStatus, {Duration duration}) async {
     final String activity = newStatus ? 'enable' : 'disable';
+    String uriString = activity;
+    if (!newStatus && duration != null) {
+      uriString = activity + '=' + duration.inSeconds.toString();
+    }
+
     http.Response response;
     try {
-      response = await fetch(activity, authorization: true);
+      response = await fetch(uriString, authorization: true);
     } catch (e) {
       rethrow;
     }

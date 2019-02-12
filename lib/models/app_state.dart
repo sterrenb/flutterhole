@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sterrenburg.github.flutterhole/models/api_provider.dart';
 
@@ -13,7 +15,7 @@ class AppState extends StatefulWidget {
 
   static _AppStateState of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_InheritedState)
-            as _InheritedState)
+    as _InheritedState)
         .data;
   }
 }
@@ -23,6 +25,7 @@ class _AppStateState extends State<AppState> {
   bool _connected;
   bool _authorized;
   bool _loading;
+  int _sleeping;
   ApiProvider provider;
 
   // only expose a getter to prevent bad usage
@@ -34,6 +37,8 @@ class _AppStateState extends State<AppState> {
 
   bool get loading => _loading;
 
+  int get sleeping => _sleeping;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +47,7 @@ class _AppStateState extends State<AppState> {
       _connected = false;
       _authorized = false;
       _loading = true;
+      _sleeping = 0;
       provider = ApiProvider();
     });
 
@@ -81,7 +87,42 @@ class _AppStateState extends State<AppState> {
     });
   }
 
+  Timer _startTimer() {
+    return Timer.periodic(Duration(seconds: 1), _onTimer);
+  }
+
+  void _onTimer(Timer timer) {
+    print('onTimer: $_sleeping > ${_sleeping - 1}');
+    setState(() {
+      _sleeping = _sleeping - 1;
+    });
+    if (_sleeping <= 0) {
+      print('cancelling');
+      timer.cancel();
+      resetSleeping(newStatus: true);
+    }
+  }
+
+  void _setSleeping(Duration duration) {
+    print('setSleeping ${duration.inSeconds}');
+    setState(() {
+      _sleeping = duration.inSeconds;
+    });
+    _startTimer();
+  }
+
+  void resetSleeping({bool newStatus}) async {
+    print('resetSleeping');
+    setState(() {
+      _sleeping = 0;
+    });
+    if (newStatus != null) {
+      _setStatus(await provider.setStatus(newStatus));
+    }
+  }
+
   void _setStatus(bool newStatus, {bool doneLoading = true}) {
+    print('setStatus $newStatus');
     setState(() {
       _enabled = newStatus;
       _loading = !doneLoading;
@@ -90,6 +131,7 @@ class _AppStateState extends State<AppState> {
   }
 
   void updateStatus() async {
+    print('updateStatus');
     setLoading();
     try {
       _setStatus(await provider.fetchEnabled());
@@ -99,12 +141,38 @@ class _AppStateState extends State<AppState> {
   }
 
   void toggleStatus() async {
+    print('toggleStatus');
     setLoading();
     try {
       _setStatus(await provider.setStatus(!_enabled));
+      resetSleeping();
     } catch (e) {
       _setConnected(false);
       throw Exception('Failed to toggle status - is your API token correct?');
+    }
+  }
+
+  void enableStatus() async {
+    setLoading();
+    try {
+      _setStatus(await provider.setStatus(true));
+    } catch (e) {
+      _setConnected(false);
+      throw Exception('Failed to enable status - is your API token correct?');
+    }
+  }
+
+  void disableStatus({Duration duration}) async {
+    setLoading();
+    if (duration != null) {
+      _setSleeping(duration);
+    }
+    try {
+      _setStatus(await provider.setStatus(false, duration: duration));
+    } catch (e) {
+      _setConnected(false);
+      resetSleeping();
+      throw Exception('Failed to disable status - is your API token correct?');
     }
   }
 

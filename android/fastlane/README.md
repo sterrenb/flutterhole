@@ -30,7 +30,7 @@ fastlane android internal
 ```
 fastlane android beta
 ```
-Submit a new Beta Build to Crashlytics Beta
+Submit a new Beta Build to the Play Store
 ### android deploy
 ```
 fastlane android deploy

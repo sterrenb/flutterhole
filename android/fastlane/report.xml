@@ -3,27 +3,27 @@
   <testsuite name="fastlane.lanes">
 
 
-      <testcase name="0: setup_travis" classname="fastlane.lanes" time="0.00489">
+      <testcase name="0: setup_travis" classname="fastlane.lanes" time="0.004961">
         
       </testcase>
 
 
-      <testcase name="1: default_platform" classname="fastlane.lanes" time="0.005525">
+      <testcase name="1: default_platform" classname="fastlane.lanes" time="0.002802">
         
       </testcase>
 
 
-      <testcase name="2: android_set_version_code" classname="fastlane.lanes" time="0.014461">
+      <testcase name="2: android_set_version_code" classname="fastlane.lanes" time="0.013757">
         
       </testcase>
 
 
-      <testcase name="3: gradle" classname="fastlane.lanes" time="80.931891">
+      <testcase name="3: gradle" classname="fastlane.lanes" time="11.922875">
         
       </testcase>
 
 
-      <testcase name="4: supply" classname="fastlane.lanes" time="12.108873">
+      <testcase name="4: upload_to_play_store" classname="fastlane.lanes" time="6.927311">
         
       </testcase>
     

@@ -36,18 +36,22 @@ platform :android do
     )
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
+  desc "Submit a new Beta Build to the Play Store"
   lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
+    android_set_version_code(
+      gradle_file: 'app/build.gradle'
+    )
+    gradle(task: "assembleRelease")
+
+    upload_to_play_store(track: 'beta')
   end
 
   desc "Deploy a new version to the Google Play"
   lane :deploy do
-    gradle(task: "clean assembleRelease")
+    gradle(task: "assembleRelease")
+    android_set_version_code(
+      gradle_file: 'app/build.gradle'
+    )
     upload_to_play_store
   end
 end
