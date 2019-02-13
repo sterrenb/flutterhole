@@ -22,9 +22,8 @@ after_success:
 - flutter packages get
 - flutter packages pub run flutter_launcher_icons:main
 - flutter build apk --release
-- echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > ./travis.keystore # and filename specified in your gradle].keystore
+- echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > ./android/secret.json
 - cd android
-- fastlane env
 - fastlane beta
 cache:
   directories:

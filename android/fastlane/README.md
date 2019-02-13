@@ -26,6 +26,11 @@ Runs all the tests
 fastlane android internal
 ```
 
+### android alpha
+```
+fastlane android alpha
+```
+Submit a new Alpha Build to the Play Store
 ### android beta
 ```
 fastlane android beta
