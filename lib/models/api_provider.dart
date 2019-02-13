@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:logging/logging.dart';
 import 'package:sterrenburg.github.flutterhole/models/preferences/preference_hostname.dart';
 import 'package:sterrenburg.github.flutterhole/models/preferences/preference_port.dart';
 import 'package:sterrenburg.github.flutterhole/models/preferences/preference_token.dart';
@@ -20,6 +21,7 @@ const Duration timeout = Duration(seconds: 2);
 /// A convenient wrapper for the Pi-hole® PHP API.
 class ApiProvider {
   Client client;
+  final log = Logger('ApiProvider');
 
   ApiProvider({this.client}) {
     if (this.client == null) {
@@ -42,12 +44,16 @@ class ApiProvider {
   /// Returns the domain based on the [PreferenceHostname] and [PreferencePort].
   static String domain(String hostname, int port) {
     String portString;
+    String protocol = 'http';
     if (port == 80) {
       portString = '';
     } else {
       portString = ':' + port.toString();
+      if (port == 443) {
+        protocol = 'https';
+      }
     }
-    return 'http://' + hostname + portString + '/' + apiPath;
+    return protocol + '://' + hostname + portString + '/' + apiPath;
   }
 
   /// Launches the [url] in the default browser.
@@ -94,13 +100,14 @@ class ApiProvider {
     final String hostname = await PreferenceHostname().get();
     int port = await PreferencePort().get();
     String uriString = (domain(hostname, port)) + '?' + params;
-    print('fetch: $uriString');
-
-    final _result = await client.get(uriString).timeout(timeout,
-        onTimeout: () =>
-        throw Exception(
-            'Request timed out after ${timeout.inSeconds
-                .toString()} seconds - is your port correct?'));
+    final _result = await client.get(uriString).timeout(timeout, onTimeout: () {
+      final String message =
+          'Request timed out after ${timeout.inSeconds
+          .toString()} seconds - is your port correct?';
+      log.warning(uriString + ': ' + message);
+      throw Exception(message);
+    });
+    log.fine(uriString);
     return _result;
   }
 

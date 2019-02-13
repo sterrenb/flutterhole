@@ -25,7 +25,7 @@ class _AppStateState extends State<AppState> {
   bool _connected;
   bool _authorized;
   bool _loading;
-  int _sleeping;
+  Duration _sleeping;
   ApiProvider provider;
 
   // only expose a getter to prevent bad usage
@@ -37,7 +37,7 @@ class _AppStateState extends State<AppState> {
 
   bool get loading => _loading;
 
-  int get sleeping => _sleeping;
+  Duration get sleeping => _sleeping;
 
   @override
   void initState() {
@@ -47,12 +47,16 @@ class _AppStateState extends State<AppState> {
       _connected = false;
       _authorized = false;
       _loading = true;
-      _sleeping = 0;
+      _sleeping = Duration();
       provider = ApiProvider();
     });
 
     updateStatus();
     updateAuthorized();
+  }
+
+  bool isSleeping() {
+    return _sleeping.inSeconds == 0;
   }
 
   Future<bool> updateAuthorized() async {
@@ -92,29 +96,25 @@ class _AppStateState extends State<AppState> {
   }
 
   void _onTimer(Timer timer) {
-    print('onTimer: $_sleeping > ${_sleeping - 1}');
     setState(() {
-      _sleeping = _sleeping - 1;
+      _sleeping = Duration(seconds: _sleeping.inSeconds - 1);
     });
-    if (_sleeping <= 0) {
-      print('cancelling');
+    if (_sleeping.inSeconds <= 0) {
       timer.cancel();
       resetSleeping(newStatus: true);
     }
   }
 
   void _setSleeping(Duration duration) {
-    print('setSleeping ${duration.inSeconds}');
     setState(() {
-      _sleeping = duration.inSeconds;
+      _sleeping = duration;
     });
     _startTimer();
   }
 
   void resetSleeping({bool newStatus}) async {
-    print('resetSleeping');
     setState(() {
-      _sleeping = 0;
+      _sleeping = Duration();
     });
     if (newStatus != null) {
       _setStatus(await provider.setStatus(newStatus));
@@ -122,7 +122,6 @@ class _AppStateState extends State<AppState> {
   }
 
   void _setStatus(bool newStatus, {bool doneLoading = true}) {
-    print('setStatus $newStatus');
     setState(() {
       _enabled = newStatus;
       _loading = !doneLoading;
@@ -131,7 +130,6 @@ class _AppStateState extends State<AppState> {
   }
 
   void updateStatus() async {
-    print('updateStatus');
     setLoading();
     try {
       _setStatus(await provider.fetchEnabled());
@@ -141,7 +139,6 @@ class _AppStateState extends State<AppState> {
   }
 
   void toggleStatus() async {
-    print('toggleStatus');
     setLoading();
     try {
       _setStatus(await provider.setStatus(!_enabled));
@@ -164,9 +161,9 @@ class _AppStateState extends State<AppState> {
 
   void disableStatus({Duration duration}) async {
     setLoading();
-    if (duration != null) {
+    if (duration != null && duration.inSeconds > 0)
       _setSleeping(duration);
-    }
+
     try {
       _setStatus(await provider.setStatus(false, duration: duration));
     } catch (e) {

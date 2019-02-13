@@ -11,17 +11,27 @@ class StatusTitle extends StatelessWidget {
 
   final String title;
 
+  _durationToString(Duration duration) {
+    return duration.inHours.toString() + ':' +
+        (duration.inMinutes % Duration.minutesPerHour).toString().padLeft(
+            2, '0') + ':' +
+        (duration.inSeconds % Duration.secondsPerMinute).toString().padLeft(
+            2, '0');
+  }
+
   @override
   Widget build(BuildContext context) {
-    final int sleeping = AppState
-        .of(context)
-        .sleeping;
-    String titleWithTimer = sleeping == 0 ? title : title +
-        (' (' + sleeping.toString() + 's)');
+    final _appState = AppState.of(context);
+    String timerString = _appState.isSleeping()
+        ? ''
+        : ' (' + _durationToString(_appState.sleeping) + ')';
     return Row(
       children: <Widget>[
         StatusIcon(),
-        Text(titleWithTimer),
+        Text(title),
+        Text(timerString, style: TextStyle(color: Theme
+            .of(context)
+            .accentColor),),
         IconButton(
           icon: Icon(Icons.refresh),
           onPressed: () {
