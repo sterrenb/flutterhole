@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sterrenburg.github.flutterhole/models/dashboard/scan_button.dart';
 import 'package:sterrenburg.github.flutterhole/models/preferences/preference.dart';
 import 'package:sterrenburg.github.flutterhole/models/preferences/preference_form.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class SettingWidget extends StatefulWidget {
   final Preference preference;
@@ -22,59 +22,53 @@ class SettingWidget extends StatefulWidget {
 }
 
 class SettingWidgetState extends State<SettingWidget> {
-  Future onHelpTap(BuildContext context, Widget help) {
+  /// Shows an [AlertDialog] with [content].
+  Future _showDialog(BuildContext context, Widget content) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text(widget.preference.title),
-            content: help,
+            content: content,
           );
         });
   }
 
-  Future onPrefTap(AsyncSnapshot<dynamic> snapshot, BuildContext context,
+  /// Shows an [AlertDialog] with an editable preference field
+  Future openPrefDialog(AsyncSnapshot<dynamic> snapshot, BuildContext context,
       TextEditingController controller) {
     final formKey = GlobalKey<FormState>();
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return alertPrefDialog(
-              PreferenceForm(
+              EditForm(
                   formKey: formKey, controller: controller, type: widget.type),
-              context,
-              controller);
+              context);
         });
   }
 
-  AlertDialog alertPrefDialog(PreferenceForm preferenceForm,
-      BuildContext context, TextEditingController controller) {
+  AlertDialog alertPrefDialog(EditForm editForm, BuildContext context) {
     List<Widget> actions = [
-      FlatButton(
-        child: Text('Cancel'),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
+      CancelButton(),
       FlatButton(
         child: Text('OK'),
         onPressed: () {
-          if (preferenceForm.formKey.currentState.validate()) {
+          if (editForm.formKey.currentState.validate()) {
             widget.preference
-                .set(value: controller.value.text)
+                .set(value: editForm.controller.value.text)
                 .then((bool didSet) {
               if (didSet) {
-                setState(() {});
                 if (widget.preference.onSet != null) {
-                  // Trigger rebuild with the newly edited controller.text
-
+                  setState(() {});
                   widget.preference.onSet(
                       context: context,
                       didSet: didSet,
-                      value: controller.value.text);
+                      value: editForm.controller.value.text);
                 }
               } else {
-                print('non didSet...');
+                Fluttertoast.showToast(
+                    msg: 'Failed to set ${widget.preference.title}');
               }
             });
             Navigator.pop(context);
@@ -84,12 +78,12 @@ class SettingWidgetState extends State<SettingWidget> {
     ];
 
     if (widget.addScanButton) {
-      actions.insert(0, ScanButton(controller: controller));
+      actions.insert(0, ScanButton(controller: editForm.controller));
     }
 
     return AlertDialog(
       title: Text(widget.preference.title),
-      content: preferenceForm,
+      content: editForm,
       actions: actions,
     );
   }
@@ -107,9 +101,7 @@ class SettingWidgetState extends State<SettingWidget> {
                 value: snapshot.data,
                 secondary: Icon(widget.preference.iconData),
                 onChanged: (bool value) {
-                  widget.preference
-                      .set(value: value)
-                      .then((bool didSet) {
+                  widget.preference.set(value: value).then((bool didSet) {
                     if (widget.preference.onSet != null) {
                       // Trigger rebuild with the newly edited controller.text
                       setState(() {});
@@ -117,10 +109,6 @@ class SettingWidgetState extends State<SettingWidget> {
                           context: context, didSet: didSet, value: value);
                     }
                   });
-//                  Brightness brightness =
-//                      value ? Brightness.dark : Brightness.light;
-//                  DynamicTheme.of(context).setBrightness(brightness);
-//                  setState(() {});
                 },
               );
             }
@@ -138,13 +126,14 @@ class SettingWidgetState extends State<SettingWidget> {
                       color: Colors.grey,
                       size: 16.0,
                     ),
-                    onPressed: () => onHelpTap(context, widget.preference.help),
+                    onPressed: () =>
+                        _showDialog(context, widget.preference.help),
                   )
                 ],
               ),
               subtitle: Text(controller.text),
               onTap: () {
-                return onPrefTap(snapshot, context, controller);
+                return openPrefDialog(snapshot, context, controller);
               },
               onLongPress: () {
                 Fluttertoast.showToast(msg: widget.preference.description);
@@ -154,5 +143,21 @@ class SettingWidgetState extends State<SettingWidget> {
 
           return Center(child: CircularProgressIndicator());
         });
+  }
+}
+
+class CancelButton extends StatelessWidget {
+  const CancelButton({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      child: Text('Cancel'),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sterrenburg.github.flutterhole/models/dashboard/sleep_button.dart';
 import 'package:sterrenburg.github.flutterhole/models/dashboard/status_title.dart';
 import 'package:sterrenburg.github.flutterhole/screens/about_screen.dart';
 import 'package:sterrenburg.github.flutterhole/screens/home_screen.dart';
@@ -35,6 +36,7 @@ class DrawerTile extends StatelessWidget {
 class DefaultDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -52,6 +54,7 @@ class DefaultDrawer extends StatelessWidget {
               onTapScreen: HomeScreen(),
               title: 'Dashboard',
               iconData: Icons.home),
+          SleepButtons(),
           DrawerTile(
               onTapScreen: RecentlyBlockedScreen(),
               title: 'Recently Blocked',

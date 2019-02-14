@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference.dart';
 
-/// A form that allows users to edit a [Preference].
-class PreferenceForm extends StatefulWidget {
+/// A form that allows users to edit a value, with validation depending on its [type].
+class EditForm extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController controller;
   final Type type;
 
-  const PreferenceForm({Key key,
+  const EditForm({Key key,
     @required this.formKey,
     @required this.controller,
     this.type = String})
       : super(key: key);
 
   @override
-  _PreferenceFormState createState() {
-    return new _PreferenceFormState(formKey, controller);
+  _EditFormState createState() {
+    return new _EditFormState(formKey, controller);
   }
 }
 
-class _PreferenceFormState extends State<PreferenceForm> {
+class _EditFormState extends State<EditForm> {
   final GlobalKey<FormState> formKey;
   final TextEditingController controller;
 
-  _PreferenceFormState(this.formKey, this.controller);
+  _EditFormState(this.formKey, this.controller);
 
   TextFormField textFormFieldString() {
     return TextFormField(

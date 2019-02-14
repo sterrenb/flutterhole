@@ -11,14 +11,14 @@ if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
-def flutterVersionCode = 1
+def flutterVersionCode = 99
 if (flutterVersionCode == null) {
     flutterVersionCode = '0'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '0.1'
+    flutterVersionName = '0.2'
 }
 
 apply plugin: 'com.android.application'
@@ -46,7 +46,7 @@ android {
         applicationId "sterrenburg.github.flutterhole"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 10
+        versionCode 24
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
