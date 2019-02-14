@@ -107,6 +107,13 @@ class SleepButtonCustom extends StatelessWidget {
           title: Text('Select a sleep duration'),
           textAlign: TextAlign.center,
           confirmText: 'OK',
+          textStyle: Theme
+              .of(context)
+              .textTheme
+              .title,
+          backgroundColor: Theme
+              .of(context)
+              .dialogBackgroundColor,
           adapter: NumberPickerAdapter(data: [
             NumberPickerColumn(
                 begin: 0, end: 60, initValue: 5, suffix: Text(' sec')),
