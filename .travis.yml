@@ -21,11 +21,11 @@ after_success:
 # - coveralls-lcov coverage/lcov.info
 - flutter packages get
 - flutter packages pub run flutter_launcher_icons:main
-# - flutter build apk --release
+- flutter build apk --release
 - echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > ./android/secret.json
 - cd android
 - wc -l secret.json
-# - fastlane beta
+- fastlane alpha
 cache:
   directories:
   - $HOME/.pub-cache
