@@ -36,7 +36,4 @@ after_success:
 #- cd android
 #- wc -l secret.json
 #- fastlane alpha
-cache:
-- bundler
-  directories:
-  - $HOME/.pub-cache
+cache: bundler
