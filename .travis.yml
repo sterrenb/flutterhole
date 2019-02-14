@@ -4,9 +4,13 @@ sudo: false
 language: android
 android:
   components:
+  - build-tools-27.0.2
   - android 27
   licenses:
   - 'android-sdk-license-.+'
+
+before_install:
+- yes | sdkmanager "platforms;android-27"
 install:
 - gem install bundler
 - bundle install
