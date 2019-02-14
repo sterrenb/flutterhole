@@ -10,8 +10,6 @@
 #     https://docs.fastlane.tools/plugins/available-plugins
 #
 
-setup_travis
-
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 

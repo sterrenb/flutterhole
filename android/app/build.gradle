@@ -46,7 +46,7 @@ android {
         applicationId "sterrenburg.github.flutterhole"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 23
+        versionCode 24
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
