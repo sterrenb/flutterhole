@@ -1,9 +1,9 @@
-os:
-- linux
-sudo: false
 language: android
+jdk:
+- oraclejdk8
 android:
   components:
+  - tools
   - build-tools-27.0.2
   - android 27
   licenses:
@@ -39,3 +39,4 @@ after_success:
 cache:
   directories:
   - $HOME/.pub-cache
+  - $HOME/.gradle/wrapper/
