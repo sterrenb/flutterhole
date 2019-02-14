@@ -29,14 +29,14 @@ script:
 - ./flutter/bin/flutter test --coverage
 after_success:
 # - coveralls-lcov coverage/lcov.info
-#- ./flutter/bin/flutter packages get
-#- ./flutter/bin/flutter packages pub run flutter_launcher_icons:main
+- ./flutter/bin/flutter packages get
+- ./flutter/bin/flutter packages pub run flutter_launcher_icons:main
 - ./flutter/bin/flutter build apk --release
 #- echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > ./android/secret.json
 #- cd android
 #- wc -l secret.json
 #- fastlane alpha
 cache:
+- bundler
   directories:
   - $HOME/.pub-cache
-  - $HOME/.gradle/wrapper/
