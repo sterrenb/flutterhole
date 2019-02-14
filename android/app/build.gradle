@@ -11,16 +11,6 @@ if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
-def flutterVersionCode = 1
-if (flutterVersionCode == null) {
-    flutterVersionCode = '0'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '0.1'
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -45,9 +35,10 @@ android {
     defaultConfig {
         applicationId "sterrenburg.github.flutterhole"
         minSdkVersion 16
+        //noinspection OldTargetApi (28 breaks keyboard popups with textformfields in alertdialogs)
         targetSdkVersion 27
-        versionCode 10
-        versionName flutterVersionName
+        versionCode gitVersioner.versionCode
+        versionName gitVersioner.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

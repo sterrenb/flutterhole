@@ -64,11 +64,11 @@ freeline/
 freeline_project_description.json
 
 # fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/test_output
-fastlane/readme.md
+*/fastlane/report.xml
+*/fastlane/Preview.html
+*/fastlane/screenshots
+*/fastlane/test_output
+*/fastlane/readme.md
 
 ### Android Patch ###
 gen-external-apklibs
@@ -250,6 +250,18 @@ Carthage/Build
 # https://docs.fastlane.tools/best-practices/source-control/#source-control
 
 fastlane/screenshots/**/*.png
+
+# fastlane specific
+**/fastlane/report.xml
+
+# deliver temporary files
+**/fastlane/Preview.html
+
+# snapshot generated screenshots
+**/fastlane/screenshots
+
+# scan temporary files
+**/fastlane/test_output
 
 # Code Injection
 #

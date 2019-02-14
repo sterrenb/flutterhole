@@ -14,6 +14,8 @@ class StatusIcon extends StatelessWidget {
       case true:
         if (!appState.loading)
           color = appState.enabled ? Colors.green : Colors.red;
+        if (!appState.isSleeping())
+          color = Colors.orange;
         break;
       case false:
         color = _defaultColor;
