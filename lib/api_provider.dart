@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 
+/// TODO remove flutter dependencies and make a clean dart file
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:logging/logging.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_hostname.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_port.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_token.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The relative path to the Pi-hole® API

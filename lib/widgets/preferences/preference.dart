@@ -1,8 +1,8 @@
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_hostname.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_is_dark.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_port.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_token.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// a scaffold for managing a preference that is saved between sessions, using [SharedPreferences].
@@ -13,15 +13,20 @@ abstract class Preference {
   /// The human friendly title.
   final String title;
 
-  // The human friendly description.
+  /// The human friendly description.
   final String description;
 
-  // The help widget that a user can select and view separately.
+  /// The help widget that a user can select and view separately.
   final Widget help;
 
+  /// The leading material icon.
+  ///
+  /// ```dart
+  /// iconData = Icons.home;
+  /// ```
   IconData iconData;
 
-  // The callback for the save action.
+  /// The callback for the save action.
   final Function({BuildContext context, bool didSet, dynamic value}) onSet;
 
   Future<SharedPreferences> _preferences;

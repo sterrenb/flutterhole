@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/models/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/api_provider.dart';
 
 /// A global state manager, used for sharing state within different Widgets with [child] as its root.
 class AppState extends StatefulWidget {

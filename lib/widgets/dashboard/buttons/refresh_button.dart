@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/models/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 
 /// A button that updates the Pi-hole status on tap.
 class RefreshButton extends StatelessWidget {

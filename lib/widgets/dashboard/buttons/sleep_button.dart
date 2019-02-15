@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-import 'package:sterrenburg.github.flutterhole/models/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 
 /// A list of [SleepButton], [SleepButtonPermanent], and [SleepButtonCustom].
 class SleepButtons extends StatefulWidget {
@@ -132,7 +132,6 @@ class SleepButtonCustom extends StatelessWidget {
                   )
                 ],
                 onConfirm: (Picker picker, List value) {
-                  print(value.toString());
                   List<int> values = picker.getSelectedValues();
                   _appState.resetSleeping();
                   _appState.disableStatus(

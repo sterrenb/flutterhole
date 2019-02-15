@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/default_drawer.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/refresh_button.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/status_title.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/toggle_status_button.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/default_drawer.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/refresh_button.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/status_title.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/toggle_status_button.dart';
 
 /// The default scaffold, using the [DefaultDrawer] and the [ToggleStatusButton].
 class DefaultScaffold extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/models/api_provider.dart';
-import 'package:sterrenburg.github.flutterhole/models/app_state.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference.dart';
+import 'package:sterrenburg.github.flutterhole/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 
 /// A [Preference] for storing the Pi-hole® hostname.
 class PreferenceHostname extends Preference {

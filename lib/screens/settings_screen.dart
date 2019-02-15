@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/models/app_state.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/default_scaffold.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_hostname.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_is_dark.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_port.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_token.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/setting_widget.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/default_scaffold.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,10 +32,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     PreferenceToken()
   ];
   final List<Widget> piSettings = [
-    SettingWidget(preference: PreferenceIsDark(), type: bool),
-    SettingWidget(preference: PreferenceHostname()),
-    SettingWidget(preference: PreferencePort(), type: int),
-    SettingWidget(preference: PreferenceToken(), addScanButton: true),
+    PreferenceView(preference: PreferenceIsDark(), type: bool),
+    PreferenceView(preference: PreferenceHostname()),
+    PreferenceView(preference: PreferencePort(), type: int),
+    PreferenceView(preference: PreferenceToken(), addScanButton: true),
   ];
 
   @override

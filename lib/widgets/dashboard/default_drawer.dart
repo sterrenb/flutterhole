@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/sleep_button.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/status_title.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/sleep_button.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/status_title.dart';
 import 'package:sterrenburg.github.flutterhole/screens/about_screen.dart';
 import 'package:sterrenburg.github.flutterhole/screens/home_screen.dart';
 import 'package:sterrenburg.github.flutterhole/screens/recently_blocked_screen.dart';

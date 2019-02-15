@@ -1,7 +1,7 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 
 /// a scaffold for managing a preference that is saved between sessions, using [SharedPreferences].
 class PreferenceIsDark extends PreferenceBool {

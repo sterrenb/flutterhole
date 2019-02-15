@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/models/app_state.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/friendly_exception.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/info_tile.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/friendly_exception.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/info_tile.dart';
 
 /// A widget that shows a [List] of [InfoTile]s with statistics of the Pi-hole.
 class SummaryTiles extends StatefulWidget {

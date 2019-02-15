@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/scan_button.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference_form.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/scan_button.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_form.dart';
 
-class SettingWidget extends StatefulWidget {
+class PreferenceView extends StatefulWidget {
   final Preference preference;
   final bool addScanButton;
   final Type type;
 
-  const SettingWidget({Key key,
+  const PreferenceView({Key key,
     @required this.preference,
     this.type = String,
     this.addScanButton = false})
       : super(key: key);
 
   @override
-  SettingWidgetState createState() {
-    return new SettingWidgetState();
+  PreferenceViewState createState() {
+    return new PreferenceViewState();
   }
 }
 
-class SettingWidgetState extends State<SettingWidget> {
+class PreferenceViewState extends State<PreferenceView> {
   /// Shows an [AlertDialog] with [content].
   Future _showDialog(BuildContext context, Widget content) {
     return showDialog(

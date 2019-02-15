@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/models/app_state.dart';
-import 'package:sterrenburg.github.flutterhole/models/preferences/preference.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 
 /// A [Preference] for storing the Pi-hole® port.
 class PreferencePort extends PreferenceInt {
