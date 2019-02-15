@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
 
+/// A button that enabled the QR scanner on tap.
 class ScanButton extends StatelessWidget {
+  /// The controller to send the QR code output to.
   final TextEditingController controller;
 
   const ScanButton({Key key, @required this.controller}) : super(key: key);

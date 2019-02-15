@@ -12,8 +12,7 @@ void main() async {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
     print(
-        '[${record.time.toIso8601String()}] ${record.loggerName}: ${record.level
-            .name}: ${record.message}');
+        '[${record.time.toIso8601String()}] ${record.loggerName}: ${record.level.name}: ${record.message}');
   });
 
   bool isDark = await PreferenceIsDark().get();

@@ -10,13 +10,22 @@ import 'package:sterrenburg.github.flutterhole/screens/settings_screen.dart';
 class DrawerTile extends StatelessWidget {
   /// The screen to navigate to on tap.
   final Widget onTapScreen;
+
+  /// The human friendly title.
   final String title;
+
+  /// The leading material icon.
+  ///
+  /// ```dart
+  /// iconData = Icons.home;
+  /// ```
   final IconData iconData;
 
-  const DrawerTile({Key key,
-    @required this.onTapScreen,
-    @required this.title,
-    @required this.iconData})
+  const DrawerTile(
+      {Key key,
+      @required this.onTapScreen,
+      @required this.title,
+      @required this.iconData})
       : super(key: key);
 
   @override
@@ -32,11 +41,10 @@ class DrawerTile extends StatelessWidget {
   }
 }
 
-/// The default drawer menu, containing a list of [DrawerTile]s.
+/// The default drawer menu, containing a [ListView] of [DrawerTile]s.
 class DefaultDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -45,7 +53,6 @@ class DefaultDrawer extends StatelessWidget {
             child: Container(
                 alignment: Alignment.bottomLeft,
                 padding: EdgeInsets.only(bottom: 4.0),
-//                child: AppTitle(),
                 child: StatusTitle(
                   title: 'FlutterHole',
                 )),

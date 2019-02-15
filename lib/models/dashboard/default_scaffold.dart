@@ -6,7 +6,10 @@ import 'package:sterrenburg.github.flutterhole/models/dashboard/toggle_status_bu
 
 /// The default scaffold, using the [DefaultDrawer] and the [ToggleStatusButton].
 class DefaultScaffold extends StatelessWidget {
+  /// The human friendly title.
   final String title;
+
+  /// The body of the scaffold.
   final Widget body;
 
   const DefaultScaffold({Key key, @required this.title, @required this.body})

@@ -16,7 +16,6 @@ class _SummaryTilesState extends State<SummaryTiles> {
   Widget build(BuildContext context) {
     final appState = AppState.of(context);
     return FutureBuilder<Map<String, String>>(
-      // TODO maybe use AppState, so that we can trigger rebuilds on new API fetches
       future: appState.provider.fetchSummary(),
       builder: ((BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {

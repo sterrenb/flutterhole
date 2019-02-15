@@ -9,6 +9,7 @@ class StatusTitle extends StatelessWidget {
     @required this.title,
   }) : super(key: key);
 
+  /// The human friendly title.
   final String title;
 
   _durationToString(Duration duration) {

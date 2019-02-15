@@ -7,8 +7,12 @@ import 'package:sterrenburg.github.flutterhole/models/dashboard/friendly_excepti
 /// The default timeout [Duration] for retrieving the most recently blocked domain.
 const Duration defaultTimeout = Duration(seconds: 1);
 
+/// A blocked domain entry, used in [RecentlyBlocked].
 class _BlockedDomain extends StatefulWidget {
+  /// The domain title.
   final String title;
+
+  /// The amount of hits since the initial entry.
   final int hits;
 
   _BlockedDomain({@required this.title, this.hits = 1});
@@ -26,48 +30,57 @@ class _BlockedDomainState extends State<_BlockedDomain> {
   Widget build(BuildContext context) {
     return Card(
         child: ListTile(
-          title: Row(
-            children: <Widget>[
-              Expanded(child: Text(widget.title)),
-              Tooltip(
-                  message: 'Blocked ${widget.hits.toString()} times',
-                  child: Chip(label: Text(widget.hits.toString())))
-            ],
+      title: Row(
+        children: <Widget>[
+          Expanded(child: Text(widget.title)),
+          Tooltip(
+              message: 'Blocked ${widget.hits.toString()} times',
+              child: Chip(label: Text(widget.hits.toString())))
+        ],
+      ),
+      subtitle: Row(
+        children: <Widget>[
+          Icon(
+            Icons.access_time,
+            color: Colors.grey,
+            size: 14.0,
           ),
-          subtitle: Row(
-            children: <Widget>[
-              Icon(
-                Icons.access_time,
-                color: Colors.grey,
-                size: 14.0,
-              ),
-              Tooltip(
-                message: 'First blocked at ${hitAt.toLocal()}',
-                child: Text(hitAt.hour.toString().padLeft(2, '0') +
-                    ':' +
-                    hitAt.minute.toString().padLeft(2, '0') +
-                    '.' +
-                    hitAt.second.toString().padLeft(2, '0')),
-              ),
-            ],
+          Tooltip(
+            message: 'First blocked at ${hitAt.toLocal()}',
+            child: Text(hitAt.hour.toString().padLeft(2, '0') +
+                ':' +
+                hitAt.minute.toString().padLeft(2, '0') +
+                '.' +
+                hitAt.second.toString().padLeft(2, '0')),
           ),
-        ));
+        ],
+      ),
+    ));
   }
 }
 
 /// A widget that shows recently blocked domains and retrieves newly blocked domains based on the [defaultTimeout].
 class RecentlyBlocked extends StatefulWidget {
   @override
-  _RecentlyBlockedState createState() {
-    return new _RecentlyBlockedState();
+  RecentlyBlockedState createState() {
+    return new RecentlyBlockedState();
   }
 }
 
-class _RecentlyBlockedState extends State<RecentlyBlocked> {
+class RecentlyBlockedState extends State<RecentlyBlocked> {
+  /// The timer used to periodically ping the Pi-hole.
   Timer timer;
+
+  /// The local store of blocked domains, pairing domain name and amount of hits.
   static Map<String, int> blockedDomains = Map();
+
+  /// The most recently obtained blocked domain.
   static String lastDomain;
+
+  /// The default polling rate.
   double sliderValue = 1.0;
+
+  /// The local store of any error message.
   String errorMessage;
 
   static final ApiProvider provider = ApiProvider();
@@ -76,6 +89,9 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
     return Timer.periodic(timeout, _onTimer);
   }
 
+  /// Updates the blocked domains mapping.
+  ///
+  /// Sets an error message when the API returns an error.
   void _onTimer(Timer timer) {
     provider.recentlyBlocked().then((String domain) {
       if (domain != lastDomain) {
@@ -93,6 +109,7 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
     });
   }
 
+  /// Converts the polling rate slider value to an integer.
   int _sliderToInt(double sliderValue) => (sliderValue * 1000).toInt();
 
   @override
@@ -125,17 +142,17 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
       body = (blockedDomains.length == 0)
           ? Expanded(child: Center(child: CircularProgressIndicator()))
           : Expanded(
-        child: Scrollbar(
-          child: ListView.builder(
-              itemCount: blockedDomains.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _BlockedDomain(
-                  title: keys.elementAt(index),
-                  hits: values.elementAt(index),
-                );
-              }),
-        ),
-      );
+              child: Scrollbar(
+                child: ListView.builder(
+                    itemCount: blockedDomains.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _BlockedDomain(
+                        title: keys.elementAt(index),
+                        hits: values.elementAt(index),
+                      );
+                    }),
+              ),
+            );
     }
 
     return Column(
@@ -166,17 +183,19 @@ class _RecentlyBlockedState extends State<RecentlyBlocked> {
                     setState(() {
                       timer = _startTimer(
                           timeout:
-                          Duration(milliseconds: _sliderToInt(newValue)));
+                              Duration(milliseconds: _sliderToInt(newValue)));
                     });
                   },
                 ),
               ),
-              FlatButton(child: Text('Reset'), onPressed: () {
-                setState(() {
-                  blockedDomains = Map();
-                  lastDomain = '';
-                });
-              })
+              FlatButton(
+                  child: Text('Reset'),
+                  onPressed: () {
+                    setState(() {
+                      blockedDomains = Map();
+                      lastDomain = '';
+                    });
+                  })
             ],
           ),
         ),

@@ -5,7 +5,10 @@ import 'package:sterrenburg.github.flutterhole/models/api_provider.dart';
 
 /// A global state manager, used for sharing state within different Widgets with [child] as its root.
 class AppState extends StatefulWidget {
+  /// The child has access to the app state, usually a high level Widget.
   final Widget child;
+
+  /// Defines the theme, either light or dark.
   final Brightness brightness;
 
   AppState({@required this.child, @required this.brightness});
@@ -15,20 +18,29 @@ class AppState extends StatefulWidget {
 
   static _AppStateState of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_InheritedState)
-    as _InheritedState)
+            as _InheritedState)
         .data;
   }
 }
 
 class _AppStateState extends State<AppState> {
+  /// Whether the Pi-hole is enabled.
   bool _enabled;
+
+  /// Whether the app is connected.
   bool _connected;
+
+  /// Whether the app is authorized with a valid API token.
   bool _authorized;
+
+  /// Whether the app is loading any API data.
   bool _loading;
+
+  /// Whether the app is sleeping for a specified duration.
   Duration _sleeping;
+
   ApiProvider provider;
 
-  // only expose a getter to prevent bad usage
   bool get enabled => _enabled;
 
   bool get connected => _connected;
@@ -161,8 +173,7 @@ class _AppStateState extends State<AppState> {
 
   void disableStatus({Duration duration}) async {
     setLoading();
-    if (duration != null && duration.inSeconds > 0)
-      _setSleeping(duration);
+    if (duration != null && duration.inSeconds > 0) _setSleeping(duration);
 
     try {
       _setStatus(await provider.setStatus(false, duration: duration));

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sterrenburg.github.flutterhole/screens/settings_screen.dart';
 
+/// A human friendly exception, use when displaying exceptions to users.
 class FriendlyException extends StatelessWidget {
+  /// The human friendly message.
   final String message;
 
   const FriendlyException({Key key, this.message}) : super(key: key);
