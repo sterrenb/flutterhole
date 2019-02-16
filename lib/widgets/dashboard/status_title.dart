@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sterrenburg.github.flutterhole/pi_config.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/status_icon.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 
 /// A widget creating a [Row] of a [StatusIcon] and [Text] with a [title].
 class StatusTitle extends StatelessWidget {
@@ -35,7 +35,7 @@ class StatusTitle extends StatelessWidget {
       children: <Widget>[
         StatusIcon(),
         FutureBuilder<String>(
-          future: Preference.getActiveConfig(),
+          future: PiConfig.getActiveString(),
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             if (snapshot.hasData) {
               return Text(snapshot.data);

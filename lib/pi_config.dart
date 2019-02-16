@@ -6,13 +6,18 @@ const defaultAll = ['Default'];
 const defaultActive = 0;
 
 class PiConfig {
-  static Future<int> getActive() async {
+  static Future<int> getActiveIndex() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     int result = preferences.getInt(active);
     return result == null ? defaultActive : result;
   }
 
-  static Future<bool> setActive(int index) async {
+  static Future<String> getActiveString() async {
+    List<String> configs = await getAll();
+    return configs.elementAt((await getActiveIndex()));
+  }
+
+  static Future<bool> setActiveIndex(int index) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.setInt(active, index);
   }
@@ -29,17 +34,29 @@ class PiConfig {
       // return defaultAll;
     }
 
-    print('getAll: $result');
     return result;
   }
 
-  static Future<bool> addConfig(String name) async {
+  static Future<int> setConfig(String name) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List<String> configs = await getAll();
     if (configs.contains(name)) {
       throw Exception('This name is already used');
     }
     List<String> newConfigs = List.from(configs)..add(name);
-    return preferences.setStringList(all, newConfigs);
+    await preferences.setStringList(all, newConfigs);
+    return (await getAll()).length - 1;
+  }
+
+  static Future<bool> updateActiveConfig(String name) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<String> configs = await getAll();
+    if (configs.contains(name) && (await getActiveString()) != name) {
+      throw Exception('This name is already used');
+    }
+
+    final int index = await getActiveIndex();
+    configs[index] = name;
+    return preferences.setStringList(all, configs);
   }
 }

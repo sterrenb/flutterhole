@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/default_scaffold.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_config_name.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
@@ -30,6 +31,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     PreferenceView(preference: PreferenceHostname()),
     PreferenceView(preference: PreferencePort(), type: int),
     PreferenceView(preference: PreferenceToken(), addScanButton: true),
+    PreferenceView(preference: PreferenceConfigName()),
   ];
 
   @override

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sterrenburg.github.flutterhole/pi_config.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
 
 const addNew = 'addNew';
 
@@ -28,9 +30,20 @@ class PiConfigMenu extends StatefulWidget {
 }
 
 class PiConfigMenuState extends State<PiConfigMenu> {
-  _addNew(String name) async {
-    PiConfig.addConfig(name).catchError((e) {
+  Future<int> _addNew(String name) async {
+    return PiConfig.setConfig(name).catchError((e) {
       Fluttertoast.showToast(msg: e.toString());
+    });
+  }
+
+  _switchConfig(int index) {
+    PiConfig.setActiveIndex(index).then((bool didSet) {
+      setState(() {});
+      AppState.of(context).resetSleeping();
+      AppState.of(context).updateStatus();
+      PreferenceIsDark().get().then((dynamic value) {
+        PreferenceIsDark.applyTheme(context, value as bool);
+      });
     });
   }
 
@@ -41,7 +54,7 @@ class PiConfigMenuState extends State<PiConfigMenu> {
       builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
         if (snapshot.hasData) {
           List<PopupMenuEntry<ConfigOption>> menuItems = [];
-          PiConfig.getActive().then((int active) {
+          PiConfig.getActiveIndex().then((int active) {
             int i = 0;
             snapshot.data.forEach((String configName) {
               menuItems.add(CheckedPopupMenuItem(
@@ -54,7 +67,7 @@ class PiConfigMenuState extends State<PiConfigMenu> {
             menuItems.add(PopupMenuDivider());
             menuItems.add(PopupMenuItem(
                 value: ConfigOption(addNew, -1),
-                child: Text('Add new Pi-hole')));
+                child: Text('Add new configuration')));
           });
           return PopupMenuButton<ConfigOption>(
               tooltip: 'Select Pi-hole configuration',
@@ -63,12 +76,11 @@ class PiConfigMenuState extends State<PiConfigMenu> {
 
                 if (result.name == addNew) {
                   // TODO use some user dialog here
-                  _addNew('final');
-                  setState(() {});
-                } else {
-                  PiConfig.setActive(result.index).then((bool didSet) {
-                    setState(() {});
+                  _addNew('final').then((int newConfigIndex) {
+                    _switchConfig(newConfigIndex);
                   });
+                } else {
+                  _switchConfig(result.index);
                 }
               },
               itemBuilder: (BuildContext context) {

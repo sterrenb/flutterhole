@@ -144,6 +144,7 @@ class _AppStateState extends State<AppState> {
   void updateStatus() async {
     setLoading();
     try {
+      updateAuthorized();
       _setStatus(await provider.fetchEnabled());
     } catch (e) {
       _setConnected(false);

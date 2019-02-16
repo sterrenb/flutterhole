@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sterrenburg.github.flutterhole/pi_config.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
@@ -62,33 +63,15 @@ abstract class Preference {
     return true;
   }
 
-  static Future<String> getActiveConfig() async {
-    return defaultConfigName;
-  }
-
-  static Future<bool> setActiveConfig(int index) async {
-
-  }
-
-  static Future<List<String>> getConfigs() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getStringList(configNames);
-  }
-
-  static Future<bool> resetConfigs() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.remove(configNames);
-    return preferences.setStringList(configNames, [defaultConfigName]);
-  }
-
   Future<String> _getIdWithConfig() async {
-    log.info('getIdWithConfig: ' + id + (await getActiveConfig()));
-    return id + (await getActiveConfig());
+    String idWithConfig = id + ((await PiConfig.getActiveIndex()).toString());
+//    log.info('getIdWithConfig: ' + idWithConfig);
+    return idWithConfig;
   }
 
   Future<dynamic> get() async {
     String result = (await _preferences).get(await _getIdWithConfig());
-    return result;
+    return result == null ? defaultValue : result;
   }
 
   Future<bool> set({dynamic value}) async {
@@ -122,7 +105,7 @@ class PreferenceInt extends Preference {
   @override
   Future<dynamic> get() async {
     int result = (await _preferences).getInt(await _getIdWithConfig());
-    return result;
+    return result == null ? defaultValue : result;
   }
 
   @override
@@ -161,7 +144,8 @@ class PreferenceBool extends Preference {
   @override
   Future<dynamic> get() async {
     bool result = (await _preferences).getBool(await _getIdWithConfig());
-    return result;
+    print('$title get: ${result.toString()}');
+    return result == null ? defaultValue : result;
   }
 
   @override

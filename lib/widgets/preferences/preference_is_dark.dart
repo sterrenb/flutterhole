@@ -7,6 +7,11 @@ import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.da
 class PreferenceIsDark extends PreferenceBool {
   bool defaultValue = false;
 
+  static void applyTheme(BuildContext context, bool isDark) {
+    DynamicTheme.of(context)
+        .setBrightness(isDark ? Brightness.dark : Brightness.light);
+  }
+
   PreferenceIsDark()
       : super(
       id: 'isDark',
@@ -16,7 +21,8 @@ class PreferenceIsDark extends PreferenceBool {
       help: Container(),
       iconData: Icons.lightbulb_outline,
       onSet: ({BuildContext context, bool didSet, dynamic value}) {
-        DynamicTheme.of(context).setBrightness(
-            value as bool ? Brightness.dark : Brightness.light);
+        applyTheme(context, value as bool);
+//        DynamicTheme.of(context).setBrightness(
+//            value as bool ? Brightness.dark : Brightness.light);
       });
 }
