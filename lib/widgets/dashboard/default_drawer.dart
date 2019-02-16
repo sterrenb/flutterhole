@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/sleep_button.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/dashboard/status_title.dart';
 import 'package:sterrenburg.github.flutterhole/screens/about_screen.dart';
 import 'package:sterrenburg.github.flutterhole/screens/home_screen.dart';
 import 'package:sterrenburg.github.flutterhole/screens/recently_blocked_screen.dart';
 import 'package:sterrenburg.github.flutterhole/screens/settings_screen.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/sleep_button.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/pi_config_menu.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/status_title.dart';
 
 /// The menu entry widget in a [DefaultDrawer].
 class DrawerTile extends StatelessWidget {
@@ -53,8 +54,12 @@ class DefaultDrawer extends StatelessWidget {
             child: Container(
                 alignment: Alignment.bottomLeft,
                 padding: EdgeInsets.only(bottom: 4.0),
-                child: StatusTitle(
-                  title: 'FlutterHole',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    StatusTitle(title: 'FlutterHole'),
+                    PiConfigMenu()
+                  ],
                 )),
           ),
           DrawerTile(

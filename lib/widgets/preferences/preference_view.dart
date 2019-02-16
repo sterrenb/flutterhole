@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/cancel_button.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/scan_button.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_form.dart';
@@ -94,7 +95,6 @@ class PreferenceViewState extends State<PreferenceView> {
         future: widget.preference.get(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
-            // TODO this looks terrible
             if (widget.type == bool) {
               return SwitchListTile(
                 title: Text(widget.preference.title),
@@ -146,18 +146,4 @@ class PreferenceViewState extends State<PreferenceView> {
   }
 }
 
-class CancelButton extends StatelessWidget {
-  const CancelButton({
-    Key key,
-  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return FlatButton(
-      child: Text('Cancel'),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-  }
-}

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/default_scaffold.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
@@ -7,8 +9,6 @@ import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_view.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -25,12 +25,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.dispose();
   }
 
-  final List<Preference> prefList = [
-    PreferenceIsDark(),
-    PreferenceHostname(),
-    PreferencePort(),
-    PreferenceToken()
-  ];
   final List<Widget> piSettings = [
     PreferenceView(preference: PreferenceIsDark(), type: bool),
     PreferenceView(preference: PreferenceHostname()),
@@ -60,7 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         SharedPreferences.getInstance().then((preferences) {
                           preferences.clear().then((didClear) {
                             if (didClear) {
-                              Preference.clearAll();
+                              Preference.resetAll();
                               Fluttertoast.showToast(msg: 'Factory reset');
                               AppState.of(context).updateStatus();
                               Navigator.pushReplacement(

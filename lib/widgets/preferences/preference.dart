@@ -1,9 +1,13 @@
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+const String configNames = 'configNames';
+const String defaultConfigName = 'Default';
 
 /// a scaffold for managing a preference that is saved between sessions, using [SharedPreferences].
 abstract class Preference {
@@ -47,16 +51,43 @@ abstract class Preference {
   /// The default style for the help widget. This should be added to the global theme someday...
   static final TextStyle helpStyle = TextStyle(color: Colors.black87);
 
-  static Future<bool> clearAll() async {
+  final log = Logger('Preference');
+
+  static Future<bool> resetAll() async {
     await PreferenceHostname().set();
     await PreferencePort().set();
     await PreferenceIsDark().set();
     await PreferenceToken().set();
+//    await resetConfigs();
     return true;
   }
 
+  static Future<String> getActiveConfig() async {
+    return defaultConfigName;
+  }
+
+  static Future<bool> setActiveConfig(int index) async {
+
+  }
+
+  static Future<List<String>> getConfigs() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getStringList(configNames);
+  }
+
+  static Future<bool> resetConfigs() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.remove(configNames);
+    return preferences.setStringList(configNames, [defaultConfigName]);
+  }
+
+  Future<String> _getIdWithConfig() async {
+    log.info('getIdWithConfig: ' + id + (await getActiveConfig()));
+    return id + (await getActiveConfig());
+  }
+
   Future<dynamic> get() async {
-    String result = (await _preferences).get(id);
+    String result = (await _preferences).get(await _getIdWithConfig());
     return result;
   }
 
@@ -65,8 +96,8 @@ abstract class Preference {
       value = defaultValue;
     }
 
-    final bool didSave =
-    await (await _preferences).setString(id, value.toString());
+    final bool didSave = await (await _preferences)
+        .setString(await _getIdWithConfig(), value.toString());
     return didSave;
   }
 }
@@ -90,7 +121,7 @@ class PreferenceInt extends Preference {
 
   @override
   Future<dynamic> get() async {
-    int result = (await _preferences).getInt(id);
+    int result = (await _preferences).getInt(await _getIdWithConfig());
     return result;
   }
 
@@ -104,7 +135,8 @@ class PreferenceInt extends Preference {
       typedValue = int.parse(value);
     }
 
-    final bool didSave = await (await _preferences).setInt(id, typedValue);
+    final bool didSave =
+    await (await _preferences).setInt(await _getIdWithConfig(), typedValue);
     return didSave;
   }
 }
@@ -128,7 +160,7 @@ class PreferenceBool extends Preference {
 
   @override
   Future<dynamic> get() async {
-    bool result = (await _preferences).getBool(id);
+    bool result = (await _preferences).getBool(await _getIdWithConfig());
     return result;
   }
 
@@ -142,7 +174,8 @@ class PreferenceBool extends Preference {
       typedValue = bool.fromEnvironment(value);
     }
 
-    final bool didSave = await (await _preferences).setBool(id, typedValue);
+    final bool didSave = await (await _preferences)
+        .setBool(await _getIdWithConfig(), typedValue);
     return didSave;
   }
 }
