@@ -22,7 +22,6 @@ class PreferenceConfigName extends Preference {
 
   @override
   Future<dynamic> get() async {
-    print('get config name');
     return await (PiConfig.getActiveString());
   }
 

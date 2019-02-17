@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sterrenburg.github.flutterhole/pi_config.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/cancel_button.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_form.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
 
 const addNew = 'addNew';
 
@@ -35,19 +33,6 @@ class PiConfigMenuState extends State<PiConfigMenu> {
   Future<int> _addNew(String name) async {
     return PiConfig.setConfig(name).catchError((e) {
       Fluttertoast.showToast(msg: e.toString());
-    });
-  }
-
-  _switchConfig(int index) {
-    PiConfig.setActiveIndex(index).then((bool didSet) {
-      setState(() {});
-      AppState.of(context).resetSleeping();
-      AppState.of(context).updateStatus();
-      PreferenceIsDark().get().then((dynamic value) {
-        PreferenceIsDark.applyTheme(context, value as bool);
-      });
-      PiConfig.getActiveString().then((String activeString) =>
-          Fluttertoast.showToast(msg: 'Switching to $activeString'));
     });
   }
 
@@ -85,7 +70,10 @@ class PiConfigMenuState extends State<PiConfigMenu> {
                   // TODO use some user dialog here
                   return _openPreferenceDialog(context, controller);
                 } else {
-                  _switchConfig(result.index);
+                  PiConfig.switchConfig(context: context, index: result.index)
+                      .then((bool didSwitch) {
+                    setState(() {});
+                  });
                 }
               },
               itemBuilder: (BuildContext context) {
@@ -121,9 +109,11 @@ class PiConfigMenuState extends State<PiConfigMenu> {
         child: Text('OK'),
         onPressed: () {
           if (editForm.formKey.currentState.validate()) {
-            print('set correctly: ${editForm.controller.value.text}');
             _addNew(editForm.controller.value.text).then((int newConfigIndex) {
-              _switchConfig(newConfigIndex);
+              PiConfig.switchConfig(context: context, index: newConfigIndex)
+                  .then((bool didSwitch) {
+                setState(() {});
+              });
             });
             Navigator.pop(context);
           }

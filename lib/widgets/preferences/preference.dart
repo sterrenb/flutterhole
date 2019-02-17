@@ -7,9 +7,6 @@ import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
 
-const String configNames = 'configNames';
-const String defaultConfigName = 'Default';
-
 /// a scaffold for managing a preference that is saved between sessions, using [SharedPreferences].
 abstract class Preference {
   /// The unique identifier used to store the preference.
@@ -59,7 +56,6 @@ abstract class Preference {
     await PreferencePort().set();
     await PreferenceIsDark().set();
     await PreferenceToken().set();
-//    await resetConfigs();
     return true;
   }
 
@@ -144,7 +140,6 @@ class PreferenceBool extends Preference {
   @override
   Future<dynamic> get() async {
     bool result = (await _preferences).getBool(await _getIdWithConfig());
-    print('$title get: ${result.toString()}');
     return result == null ? defaultValue : result;
   }
 
