@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:http/http.dart' as http;
-import 'package:sterrenburg.github.flutterhole/models/dashboard/default_scaffold.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/friendly_exception.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/default_scaffold.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/friendly_exception.dart';
 
 class PrivacyScreen extends StatefulWidget {
   @override

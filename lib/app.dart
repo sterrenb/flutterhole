@@ -18,8 +18,7 @@ class MyAppState extends State<MyApp> {
 
     return DynamicTheme(
       defaultBrightness: Brightness.light,
-      data: (brightness) =>
-          ThemeData(
+      data: (brightness) => ThemeData(
             primarySwatch: Colors.indigo,
             brightness: brightness,
           ),

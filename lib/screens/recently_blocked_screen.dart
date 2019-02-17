@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/default_scaffold.dart';
-import 'package:sterrenburg.github.flutterhole/models/dashboard/recently_blocked.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/default_scaffold.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/recently_blocked.dart';
 
 class RecentlyBlockedScreen extends StatefulWidget {
   @override
