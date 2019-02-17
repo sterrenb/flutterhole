@@ -8,11 +8,9 @@ import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_fo
 class PreferenceView extends StatefulWidget {
   final Preference preference;
   final bool addScanButton;
-  final Type type;
 
   const PreferenceView({Key key,
     @required this.preference,
-    this.type = String,
     this.addScanButton = false})
       : super(key: key);
 
@@ -44,7 +42,9 @@ class PreferenceViewState extends State<PreferenceView> {
         builder: (BuildContext context) {
           return alertPrefDialog(
               EditForm(
-                  formKey: formKey, controller: controller, type: widget.type),
+                  formKey: formKey,
+                  controller: controller,
+                  type: widget.preference.defaultValue.runtimeType),
               context);
         });
   }
@@ -95,7 +95,7 @@ class PreferenceViewState extends State<PreferenceView> {
         future: widget.preference.get(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
-            if (widget.type == bool) {
+            if (widget.preference.defaultValue.runtimeType == bool) {
               return SwitchListTile(
                 title: Text(widget.preference.title),
                 value: snapshot.data,
