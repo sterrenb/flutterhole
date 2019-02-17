@@ -37,10 +37,15 @@ class PiConfig {
     return result;
   }
 
+  static Future<bool> hasConfig(String name) async {
+    List<String> configs = await getAll();
+    return configs.contains(name);
+  }
+
   static Future<int> setConfig(String name) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List<String> configs = await getAll();
-    if (configs.contains(name)) {
+    if (await hasConfig(name)) {
       throw Exception('This name is already used');
     }
     List<String> newConfigs = List.from(configs)..add(name);

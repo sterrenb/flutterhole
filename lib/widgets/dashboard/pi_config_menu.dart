@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sterrenburg.github.flutterhole/pi_config.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/cancel_button.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_form.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
 
 const addNew = 'addNew';
@@ -44,11 +46,15 @@ class PiConfigMenuState extends State<PiConfigMenu> {
       PreferenceIsDark().get().then((dynamic value) {
         PreferenceIsDark.applyTheme(context, value as bool);
       });
+      PiConfig.getActiveString().then((String activeString) =>
+          Fluttertoast.showToast(msg: 'Switching to $activeString'));
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = TextEditingController();
+
     return FutureBuilder<List<String>>(
       future: PiConfig.getAll(),
       builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
@@ -60,6 +66,7 @@ class PiConfigMenuState extends State<PiConfigMenu> {
               menuItems.add(CheckedPopupMenuItem(
                   value: ConfigOption(configName, i),
                   checked: i == active,
+                  enabled: i != active,
                   child: Text(configName)));
               i++;
             });
@@ -76,9 +83,7 @@ class PiConfigMenuState extends State<PiConfigMenu> {
 
                 if (result.name == addNew) {
                   // TODO use some user dialog here
-                  _addNew('final').then((int newConfigIndex) {
-                    _switchConfig(newConfigIndex);
-                  });
+                  return _openPreferenceDialog(context, controller);
                 } else {
                   _switchConfig(result.index);
                 }
@@ -93,6 +98,43 @@ class PiConfigMenuState extends State<PiConfigMenu> {
           color: Colors.red,
         );
       },
+    );
+  }
+
+  /// Shows an [AlertDialog] with an editable preference field
+  Future _openPreferenceDialog(BuildContext context,
+      TextEditingController controller) {
+    final formKey = GlobalKey<FormState>();
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertConfigDialog(
+              EditForm(formKey: formKey, controller: controller, type: String),
+              context);
+        });
+  }
+
+  AlertDialog alertConfigDialog(EditForm editForm, BuildContext context) {
+    List<Widget> actions = [
+      CancelButton(),
+      FlatButton(
+        child: Text('OK'),
+        onPressed: () {
+          if (editForm.formKey.currentState.validate()) {
+            print('set correctly: ${editForm.controller.value.text}');
+            _addNew(editForm.controller.value.text).then((int newConfigIndex) {
+              _switchConfig(newConfigIndex);
+            });
+            Navigator.pop(context);
+          }
+        },
+      )
+    ];
+
+    return AlertDialog(
+      title: Text('Enter a name'),
+      content: editForm,
+      actions: actions,
     );
   }
 }

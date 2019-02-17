@@ -9,9 +9,8 @@ class PreferenceView extends StatefulWidget {
   final Preference preference;
   final bool addScanButton;
 
-  const PreferenceView({Key key,
-    @required this.preference,
-    this.addScanButton = false})
+  const PreferenceView(
+      {Key key, @required this.preference, this.addScanButton = false})
       : super(key: key);
 
   @override
@@ -34,13 +33,13 @@ class PreferenceViewState extends State<PreferenceView> {
   }
 
   /// Shows an [AlertDialog] with an editable preference field
-  Future openPrefDialog(AsyncSnapshot<dynamic> snapshot, BuildContext context,
-      TextEditingController controller) {
+  Future _openPreferenceDialog(AsyncSnapshot<dynamic> snapshot,
+      BuildContext context, TextEditingController controller) {
     final formKey = GlobalKey<FormState>();
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return alertPrefDialog(
+          return _alertPreferenceDialog(
               EditForm(
                   formKey: formKey,
                   controller: controller,
@@ -49,7 +48,7 @@ class PreferenceViewState extends State<PreferenceView> {
         });
   }
 
-  AlertDialog alertPrefDialog(EditForm editForm, BuildContext context) {
+  AlertDialog _alertPreferenceDialog(EditForm editForm, BuildContext context) {
     List<Widget> actions = [
       CancelButton(),
       FlatButton(
@@ -133,7 +132,7 @@ class PreferenceViewState extends State<PreferenceView> {
               ),
               subtitle: Text(controller.text),
               onTap: () {
-                return openPrefDialog(snapshot, context, controller);
+                return _openPreferenceDialog(snapshot, context, controller);
               },
               onLongPress: () {
                 Fluttertoast.showToast(msg: widget.preference.description);
@@ -145,5 +144,3 @@ class PreferenceViewState extends State<PreferenceView> {
         });
   }
 }
-
-
