@@ -1,6 +1,7 @@
 # FlutterHole
 
 [![Codemagic build status](https://api.codemagic.io/apps/5c659ea9c49a5000198d45f9/5c65b2f4b66bc70009aaa202/status_badge.svg)](https://codemagic.io/apps/5c659ea9c49a5000198d45f9/5c65b2f4b66bc70009aaa202/latest_build)
+<img src="http://img.shields.io/liberapay/receives/sterrenburg.svg?logo=liberapay">
 
 FlutterHole is a free third party Android application for interacting with your Pi-Hole® server.
 
