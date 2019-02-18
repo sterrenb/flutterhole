@@ -4,14 +4,12 @@ import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/cancel_
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/scan_button.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_form.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
 
 class PreferenceView extends StatefulWidget {
   final Preference preference;
-  final bool addScanButton;
 
-  const PreferenceView(
-      {Key key, @required this.preference, this.addScanButton = false})
-      : super(key: key);
+  const PreferenceView({Key key, @required this.preference}) : super(key: key);
 
   @override
   PreferenceViewState createState() {
@@ -77,7 +75,7 @@ class PreferenceViewState extends State<PreferenceView> {
       )
     ];
 
-    if (widget.addScanButton) {
+    if (widget.preference.runtimeType == PreferenceToken) {
       actions.insert(0, ScanButton(controller: editForm.controller));
     }
 
