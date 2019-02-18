@@ -64,10 +64,7 @@ class PiConfigMenuState extends State<PiConfigMenu> {
           return PopupMenuButton<ConfigOption>(
               tooltip: 'Select Pi-hole configuration',
               onSelected: (ConfigOption result) {
-                print('click ${result.toString()}');
-
                 if (result.name == addNew) {
-                  // TODO use some user dialog here
                   return _openPreferenceDialog(context, controller);
                 } else {
                   PiConfig.switchConfig(context: context, index: result.index)

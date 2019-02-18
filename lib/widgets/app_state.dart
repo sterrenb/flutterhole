@@ -8,6 +8,7 @@ import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_ho
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_view.dart';
 
 /// A global state manager, used for sharing state within different Widgets with [child] as its root.
 class AppState extends StatefulWidget {
@@ -206,6 +207,12 @@ class _AppStateState extends State<AppState> {
       resetSleeping();
       throw Exception('Failed to disable status - is your API token correct?');
     }
+  }
+
+  List<Widget> allPreferenceViews(BuildContext context) {
+    return AppState.of(context).allPreferences().map((Preference preference) {
+      return PreferenceView(preference: preference);
+    }).toList();
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:launch_review/launch_review.dart';
 import 'package:package_info/package_info.dart';
 import 'package:sterrenburg.github.flutterhole/api_provider.dart';
 import 'package:sterrenburg.github.flutterhole/screens/privacy_screen.dart';
+import 'package:sterrenburg.github.flutterhole/screens/welcome_screen.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/default_scaffold.dart';
 
 class AboutScreen extends StatefulWidget {
@@ -41,6 +42,13 @@ class _AboutScreenState extends State<AboutScreen> {
           onTap: () =>
               ApiProvider.launchURL(
                   'https://github.com/sterrenburg/flutterhole/issues/new'),
+        ),
+        ListTile(
+          leading: Icon(Icons.view_carousel),
+          title: Text('View welcome screen'),
+          onTap: () =>
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => WelcomeScreen())),
         ),
         ListTile(
           leading: Icon(Icons.lock),
