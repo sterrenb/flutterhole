@@ -1,8 +1,11 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/screens/settings_screen.dart';
 
 class MyApp extends StatefulWidget {
+  final Widget home;
+
+  const MyApp({Key key, @required this.home}) : super(key: key);
+
   @override
   MyAppState createState() {
     return new MyAppState();
@@ -27,7 +30,7 @@ class MyAppState extends State<MyApp> {
           title: title,
           theme: theme,
           debugShowCheckedModeBanner: false,
-          home: SettingsScreen(),
+          home: widget.home,
         );
       },
     );

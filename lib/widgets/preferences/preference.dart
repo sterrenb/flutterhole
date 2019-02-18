@@ -59,6 +59,17 @@ abstract class Preference {
     return true;
   }
 
+  static Future<bool> firstUse() async {
+    const firstUse = 'firstUse';
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    if (preferences.getBool(firstUse) == false) {
+      return false;
+    }
+
+    await preferences.setBool(firstUse, false);
+    return true;
+  }
+
   Future<String> _getIdWithConfig() async {
     String idWithConfig = id + ((await PiConfig.getActiveIndex()).toString());
 //    log.info('getIdWithConfig: ' + idWithConfig);

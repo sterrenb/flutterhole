@@ -66,7 +66,6 @@ class PiConfig {
       throw Exception('This name is already used');
     }
     List<String> newConfigs = List.from(configs)..add(name);
-    print('newConfigs after setConfig: ${newConfigs.toString()}');
     await preferences.setStringList(all, newConfigs);
     return (await getAll()).length - 1;
   }
@@ -87,9 +86,6 @@ class PiConfig {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     final int activeIndex = await getActiveIndex();
     List<String> configs = await getAll();
-    print('configs: ${configs.toString()}');
-    print('activeIndex: ${activeIndex.toString()}');
-    print('all: ${await getAll()}');
 
     if (configs.length == 1) {
       Fluttertoast.showToast(msg: 'No other configurations available');
@@ -102,13 +98,11 @@ class PiConfig {
     // skip this loop if we can simply switch back to the only configuration left
     if ((activeIndex == 1 && configs.length == 2)) {
       // else, move the contents down by 1 index
-      for (int i = configs.length - 1; i > activeIndex; i --) {
+      for (int i = configs.length - 1; i > activeIndex; i--) {
         // TODO well...
       }
     }
 
-
-    print('newConfigs: ${newConfigs.toString()}');
     await preferences.setStringList(all, newConfigs);
     return true;
   }

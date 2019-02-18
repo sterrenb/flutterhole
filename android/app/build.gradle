@@ -37,8 +37,8 @@ android {
         minSdkVersion 16
         //noinspection OldTargetApi (28 breaks keyboard popups with textformfields in alertdialogs)
         targetSdkVersion 27
-        versionCode 169
-        versionName "0.2.0+169"
+        versionCode 170
+        versionName "0.2.1+170"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

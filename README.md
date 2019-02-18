@@ -1,6 +1,10 @@
 # FlutterHole
 
 [![Codemagic build status](https://api.codemagic.io/apps/5c659ea9c49a5000198d45f9/5c65b2f4b66bc70009aaa202/status_badge.svg)](https://codemagic.io/apps/5c659ea9c49a5000198d45f9/5c65b2f4b66bc70009aaa202/latest_build)
+[![Beerpay](https://beerpay.io/sterrenburg/flutterhole/make-wish.svg?style=flat)](https://beerpay.io/sterrenburg/flutterhole)
+[![MIT licenced](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Platform](https://img.shields.io/badge/Platform-Flutter-yellow.svg)](https://flutter.io)
+[![Beerpay](https://beerpay.io/sterrenburg/flutterhole/badge.svg?style=flat)](https://beerpay.io/sterrenburg/flutterhole)
 
 FlutterHole is a free third party Android application for interacting with your Pi-Hole® server.
 
