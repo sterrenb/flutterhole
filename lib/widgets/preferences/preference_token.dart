@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sterrenburg.github.flutterhole/api_provider.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 /// A [Preference] for storing the Pi-hole® API token.
 class PreferenceToken extends Preference {
@@ -28,7 +28,7 @@ class PreferenceToken extends Preference {
       onSet: ({BuildContext context, bool didSet, dynamic value}) {
         AppState.of(context).updateAuthorized().then((bool isAuthorized) {
           String msg = isAuthorized
-              ? 'Authorization succesful'
+              ? 'Authorization successful'
               : 'Authorizatation failed';
           Fluttertoast.showToast(msg: msg);
         });
