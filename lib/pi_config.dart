@@ -54,16 +54,11 @@ class PiConfig {
     return result;
   }
 
-  static Future<bool> hasConfig(String name) async {
-    List<String> configs = await getAll();
-    return configs.contains(name);
-  }
-
   static Future<int> setConfig(String name) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List<String> configs = await getAll();
-    if (await hasConfig(name)) {
-      throw Exception('This name is already used');
+    if (configs.contains(name)) {
+      throw Exception('This name already exists');
     }
     List<String> newConfigs = List.from(configs)..add(name);
     await preferences.setStringList(all, newConfigs);
@@ -73,13 +68,19 @@ class PiConfig {
   static Future<bool> updateActiveConfig(String name) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List<String> configs = await getAll();
-    if (configs.contains(name) && (await getActiveString()) != name) {
-      throw Exception('This config is already active');
+    if (configs.contains(name)) {
+      String activeString = await PiConfig.getActiveString();
+      if (name == activeString) {
+        return true;
+      }
+      throw Exception('This configuration already exists');
     }
 
     final int index = await getActiveIndex();
-    configs[index] = name;
-    return preferences.setStringList(all, configs);
+    List<String> newConfigs = List.from(configs)
+      ..removeAt(index)
+      ..insert(index, name);
+    return preferences.setStringList(all, newConfigs);
   }
 
   static Future<bool> removeActiveConfig() async {

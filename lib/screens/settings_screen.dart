@@ -15,7 +15,6 @@ class SettingsScreen extends StatelessWidget {
                   context: context,
                   tiles: AppState.of(context).allPreferenceViews(context))
                   .toList()),
-//          RemoveConfigButton(),
           ResetPrefsButton(),
         ],
       ),
