@@ -55,6 +55,9 @@ class PreferenceViewState extends State<PreferenceView> {
           if (editForm.formKey.currentState.validate()) {
             widget.preference
                 .set(value: editForm.controller.value.text)
+                .catchError((e) {
+              Fluttertoast.showToast(msg: e.toString());
+            })
                 .then((bool didSet) {
               if (didSet) {
                 if (widget.preference.onSet != null) {

@@ -40,7 +40,7 @@ class ResetButton extends StatelessWidget {
 }
 
 class ResetPrefsButton extends ResetButton {
-  static Future<bool> _neverSatisfied(BuildContext context) async {
+  static Future<bool> _warningReset(BuildContext context) async {
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -81,7 +81,7 @@ class ResetPrefsButton extends ResetButton {
       : super(
             child: Text('Reset to default settings'),
             onPressed: (BuildContext context) {
-              return _neverSatisfied(context);
+              return _warningReset(context);
             });
 }
 
