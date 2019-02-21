@@ -108,7 +108,7 @@ class ApiProvider {
       log.warning(uriString + ': ' + message);
       throw Exception(message);
     });
-    if (response.statusCode != 200) {
+    if (response.statusCode != 200 || response.body == '[]') {
       throw Exception('Failed to fetch, status code: ${response.statusCode}');
     }
     log.fine(uriString);
@@ -149,12 +149,7 @@ class ApiProvider {
     } catch (e) {
       rethrow;
     }
-    if (response.statusCode == 200 && response.contentLength > 2) {
-      final bool status = statusToBool(json.decode(response.body));
-      return status;
-    } else {
-      throw Exception('Cannot $activity Pi-hole');
-    }
+    return statusToBool(json.decode(response.body));
   }
 
   /// Returns true if the request is authorized, or false when unauthorized.
@@ -171,40 +166,17 @@ class ApiProvider {
     return false;
   }
 
-  /// Returns the summary of the Pi-hole.
+  /// Returns the [SummaryModel of the Pi-hole.
   ///
   /// Throws an [Exception when the request fails.
-  Future<Map<String, String>> fetchSummary() async {
-    const Map<String, String> _prettySummary = {
-      'dns_queries_today': 'Total Queries',
-      'ads_blocked_today': 'Queries Blocked',
-      'ads_percentage_today': 'Percent Blocked',
-      'domains_being_blocked': 'Domains on Blocklist',
-    };
-
-    http.Response response;
-
-    try {
-      response = await fetch('summary');
-    } catch (e) {
-      rethrow;
-    }
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> map = jsonDecode(response.body);
-      Map<String, String> finalMap = {};
-      if (map.isNotEmpty) {
-        _prettySummary.forEach((String oldKey, String newKey) {
-          if (newKey.contains('Percent')) {
-            map[oldKey] += '%';
-          }
-          finalMap[newKey] = map[oldKey];
-        });
-        return finalMap;
-      }
-    } else {
-      throw Exception(
-          'Failed to fetch summary data, status code: ${response.statusCode}');
+  Future<SummaryModel> fetchSummary() async {
+    final http.Response response = await fetch('summary');
+    Map<String, dynamic> map = jsonDecode(response.body);
+    if (map.isNotEmpty) {
+      try {
+        final SummaryModel model = SummaryModel.fromJson(map);
+        return model;
+      } catch (e) {}
     }
 
     throw Exception('Failed to fetch summary');
@@ -225,4 +197,38 @@ class ApiProvider {
 
     return response.body;
   }
+}
+
+class SummaryModel {
+  static const String _totalQueriesTitle = 'dns_queries_today';
+  static const String _queriesBlockedTitle = 'ads_blocked_today';
+  static const String _percentBlockedTitle = 'ads_percentage_today';
+  static const String _domainsOnBlocklistTitle = 'domains_being_blocked';
+
+  final int totalQueries;
+  final int queriesBlocked;
+  final double percentBlocked;
+  final int domainsOnBlocklist;
+
+  SummaryModel({this.totalQueries = 0,
+    this.queriesBlocked = 0,
+    this.percentBlocked = 0.0,
+    this.domainsOnBlocklist = 0});
+
+  static _stringToInt(String string) =>
+      int.tryParse(string.replaceAll(',', '')) ?? 0;
+
+  SummaryModel.fromJson(Map<String, dynamic> json)
+      : totalQueries = _stringToInt(json[_totalQueriesTitle]),
+        queriesBlocked = _stringToInt(json[_queriesBlockedTitle]),
+        percentBlocked = double.parse(json[_percentBlockedTitle]),
+        domainsOnBlocklist = _stringToInt(json[_domainsOnBlocklistTitle]);
+
+  Map<String, dynamic> toJson() =>
+      {
+        _totalQueriesTitle: totalQueries.toString(),
+        _queriesBlockedTitle: queriesBlocked.toString(),
+        _percentBlockedTitle: percentBlocked.toString(),
+        _domainsOnBlocklistTitle: domainsOnBlocklist.toString(),
+      };
 }

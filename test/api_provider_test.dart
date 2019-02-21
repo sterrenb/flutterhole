@@ -51,16 +51,15 @@ void main() {
       expect(ApiProvider.domain('pi.hole', 80), 'http://pi.hole/' + apiPath);
     });
     test('default address', () {
-      expect(
-          ApiProvider.domain('10.0.1.1', 80), 'http://10.0.1.1/' + apiPath);
+      expect(ApiProvider.domain('10.0.1.1', 80), 'http://10.0.1.1/' + apiPath);
     });
     test('specified port', () {
       expect(ApiProvider.domain('pi.hole', 5000),
           'http://pi.hole:5000/' + apiPath);
     });
     test('ssl port', () {
-      expect(ApiProvider.domain('pi.hole', 443),
-          'https://pi.hole:443/' + apiPath);
+      expect(
+          ApiProvider.domain('pi.hole', 443), 'https://pi.hole:443/' + apiPath);
     });
     test('specified host', () {
       expect(ApiProvider.domain('my.hole', 80), 'http://my.hole/' + apiPath);
@@ -136,8 +135,8 @@ void main() {
       final MockClient client = MockClient((request) async {
         return Response(json.encode({'status': 'disabled'}), 200);
       });
-      final bool response = await ApiProvider(client: client).setStatus(
-          false, duration: Duration(seconds: 10));
+      final bool response = await ApiProvider(client: client)
+          .setStatus(false, duration: Duration(seconds: 10));
       expect(response, false);
     });
   });
@@ -156,5 +155,56 @@ void main() {
       final bool response = await ApiProvider(client: client).isAuthorized();
       expect(response, false);
     });
+  });
+  group('fetchSummary', () {
+    test('valid response', () async {
+      final SummaryModel summaryModel = SummaryModel(
+          totalQueries: 1,
+          queriesBlocked: 2,
+          percentBlocked: 3.4,
+          domainsOnBlocklist: 5);
+
+      final MockClient client = MockClient((request) async {
+        return Response(jsonEncode(summaryModel.toJson()), 200);
+      });
+      final SummaryModel summaryModelResult = await ApiProvider(client: client)
+          .fetchSummary();
+      expect(summaryModelResult.totalQueries, summaryModel.totalQueries);
+      expect(summaryModelResult.queriesBlocked, summaryModel.queriesBlocked);
+      expect(summaryModelResult.percentBlocked, summaryModel.percentBlocked);
+      expect(summaryModelResult.domainsOnBlocklist,
+          summaryModel.domainsOnBlocklist);
+    });
+    test('invalid summary', () async {
+      final MockClient client = MockClient((request) async {
+        return Response(jsonEncode({'invalidKey': 'hi'}), 200);
+      });
+//    final SummaryModel summaryModelResult = await ApiProvider(client: client).fetchSummary();
+      expect(ApiProvider(client: client).fetchSummary(), throwsException);
+    });
+    test('empty', () async {
+      final MockClient client = MockClient((request) async {
+        return Response('', 200);
+      });
+//    final SummaryModel summaryModelResult = await ApiProvider(client: client).fetchSummary();
+      expect(ApiProvider(client: client).fetchSummary(), throwsException);
+    });
+  });
+
+  test('recentlyBlocked_valid response', () {
+    final MockClient client = MockClient((request) async {
+      return Response('blocked.domain', 200);
+    });
+//    final SummaryModel summaryModelResult = await ApiProvider(client: client).fetchSummary();
+    expect(ApiProvider(client: client).recentlyBlocked(),
+        completion('blocked.domain'));
+  });
+
+  test('recentlyBlocked_invalid response', () {
+    final MockClient client = MockClient((request) async {
+      return Response('', 500);
+    });
+//    final SummaryModel summaryModelResult = await ApiProvider(client: client).fetchSummary();
+    expect(ApiProvider(client: client).recentlyBlocked(), throwsException);
   });
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sterrenburg.github.flutterhole/api_provider.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/friendly_exception.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/info_tile.dart';
@@ -15,17 +16,28 @@ class _SummaryTilesState extends State<SummaryTiles> {
   @override
   Widget build(BuildContext context) {
     final appState = AppState.of(context);
-    return FutureBuilder<Map<String, String>>(
+    return FutureBuilder<SummaryModel>(
       future: appState.provider.fetchSummary(),
-      builder: ((BuildContext context, AsyncSnapshot snapshot) {
+      builder: ((BuildContext context, AsyncSnapshot<SummaryModel> snapshot) {
         if (snapshot.hasData) {
-          List<Widget> infoTiles = [];
-          snapshot.data.forEach((String key, String value) {
-            infoTiles.add(InfoTile(
-              title: key,
-              value: value,
-            ));
-          });
+          final List<Widget> infoTiles = [
+            InfoTile(
+              title: ' Total Queries',
+              value: snapshot.data.totalQueries.toString(),
+            ),
+            InfoTile(
+              title: ' Queries Blocked',
+              value: snapshot.data.queriesBlocked.toString(),
+            ),
+            InfoTile(
+              title: ' Percent Blocked',
+              value: snapshot.data.percentBlocked.toString() + '%',
+            ),
+            InfoTile(
+              title: ' Domains on Blocklist',
+              value: snapshot.data.domainsOnBlocklist.toString(),
+            ),
+          ];
 
           return Column(
             mainAxisSize: MainAxisSize.max,
