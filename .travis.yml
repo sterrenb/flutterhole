@@ -1,9 +1,21 @@
-os:
-- linux
-sudo: false
+language: android
+jdk:
+- oraclejdk8
+android:
+  components:
+  - tools
+  - build-tools-27.0.2
+  - android 27
+  licenses:
+  - 'android-sdk-license-.+'
+
+before_install:
+- yes | sdkmanager "platforms;android-27"
+
 install:
 - gem install bundler
 - bundle install
+
 addons:
   apt:
     # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
@@ -13,7 +25,7 @@ addons:
     - libstdc++6
     - fonts-droid
 before_script:
-- git clone https://github.com/flutter/flutter.git -b alpha --depth 1
+- git clone https://github.com/flutter/flutter.git -b beta
 - ./flutter/bin/flutter doctor
 - gem install coveralls-lcov
 script:
