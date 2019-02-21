@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:sterrenburg.github.flutterhole/api_provider.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
+import 'package:sterrenburg.github.flutterhole/api_provider.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -28,6 +28,10 @@ void main() {
     });
     log.clear();
   });
+
+  // test('constructor', () {
+  //   expect(ApiProvider().client, TypeMatcher<Client>());
+  // });
 
   group('statusToBool', () {
     test('status: enabled', () {
@@ -54,8 +58,21 @@ void main() {
       expect(ApiProvider.domain('pi.hole', 5000),
           'http://pi.hole:5000/' + apiPath);
     });
+    test('ssl port', () {
+      expect(ApiProvider.domain('pi.hole', 443),
+          'https://pi.hole:443/' + apiPath);
+    });
     test('specified host', () {
       expect(ApiProvider.domain('my.hole', 80), 'http://my.hole/' + apiPath);
+    });
+  });
+
+  group('launchURL', () {
+    test('valid', () async {
+      expect(ApiProvider().launchURL('http://pi.hole'), completion(false));
+    });
+    test('invalid', () async {
+      expect(ApiProvider().launchURL('ftp://pi.hole'), completion(false));
     });
   });
 
@@ -66,6 +83,12 @@ void main() {
       });
       final response = await ApiProvider(client: client).fetch('params');
       expect(response.body, 'test');
+    });
+    test('500', () async {
+      final MockClient client = MockClient((request) async {
+        return Response('test', 500);
+      });
+      expect(ApiProvider(client: client).fetch('params'), throwsException);
     });
     test('timeout', () async {
       final MockClient client = MockClient((request) async {
@@ -94,20 +117,28 @@ void main() {
   });
 
   group('setStatus', () {
-    test('true valid auth', () async {
+    test('enable valid auth', () async {
       final MockClient client = MockClient((request) async {
         return Response(json.encode({'status': 'disabled'}), 200);
       });
       final bool response = await ApiProvider(client: client).setStatus(true);
       expect(response, false);
     });
-    test('true no auth', () async {
+    test('enable no auth', () async {
       final MockClient client = MockClient((request) async {
         return Response('[]', 403);
       });
       expect(
               () => ApiProvider(client: client).setStatus(true),
           throwsException);
+    });
+    test('disable for duration', () async {
+      final MockClient client = MockClient((request) async {
+        return Response(json.encode({'status': 'disabled'}), 200);
+      });
+      final bool response = await ApiProvider(client: client).setStatus(
+          false, duration: Duration(seconds: 10));
+      expect(response, false);
     });
   });
   group('isAuthorized', () {

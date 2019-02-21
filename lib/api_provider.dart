@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:logging/logging.dart';
@@ -59,16 +58,17 @@ class ApiProvider {
   /// Launches the [url] in the default browser.
   ///
   /// Shows a toast if the url can not be launched.
-  static void launchURL(String url) async {
+  Future<bool> launchURL(String url) async {
     try {
       if (await canLaunch(url)) {
         await launch(url);
-      } else {
-        Fluttertoast.showToast(msg: 'URL could not be launched');
+        return true;
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'URL could not be launched');
+      log.warning('cannot launch url' + ': ' + url);
     }
+
+    return false;
   }
 
   /// Returns a widget with a hyperlink that can be tapped to launch using [launchURL].
@@ -79,7 +79,7 @@ class ApiProvider {
           color: Colors.blue,
         ),
         recognizer: TapGestureRecognizer()
-          ..onTap = () => ApiProvider.launchURL(urlString));
+          ..onTap = () => ApiProvider().launchURL(urlString));
   }
 
   /// Returns the result of an API request based on the [params]. Set [authorization] to true when performing administrative tasks.
@@ -100,15 +100,19 @@ class ApiProvider {
     final String hostname = await PreferenceHostname().get();
     int port = await PreferencePort().get();
     String uriString = (domain(hostname, port)) + '?' + params;
-    final _result = await client.get(uriString).timeout(timeout, onTimeout: () {
+    final response =
+    await client.get(uriString).timeout(timeout, onTimeout: () {
       final String message =
           'Request timed out after ${timeout.inSeconds
           .toString()} seconds - is your port correct?';
       log.warning(uriString + ': ' + message);
       throw Exception(message);
     });
+    if (response.statusCode != 200) {
+      throw Exception('Failed to fetch, status code: ${response.statusCode}');
+    }
     log.fine(uriString);
-    return _result;
+    return response;
   }
 
   /// Returns true if the Pi-hole® is enabled, or false when disabled.
@@ -121,12 +125,8 @@ class ApiProvider {
     } catch (e) {
       rethrow;
     }
-    if (response.statusCode == 200) {
-      final bool status = statusToBool(json.decode(response.body));
-      return status;
-    } else {
-      throw Exception('Failed to fetch status');
-    }
+    final bool status = statusToBool(json.decode(response.body));
+    return status;
   }
 
   /// Sets the status of the Pi-hole® to 'enabled' or 'disabled' based on [newStatus].
@@ -162,13 +162,12 @@ class ApiProvider {
     http.Response response;
     try {
       response = await fetch('topItems', authorization: true);
+      if (response.statusCode == 200 && response.contentLength > 2) {
+        return true;
+      }
     } catch (e) {
-      rethrow;
+      log.warning('not authorized: ${e.toString()}');
     }
-    if (response.statusCode == 200 && response.contentLength > 2) {
-      return true;
-    }
-
     return false;
   }
 
