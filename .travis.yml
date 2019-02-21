@@ -1,6 +1,9 @@
 os:
 - linux
 sudo: false
+install:
+- gem install bundler
+- bundle install
 addons:
   apt:
     # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
