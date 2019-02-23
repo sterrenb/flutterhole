@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sterrenburg.github.flutterhole/screens/welcome_screen.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
@@ -55,7 +56,6 @@ class ResetPrefsButton extends ResetButton {
                   preferences.clear().then((didClear) {
                     if (didClear) {
                       Preference.resetAll();
-                      Fluttertoast.showToast(msg: 'Factory reset');
                       AppState.of(context).updateStatus();
                       AppState.of(context)
                           .preferenceIsDark
@@ -63,6 +63,10 @@ class ResetPrefsButton extends ResetButton {
                           .then((dynamic isDark) {
                         PreferenceIsDark.applyTheme(context, isDark as bool);
                       });
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => WelcomeScreen()));
                     } else {
                       Fluttertoast.showToast(msg: 'Failed to factory reset');
                     }

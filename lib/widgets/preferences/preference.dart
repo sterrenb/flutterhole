@@ -56,6 +56,7 @@ abstract class Preference {
     await PreferencePort().set();
     await PreferenceIsDark().set();
     await PreferenceToken().set();
+    await Preference.firstUse();
     return true;
   }
 
@@ -71,8 +72,9 @@ abstract class Preference {
   }
 
   Future<String> _getIdWithConfig() async {
-    String idWithConfig = id + (PiConfig().getActiveIndex().toString());
-//    log.info('getIdWithConfig: ' + idWithConfig);
+    final int activeIndex = await PiConfig().getActiveIndex();
+    String idWithConfig = id + activeIndex.toString();
+    log.info('getIdWithConfig: ' + idWithConfig);
     return idWithConfig;
   }
 

@@ -15,7 +15,7 @@ class PreferenceIsDark extends PreferenceBool {
   PreferenceIsDark()
       : super(
       id: 'isDark',
-      title: 'Dark Theme (experimental)',
+      title: 'Dark Theme',
       description: 'Use the global dark theme',
       // TODO remove this remnant from bool prefs, OR incorporate it in the UI
       help: Container(),

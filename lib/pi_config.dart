@@ -31,7 +31,6 @@ class PiConfig {
   Future<String> getActiveString() async {
     final int index = await getActiveIndex();
     final List<String> all = await getAll();
-//    print('getActiveString with index: $index');
     return all.elementAt((index));
   }
 
@@ -64,6 +63,7 @@ class PiConfig {
   Future<int> setConfig(String name) async {
     final preferences = await _preferences;
     final configs = await getAll();
+    name = name.trim();
     if (configs.contains(name)) {
       throw Exception('This name already exists');
     }
