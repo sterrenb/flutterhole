@@ -44,8 +44,6 @@ class PiConfigMenuState extends WithAppState<PiConfigMenu> {
   Widget build(BuildContext context) {
     final controller = TextEditingController();
 
-    List<PopupMenuEntry<ConfigOption>> menuItems = [];
-
     return FutureBuilder(
       future: Future.wait([
         globalPiConfig(context).getActiveIndex(),
@@ -55,6 +53,7 @@ class PiConfigMenuState extends WithAppState<PiConfigMenu> {
         if (snapshot.hasData) {
           final int active = snapshot.data[0];
           final List<String> all = snapshot.data[1];
+          List<PopupMenuEntry<ConfigOption>> menuItems = [];
 
           int i = 0;
           all.forEach((String configName) {

@@ -74,7 +74,6 @@ abstract class Preference {
   Future<String> _getIdWithConfig() async {
     final int activeIndex = await PiConfig().getActiveIndex();
     String idWithConfig = id + activeIndex.toString();
-    log.info('getIdWithConfig: ' + idWithConfig);
     return idWithConfig;
   }
 

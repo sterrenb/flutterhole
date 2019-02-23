@@ -22,14 +22,15 @@ class _AboutScreenState extends State<AboutScreen> {
           leading: Icon(Icons.code),
           title: Text('View the source on GitHub'),
           onTap: () =>
-              ApiProvider().launchURL(
-                  'https://github.com/sterrenburg/flutterhole/'),
+              ApiProvider()
+                  .launchURL('https://github.com/sterrenburg/flutterhole/'),
         ),
         ListTile(
           leading: Icon(Icons.monetization_on),
-          title: Text('Donate via Liberapay'),
+          title: Text('Make a wish'),
           onTap: () =>
-              ApiProvider().launchURL('https://liberapay.com/sterrenburg'),
+              ApiProvider()
+                  .launchURL('https://beerpay.io/sterrenburg/flutterhole'),
         ),
         ListTile(
           leading: Icon(Icons.star),

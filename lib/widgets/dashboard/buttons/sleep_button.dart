@@ -16,7 +16,9 @@ class SleepButtonsState extends State<SleepButtons> {
 
   @override
   Widget build(BuildContext context) {
-    return AppState.of(context).isSleeping()
+    return (AppState.of(context).isSleeping() && AppState
+        .of(context)
+        .enabled)
         ? ExpansionTile(
             title: Text('Disable',
                 style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
