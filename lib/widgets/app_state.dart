@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:sterrenburg.github.flutterhole/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/pi_config.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_config_name.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
@@ -21,16 +22,16 @@ class AppState extends StatefulWidget {
   AppState({@required this.child, @required this.brightness});
 
   @override
-  _AppStateState createState() => _AppStateState();
+  AppStateState createState() => AppStateState();
 
-  static _AppStateState of(BuildContext context) {
+  static AppStateState of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_InheritedState)
             as _InheritedState)
         .data;
   }
 }
 
-class _AppStateState extends State<AppState> {
+class AppStateState extends State<AppState> {
   /// Whether the Pi-hole is enabled.
   bool _enabled;
 
@@ -47,6 +48,8 @@ class _AppStateState extends State<AppState> {
   Duration _sleeping;
 
   ApiProvider provider;
+
+  PiConfig piConfig;
 
   bool get enabled => _enabled;
 
@@ -85,6 +88,7 @@ class _AppStateState extends State<AppState> {
       _loading = true;
       _sleeping = Duration();
       provider = ApiProvider();
+      piConfig = PiConfig();
     });
 
     updateStatus();
@@ -225,7 +229,7 @@ class _AppStateState extends State<AppState> {
 }
 
 class _InheritedState extends InheritedWidget {
-  final _AppStateState data;
+  final AppStateState data;
 
   _InheritedState({Key key, this.data, Widget child})
       : super(key: key, child: child);
@@ -233,5 +237,15 @@ class _InheritedState extends InheritedWidget {
   @override
   bool updateShouldNotify(_InheritedState old) {
     return true;
+  }
+}
+
+abstract class WithAppState<T extends StatefulWidget> extends State<T> {
+  AppStateState appState(BuildContext context) {
+    return AppState.of(context);
+  }
+
+  PiConfig globalPiConfig(BuildContext context) {
+    return appState(context).piConfig;
   }
 }

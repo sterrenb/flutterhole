@@ -303,3 +303,8 @@ android/key.properties
 android/fastlame/report.xml
 .idea/modules.xml
 secret.json
+coverage/
+.atom/
+.bundle/
+.vscode/
+vendor/

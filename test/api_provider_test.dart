@@ -29,10 +29,6 @@ void main() {
     log.clear();
   });
 
-  // test('constructor', () {
-  //   expect(ApiProvider().client, TypeMatcher<Client>());
-  // });
-
   group('statusToBool', () {
     test('status: enabled', () {
       expect(ApiProvider.statusToBool({'status': 'enabled'}), true);
@@ -76,7 +72,7 @@ void main() {
   });
 
   group('fetch', () {
-    test('default', () async {
+    test('valid query', () async {
       final MockClient client = MockClient((request) async {
         return Response('test', 200);
       });
@@ -191,20 +187,20 @@ void main() {
     });
   });
 
-  test('recentlyBlocked_valid response', () {
-    final MockClient client = MockClient((request) async {
-      return Response('blocked.domain', 200);
+  group('recentlyBlocked', () {
+    test('valid response', () {
+      final MockClient client = MockClient((request) async {
+        return Response('blocked.domain', 200);
+      });
+      expect(ApiProvider(client: client).recentlyBlocked(),
+          completion('blocked.domain'));
     });
-//    final SummaryModel summaryModelResult = await ApiProvider(client: client).fetchSummary();
-    expect(ApiProvider(client: client).recentlyBlocked(),
-        completion('blocked.domain'));
-  });
 
-  test('recentlyBlocked_invalid response', () {
-    final MockClient client = MockClient((request) async {
-      return Response('', 500);
+    test('invalid response', () {
+      final MockClient client = MockClient((request) async {
+        return Response('', 500);
+      });
+      expect(ApiProvider(client: client).recentlyBlocked(), throwsException);
     });
-//    final SummaryModel summaryModelResult = await ApiProvider(client: client).fetchSummary();
-    expect(ApiProvider(client: client).recentlyBlocked(), throwsException);
   });
 }

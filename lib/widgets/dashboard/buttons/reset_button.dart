@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sterrenburg.github.flutterhole/pi_config.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
@@ -82,19 +81,5 @@ class ResetPrefsButton extends ResetButton {
             child: Text('Reset to default settings'),
             onPressed: (BuildContext context) {
               return _warningReset(context);
-            });
-}
-
-class RemoveConfigButton extends ResetButton {
-  RemoveConfigButton()
-      : super(
-            child: Text('Remove current configuration'),
-            color: Colors.orange,
-            onPressed: (BuildContext context) {
-              PiConfig.removeActiveConfig().then((bool didRemove) {
-                if (didRemove) {
-                  PiConfig.switchConfig(context: context, pop: false);
-                }
-              });
             });
 }
