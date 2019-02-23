@@ -1,0 +1,19 @@
+# Screen capture tests
+tests:
+- test_driver/test1.dart
+- test_driver/test2.dart
+
+# Interim location of screenshots from tests
+staging: screenshots
+
+# A list of locales supported by the app
+locales:
+- en-US
+
+# A list of devices to emulate
+devices:
+  android:
+  - Pixel XL
+
+# Frame screenshots
+frame: true
