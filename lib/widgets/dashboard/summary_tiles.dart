@@ -13,6 +13,12 @@ class SummaryTiles extends StatefulWidget {
 }
 
 class _SummaryTilesState extends State<SummaryTiles> {
+  static String _numberWithCommas(String string) {
+    final RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+    final Function matchFunc = (Match match) => '${match[1]},';
+    return string.replaceAllMapped(reg, matchFunc);
+  }
+
   @override
   Widget build(BuildContext context) {
     final appState = AppState.of(context);
@@ -23,11 +29,11 @@ class _SummaryTilesState extends State<SummaryTiles> {
           final List<Widget> infoTiles = [
             InfoTile(
               title: ' Total Queries',
-              value: snapshot.data.totalQueries.toString(),
+              value: _numberWithCommas(snapshot.data.totalQueries.toString()),
             ),
             InfoTile(
               title: ' Queries Blocked',
-              value: snapshot.data.queriesBlocked.toString(),
+              value: _numberWithCommas(snapshot.data.queriesBlocked.toString()),
             ),
             InfoTile(
               title: ' Percent Blocked',
@@ -35,7 +41,8 @@ class _SummaryTilesState extends State<SummaryTiles> {
             ),
             InfoTile(
               title: ' Domains on Blocklist',
-              value: snapshot.data.domainsOnBlocklist.toString(),
+              value: _numberWithCommas(
+                  snapshot.data.domainsOnBlocklist.toString()),
             ),
           ];
 
