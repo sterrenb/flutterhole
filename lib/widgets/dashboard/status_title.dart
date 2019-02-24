@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/pi_config.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/status_icon.dart';
 
@@ -27,21 +26,19 @@ class StatusTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _appState = AppState.of(context);
-    String timerString = _appState.isSleeping()
+    final appState = AppState.of(context);
+    String timerString = appState.isSleeping()
         ? ''
-        : ' (' + _durationToString(_appState.sleeping) + ')';
+        : ' (' + _durationToString(appState.sleeping) + ')';
     return Row(
       children: <Widget>[
         StatusIcon(),
         FutureBuilder<String>(
-          future: PiConfig.getActiveString(),
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-            if (snapshot.hasData) {
-              return Text(snapshot.data);
-            }
+          future: appState.piConfig.getActiveString(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) return Text(snapshot.data);
 
-            return Container();
+            return Text('');
           },
         ),
         Opacity(

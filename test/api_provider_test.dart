@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:sterrenburg.github.flutterhole/api_provider.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
+import 'package:sterrenburg.github.flutterhole/api_provider.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -47,25 +47,43 @@ void main() {
       expect(ApiProvider.domain('pi.hole', 80), 'http://pi.hole/' + apiPath);
     });
     test('default address', () {
-      expect(
-          ApiProvider.domain('10.0.1.1', 80), 'http://10.0.1.1/' + apiPath);
+      expect(ApiProvider.domain('10.0.1.1', 80), 'http://10.0.1.1/' + apiPath);
     });
     test('specified port', () {
       expect(ApiProvider.domain('pi.hole', 5000),
           'http://pi.hole:5000/' + apiPath);
+    });
+    test('ssl port', () {
+      expect(
+          ApiProvider.domain('pi.hole', 443), 'https://pi.hole:443/' + apiPath);
     });
     test('specified host', () {
       expect(ApiProvider.domain('my.hole', 80), 'http://my.hole/' + apiPath);
     });
   });
 
+  group('launchURL', () {
+    test('valid', () async {
+      expect(ApiProvider().launchURL('http://pi.hole'), completion(false));
+    });
+    test('invalid', () async {
+      expect(ApiProvider().launchURL('ftp://pi.hole'), completion(false));
+    });
+  });
+
   group('fetch', () {
-    test('default', () async {
+    test('valid query', () async {
       final MockClient client = MockClient((request) async {
         return Response('test', 200);
       });
       final response = await ApiProvider(client: client).fetch('params');
       expect(response.body, 'test');
+    });
+    test('500', () async {
+      final MockClient client = MockClient((request) async {
+        return Response('test', 500);
+      });
+      expect(ApiProvider(client: client).fetch('params'), throwsException);
     });
     test('timeout', () async {
       final MockClient client = MockClient((request) async {
@@ -94,20 +112,28 @@ void main() {
   });
 
   group('setStatus', () {
-    test('true valid auth', () async {
+    test('enable valid auth', () async {
       final MockClient client = MockClient((request) async {
         return Response(json.encode({'status': 'disabled'}), 200);
       });
       final bool response = await ApiProvider(client: client).setStatus(true);
       expect(response, false);
     });
-    test('true no auth', () async {
+    test('enable no auth', () async {
       final MockClient client = MockClient((request) async {
         return Response('[]', 403);
       });
       expect(
               () => ApiProvider(client: client).setStatus(true),
           throwsException);
+    });
+    test('disable for duration', () async {
+      final MockClient client = MockClient((request) async {
+        return Response(json.encode({'status': 'disabled'}), 200);
+      });
+      final bool response = await ApiProvider(client: client)
+          .setStatus(false, duration: Duration(seconds: 10));
+      expect(response, false);
     });
   });
   group('isAuthorized', () {
@@ -124,6 +150,57 @@ void main() {
       });
       final bool response = await ApiProvider(client: client).isAuthorized();
       expect(response, false);
+    });
+  });
+  group('fetchSummary', () {
+    test('valid response', () async {
+      final SummaryModel summaryModel = SummaryModel(
+          totalQueries: 1,
+          queriesBlocked: 2,
+          percentBlocked: 3.4,
+          domainsOnBlocklist: 5);
+
+      final MockClient client = MockClient((request) async {
+        return Response(jsonEncode(summaryModel.toJson()), 200);
+      });
+      final SummaryModel summaryModelResult = await ApiProvider(client: client)
+          .fetchSummary();
+      expect(summaryModelResult.totalQueries, summaryModel.totalQueries);
+      expect(summaryModelResult.queriesBlocked, summaryModel.queriesBlocked);
+      expect(summaryModelResult.percentBlocked, summaryModel.percentBlocked);
+      expect(summaryModelResult.domainsOnBlocklist,
+          summaryModel.domainsOnBlocklist);
+    });
+    test('invalid summary', () async {
+      final MockClient client = MockClient((request) async {
+        return Response(jsonEncode({'invalidKey': 'hi'}), 200);
+      });
+//    final SummaryModel summaryModelResult = await ApiProvider(client: client).fetchSummary();
+      expect(ApiProvider(client: client).fetchSummary(), throwsException);
+    });
+    test('empty', () async {
+      final MockClient client = MockClient((request) async {
+        return Response('', 200);
+      });
+//    final SummaryModel summaryModelResult = await ApiProvider(client: client).fetchSummary();
+      expect(ApiProvider(client: client).fetchSummary(), throwsException);
+    });
+  });
+
+  group('recentlyBlocked', () {
+    test('valid response', () {
+      final MockClient client = MockClient((request) async {
+        return Response('blocked.domain', 200);
+      });
+      expect(ApiProvider(client: client).recentlyBlocked(),
+          completion('blocked.domain'));
+    });
+
+    test('invalid response', () {
+      final MockClient client = MockClient((request) async {
+        return Response('', 500);
+      });
+      expect(ApiProvider(client: client).recentlyBlocked(), throwsException);
     });
   });
 }

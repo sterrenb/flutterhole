@@ -6,6 +6,7 @@ import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.da
 /// A [Preference] for storing the Pi-hole® hostname.
 class PreferenceConfigName extends Preference {
   final String defaultValue = 'New configuration';
+  final piConfig = PiConfig();
 
   PreferenceConfigName()
       : super(
@@ -22,11 +23,11 @@ class PreferenceConfigName extends Preference {
 
   @override
   Future<dynamic> get() async {
-    return await (PiConfig.getActiveString());
+    return piConfig.getActiveString();
   }
 
   @override
   Future<bool> set({dynamic value}) {
-    return PiConfig.updateActiveConfig(value as String);
+    return piConfig.updateActiveConfig(value as String);
   }
 }

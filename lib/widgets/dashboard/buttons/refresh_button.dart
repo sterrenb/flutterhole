@@ -11,6 +11,7 @@ class RefreshButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.refresh),
+      tooltip: 'Refresh you Pi-hole status',
       onPressed: () {
         AppState.of(context).updateStatus();
       },

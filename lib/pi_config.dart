@@ -4,107 +4,96 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
 
-const active = 'configActive';
-const all = 'configAll';
-const defaultAll = ['Default'];
-const defaultActive = 0;
-
 class PiConfig {
-  static Future<int> getActiveIndex() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    int result = preferences.getInt(active);
-    return result == null ? defaultActive : result;
+  static const String activeKey = 'configActive';
+  static const String allKey = 'configAll';
+  static const List<String> defaultAll = ['Default'];
+  static const int defaultActive = 0;
+
+  Future<SharedPreferences> _preferences;
+
+  PiConfig() {
+    this._preferences = SharedPreferences.getInstance();
   }
 
-  static Future<String> getActiveString() async {
-    List<String> configs = await getAll();
-    return configs.elementAt((await getActiveIndex()));
+  Future<int> getActiveIndex() async {
+    final preferences = await _preferences;
+    final index = preferences.getInt(activeKey);
+    return (index == null) ? defaultActive : index;
   }
 
-  static Future<bool> setActiveIndex(int index) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.setInt(active, index);
+  Future<List<String>> getAll({String key = allKey}) async {
+    return _preferences.then((preferences) {
+      return preferences.getStringList(key) ?? defaultAll;
+    });
   }
 
-  static Future<bool> switchConfig(
+  Future<String> getActiveString() async {
+    final int index = await getActiveIndex();
+    final List<String> all = await getAll();
+    return all.elementAt((index));
+  }
+
+  Future<bool> setActiveIndex(int index) async {
+    assert(index != null);
+    final SharedPreferences preferences = await _preferences;
+    final bool didSet = await preferences.setInt(activeKey, index);
+    return (didSet == null) ? false : didSet;
+  }
+
+  Future<bool> switchConfig(
       {@required BuildContext context, int index = 0, bool pop = true}) async {
-    await PiConfig.setActiveIndex(index);
+    final bool didSet = await setActiveIndex(index);
+    if (!didSet) {
+      if (pop) Navigator.pop(context);
+      return false;
+    }
+
     AppState.of(context).resetSleeping();
     AppState.of(context).updateStatus();
     bool isDark = await PreferenceIsDark().get();
     PreferenceIsDark.applyTheme(context, isDark);
-    String activeString = await PiConfig.getActiveString();
+    String activeString = await getActiveString();
     Fluttertoast.showToast(msg: 'Switching to $activeString');
+    // TODO move up pop
     if (pop) Navigator.pop(context);
     return true;
   }
 
-  static Future<List<String>> getAll() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    List<String> result = defaultAll;
-    try {
-      result = preferences.getStringList(all);
-      if (result == null) {
-        result = defaultAll;
-      }
-    } catch (e) {
-      // return defaultAll;
-    }
-
-    return result;
-  }
-
-  static Future<int> setConfig(String name) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    List<String> configs = await getAll();
+  Future<int> setConfig(String name) async {
+    final preferences = await _preferences;
+    final configs = await getAll();
+    name = name.trim();
     if (configs.contains(name)) {
       throw Exception('This name already exists');
     }
     List<String> newConfigs = List.from(configs)..add(name);
-    await preferences.setStringList(all, newConfigs);
-    return (await getAll()).length - 1;
+    final didSet = await preferences.setStringList(allKey, newConfigs);
+    if (!didSet) {
+      throw Exception('Failed to set config');
+    }
+
+    return newConfigs.length - 1;
   }
 
-  static Future<bool> updateActiveConfig(String name) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    List<String> configs = await getAll();
-    if (configs.contains(name)) {
-      String activeString = await PiConfig.getActiveString();
-      if (name == activeString) {
-        return true;
-      }
-      throw Exception('This configuration already exists');
-    }
+  Future<bool> updateActiveConfig(String name) async {
+    return _preferences.then((preferences) =>
+        getAll().then((configs) {
+          if (configs.contains(name)) {
+            getActiveString().then((activeString) {
+              if (name == activeString) {
+                return true;
+              }
+              throw Exception('This configuration already exists');
+            });
+          }
 
-    final int index = await getActiveIndex();
-    List<String> newConfigs = List.from(configs)
-      ..removeAt(index)
-      ..insert(index, name);
-    return preferences.setStringList(all, newConfigs);
-  }
-
-  static Future<bool> removeActiveConfig() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    final int activeIndex = await getActiveIndex();
-    List<String> configs = await getAll();
-
-    if (configs.length == 1) {
-      Fluttertoast.showToast(msg: 'No other configurations available');
-      return false;
-    }
-
-    List<String> newConfigs = List.from(configs)
-      ..removeAt(activeIndex);
-
-    // skip this loop if we can simply switch back to the only configuration left
-    if ((activeIndex == 1 && configs.length == 2)) {
-      // else, move the contents down by 1 index
-      for (int i = configs.length - 1; i > activeIndex; i--) {
-        // TODO well...
-      }
-    }
-
-    await preferences.setStringList(all, newConfigs);
-    return true;
+          getActiveIndex().then((activeIndex) {
+            List<String> newConfigs = List.from(configs)
+              ..removeAt(activeIndex)
+              ..insert(activeIndex, name);
+            return preferences.setStringList(allKey, newConfigs);
+          });
+        }));
   }
 }

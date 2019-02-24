@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:logging/logging.dart';
@@ -59,16 +58,17 @@ class ApiProvider {
   /// Launches the [url] in the default browser.
   ///
   /// Shows a toast if the url can not be launched.
-  static void launchURL(String url) async {
+  Future<bool> launchURL(String url) async {
     try {
       if (await canLaunch(url)) {
         await launch(url);
-      } else {
-        Fluttertoast.showToast(msg: 'URL could not be launched');
+        return true;
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'URL could not be launched');
+      log.warning('cannot launch url' + ': ' + url);
     }
+
+    return false;
   }
 
   /// Returns a widget with a hyperlink that can be tapped to launch using [launchURL].
@@ -79,7 +79,7 @@ class ApiProvider {
           color: Colors.blue,
         ),
         recognizer: TapGestureRecognizer()
-          ..onTap = () => ApiProvider.launchURL(urlString));
+          ..onTap = () => ApiProvider().launchURL(urlString));
   }
 
   /// Returns the result of an API request based on the [params]. Set [authorization] to true when performing administrative tasks.
@@ -100,15 +100,19 @@ class ApiProvider {
     final String hostname = await PreferenceHostname().get();
     int port = await PreferencePort().get();
     String uriString = (domain(hostname, port)) + '?' + params;
-    final _result = await client.get(uriString).timeout(timeout, onTimeout: () {
+    final response =
+    await client.get(uriString).timeout(timeout, onTimeout: () {
       final String message =
           'Request timed out after ${timeout.inSeconds
           .toString()} seconds - is your port correct?';
       log.warning(uriString + ': ' + message);
       throw Exception(message);
     });
+    if (response.statusCode != 200 || response.body == '[]') {
+      throw Exception('Failed to fetch, status code: ${response.statusCode}');
+    }
     log.fine(uriString);
-    return _result;
+    return response;
   }
 
   /// Returns true if the Pi-hole® is enabled, or false when disabled.
@@ -121,12 +125,8 @@ class ApiProvider {
     } catch (e) {
       rethrow;
     }
-    if (response.statusCode == 200) {
-      final bool status = statusToBool(json.decode(response.body));
-      return status;
-    } else {
-      throw Exception('Failed to fetch status');
-    }
+    final bool status = statusToBool(json.decode(response.body));
+    return status;
   }
 
   /// Sets the status of the Pi-hole® to 'enabled' or 'disabled' based on [newStatus].
@@ -149,12 +149,7 @@ class ApiProvider {
     } catch (e) {
       rethrow;
     }
-    if (response.statusCode == 200 && response.contentLength > 2) {
-      final bool status = statusToBool(json.decode(response.body));
-      return status;
-    } else {
-      throw Exception('Cannot $activity Pi-hole');
-    }
+    return statusToBool(json.decode(response.body));
   }
 
   /// Returns true if the request is authorized, or false when unauthorized.
@@ -162,50 +157,26 @@ class ApiProvider {
     http.Response response;
     try {
       response = await fetch('topItems', authorization: true);
+      if (response.statusCode == 200 && response.contentLength > 2) {
+        return true;
+      }
     } catch (e) {
-      rethrow;
+      log.warning('not authorized: ${e.toString()}');
     }
-    if (response.statusCode == 200 && response.contentLength > 2) {
-      return true;
-    }
-
     return false;
   }
 
-  /// Returns the summary of the Pi-hole.
+  /// Returns the [SummaryModel of the Pi-hole.
   ///
   /// Throws an [Exception when the request fails.
-  Future<Map<String, String>> fetchSummary() async {
-    const Map<String, String> _prettySummary = {
-      'dns_queries_today': 'Total Queries',
-      'ads_blocked_today': 'Queries Blocked',
-      'ads_percentage_today': 'Percent Blocked',
-      'domains_being_blocked': 'Domains on Blocklist',
-    };
-
-    http.Response response;
-
-    try {
-      response = await fetch('summary');
-    } catch (e) {
-      rethrow;
-    }
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> map = jsonDecode(response.body);
-      Map<String, String> finalMap = {};
-      if (map.isNotEmpty) {
-        _prettySummary.forEach((String oldKey, String newKey) {
-          if (newKey.contains('Percent')) {
-            map[oldKey] += '%';
-          }
-          finalMap[newKey] = map[oldKey];
-        });
-        return finalMap;
-      }
-    } else {
-      throw Exception(
-          'Failed to fetch summary data, status code: ${response.statusCode}');
+  Future<SummaryModel> fetchSummary() async {
+    final http.Response response = await fetch('summary');
+    Map<String, dynamic> map = jsonDecode(response.body);
+    if (map.isNotEmpty) {
+      try {
+        final SummaryModel model = SummaryModel.fromJson(map);
+        return model;
+      } catch (e) {}
     }
 
     throw Exception('Failed to fetch summary');
@@ -226,4 +197,38 @@ class ApiProvider {
 
     return response.body;
   }
+}
+
+class SummaryModel {
+  static const String _totalQueriesTitle = 'dns_queries_today';
+  static const String _queriesBlockedTitle = 'ads_blocked_today';
+  static const String _percentBlockedTitle = 'ads_percentage_today';
+  static const String _domainsOnBlocklistTitle = 'domains_being_blocked';
+
+  final int totalQueries;
+  final int queriesBlocked;
+  final double percentBlocked;
+  final int domainsOnBlocklist;
+
+  SummaryModel({this.totalQueries = 0,
+    this.queriesBlocked = 0,
+    this.percentBlocked = 0.0,
+    this.domainsOnBlocklist = 0});
+
+  static _stringToInt(String string) =>
+      int.tryParse(string.replaceAll(',', '')) ?? 0;
+
+  SummaryModel.fromJson(Map<String, dynamic> json)
+      : totalQueries = _stringToInt(json[_totalQueriesTitle]),
+        queriesBlocked = _stringToInt(json[_queriesBlockedTitle]),
+        percentBlocked = double.parse(json[_percentBlockedTitle]),
+        domainsOnBlocklist = _stringToInt(json[_domainsOnBlocklistTitle]);
+
+  Map<String, dynamic> toJson() =>
+      {
+        _totalQueriesTitle: totalQueries.toString(),
+        _queriesBlockedTitle: queriesBlocked.toString(),
+        _percentBlockedTitle: percentBlocked.toString(),
+        _domainsOnBlocklistTitle: domainsOnBlocklist.toString(),
+      };
 }

@@ -3,7 +3,7 @@ description: A third party Android application for the Pi-hole® dashboard
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.0.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -29,6 +29,7 @@ dev_dependencies:
     sdk: flutter
   test: ^1.5.1
   flutter_launcher_icons: ^0.7.0
+  screenshots: ^0.1.4
 
 flutter_icons:
   android: "launcher_icon"
