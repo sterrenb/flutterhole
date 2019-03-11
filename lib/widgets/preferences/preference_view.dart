@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/cancel_button.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/scan_button.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/edit_form.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_form.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
 
 class PreferenceView extends StatefulWidget {

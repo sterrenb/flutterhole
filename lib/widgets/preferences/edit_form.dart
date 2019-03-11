@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sterrenburg.github.flutterhole/pi_config.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/cancel_button.dart';
 
 /// A form that allows users to edit a value, with validation depending on its [type].
 class EditForm extends StatefulWidget {
@@ -72,4 +75,47 @@ class _EditFormState extends State<EditForm> {
       child: textFormField,
     );
   }
+}
+
+/// Shows an [AlertDialog] with an editable text field
+Future openEditDialog(BuildContext context, TextEditingController controller) {
+  final formKey = GlobalKey<FormState>();
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertConfigDialog(
+            EditForm(formKey: formKey, controller: controller, type: String),
+            context);
+      });
+}
+
+AlertDialog alertConfigDialog(EditForm editForm, BuildContext context) {
+  List<Widget> actions = [
+    CancelButton(),
+    FlatButton(
+      child: Text('OK'),
+      onPressed: () {
+        if (editForm.formKey.currentState.validate()) {
+          final PiConfig piConfig = AppState
+              .of(context)
+              .piConfig;
+          piConfig
+              .addNew(editForm.controller.value.text)
+              .then((int newConfigIndex) {
+            piConfig.switchConfig(context: context, index: newConfigIndex);
+//                .then((bool didSwitch) {
+//              setState(() {});
+//            });
+          });
+          Navigator.pop(context);
+        }
+      },
+    )
+  ];
+
+  return AlertDialog(
+    title: Text('Enter a name'),
+    content: editForm,
+    actions: actions,
+  );
 }
