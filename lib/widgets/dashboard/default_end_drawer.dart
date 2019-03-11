@@ -59,7 +59,7 @@ class _DefaultEndDrawerState extends WithAppState<DefaultEndDrawer> {
               DrawerHeader(
                 child: Container(
                     alignment: Alignment.bottomLeft,
-                    padding: EdgeInsets.only(bottom: 4.0),
+                    padding: EdgeInsets.all(16.0),
                     child: Text('Select configuration')),
               ),
             ];
