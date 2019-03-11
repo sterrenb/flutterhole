@@ -43,16 +43,12 @@ class ApiProvider {
   /// Returns the domain based on the [PreferenceHostname] and [PreferencePort].
   static String domain(String hostname, int port) {
     String portString;
-    String protocol = 'http';
     if (port == 80) {
       portString = '';
     } else {
       portString = ':' + port.toString();
-      if (port == 443) {
-        protocol = 'https';
-      }
     }
-    return protocol + '://' + hostname + portString + '/' + apiPath;
+    return hostname + portString;
   }
 
   /// Launches the [url] in the default browser.
@@ -87,31 +83,32 @@ class ApiProvider {
   /// Throws an [Exception] if the request times out.
   ///
   /// ```dart
-  /// Api.fetch('summaryRaw')
-  /// Api.fetch('enabled', authorization: true)
+  /// Api.fetch({'summaryRaw': ''})
+  /// Api.fetch({'enabled': '123'}, authorization: true)
   /// ```
-  Future<http.Response> fetch(String params,
+  Future<http.Response> fetch(Map<String, String> params,
       {bool authorization = false}) async {
     if (authorization) {
-      String _token = await PreferenceToken().get();
-      params = params + '&auth=$_token';
+      params['auth'] = await PreferenceToken().get();
     }
 
-    final String hostname = await PreferenceHostname().get();
-    int port = await PreferencePort().get();
-    String uriString = (domain(hostname, port)) + '?' + params;
-    final response =
-    await client.get(uriString).timeout(timeout, onTimeout: () {
+    final int port = await PreferencePort().get();
+    final String host = await PreferenceHostname().get() +
+        (port == 80 ? '' : ':' + port.toString());
+    final Uri uri = port == 443
+        ? Uri.https(host, apiPath, params)
+        : Uri.http(host, apiPath, params);
+    final response = await client.get(uri).timeout(timeout, onTimeout: () {
       final String message =
           'Request timed out after ${timeout.inSeconds
           .toString()} seconds - is your port correct?';
-      log.warning(uriString + ': ' + message);
+      log.warning(uri.toString() + ': ' + message);
       throw Exception(message);
     });
     if (response.statusCode != 200 || response.body == '[]') {
       throw Exception('Failed to fetch, status code: ${response.statusCode}');
     }
-    log.fine(uriString);
+    log.fine(uri);
     return response;
   }
 
@@ -121,7 +118,7 @@ class ApiProvider {
   Future<bool> fetchEnabled() async {
     http.Response response;
     try {
-      response = await fetch('status');
+      response = await fetch({'status': ''});
     } catch (e) {
       rethrow;
     }
@@ -138,14 +135,13 @@ class ApiProvider {
   /// Shows a toast when any request fails.
   Future<bool> setStatus(bool newStatus, {Duration duration}) async {
     final String activity = newStatus ? 'enable' : 'disable';
-    String uriString = activity;
-    if (!newStatus && duration != null) {
-      uriString = activity + '=' + duration.inSeconds.toString();
-    }
+    Map<String, String> params = {activity: ''};
+    if (!newStatus && duration != null)
+      params[activity] = duration.inSeconds.toString();
 
     http.Response response;
     try {
-      response = await fetch(uriString, authorization: true);
+      response = await fetch(params, authorization: true);
     } catch (e) {
       rethrow;
     }
@@ -156,7 +152,7 @@ class ApiProvider {
   Future<bool> isAuthorized() async {
     http.Response response;
     try {
-      response = await fetch('topItems', authorization: true);
+      response = await fetch({'topItems': ''}, authorization: true);
       if (response.statusCode == 200 && response.contentLength > 2) {
         return true;
       }
@@ -170,7 +166,7 @@ class ApiProvider {
   ///
   /// Throws an [Exception when the request fails.
   Future<SummaryModel> fetchSummary() async {
-    final http.Response response = await fetch('summary');
+    final http.Response response = await fetch({'summary': ''});
     Map<String, dynamic> map = jsonDecode(response.body);
     if (map.isNotEmpty) {
       try {
@@ -190,7 +186,7 @@ class ApiProvider {
   Future<String> recentlyBlocked() async {
     http.Response response;
     try {
-      response = await fetch('recentBlocked', authorization: false);
+      response = await fetch({'recentBlocked': ''}, authorization: false);
     } catch (e) {
       rethrow;
     }

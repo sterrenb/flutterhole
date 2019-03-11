@@ -7,7 +7,7 @@ packages:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.34.3"
+    version: "0.35.3"
   archive:
     dependency: transitive
     description:
@@ -112,7 +112,7 @@ packages:
       name: flutter_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.7"
+    version: "1.0.8"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -131,7 +131,7 @@ packages:
       name: front_end
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.9+1"
+    version: "0.1.13"
   glob:
     dependency: transitive
     description:
@@ -145,7 +145,7 @@ packages:
       name: html
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.3+3"
+    version: "0.13.4+1"
   http:
     dependency: "direct main"
     description:
@@ -201,7 +201,7 @@ packages:
       name: kernel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.9+1"
+    version: "0.3.13"
   launch_review:
     dependency: "direct main"
     description:
@@ -285,7 +285,7 @@ packages:
       name: package_resolver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.6"
+    version: "1.0.10"
   page_view_indicator:
     dependency: "direct main"
     description:
@@ -300,6 +300,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.2"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.0"
   petitparser:
     dependency: transitive
     description:
@@ -362,7 +369,7 @@ packages:
       name: screenshots
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.4"
+    version: "0.1.5"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -423,7 +430,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.1"
+    version: "1.5.4"
   stack_trace:
     dependency: transitive
     description:
@@ -451,28 +458,28 @@ packages:
       name: term_glyph
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.1.0"
   test:
     dependency: "direct dev"
     description:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.1+1"
+    version: "1.5.3"
   test_api:
     dependency: transitive
     description:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1"
+    version: "0.2.2"
   test_core:
     dependency: transitive
     description:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0+1"
+    version: "0.2.1+1"
   typed_data:
     dependency: transitive
     description:
@@ -537,5 +544,5 @@ packages:
     source: hosted
     version: "2.1.15"
 sdks:
-  dart: ">=2.1.0-dev.5.0 <3.0.0"
+  dart: ">=2.1.0 <3.0.0"
   flutter: ">=0.5.6 <2.0.0"

@@ -76,6 +76,13 @@ class PiConfig {
     return newConfigs.length - 1;
   }
 
+  Future<int> addNew(String name) async {
+    return setConfig(name)
+        .catchError((e) {
+      Fluttertoast.showToast(msg: e.toString());
+    });
+  }
+
   Future<bool> updateActiveConfig(String name) async {
     return _preferences.then((preferences) =>
         getAll().then((configs) {
@@ -96,4 +103,6 @@ class PiConfig {
           });
         }));
   }
+
+
 }
