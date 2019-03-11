@@ -1,3 +1,0 @@
-dartdoc:
-  exclude: ['C:\flutter\bin\']
-  showUndocumentedCategories: false
