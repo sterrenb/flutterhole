@@ -6,13 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:logging/logging.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_api_path.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_ssl.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The relative path to the Pi-hole® API
-const String apiPath = 'admin/api.php';
+//const String apiPath = 'admin/api.php';
 
 /// The timeout duration for API requests.
 const Duration timeout = Duration(seconds: 2);
@@ -86,6 +88,7 @@ class ApiProvider {
   /// Api.fetch({'summaryRaw': ''})
   /// Api.fetch({'enabled': '123'}, authorization: true)
   /// ```
+  // ignore: missing_return
   Future<http.Response> fetch(Map<String, String> params,
       {bool authorization = false}) async {
     if (authorization) {
@@ -95,20 +98,30 @@ class ApiProvider {
     final int port = await PreferencePort().get();
     final String host = await PreferenceHostname().get() +
         (port == 80 ? '' : ':' + port.toString());
-    final Uri uri = port == 443
+    final bool useSSL = await PreferenceSSL().get();
+    final String apiPath = await PreferenceApiPath().get();
+    final Uri uri = useSSL
         ? Uri.https(host, apiPath, params)
         : Uri.http(host, apiPath, params);
     final response = await client.get(uri).timeout(timeout, onTimeout: () {
       final String message =
-          'Request timed out after ${timeout.inSeconds
-          .toString()} seconds - is your port correct?';
+          'Request timed out after ${timeout.inSeconds.toString()} seconds - is your port correct?';
       log.warning(uri.toString() + ': ' + message);
       throw Exception(message);
     });
-    if (response.statusCode != 200 || response.body == '[]') {
-      throw Exception('Failed to fetch, status code: ${response.statusCode}');
+    if (response.statusCode != 200 ||
+        // this is the common response for unauthorized requests
+        response.body == '[]' ||
+        // if the API path is incorrect, the request returns the Pi-hole hostname.
+        // here we loosely check whether the homepage was obtained, indicating an error.
+        response.contentLength > 10000) {
+      throw Exception(
+          'Failed to fetch data, even though the server sent a response: ${response.statusCode} ${response.reasonPhrase}\n\See if your API token and API path correspond to your Pi-hole.');
     }
-    log.fine(uri);
+    log.fine(authorization && params['auth'].length > 0
+        ? uri.toString().replaceAll(params['auth'], '<HIDDEN_TOKEN>')
+        : uri.toString());
+
     return response;
   }
 
@@ -206,10 +219,11 @@ class SummaryModel {
   final double percentBlocked;
   final int domainsOnBlocklist;
 
-  SummaryModel({this.totalQueries = 0,
-    this.queriesBlocked = 0,
-    this.percentBlocked = 0.0,
-    this.domainsOnBlocklist = 0});
+  SummaryModel(
+      {this.totalQueries = 0,
+      this.queriesBlocked = 0,
+      this.percentBlocked = 0.0,
+      this.domainsOnBlocklist = 0});
 
   static _stringToInt(String string) =>
       int.tryParse(string.replaceAll(',', '')) ?? 0;
@@ -220,8 +234,7 @@ class SummaryModel {
         percentBlocked = double.parse(json[_percentBlockedTitle]),
         domainsOnBlocklist = _stringToInt(json[_domainsOnBlocklistTitle]);
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         _totalQueriesTitle: totalQueries.toString(),
         _queriesBlockedTitle: queriesBlocked.toString(),
         _percentBlockedTitle: percentBlocked.toString(),

@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:sterrenburg.github.flutterhole/api_provider.dart';
 import 'package:sterrenburg.github.flutterhole/pi_config.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_api_path.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_config_name.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_ssl.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_view.dart';
 
@@ -63,19 +65,23 @@ class AppStateState extends State<AppState> {
 
   Preference preferenceHostname = PreferenceHostname();
   Preference preferencePort = PreferencePort();
+  Preference preferenceSSL = PreferenceSSL();
   Preference preferenceToken = PreferenceToken();
   Preference preferenceConfigName = PreferenceConfigName();
+  Preference preferenceApiPath = PreferenceApiPath();
   Preference preferenceIsDark = PreferenceIsDark();
 
   /// Returns a list of all preferences
   /// in an order that is maintained on [SettingsScreen].
   List<Preference> allPreferences() =>
       [
-        preferenceIsDark,
         preferenceHostname,
         preferencePort,
         preferenceToken,
         preferenceConfigName,
+        preferenceIsDark,
+        preferenceSSL,
+        preferenceApiPath,
       ];
 
   @override
@@ -215,7 +221,12 @@ class AppStateState extends State<AppState> {
 
   List<Widget> allPreferenceViews(BuildContext context) {
     return AppState.of(context).allPreferences().map((Preference preference) {
-      return PreferenceView(preference: preference);
+      switch (preference.defaultValue.runtimeType) {
+        case bool:
+          return PreferenceViewBool(preference: preference);
+        default:
+          return PreferenceViewString(preference: preference);
+      }
     }).toList();
   }
 
