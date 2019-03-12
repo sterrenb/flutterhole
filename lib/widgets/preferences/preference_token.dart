@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sterrenburg.github.flutterhole/api_provider.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/snack_bar.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 
 /// A [Preference] for storing the Pi-hole® API token.
@@ -27,11 +27,9 @@ class PreferenceToken extends Preference {
       iconData: Icons.vpn_key,
       onSet: ({BuildContext context, bool didSet, dynamic value}) {
         AppState.of(context).updateAuthorized().then((bool isAuthorized) {
-          // toast is needed because the context does not contain a Scaffold for a SnackBar
-          Fluttertoast.showToast(
-              msg: isAuthorized
-                  ? 'Authorization successful'
-                  : 'Authorizatation failed');
+          showSnackBar(context, isAuthorized
+              ? 'Authorization successful'
+              : 'Authorizatation failed');
         });
       });
 }

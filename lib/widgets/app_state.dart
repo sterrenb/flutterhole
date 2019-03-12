@@ -215,7 +215,13 @@ class AppStateState extends State<AppState> {
 
   List<Widget> allPreferenceViews(BuildContext context) {
     return AppState.of(context).allPreferences().map((Preference preference) {
-      return PreferenceView(preference: preference);
+      print('making view for type ${preference.defaultValue.runtimeType}');
+      switch (preference.defaultValue.runtimeType) {
+        case bool:
+          return PreferenceViewBool(preference: preference);
+        default:
+          return PreferenceViewString(preference: preference);
+      }
     }).toList();
   }
 

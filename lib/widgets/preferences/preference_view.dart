@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/cancel_button.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/scan_button.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/snack_bar.dart';
@@ -7,18 +8,19 @@ import 'package:sterrenburg.github.flutterhole/widgets/preferences/edit_form.dar
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
 
-class PreferenceView extends StatefulWidget {
+class PreferenceViewString extends StatefulWidget {
   final Preference preference;
 
-  const PreferenceView({Key key, @required this.preference}) : super(key: key);
+  const PreferenceViewString({Key key, @required this.preference})
+      : super(key: key);
 
   @override
-  PreferenceViewState createState() {
-    return new PreferenceViewState();
+  PreferenceViewStringState createState() {
+    return new PreferenceViewStringState();
   }
 }
 
-class PreferenceViewState extends State<PreferenceView> {
+class PreferenceViewStringState extends State<PreferenceViewString> {
   /// Shows an [AlertDialog] with [content].
   Future _showDialog(BuildContext context, Widget content) {
     return showDialog(
@@ -57,19 +59,14 @@ class PreferenceViewState extends State<PreferenceView> {
             widget.preference
                 .set(value: editForm.controller.value.text)
                 .catchError((e) {
-              Fluttertoast.showToast(msg: e.toString());
+              showSnackBar(context, e.toString());
             }).then((bool didSet) {
-              if (didSet) {
-                if (widget.preference.onSet != null) {
-                  setState(() {});
-                  widget.preference.onSet(
-                      context: context,
-                      didSet: didSet,
-                      value: editForm.controller.value.text);
-                }
-              } else {
-                Fluttertoast.showToast(
-                    msg: 'Failed to set ${widget.preference.title}');
+              if (widget.preference.onSet != null) {
+                setState(() {});
+                widget.preference.onSet(
+                    context: context,
+                    didSet: didSet,
+                    value: editForm.controller.value.text);
               }
             });
             Navigator.pop(context);
@@ -95,23 +92,6 @@ class PreferenceViewState extends State<PreferenceView> {
         future: widget.preference.get(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
-            if (widget.preference.defaultValue.runtimeType == bool) {
-              return SwitchListTile(
-                title: Text(widget.preference.title),
-                value: snapshot.data,
-                secondary: Icon(widget.preference.iconData),
-                onChanged: (bool value) {
-                  widget.preference.set(value: value).then((bool didSet) {
-                    if (widget.preference.onSet != null) {
-                      // Trigger rebuild with the newly edited controller.text
-                      setState(() {});
-                      widget.preference.onSet(
-                          context: context, didSet: didSet, value: value);
-                    }
-                  });
-                },
-              );
-            }
             final controller =
             TextEditingController(text: snapshot.data.toString());
             return ListTile(
@@ -147,4 +127,40 @@ class PreferenceViewState extends State<PreferenceView> {
   }
 }
 
+class PreferenceViewBool extends StatefulWidget {
+  final PreferenceBool preference;
 
+  const PreferenceViewBool({Key key, this.preference}) : super(key: key);
+
+  @override
+  _PreferenceViewBoolState createState() => _PreferenceViewBoolState();
+}
+
+class _PreferenceViewBoolState extends State<PreferenceViewBool> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<dynamic>(
+        future: widget.preference.get(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            return SwitchListTile(
+              title: Text(widget.preference.title),
+              value: snapshot.data,
+              secondary: Icon(widget.preference.iconData),
+              onChanged: (bool value) {
+                widget.preference.set(value: value).then((bool didSet) {
+                  if (widget.preference.onSet != null) {
+                    // Trigger rebuild with the newly edited controller.text
+                    setState(() {});
+                    widget.preference
+                        .onSet(context: context, didSet: didSet, value: value);
+                  }
+                });
+              },
+            );
+          }
+
+          return Center(child: CircularProgressIndicator());
+        });
+  }
+}

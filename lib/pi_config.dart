@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/snack_bar.dart';
@@ -81,7 +80,7 @@ class PiConfig {
   Future<int> addNew(String name) async {
     return setConfig(name)
         .catchError((e) {
-      Fluttertoast.showToast(msg: e.toString());
+      showSnackBar(null, e.toString());
     });
   }
 
