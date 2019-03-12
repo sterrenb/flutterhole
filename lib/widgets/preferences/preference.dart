@@ -140,14 +140,13 @@ class PreferenceBool extends Preference {
   PreferenceBool({String id,
     String title,
     String description,
-    Widget help,
     IconData iconData,
     Function({BuildContext context, bool didSet, dynamic value}) onSet})
       : super(
       id: id,
       title: title,
-      description: description,
-      help: help,
+      description: '',
+      help: Container(),
       iconData: iconData,
       onSet: onSet);
 

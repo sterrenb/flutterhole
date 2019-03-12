@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 
 /// a scaffold for managing a preference that is saved between sessions, using [SharedPreferences].
-class PreferenceIsDark extends PreferenceBool {
+class PreferenceSSL extends PreferenceBool {
   bool defaultValue = false;
 
   static void applyTheme(BuildContext context, bool isDark) {
@@ -12,11 +12,11 @@ class PreferenceIsDark extends PreferenceBool {
         .setBrightness(isDark ? Brightness.dark : Brightness.light);
   }
 
-  PreferenceIsDark()
+  PreferenceSSL()
       : super(
-      id: 'isDark',
-      title: 'Dark Theme',
-      iconData: Icons.lightbulb_outline,
-      onSet: ({BuildContext context, bool didSet, dynamic value}) =>
-          applyTheme(context, value as bool));
+            id: 'useSSL',
+            title: 'Use SSL',
+            iconData: Icons.lock,
+            onSet: ({BuildContext context, bool didSet, dynamic value}) =>
+                print('yay'));
 }

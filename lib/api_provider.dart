@@ -8,6 +8,7 @@ import 'package:http/http.dart';
 import 'package:logging/logging.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_ssl.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -95,7 +96,8 @@ class ApiProvider {
     final int port = await PreferencePort().get();
     final String host = await PreferenceHostname().get() +
         (port == 80 ? '' : ':' + port.toString());
-    final Uri uri = port == 443
+    final bool useSSL = await PreferenceSSL().get();
+    final Uri uri = useSSL
         ? Uri.https(host, apiPath, params)
         : Uri.http(host, apiPath, params);
     final response = await client.get(uri).timeout(timeout, onTimeout: () {

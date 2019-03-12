@@ -8,6 +8,7 @@ import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_co
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_ssl.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_view.dart';
 
@@ -63,6 +64,7 @@ class AppStateState extends State<AppState> {
 
   Preference preferenceHostname = PreferenceHostname();
   Preference preferencePort = PreferencePort();
+  Preference preferenceSSL = PreferenceSSL();
   Preference preferenceToken = PreferenceToken();
   Preference preferenceConfigName = PreferenceConfigName();
   Preference preferenceIsDark = PreferenceIsDark();
@@ -75,6 +77,7 @@ class AppStateState extends State<AppState> {
         preferenceHostname,
         preferencePort,
         preferenceToken,
+        preferenceSSL,
         preferenceConfigName,
       ];
 
@@ -215,7 +218,6 @@ class AppStateState extends State<AppState> {
 
   List<Widget> allPreferenceViews(BuildContext context) {
     return AppState.of(context).allPreferences().map((Preference preference) {
-      print('making view for type ${preference.defaultValue.runtimeType}');
       switch (preference.defaultValue.runtimeType) {
         case bool:
           return PreferenceViewBool(preference: preference);

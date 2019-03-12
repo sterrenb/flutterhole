@@ -150,7 +150,6 @@ class _PreferenceViewBoolState extends State<PreferenceViewBool> {
               onChanged: (bool value) {
                 widget.preference.set(value: value).then((bool didSet) {
                   if (widget.preference.onSet != null) {
-                    // Trigger rebuild with the newly edited controller.text
                     setState(() {});
                     widget.preference
                         .onSet(context: context, didSet: didSet, value: value);
