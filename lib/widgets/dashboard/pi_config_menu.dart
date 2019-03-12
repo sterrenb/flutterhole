@@ -1,8 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/cancel_button.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_form.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/edit_form.dart';
 
 const addNew = 'addNew';
 
@@ -30,15 +30,7 @@ class PiConfigMenu extends StatefulWidget {
 }
 
 class PiConfigMenuState extends WithAppState<PiConfigMenu> {
-  Future<int> _addNew(String name) async {
-    return AppState
-        .of(context)
-        .piConfig
-        .setConfig(name)
-        .catchError((e) {
-      Fluttertoast.showToast(msg: e.toString());
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +66,7 @@ class PiConfigMenuState extends WithAppState<PiConfigMenu> {
               tooltip: 'Select Pi-hole configuration',
               onSelected: (ConfigOption result) {
                 if (result.name == addNew) {
-                  return _openPreferenceDialog(context, controller);
+                  return openEditDialog(context, controller);
                 } else {
                   globalPiConfig(context)
                       .switchConfig(context: context, index: result.index)
@@ -90,46 +82,6 @@ class PiConfigMenuState extends WithAppState<PiConfigMenu> {
 
         return CircularProgressIndicator();
       },
-    );
-  }
-
-  /// Shows an [AlertDialog] with an editable preference field
-  Future _openPreferenceDialog(BuildContext context,
-      TextEditingController controller) {
-    final formKey = GlobalKey<FormState>();
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alertConfigDialog(
-              EditForm(formKey: formKey, controller: controller, type: String),
-              context);
-        });
-  }
-
-  AlertDialog alertConfigDialog(EditForm editForm, BuildContext context) {
-    List<Widget> actions = [
-      CancelButton(),
-      FlatButton(
-        child: Text('OK'),
-        onPressed: () {
-          if (editForm.formKey.currentState.validate()) {
-            _addNew(editForm.controller.value.text).then((int newConfigIndex) {
-              globalPiConfig(context)
-                  .switchConfig(context: context, index: newConfigIndex)
-                  .then((bool didSwitch) {
-                setState(() {});
-              });
-            });
-            Navigator.pop(context);
-          }
-        },
-      )
-    ];
-
-    return AlertDialog(
-      title: Text('Enter a name'),
-      content: editForm,
-      actions: actions,
     );
   }
 }

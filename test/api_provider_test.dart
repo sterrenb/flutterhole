@@ -44,21 +44,19 @@ void main() {
 
   group('domain', () {
     test('default hostname', () {
-      expect(ApiProvider.domain('pi.hole', 80), 'http://pi.hole/' + apiPath);
+      expect(ApiProvider.domain('pi.hole', 80), 'pi.hole');
     });
     test('default address', () {
-      expect(ApiProvider.domain('10.0.1.1', 80), 'http://10.0.1.1/' + apiPath);
+      expect(ApiProvider.domain('10.0.1.1', 80), '10.0.1.1');
     });
     test('specified port', () {
-      expect(ApiProvider.domain('pi.hole', 5000),
-          'http://pi.hole:5000/' + apiPath);
+      expect(ApiProvider.domain('pi.hole', 5000), 'pi.hole:5000');
     });
     test('ssl port', () {
-      expect(
-          ApiProvider.domain('pi.hole', 443), 'https://pi.hole:443/' + apiPath);
+      expect(ApiProvider.domain('pi.hole', 443), 'pi.hole:443');
     });
     test('specified host', () {
-      expect(ApiProvider.domain('my.hole', 80), 'http://my.hole/' + apiPath);
+      expect(ApiProvider.domain('my.hole', 80), 'my.hole');
     });
   });
 
@@ -76,21 +74,21 @@ void main() {
       final MockClient client = MockClient((request) async {
         return Response('test', 200);
       });
-      final response = await ApiProvider(client: client).fetch('params');
+      final response = await ApiProvider(client: client).fetch({});
       expect(response.body, 'test');
     });
     test('500', () async {
       final MockClient client = MockClient((request) async {
         return Response('test', 500);
       });
-      expect(ApiProvider(client: client).fetch('params'), throwsException);
+      expect(ApiProvider(client: client).fetch({}), throwsException);
     });
     test('timeout', () async {
       final MockClient client = MockClient((request) async {
         await Future.delayed(Duration(seconds: 10), () {});
         return Response('test', 200);
       });
-      expect(ApiProvider(client: client).fetch('params'), throwsException);
+      expect(ApiProvider(client: client).fetch({}), throwsException);
     });
   });
 
@@ -163,8 +161,8 @@ void main() {
       final MockClient client = MockClient((request) async {
         return Response(jsonEncode(summaryModel.toJson()), 200);
       });
-      final SummaryModel summaryModelResult = await ApiProvider(client: client)
-          .fetchSummary();
+      final SummaryModel summaryModelResult =
+      await ApiProvider(client: client).fetchSummary();
       expect(summaryModelResult.totalQueries, summaryModel.totalQueries);
       expect(summaryModelResult.queriesBlocked, summaryModel.queriesBlocked);
       expect(summaryModelResult.percentBlocked, summaryModel.percentBlocked);
