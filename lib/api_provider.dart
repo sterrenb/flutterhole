@@ -108,7 +108,9 @@ class ApiProvider {
     if (response.statusCode != 200 || response.body == '[]') {
       throw Exception('Failed to fetch, status code: ${response.statusCode}');
     }
-    log.fine(uri);
+    log.fine(authorization
+        ? uri.toString().replaceAll(params['auth'], '<HIDDEN_TOKEN>')
+        : uri.toString());
     return response;
   }
 
