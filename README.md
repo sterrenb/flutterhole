@@ -1,6 +1,6 @@
 # FlutterHole
 
-[![Codemagic Build Status](https://api.codemagic.io/apps/5c659ea9c49a5000198d45f9/5c65b2f4b66bc70009aaa202/status_badge.svg)](https://codemagic.io/apps/5c659ea9c49a5000198d45f9/5c65b2f4b66bc70009aaa202/latest_build)
+[![Codemagic Build Status](https://api.codemagic.io/apps/5c659ea9c49a5000198d45f9/5c878f9f3bcac0001d342a90/status_badge.svg)](https://codemagic.io/apps/5c659ea9c49a5000198d45f9/5c878f9f3bcac0001d342a90/latest_build)
 [![Travis Build Status](https://travis-ci.org/sterrenburg/flutterhole.svg?branch=master)](https://travis-ci.org/sterrenburg/flutterhole)
 [![Coverage Status](https://coveralls.io/repos/github/sterrenburg/flutterhole/badge.svg?branch=master)](https://coveralls.io/github/sterrenburg/flutterhole?branch=master)
 [![Beerpay](https://beerpay.io/sterrenburg/flutterhole/make-wish.svg?style=flat)](https://beerpay.io/sterrenburg/flutterhole)

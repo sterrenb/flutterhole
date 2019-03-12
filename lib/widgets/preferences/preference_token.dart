@@ -30,6 +30,7 @@ class PreferenceToken extends Preference {
           String msg = isAuthorized
               ? 'Authorization successful'
               : 'Authorizatation failed';
+          // toast is needed because the context does not contain a Scaffold for a SnackBar
           Fluttertoast.showToast(msg: msg);
         });
       });

@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/snack_bar.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
 
 class PiConfig {
@@ -41,8 +44,7 @@ class PiConfig {
     return (didSet == null) ? false : didSet;
   }
 
-  Future<bool> switchConfig(
-      {@required BuildContext context, int index = 0, bool pop = true}) async {
+  Future<bool> switchConfig({@required BuildContext context, int index = 0, bool pop = true}) async {
     final bool didSet = await setActiveIndex(index);
     if (!didSet) {
       if (pop) Navigator.pop(context);
@@ -54,7 +56,7 @@ class PiConfig {
     bool isDark = await PreferenceIsDark().get();
     PreferenceIsDark.applyTheme(context, isDark);
     String activeString = await getActiveString();
-    Fluttertoast.showToast(msg: 'Switching to $activeString');
+    showSnackBar(context, 'Switched to $activeString');
     // TODO move up pop
     if (pop) Navigator.pop(context);
     return true;

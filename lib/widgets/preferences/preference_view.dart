@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/cancel_button.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/scan_button.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/snack_bar.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/edit_form.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
@@ -57,8 +58,7 @@ class PreferenceViewState extends State<PreferenceView> {
                 .set(value: editForm.controller.value.text)
                 .catchError((e) {
               Fluttertoast.showToast(msg: e.toString());
-            })
-                .then((bool didSet) {
+            }).then((bool didSet) {
               if (didSet) {
                 if (widget.preference.onSet != null) {
                   setState(() {});
@@ -136,7 +136,8 @@ class PreferenceViewState extends State<PreferenceView> {
                 return _openPreferenceDialog(snapshot, context, controller);
               },
               onLongPress: () {
-                Fluttertoast.showToast(msg: widget.preference.description);
+                showSnackBar(context, widget.preference.description,
+                    duration: Duration(milliseconds: 1500));
               },
             );
           }
@@ -145,3 +146,5 @@ class PreferenceViewState extends State<PreferenceView> {
         });
   }
 }
+
+
