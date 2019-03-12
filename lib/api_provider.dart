@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:logging/logging.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_api_path.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_ssl.dart';
@@ -13,7 +14,7 @@ import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_to
 import 'package:url_launcher/url_launcher.dart';
 
 /// The relative path to the Pi-hole® API
-const String apiPath = 'admin/api.php';
+//const String apiPath = 'admin/api.php';
 
 /// The timeout duration for API requests.
 const Duration timeout = Duration(seconds: 2);
@@ -97,6 +98,7 @@ class ApiProvider {
     final String host = await PreferenceHostname().get() +
         (port == 80 ? '' : ':' + port.toString());
     final bool useSSL = await PreferenceSSL().get();
+    final String apiPath = await PreferenceApiPath().get();
     final Uri uri = useSSL
         ? Uri.https(host, apiPath, params)
         : Uri.http(host, apiPath, params);
@@ -107,10 +109,18 @@ class ApiProvider {
       log.warning(uri.toString() + ': ' + message);
       throw Exception(message);
     });
-    if (response.statusCode != 200 || response.body == '[]') {
-      throw Exception('Failed to fetch, status code: ${response.statusCode}');
+    if (response.statusCode != 200 ||
+        // this is the common response for unauthorized requests
+        response.body == '[]' ||
+        // if the API path is incorrect, the request returns the Pi-hole hostname.
+        // here we loosely check whether the homepage was obtained, indicating an error.
+        response.contentLength > 10000) {
+      throw Exception(
+          'Failed to fetch data, even though the server sent a response: ${response
+              .statusCode} ${response
+              .reasonPhrase}\n\See if your API token and API path correspond to your Pi-hole.');
     }
-    log.fine(authorization
+    log.fine(authorization && params['auth'].length > 0
         ? uri.toString().replaceAll(params['auth'], '<HIDDEN_TOKEN>')
         : uri.toString());
     return response;

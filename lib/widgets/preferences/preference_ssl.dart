@@ -1,9 +1,9 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
 
-/// a scaffold for managing a preference that is saved between sessions, using [SharedPreferences].
+/// A [Preference] for storing the use of SSL (https).
 class PreferenceSSL extends PreferenceBool {
   bool defaultValue = false;
 
@@ -17,6 +17,8 @@ class PreferenceSSL extends PreferenceBool {
             id: 'useSSL',
             title: 'Use SSL',
             iconData: Icons.lock,
-            onSet: ({BuildContext context, bool didSet, dynamic value}) =>
-                print('yay'));
+      onSet: ({BuildContext context, bool didSet, dynamic value}) {
+        AppState.of(context).updateStatus();
+        AppState.of(context).updateAuthorized();
+      });
 }
