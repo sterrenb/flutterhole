@@ -88,6 +88,7 @@ class ApiProvider {
   /// Api.fetch({'summaryRaw': ''})
   /// Api.fetch({'enabled': '123'}, authorization: true)
   /// ```
+  // ignore: missing_return
   Future<http.Response> fetch(Map<String, String> params,
       {bool authorization = false}) async {
     if (authorization) {
@@ -104,8 +105,7 @@ class ApiProvider {
         : Uri.http(host, apiPath, params);
     final response = await client.get(uri).timeout(timeout, onTimeout: () {
       final String message =
-          'Request timed out after ${timeout.inSeconds
-          .toString()} seconds - is your port correct?';
+          'Request timed out after ${timeout.inSeconds.toString()} seconds - is your port correct?';
       log.warning(uri.toString() + ': ' + message);
       throw Exception(message);
     });
@@ -116,13 +116,12 @@ class ApiProvider {
         // here we loosely check whether the homepage was obtained, indicating an error.
         response.contentLength > 10000) {
       throw Exception(
-          'Failed to fetch data, even though the server sent a response: ${response
-              .statusCode} ${response
-              .reasonPhrase}\n\See if your API token and API path correspond to your Pi-hole.');
+          'Failed to fetch data, even though the server sent a response: ${response.statusCode} ${response.reasonPhrase}\n\See if your API token and API path correspond to your Pi-hole.');
     }
     log.fine(authorization && params['auth'].length > 0
         ? uri.toString().replaceAll(params['auth'], '<HIDDEN_TOKEN>')
         : uri.toString());
+
     return response;
   }
 
@@ -220,10 +219,11 @@ class SummaryModel {
   final double percentBlocked;
   final int domainsOnBlocklist;
 
-  SummaryModel({this.totalQueries = 0,
-    this.queriesBlocked = 0,
-    this.percentBlocked = 0.0,
-    this.domainsOnBlocklist = 0});
+  SummaryModel(
+      {this.totalQueries = 0,
+      this.queriesBlocked = 0,
+      this.percentBlocked = 0.0,
+      this.domainsOnBlocklist = 0});
 
   static _stringToInt(String string) =>
       int.tryParse(string.replaceAll(',', '')) ?? 0;
@@ -234,8 +234,7 @@ class SummaryModel {
         percentBlocked = double.parse(json[_percentBlockedTitle]),
         domainsOnBlocklist = _stringToInt(json[_domainsOnBlocklistTitle]);
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         _totalQueriesTitle: totalQueries.toString(),
         _queriesBlockedTitle: queriesBlocked.toString(),
         _percentBlockedTitle: percentBlocked.toString(),
