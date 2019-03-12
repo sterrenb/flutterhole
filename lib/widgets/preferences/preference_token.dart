@@ -27,11 +27,11 @@ class PreferenceToken extends Preference {
       iconData: Icons.vpn_key,
       onSet: ({BuildContext context, bool didSet, dynamic value}) {
         AppState.of(context).updateAuthorized().then((bool isAuthorized) {
-          String msg = isAuthorized
-              ? 'Authorization successful'
-              : 'Authorizatation failed';
           // toast is needed because the context does not contain a Scaffold for a SnackBar
-          Fluttertoast.showToast(msg: msg);
+          Fluttertoast.showToast(
+              msg: isAuthorized
+                  ? 'Authorization successful'
+                  : 'Authorizatation failed');
         });
       });
 }
