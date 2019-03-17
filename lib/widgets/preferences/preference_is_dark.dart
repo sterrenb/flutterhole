@@ -15,6 +15,7 @@ class PreferenceIsDark extends PreferenceBool {
       : super(
       id: 'isDark',
       title: 'Dark Theme',
+      description: '',
       iconData: Icons.lightbulb_outline,
       onSet: ({BuildContext context, bool didSet, dynamic value}) =>
           applyTheme(context, value as bool));

@@ -15,7 +15,8 @@ class PreferenceSSL extends PreferenceBool {
   PreferenceSSL()
       : super(
             id: 'useSSL',
-            title: 'Use SSL',
+      title: 'Force SSL',
+      description: 'Force the use of HTTPS - no requests are sent via HTTP.',
             iconData: Icons.lock,
       onSet: ({BuildContext context, bool didSet, dynamic value}) {
         AppState.of(context).updateStatus();
