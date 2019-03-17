@@ -11,10 +11,8 @@ import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_to
 class PreferenceViewString extends StatefulWidget {
   final Preference preference;
 
-  const PreferenceViewString({Key key, @required this.preference})
-      : super(key: key);
+  const PreferenceViewString(this.preference);
 
-  @override
   PreferenceViewStringState createState() {
     return new PreferenceViewStringState();
   }
@@ -130,7 +128,7 @@ class PreferenceViewStringState extends State<PreferenceViewString> {
 class PreferenceViewBool extends StatefulWidget {
   final PreferenceBool preference;
 
-  const PreferenceViewBool({Key key, this.preference}) : super(key: key);
+  const PreferenceViewBool(this.preference);
 
   @override
   _PreferenceViewBoolState createState() => _PreferenceViewBoolState();
@@ -145,6 +143,8 @@ class _PreferenceViewBoolState extends State<PreferenceViewBool> {
           if (snapshot.hasData) {
             return SwitchListTile(
               title: Text(widget.preference.title),
+              subtitle: widget.preference.description == null ? null : Text(
+                  widget.preference.description),
               value: snapshot.data,
               secondary: Icon(widget.preference.iconData),
               onChanged: (bool value) {

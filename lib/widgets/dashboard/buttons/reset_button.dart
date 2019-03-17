@@ -57,8 +57,7 @@ class ResetPrefsButton extends ResetButton {
                     if (didClear) {
                       Preference.resetAll();
                       AppState.of(context).updateStatus();
-                      AppState.of(context)
-                          .preferenceIsDark
+                      PreferenceIsDark()
                           .get()
                           .then((dynamic isDark) {
                         PreferenceIsDark.applyTheme(context, isDark as bool);

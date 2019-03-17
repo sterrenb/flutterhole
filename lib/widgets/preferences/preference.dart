@@ -145,7 +145,7 @@ class PreferenceBool extends Preference {
       : super(
       id: id,
       title: title,
-      description: '',
+      description: description,
       help: Container(),
       iconData: iconData,
       onSet: onSet);
