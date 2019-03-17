@@ -43,7 +43,8 @@ class PiConfig {
     return (didSet == null) ? false : didSet;
   }
 
-  Future<bool> switchConfig({@required BuildContext context, int index = 0, bool pop = true}) async {
+  Future<bool> switchConfig(
+      {@required BuildContext context, int index = 0, bool pop = true}) async {
     final bool didSet = await setActiveIndex(index);
     if (!didSet) {
       if (pop) Navigator.pop(context);
@@ -78,8 +79,7 @@ class PiConfig {
   }
 
   Future<int> addNew(String name) async {
-    return setConfig(name)
-        .catchError((e) {
+    return setConfig(name).catchError((e) {
       showSnackBar(null, e.toString());
     });
   }
@@ -104,6 +104,4 @@ class PiConfig {
           });
         }));
   }
-
-
 }

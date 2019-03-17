@@ -80,15 +80,6 @@ class ApiProvider {
           ..onTap = () => ApiProvider().launchURL(urlString));
   }
 
-  /// Returns the result of an API request based on the [params]. Set [authorization] to true when performing administrative tasks.
-  ///
-  /// Throws an [Exception] if the request times out.
-  ///
-  /// ```dart
-  /// Api.fetch({'summaryRaw': ''})
-  /// Api.fetch({'enabled': '123'}, authorization: true)
-  /// ```
-  // ignore: missing_return
   Future<http.Response> fetch(Map<String, String> params,
       {bool authorization = false}) async {
     if (authorization) {
