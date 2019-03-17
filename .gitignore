@@ -308,3 +308,4 @@ coverage/
 .bundle/
 .vscode/
 vendor/
+.coveralls.yml

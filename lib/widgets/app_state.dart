@@ -3,13 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sterrenburg.github.flutterhole/api_provider.dart';
 import 'package:sterrenburg.github.flutterhole/pi_config.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_config_name.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_is_dark.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_token.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_view.dart';
 
 /// A global state manager, used for sharing state within different Widgets with [child] as its root.
 class AppState extends StatefulWidget {
@@ -60,23 +53,6 @@ class AppStateState extends State<AppState> {
   bool get loading => _loading;
 
   Duration get sleeping => _sleeping;
-
-  Preference preferenceHostname = PreferenceHostname();
-  Preference preferencePort = PreferencePort();
-  Preference preferenceToken = PreferenceToken();
-  Preference preferenceConfigName = PreferenceConfigName();
-  Preference preferenceIsDark = PreferenceIsDark();
-
-  /// Returns a list of all preferences
-  /// in an order that is maintained on [SettingsScreen].
-  List<Preference> allPreferences() =>
-      [
-        preferenceIsDark,
-        preferenceHostname,
-        preferencePort,
-        preferenceToken,
-        preferenceConfigName,
-      ];
 
   @override
   void initState() {
@@ -211,12 +187,6 @@ class AppStateState extends State<AppState> {
       resetSleeping();
       throw Exception('Failed to disable status - is your API token correct?');
     }
-  }
-
-  List<Widget> allPreferenceViews(BuildContext context) {
-    return AppState.of(context).allPreferences().map((Preference preference) {
-      return PreferenceView(preference: preference);
-    }).toList();
   }
 
   @override

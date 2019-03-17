@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -138,14 +140,13 @@ class PreferenceBool extends Preference {
   PreferenceBool({String id,
     String title,
     String description,
-    Widget help,
     IconData iconData,
     Function({BuildContext context, bool didSet, dynamic value}) onSet})
       : super(
       id: id,
       title: title,
       description: description,
-      help: help,
+      help: Container(),
       iconData: iconData,
       onSet: onSet);
 
