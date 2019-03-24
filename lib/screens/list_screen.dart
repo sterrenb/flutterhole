@@ -64,21 +64,24 @@ class ListScreenState extends State<ListScreen> {
         onPressed: () => _addToList(context),
         child: Icon(Icons.add),
       ),
-      body: ListView(
-          children: ListTile.divideTiles(
-              context: context,
-              tiles: list.map((domain) => Dismissible(
-                    key: Key(domain),
-                    onDismissed: (direction) =>
-                        _removeFromList(context, domain),
-                    child: ListTile(
-                      title: Text(domain),
-                    ),
-                    background: DismissibleBackground(),
-                    secondaryBackground: DismissibleBackground(
-                      alignment: Alignment.centerRight,
-                    ),
-                  ))).toList()),
+      body: Scrollbar(
+        child: ListView(
+            children: ListTile.divideTiles(
+                context: context,
+                tiles: list.map((domain) =>
+                    Dismissible(
+                      key: Key(domain),
+                      onDismissed: (direction) =>
+                          _removeFromList(context, domain),
+                      child: ListTile(
+                        title: Text(domain),
+                      ),
+                      background: DismissibleBackground(),
+                      secondaryBackground: DismissibleBackground(
+                        alignment: Alignment.centerRight,
+                      ),
+                    ))).toList()),
+      ),
     );
   }
 }

@@ -15,22 +15,24 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultScaffold(
       title: 'Settings',
-        body: ListView(
-        children: <Widget>[
-          ListTab('Pi-hole configuration'),
-          PreferenceViewString(PreferenceHostname()),
-          PreferenceViewString(PreferencePort()),
-          PreferenceViewString(PreferenceToken()),
-          PreferenceViewString(PreferenceConfigName()),
-          Divider(),
-          ListTab('Advanced'),
-          PreferenceViewBool(PreferenceSSL()),
-          PreferenceViewString(PreferenceApiPath()),
-          Divider(),
-          ListTab('Miscellaneous'),
-          PreferenceViewBool(PreferenceIsDark()),
-          ResetPrefsButton(),
-        ],
+        body: Scrollbar(
+          child: ListView(
+            children: <Widget>[
+              ListTab('Pi-hole configuration'),
+              PreferenceViewString(PreferenceHostname()),
+              PreferenceViewString(PreferencePort()),
+              PreferenceViewString(PreferenceToken()),
+              PreferenceViewString(PreferenceConfigName()),
+              Divider(),
+              ListTab('Advanced'),
+              PreferenceViewBool(PreferenceSSL()),
+              PreferenceViewString(PreferenceApiPath()),
+              Divider(),
+              ListTab('Miscellaneous'),
+              PreferenceViewBool(PreferenceIsDark()),
+              ResetPrefsButton(),
+            ],
+          ),
         )
     );
   }
