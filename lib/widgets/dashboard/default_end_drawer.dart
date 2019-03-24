@@ -70,7 +70,7 @@ class _DefaultEndDrawerState extends WithAppState<DefaultEndDrawer> {
                 ListTile(
                   leading: Icon(Icons.add),
                   title: Text('Add new configuration'),
-                  onTap: () => openEditDialog(context, controller),
+                  onTap: () => openConfigEditDialog(context, controller),
                 )
               ]);
             return ListView(

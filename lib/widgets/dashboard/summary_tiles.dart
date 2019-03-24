@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/api/summary_model.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/friendly_exception.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/info_tile.dart';

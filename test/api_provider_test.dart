@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
-import 'package:sterrenburg.github.flutterhole/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/api/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/api/summary_model.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -199,6 +200,12 @@ void main() {
         return Response('', 500);
       });
       expect(ApiProvider(client: client).recentlyBlocked(), throwsException);
+    });
+  });
+
+  group('whitelist', () {
+    test('valid', () {
+
     });
   });
 }

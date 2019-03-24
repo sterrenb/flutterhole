@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sterrenburg.github.flutterhole/pi_config.dart';
@@ -77,45 +79,54 @@ class _EditFormState extends State<EditForm> {
   }
 }
 
+Future openConfigEditDialog(BuildContext context,
+    TextEditingController controller) =>
+    openEditDialog(context, 'Enter a name', controller);
+
 /// Shows an [AlertDialog] with an editable text field
-Future openEditDialog(BuildContext context, TextEditingController controller) {
+Future openEditDialog(BuildContext context, String title,
+    TextEditingController controller) {
   final formKey = GlobalKey<FormState>();
   return showDialog(
       context: context,
       builder: (BuildContext context) {
         return alertConfigDialog(
+            title,
             EditForm(formKey: formKey, controller: controller, type: String),
-            context);
+            context,
+            onConfigEditSuccess);
       });
 }
 
-AlertDialog alertConfigDialog(EditForm editForm, BuildContext context) {
+AlertDialog alertConfigDialog(String title,
+    EditForm editForm,
+    BuildContext context,
+    void onEditSuccess(BuildContext context, String value)) {
   List<Widget> actions = [
     CancelButton(),
     FlatButton(
       child: Text('OK'),
       onPressed: () {
         if (editForm.formKey.currentState.validate()) {
-          final PiConfig piConfig = AppState
-              .of(context)
-              .piConfig;
-          piConfig
-              .addNew(editForm.controller.value.text)
-              .then((int newConfigIndex) {
-            piConfig.switchConfig(context: context, index: newConfigIndex);
-//                .then((bool didSwitch) {
-//              setState(() {});
-//            });
-          });
-          Navigator.pop(context);
+          onConfigEditSuccess(context, editForm.controller.value.text);
         }
       },
     )
   ];
 
   return AlertDialog(
-    title: Text('Enter a name'),
+    title: Text(title),
     content: editForm,
     actions: actions,
   );
+}
+
+void onConfigEditSuccess(BuildContext context, String value) {
+  final PiConfig piConfig = AppState
+      .of(context)
+      .piConfig;
+  piConfig.addNew(value).then((int newConfigIndex) {
+    piConfig.switchConfig(context: context, index: newConfigIndex);
+  });
+  Navigator.pop(context);
 }

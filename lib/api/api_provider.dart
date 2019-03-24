@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:logging/logging.dart';
+import 'package:sterrenburg.github.flutterhole/api/summary_model.dart';
+import 'package:sterrenburg.github.flutterhole/api/whitelist_model.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_api_path.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
@@ -18,6 +20,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 /// The timeout duration for API requests.
 const Duration timeout = Duration(seconds: 2);
+
+enum ListType {
+  black,
+  white,
+}
 
 /// A convenient wrapper for the Pi-hole® PHP API.
 class ApiProvider {
@@ -197,38 +204,33 @@ class ApiProvider {
 
     return response.body;
   }
-}
 
-class SummaryModel {
-  static const String _totalQueriesTitle = 'dns_queries_today';
-  static const String _queriesBlockedTitle = 'ads_blocked_today';
-  static const String _percentBlockedTitle = 'ads_percentage_today';
-  static const String _domainsOnBlocklistTitle = 'domains_being_blocked';
+  String _listTypeToString(ListType type) =>
+      type == ListType.black ? 'black' : 'white';
 
-  final int totalQueries;
-  final int queriesBlocked;
-  final double percentBlocked;
-  final int domainsOnBlocklist;
+  /// Returns a list of listed domains.
+  Future<List<String>> fetchList(ListType type) async {
+    final http.Response response =
+    await fetch({'list': _listTypeToString(type)});
+    return whitelistFromJson(response.body);
+  }
 
-  SummaryModel(
-      {this.totalQueries = 0,
-      this.queriesBlocked = 0,
-      this.percentBlocked = 0.0,
-      this.domainsOnBlocklist = 0});
+  /// Removes [domain] from the list.
+  Future removeFromList(ListType type, String domain) async {
+    final http.Response response = await fetch(
+        {'list': _listTypeToString(type), 'sub': domain},
+        authorization: true);
+    if (response.body.contains('Not authorized!'))
+      throw Exception('Not authorized');
+  }
 
-  static _stringToInt(String string) =>
-      int.tryParse(string.replaceAll(',', '')) ?? 0;
-
-  SummaryModel.fromJson(Map<String, dynamic> json)
-      : totalQueries = _stringToInt(json[_totalQueriesTitle]),
-        queriesBlocked = _stringToInt(json[_queriesBlockedTitle]),
-        percentBlocked = double.parse(json[_percentBlockedTitle]),
-        domainsOnBlocklist = _stringToInt(json[_domainsOnBlocklistTitle]);
-
-  Map<String, dynamic> toJson() => {
-        _totalQueriesTitle: totalQueries.toString(),
-        _queriesBlockedTitle: queriesBlocked.toString(),
-        _percentBlockedTitle: percentBlocked.toString(),
-        _domainsOnBlocklistTitle: domainsOnBlocklist.toString(),
-      };
+  /// Adds [domain] to the list.
+  Future addToList(ListType type, String domain) async {
+    // http://pi.hole/admin/api.php?list=white&add=abcd.com&auth=3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c
+    final http.Response response = await fetch(
+        {'list': _listTypeToString(type), 'add': domain},
+        authorization: true);
+    if (response.body.contains('Not authorized!'))
+      throw Exception('Not authorized');
+  }
 }

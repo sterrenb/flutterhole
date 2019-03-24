@@ -6,7 +6,7 @@ import 'package:sterrenburg.github.flutterhole/widgets/dashboard/status_icon.dar
 class StatusTitle extends StatelessWidget {
   const StatusTitle({
     Key key,
-    @required this.title,
+    this.title,
   }) : super(key: key);
 
   /// The human friendly title.
@@ -33,14 +33,16 @@ class StatusTitle extends StatelessWidget {
     return Row(
       children: <Widget>[
         StatusIcon(),
-        FutureBuilder<String>(
+        title == null
+            ? FutureBuilder<String>(
           future: appState.piConfig.getActiveString(),
           builder: (context, snapshot) {
             if (snapshot.hasData) return Text(snapshot.data);
 
             return Text('');
           },
-        ),
+        )
+            : Text(title),
         Opacity(
             opacity: 0.75,
             child: Text(

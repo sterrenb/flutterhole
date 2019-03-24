@@ -17,7 +17,6 @@ dependencies:
   url_launcher: ^4.1.0+1
   package_info: ^0.4.0
   dynamic_theme: ^1.0.0
-  mockito: ^4.0.0
   launch_review: ^1.0.1
   flutter_markdown: ^0.2.0
   flutter_picker: ^1.0.7
