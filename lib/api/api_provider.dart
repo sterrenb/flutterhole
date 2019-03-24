@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:logging/logging.dart';
+import 'package:sterrenburg.github.flutterhole/api/list_model.dart';
 import 'package:sterrenburg.github.flutterhole/api/summary_model.dart';
-import 'package:sterrenburg.github.flutterhole/api/whitelist_model.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_api_path.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_hostname.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference_port.dart';
@@ -209,10 +209,10 @@ class ApiProvider {
       type == ListType.black ? 'black' : 'white';
 
   /// Returns a list of listed domains.
-  Future<List<String>> fetchList(ListType type) async {
+  Future<List<List<String>>> fetchList(ListType type) async {
     final http.Response response =
     await fetch({'list': _listTypeToString(type)});
-    return whitelistFromJson(response.body);
+    return listFromJson(response.body);
   }
 
   /// Removes [domain] from the list.
@@ -225,7 +225,7 @@ class ApiProvider {
   }
 
   /// Adds [domain] to the list.
-  Future addToList(ListType type, String domain) async {
+  Future<void> addToList(ListType type, String domain) async {
     // http://pi.hole/admin/api.php?list=white&add=abcd.com&auth=3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c
     final http.Response response = await fetch(
         {'list': _listTypeToString(type), 'add': domain},

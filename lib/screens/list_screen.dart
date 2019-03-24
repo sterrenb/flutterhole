@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sterrenburg.github.flutterhole/api/api_provider.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/default_scaffold.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/snack_bar.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/preferences/edit_form.dart';
 
 class ListScreen extends StatefulWidget {
   final String title;
@@ -16,26 +17,38 @@ class ListScreen extends StatefulWidget {
 
 class ListScreenState extends State<ListScreen> {
   List<String> list = [];
+  bool isAuthorized = false;
 
   @override
   void initState() {
     super.initState();
+    fetchList();
+  }
+
+  void fetchList() {
     ApiProvider().fetchList(widget.type).then((newList) {
       setState(() {
-        list = newList;
+        list = newList.first;
       });
     });
   }
 
   void _addToList(BuildContext context, {String domain}) {
-    // TODO add user interaction for domain
-    domain = domain == null ? 'thomas.test' : domain;
+    final controller = TextEditingController();
+    domain == null
+        ? openWhitelistEditDialog(context, controller).then((String value) {
+      _add(context, value);
+    })
+        : _add(context, domain);
+  }
+
+  void _add(BuildContext context, String domain) {
+    print('adding domain $domain');
     ApiProvider().addToList(widget.type, domain).then((_) {
       setState(() {
         list.add(domain);
       });
       showSnackBar(context, 'Added $domain');
-      setState(() {});
     }).catchError((e) {
       showSnackBar(context, e.toString());
     });
@@ -63,8 +76,11 @@ class ListScreenState extends State<ListScreen> {
       fab: FloatingActionButton(
         onPressed: () => _addToList(context),
         child: Icon(Icons.add),
+        tooltip: 'Whitelist a domain',
       ),
-      body: Scrollbar(
+      body: list.length == 0
+          ? Center(child: CircularProgressIndicator())
+          : Scrollbar(
         child: ListView(
             children: ListTile.divideTiles(
                 context: context,

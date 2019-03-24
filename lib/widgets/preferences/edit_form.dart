@@ -79,26 +79,37 @@ class _EditFormState extends State<EditForm> {
   }
 }
 
-Future openConfigEditDialog(BuildContext context,
-    TextEditingController controller) =>
-    openEditDialog(context, 'Enter a name', controller);
-
-/// Shows an [AlertDialog] with an editable text field
-Future openEditDialog(BuildContext context, String title,
+/// Shows an [AlertDialog] with an editable text field for config creation.
+Future<String> openConfigEditDialog(BuildContext context,
     TextEditingController controller) {
   final formKey = GlobalKey<FormState>();
   return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return alertConfigDialog(
-            title,
+        return alertEditDialog(
+            'Enter a name',
             EditForm(formKey: formKey, controller: controller, type: String),
             context,
             onConfigEditSuccess);
       });
 }
 
-AlertDialog alertConfigDialog(String title,
+/// Shows an [AlertDialog] with an editable text field for whitelist addition.
+Future<String> openWhitelistEditDialog(BuildContext context,
+    TextEditingController controller) {
+  final formKey = GlobalKey<FormState>();
+  return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return alertEditDialog(
+            'Enter a domain',
+            EditForm(formKey: formKey, controller: controller, type: String),
+            context,
+            onWhitelistEditSuccess);
+      });
+}
+
+AlertDialog alertEditDialog(String title,
     EditForm editForm,
     BuildContext context,
     void onEditSuccess(BuildContext context, String value)) {
@@ -108,7 +119,7 @@ AlertDialog alertConfigDialog(String title,
       child: Text('OK'),
       onPressed: () {
         if (editForm.formKey.currentState.validate()) {
-          onConfigEditSuccess(context, editForm.controller.value.text);
+          onEditSuccess(context, editForm.controller.value.text);
         }
       },
     )
@@ -128,5 +139,13 @@ void onConfigEditSuccess(BuildContext context, String value) {
   piConfig.addNew(value).then((int newConfigIndex) {
     piConfig.switchConfig(context: context, index: newConfigIndex);
   });
-  Navigator.pop(context);
+  Navigator.pop<String>(context, value);
+}
+
+void onWhitelistEditSuccess(BuildContext context, String value) {
+  print('onWhitelistEditSuccess');
+//  ApiProvider().addToList(ListType.white, value);
+//  showSnackBar(context, 'Added $value');
+//  Navigator.pop(context);
+  Navigator.pop<String>(context, value);
 }
