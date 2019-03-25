@@ -94,8 +94,8 @@ Future<String> openConfigEditDialog(BuildContext context,
       });
 }
 
-/// Shows an [AlertDialog] with an editable text field for whitelist addition.
-Future<String> openWhitelistEditDialog(BuildContext context,
+/// Shows an [AlertDialog] with an editable text field for list addition.
+Future<String> openListEditDialog(BuildContext context,
     TextEditingController controller) {
   final formKey = GlobalKey<FormState>();
   return showDialog<String>(
@@ -132,6 +132,7 @@ AlertDialog alertEditDialog(String title,
   );
 }
 
+// TODO maybe use the popped value instead of handling the results here in the edit_form file
 void onConfigEditSuccess(BuildContext context, String value) {
   final PiConfig piConfig = AppState
       .of(context)
@@ -143,9 +144,5 @@ void onConfigEditSuccess(BuildContext context, String value) {
 }
 
 void onWhitelistEditSuccess(BuildContext context, String value) {
-  print('onWhitelistEditSuccess');
-//  ApiProvider().addToList(ListType.white, value);
-//  showSnackBar(context, 'Added $value');
-//  Navigator.pop(context);
   Navigator.pop<String>(context, value);
 }

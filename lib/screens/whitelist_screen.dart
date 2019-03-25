@@ -36,14 +36,20 @@ class ListScreenState extends State<ListScreen> {
   void _addToList(BuildContext context, {String domain}) {
     final controller = TextEditingController();
     domain == null
-        ? openWhitelistEditDialog(context, controller).then((String value) {
-      _add(context, value);
-    })
+        ? openListEditDialog(context, controller).then((String value) {
+            if (value != null) {
+              _add(context, value);
+            }
+          })
         : _add(context, domain);
   }
 
   void _add(BuildContext context, String domain) {
-    print('adding domain $domain');
+    domain = domain.trim();
+    if (list.contains(domain)) {
+      showSnackBar(context, 'Already on list');
+      return;
+    }
     ApiProvider().addToList(widget.type, domain).then((_) {
       setState(() {
         list.add(domain);
@@ -71,34 +77,33 @@ class ListScreenState extends State<ListScreen> {
   @override
   Widget build(BuildContext context) {
     list.sort();
+
+    final Iterable<Dismissible> tiles = list.map((domain) => Dismissible(
+          key: Key(domain),
+          onDismissed: (direction) => _removeFromList(context, domain),
+          child: ListTile(
+            title: Text(domain),
+          ),
+          background: DismissibleBackground(),
+          secondaryBackground: DismissibleBackground(
+            alignment: Alignment.centerRight,
+          ),
+        ));
+
     return DefaultScaffold(
-      title: widget.title,
-      fab: FloatingActionButton(
-        onPressed: () => _addToList(context),
-        child: Icon(Icons.add),
-        tooltip: 'Whitelist a domain',
-      ),
-      body: list.length == 0
-          ? Center(child: CircularProgressIndicator())
-          : Scrollbar(
-        child: ListView(
-            children: ListTile.divideTiles(
-                context: context,
-                tiles: list.map((domain) =>
-                    Dismissible(
-                      key: Key(domain),
-                      onDismissed: (direction) =>
-                          _removeFromList(context, domain),
-                      child: ListTile(
-                        title: Text(domain),
-                      ),
-                      background: DismissibleBackground(),
-                      secondaryBackground: DismissibleBackground(
-                        alignment: Alignment.centerRight,
-                      ),
-                    ))).toList()),
-      ),
-    );
+        title: widget.title,
+        fab: FloatingActionButton(
+          onPressed: () => _addToList(context),
+          child: Icon(Icons.add),
+          tooltip: 'Whitelist a domain',
+        ),
+        body: list.length == 0
+            ? Center(child: CircularProgressIndicator())
+            : Scrollbar(
+                child: ListView(
+                children: ListTile.divideTiles(context: context, tiles: tiles)
+                    .toList(),
+              )));
   }
 }
 

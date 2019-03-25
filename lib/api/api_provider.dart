@@ -21,11 +21,6 @@ import 'package:url_launcher/url_launcher.dart';
 /// The timeout duration for API requests.
 const Duration timeout = Duration(seconds: 2);
 
-enum ListType {
-  black,
-  white,
-}
-
 /// A convenient wrapper for the Pi-hole® PHP API.
 class ApiProvider {
   Client client;
@@ -62,7 +57,7 @@ class ApiProvider {
 
   /// Launches the [url] in the default browser.
   ///
-  /// Shows a toast if the url can not be launched.
+  /// Logs a warning if the url can not be launched.
   Future<bool> launchURL(String url) async {
     try {
       if (await canLaunch(url)) {
@@ -232,5 +227,8 @@ class ApiProvider {
         authorization: true);
     if (response.body.contains('Not authorized!'))
       throw Exception('Not authorized');
+
+    if (response.body.contains('is not a valid argument or domain name'))
+      throw Exception('Invalid argument or domain name');
   }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sterrenburg.github.flutterhole/api/api_provider.dart';
 import 'package:sterrenburg.github.flutterhole/screens/about_screen.dart';
+import 'package:sterrenburg.github.flutterhole/screens/blacklist_screen.dart';
 import 'package:sterrenburg.github.flutterhole/screens/home_screen.dart';
-import 'package:sterrenburg.github.flutterhole/screens/list_screen.dart';
 import 'package:sterrenburg.github.flutterhole/screens/recently_blocked_screen.dart';
 import 'package:sterrenburg.github.flutterhole/screens/settings_screen.dart';
+import 'package:sterrenburg.github.flutterhole/screens/whitelist_screen.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/buttons/sleep_button.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/pi_config_menu.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/status_title.dart';
@@ -68,14 +69,18 @@ class DefaultDrawer extends StatelessWidget {
           SleepButtons(),
           DrawerTile(
               onTapScreen: ListScreen(
-                type: ListType.white, title: 'Whitelist',),
+                type: ListType.white,
+                title: 'Whitelist',
+              ),
               title: 'Whitelist',
               iconData: Icons.check_circle_outline),
           // TODO implement proper blacklist API handling
-//          DrawerTile(
-//              onTapScreen: ListScreen(type: ListType.black, title: 'Blacklist',),
-//              title: 'Blacklist',
-//              iconData: Icons.block),
+          DrawerTile(
+              onTapScreen: BlackListScreen(
+                title: 'Blacklist',
+              ),
+              title: 'Blacklist',
+              iconData: Icons.block),
           DrawerTile(
               onTapScreen: RecentlyBlockedScreen(),
               title: 'Recently Blocked',
