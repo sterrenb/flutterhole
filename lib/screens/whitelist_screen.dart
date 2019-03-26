@@ -36,7 +36,7 @@ class _WhiteListScreenState extends State<WhiteListScreen> {
     });
   }
 
-  void addAgain(BuildContext context) async {
+  void add(BuildContext context) async {
     final controller = TextEditingController();
     final String domain = await openListEditDialog(context, controller);
     if (domain == null) return;
@@ -91,7 +91,7 @@ class _WhiteListScreenState extends State<WhiteListScreen> {
 
     return DefaultScaffold(
         title: title,
-        fab: Fab(addAgain),
+        fab: Fab(add),
         body: localList.length == 0
             ? Center(
           child: CircularProgressIndicator(),
@@ -183,6 +183,21 @@ class _BLScreenState extends State<BLScreen> {
             }));
   }
 
+  void add(BuildContext context, {bool isRegex = false}) async {
+    final controller = TextEditingController();
+    final String domain = await openListEditDialog(context, controller);
+    if (domain == null) return;
+    if (model.contains(domain)) {
+      showSnackBar(context, '$domain already exists');
+      return;
+    }
+    showSnackBar(context, 'Adding $domain');
+    model
+        .add(domain, isRegex: isRegex)
+        .then((_) => update())
+        .catchError((e) => showSnackBar(context, e.toString()));
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> tiles = [];
@@ -210,16 +225,11 @@ class _BLScreenState extends State<BLScreen> {
 
     return DefaultScaffold(
         title: title,
-        fab: Fab((BuildContext context) => print('hi')),
-        body: Center(
-          child: entries == 0
-              ? CircularProgressIndicator()
-              : Scrollbar(
-              child: ListView(
-                  children:
-                  ListTile.divideTiles(context: context, tiles: tiles)
-                      .toList())),
-        ));
+        fab: Fab(add),
+        body: Scrollbar(
+            child: ListView(
+                children: ListTile.divideTiles(context: context, tiles: tiles)
+                    .toList())));
   }
 }
 

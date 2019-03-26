@@ -35,9 +35,9 @@ abstract class ListModel {
     lists = await _provider.fetchList(type);
   }
 
-  Future<void> add(String domain) async {
+  Future<void> add(String domain, {bool isRegex = false}) async {
     try {
-      await _provider.addToList(type, domain);
+      await _provider.addToList(isRegex ? ListType.regex : type, domain);
     } catch (e) {
       rethrow;
     }
@@ -63,7 +63,7 @@ class WhitelistModel extends ListModel {
   }
 
   @override
-  Future<void> add(String domain) async {
+  Future<void> add(String domain, {bool isRegex = false}) async {
     try {
       await super.add(domain);
       lists.first.add(domain);
