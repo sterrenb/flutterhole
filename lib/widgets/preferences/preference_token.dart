@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/api/api_provider.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/app_state.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/snack_bar.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/preferences/preference.dart';
