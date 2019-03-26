@@ -206,6 +206,8 @@ class ApiProvider {
         return 'white';
       case ListType.black:
         return 'black';
+      case ListType.wild:
+        return 'wild';
       case ListType.regex:
         return 'regex';
       default:

@@ -14,7 +14,7 @@ class DefaultScaffold extends StatelessWidget {
   final Widget body;
 
   /// The FAB, defaults to null.
-  final FloatingActionButton fab;
+  final Widget fab;
 
   const DefaultScaffold({
     Key key,

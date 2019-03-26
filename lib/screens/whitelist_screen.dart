@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:sterrenburg.github.flutterhole/api/list_model.dart';
-import 'package:sterrenburg.github.flutterhole/screens/settings_screen.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/default_scaffold.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/dismissible.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/snack_bar.dart';
@@ -25,10 +24,11 @@ class _WhiteListScreenState extends State<WhiteListScreen> {
   void initState() {
     super.initState();
     localList = [];
-    update();
+    _update();
   }
 
-  void update() {
+  /// Fetches the latest model snapshot and updates the state.
+  void _update() {
     model.fetch().then((newList) {
       setState(() {
         localList = newList;
@@ -36,9 +36,11 @@ class _WhiteListScreenState extends State<WhiteListScreen> {
     });
   }
 
-  void add(BuildContext context) async {
+  /// Prompts the user to enter a string, then adds it to the model.
+  void _add(BuildContext context) async {
     final controller = TextEditingController();
-    final String domain = await openListEditDialog(context, controller);
+    final String domain =
+    await openListEditDialog(context, controller, 'Enter a domain');
     if (domain == null) return;
     if (model.contains(domain)) {
       showSnackBar(context, '$domain already exists');
@@ -47,17 +49,19 @@ class _WhiteListScreenState extends State<WhiteListScreen> {
     showSnackBar(context, 'Adding $domain');
     model
         .add(domain)
-        .then((_) => update())
+        .then((_) => _update())
         .catchError((e) => showSnackBar(context, e.toString()));
   }
 
-  void undoRemove(String domain) {
+  /// Cancels the remove action for [domain].
+  void _undoRemove(String domain) {
     if (this.mounted)
       setState(() {
         if (!localList.contains(domain)) localList.add(domain);
       });
   }
 
+  /// Removes the [domain] from the relevant list.
   Future<void> _removeFromList(BuildContext context, String domain) async {
     timer = Timer(defaultSnackBarDuration, () async {
       try {
@@ -69,7 +73,7 @@ class _WhiteListScreenState extends State<WhiteListScreen> {
           });
       } catch (e) {
         showSnackBar(context, e.toString());
-        undoRemove(domain);
+        _undoRemove(domain);
       }
     });
     showSnackBar(context, 'Removed $domain',
@@ -77,7 +81,7 @@ class _WhiteListScreenState extends State<WhiteListScreen> {
             label: 'Undo',
             onPressed: () {
               timer.cancel();
-              undoRemove(domain);
+              _undoRemove(domain);
             }));
   }
 
@@ -91,7 +95,7 @@ class _WhiteListScreenState extends State<WhiteListScreen> {
 
     return DefaultScaffold(
         title: title,
-        fab: Fab(add),
+        fab: _Fab(_add),
         body: localList.length == 0
             ? Center(
           child: CircularProgressIndicator(),
@@ -104,139 +108,13 @@ class _WhiteListScreenState extends State<WhiteListScreen> {
   }
 }
 
-class BLScreen extends StatefulWidget {
-  @override
-  _BLScreenState createState() => _BLScreenState();
-}
-
-class _BLScreenState extends State<BLScreen> {
-  final String title = 'Blacklist';
-  final BlacklistModel model = BlacklistModel();
-  final log = Logger('Blacklist');
-  Timer timer;
-
-  List<String> localListExact, localListWildcard;
-
-  @override
-  void initState() {
-    super.initState();
-    localListExact = localListWildcard = [];
-    update();
-  }
-
-  void update() {
-    model.fetch().then((newLists) {
-      setState(() {
-        localListExact = newLists[BlacklistType.exact.index];
-        localListWildcard = newLists[BlacklistType.wildcard.index];
-      });
-    });
-  }
-
-  void undoExactRemove(String domain) {
-    if (this.mounted)
-      setState(() {
-        if (!localListExact.contains(domain)) localListExact.add(domain);
-      });
-  }
-
-  void undoWildcardRemove(String domain) {
-    if (this.mounted)
-      setState(() {
-        if (!localListWildcard.contains(domain)) localListWildcard.add(domain);
-      });
-  }
-
-  Future<void> removeFromList(BuildContext context, String domain,
-      {bool isRegex = false}) async {
-    timer = Timer(defaultSnackBarDuration, () async {
-      try {
-        await model.remove(domain, isRegex: isRegex);
-        log.info('removed $domain');
-        if (this.mounted)
-          setState(() {
-            if (isRegex) {
-              localListWildcard.remove(domain);
-            } else {
-              localListExact.remove(domain);
-            }
-          });
-      } catch (e) {
-        showSnackBar(context, e.toString());
-        if (isRegex) {
-          undoWildcardRemove(domain);
-        } else {
-          undoExactRemove(domain);
-        }
-      }
-    });
-    showSnackBar(context, 'Removed $domain',
-        action: SnackBarAction(
-            label: 'Undo',
-            onPressed: () {
-              timer.cancel();
-              if (isRegex) {
-                undoWildcardRemove(domain);
-              } else {
-                undoExactRemove(domain);
-              }
-            }));
-  }
-
-  void add(BuildContext context, {bool isRegex = false}) async {
-    final controller = TextEditingController();
-    final String domain = await openListEditDialog(context, controller);
-    if (domain == null) return;
-    if (model.contains(domain)) {
-      showSnackBar(context, '$domain already exists');
-      return;
-    }
-    showSnackBar(context, 'Adding $domain');
-    model
-        .add(domain, isRegex: isRegex)
-        .then((_) => update())
-        .catchError((e) => showSnackBar(context, e.toString()));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> tiles = [];
-    final int entries = localListExact.length + localListWildcard.length;
-
-    if (entries > 0) {
-      tiles.add(ListTab('Exact blocking'));
-
-      tiles.addAll(localListExact.map((String domain) =>
-          DismissibleListTile(
-            domain: domain,
-            onDismissed: (BuildContext context, String domain) =>
-                removeFromList(context, domain),
-          )));
-
-      tiles.add(ListTab('Regex & Wildcard blocking'));
-
-      tiles.addAll(localListWildcard.map((String domain) =>
-          DismissibleListTile(
-            domain: domain,
-            onDismissed: (BuildContext context, String domain) =>
-                removeFromList(context, domain, isRegex: true),
-          )));
-    }
-
-    return DefaultScaffold(
-        title: title,
-        fab: Fab(add),
-        body: Scrollbar(
-            child: ListView(
-                children: ListTile.divideTiles(context: context, tiles: tiles)
-                    .toList())));
-  }
-}
-
-class Fab extends FloatingActionButton {
+/// The fab for the whitelist page.
+///
+/// This widget is extracted for the purpose of properly showing snack bars.
+class _Fab extends FloatingActionButton {
   final Function(BuildContext context) callback;
 
-  Fab(this.callback);
+  _Fab(this.callback);
 
   @override
   Widget build(BuildContext context) {

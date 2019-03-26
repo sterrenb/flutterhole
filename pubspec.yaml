@@ -22,6 +22,7 @@ dependencies:
   flutter_picker: ^1.0.7
   logging: ^0.11.3+2
   page_view_indicator: ^1.0.1
+  flutter_speed_dial: ^1.1.1
 
 dev_dependencies:
   flutter_test:

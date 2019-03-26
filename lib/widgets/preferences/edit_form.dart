@@ -97,13 +97,13 @@ Future<String> openConfigEditDialog(BuildContext context,
 
 /// Shows an [AlertDialog] with an editable text field for list addition.
 Future<String> openListEditDialog(BuildContext context,
-    TextEditingController controller) {
+    TextEditingController controller, String title) {
   final formKey = GlobalKey<FormState>();
   return showDialog<String>(
       context: context,
       builder: (BuildContext context) {
         return alertEditDialog(
-            'Enter a domain',
+            title,
             EditForm(formKey: formKey, controller: controller, type: String),
             context,
             onWhitelistEditSuccess);
