@@ -211,12 +211,13 @@ class ApiProvider {
   }
 
   /// Removes [domain] from the list.
-  Future removeFromList(ListType type, String domain) async {
+  Future<void> removeFromList(ListType type, String domain) async {
     final http.Response response = await fetch(
         {'list': _listTypeToString(type), 'sub': domain},
         authorization: true);
-    if (response.body.contains('Not authorized!'))
+    if (response.body.contains('Not authorized!')) {
       throw Exception('Not authorized');
+    }
   }
 
   /// Adds [domain] to the list.

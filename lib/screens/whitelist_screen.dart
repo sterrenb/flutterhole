@@ -1,132 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/api/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/api/list_model.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/default_scaffold.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/dashboard/snack_bar.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/edit_form.dart';
+import 'package:sterrenburg.github.flutterhole/widgets/dashboard/whitelist_view.dart';
 
-class ListScreen extends StatefulWidget {
-  final String title;
-  final ListType type;
-
-  const ListScreen({Key key, @required this.type, this.title})
-      : super(key: key);
-
+class WhiteListScreen extends StatefulWidget {
   @override
-  ListScreenState createState() => ListScreenState();
+  _WhiteListScreenState createState() => _WhiteListScreenState();
 }
 
-class ListScreenState extends State<ListScreen> {
-  List<String> list = [];
-  bool isAuthorized = false;
+class _WhiteListScreenState extends State<WhiteListScreen> {
+  final String title = 'Whitelist';
+  final ListType type = ListType.white;
 
-  @override
-  void initState() {
-    super.initState();
-    fetchList();
-  }
-
-  void fetchList() {
-    ApiProvider().fetchList(widget.type).then((newList) {
-      setState(() {
-        list = newList.first;
-      });
-    });
-  }
-
-  void _addToList(BuildContext context, {String domain}) {
-    final controller = TextEditingController();
-    domain == null
-        ? openListEditDialog(context, controller).then((String value) {
-            if (value != null) {
-              _add(context, value);
-            }
-          })
-        : _add(context, domain);
-  }
-
-  void _add(BuildContext context, String domain) {
-    domain = domain.trim();
-    if (list.contains(domain)) {
-      showSnackBar(context, 'Already on list');
-      return;
-    }
-    ApiProvider().addToList(widget.type, domain).then((_) {
-      setState(() {
-        list.add(domain);
-      });
-      showSnackBar(context, 'Added $domain');
-    }).catchError((e) {
-      showSnackBar(context, e.toString());
-    });
-  }
-
-  void _removeFromList(BuildContext context, String domain) {
-    ApiProvider().removeFromList(widget.type, domain).then((_) {
-      setState(() {
-        list.remove(domain);
-      });
-      showSnackBar(context, 'Removed $domain',
-          action: SnackBarAction(
-              label: 'Undo',
-              onPressed: () => _addToList(context, domain: domain)));
-    }).catchError((e) {
-      showSnackBar(context, e.toString());
-    });
-  }
+//  Future<bool> addNewDomain(BuildContext context, {String domain}) async {
+//    final controller = TextEditingController();
+//    if (domain == null) domain = await openListEditDialog(context, controller);
+//
+//    if (domain == null) return false;
+//    if (view.model.lists.first.contains(domain)) {
+//      showSnackBar(context, '$domain is already whitelisted');
+//      return false;
+//    }
+//    showSnackBar(context, 'Adding $domain');
+//    try {
+//      setState(() {
+//        view.model.add(domain);
+//      });
+//      return true;
+//    } catch (e) {
+//      showSnackBar(context, e.toString());
+//    }
+//
+//    return false;
+//  }
 
   @override
   Widget build(BuildContext context) {
-    list.sort();
-
-    final Iterable<Dismissible> tiles = list.map((domain) => Dismissible(
-          key: Key(domain),
-          onDismissed: (direction) => _removeFromList(context, domain),
-          child: ListTile(
-            title: Text(domain),
-          ),
-          background: DismissibleBackground(),
-          secondaryBackground: DismissibleBackground(
-            alignment: Alignment.centerRight,
-          ),
-        ));
-
     return DefaultScaffold(
-        title: widget.title,
-        fab: FloatingActionButton(
-          onPressed: () => _addToList(context),
-          child: Icon(Icons.add),
-          tooltip: 'Whitelist a domain',
-        ),
-        body: list.length == 0
-            ? Center(child: CircularProgressIndicator())
-            : Scrollbar(
-                child: ListView(
-                children: ListTile.divideTiles(context: context, tiles: tiles)
-                    .toList(),
-              )));
-  }
-}
-
-class DismissibleBackground extends StatelessWidget {
-  final AlignmentGeometry alignment;
-
-  const DismissibleBackground({
-    Key key,
-    this.alignment = Alignment.centerLeft,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: alignment,
-      color: Colors.red,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Icon(
-          Icons.delete,
-          color: Colors.white,
-        ),
-      ),
-    );
+        title: title,
+//      fab: FloatingActionButton(
+////        onPressed: () => _addToList(context, domain: 'thomas.test'),
+//        onPressed: () => addNewDomain(context).then((didSet) {
+//              print(didSet);
+////              if (didSet) view.model.add('testing');
+//            }),
+//        child: Icon(Icons.add),
+//        tooltip: 'Whitelist a domain',
+//      ),
+        body: WhitelistView(
+          model: WhiteListModel(),
+        ));
   }
 }

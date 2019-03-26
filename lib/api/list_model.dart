@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/widgets.dart';
+import 'package:sterrenburg.github.flutterhole/api/api_provider.dart';
 
 enum ListType {
   black,
@@ -13,15 +14,56 @@ List<List<String>> listFromJson(String str) {
       jsonData.map((x) => List<String>.from(x.map((x) => x))));
 }
 
-class ListModel {
+abstract class ListModel {
+  List<List<String>> lists = [];
+
   final ListType type;
 
-  ListModel(this.type);
+  ApiProvider _provider;
+
+  ListModel(this.type) {
+    _provider = ApiProvider();
+  }
+
+  Future<void> update() async {
+    lists = await _provider.fetchList(type);
+  }
+
+  Future<void> add(String domain) async {
+    try {
+      await _provider.addToList(type, domain);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> remove(String domain) async {
+    try {
+      await _provider.removeFromList(type, domain);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<String>> fetch();
 }
 
-class WhiteList extends StatelessWidget {
+class WhiteListModel extends ListModel {
+  WhiteListModel() : super(ListType.white);
+
   @override
-  Widget build(BuildContext context) {
-    return Container();
+  Future<List<String>> fetch() async {
+    await super.update();
+    return lists.first;
+  }
+
+  @override
+  Future<void> add(String domain) async {
+    try {
+      await super.add(domain);
+      lists.first.add(domain);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

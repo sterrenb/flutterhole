@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sterrenburg.github.flutterhole/api/api_provider.dart';
 import 'package:sterrenburg.github.flutterhole/screens/about_screen.dart';
 import 'package:sterrenburg.github.flutterhole/screens/blacklist_screen.dart';
 import 'package:sterrenburg.github.flutterhole/screens/home_screen.dart';
@@ -68,10 +67,7 @@ class DefaultDrawer extends StatelessWidget {
               iconData: Icons.home),
           SleepButtons(),
           DrawerTile(
-              onTapScreen: ListScreen(
-                type: ListType.white,
-                title: 'Whitelist',
-              ),
+              onTapScreen: WhiteListScreen(),
               title: 'Whitelist',
               iconData: Icons.check_circle_outline),
           // TODO implement proper blacklist API handling

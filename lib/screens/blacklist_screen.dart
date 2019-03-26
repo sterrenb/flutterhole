@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sterrenburg.github.flutterhole/api/api_provider.dart';
+import 'package:sterrenburg.github.flutterhole/api/list_model.dart';
 import 'package:sterrenburg.github.flutterhole/screens/settings_screen.dart';
 import 'package:sterrenburg.github.flutterhole/widgets/dashboard/default_scaffold.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/dashboard/snack_bar.dart';
-import 'package:sterrenburg.github.flutterhole/widgets/preferences/edit_form.dart';
 
 class BlackListScreen extends StatefulWidget {
   final String title;
