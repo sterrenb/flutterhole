@@ -6,6 +6,7 @@ import 'package:sterrenburg.github.flutterhole/api/api_provider.dart';
 enum ListType {
   black,
   white,
+  regex,
 }
 
 enum BlacklistType {
@@ -42,9 +43,9 @@ abstract class ListModel {
     }
   }
 
-  Future<void> remove(String domain) async {
+  Future<void> remove(String domain, {bool isRegex = false}) async {
     try {
-      await _provider.removeFromList(type, domain);
+      await _provider.removeFromList(isRegex ? ListType.regex : type, domain);
     } catch (e) {
       rethrow;
     }
@@ -76,7 +77,7 @@ class WhitelistModel extends ListModel {
 }
 
 class BlacklistModel extends ListModel {
-  BlacklistModel(ListType type) : super(ListType.black);
+  BlacklistModel() : super(ListType.black);
 
   @override
   bool contains(String domain) {
@@ -85,5 +86,10 @@ class BlacklistModel extends ListModel {
     });
 
     return false;
+  }
+
+  Future<List<List<String>>> fetch() async {
+    await super.update();
+    return lists;
   }
 }

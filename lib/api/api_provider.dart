@@ -200,8 +200,18 @@ class ApiProvider {
     return response.body;
   }
 
-  String _listTypeToString(ListType type) =>
-      type == ListType.black ? 'black' : 'white';
+  String _listTypeToString(ListType type) {
+    switch (type) {
+      case ListType.white:
+        return 'white';
+      case ListType.black:
+        return 'black';
+      case ListType.regex:
+        return 'regex';
+      default:
+        throw Exception('unknown ListType $type');
+    }
+  }
 
   /// Returns a list of listed domains.
   Future<List<List<String>>> fetchList(ListType type) async {
