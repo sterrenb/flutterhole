@@ -8,6 +8,11 @@ enum ListType {
   white,
 }
 
+enum BlacklistType {
+  exact,
+  wildcard,
+}
+
 List<List<String>> listFromJson(String str) {
   final jsonData = json.decode(str);
   return List<List<String>>.from(
@@ -45,13 +50,12 @@ abstract class ListModel {
     }
   }
 
-  Future<List<String>> fetch();
+  bool contains(String domain);
 }
 
-class WhiteListModel extends ListModel {
-  WhiteListModel() : super(ListType.white);
+class WhitelistModel extends ListModel {
+  WhitelistModel() : super(ListType.white);
 
-  @override
   Future<List<String>> fetch() async {
     await super.update();
     return lists.first;
@@ -65,5 +69,21 @@ class WhiteListModel extends ListModel {
     } catch (e) {
       rethrow;
     }
+  }
+
+  @override
+  bool contains(String domain) => lists.first.contains(domain);
+}
+
+class BlacklistModel extends ListModel {
+  BlacklistModel(ListType type) : super(ListType.black);
+
+  @override
+  bool contains(String domain) {
+    lists.forEach((list) {
+      if (list.contains(domain)) return true;
+    });
+
+    return false;
   }
 }

@@ -33,6 +33,7 @@ class _EditFormState extends State<EditForm> {
   TextFormField textFormFieldString() {
     return TextFormField(
       controller: controller,
+      keyboardType: TextInputType.url,
       autofocus: true,
       validator: (value) {
         if (value.isEmpty) {
