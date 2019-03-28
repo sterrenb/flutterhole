@@ -66,7 +66,7 @@ class PiConfigMenuState extends WithAppState<PiConfigMenu> {
               tooltip: 'Select Pi-hole configuration',
               onSelected: (ConfigOption result) {
                 if (result.name == addNew) {
-                  return openEditDialog(context, controller);
+                  return openConfigEditDialog(context, controller);
                 } else {
                   globalPiConfig(context)
                       .switchConfig(context: context, index: result.index)

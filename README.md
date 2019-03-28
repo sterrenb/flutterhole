@@ -20,6 +20,7 @@ FlutterHole is a free third party Android application for interacting with your 
 ## Features
 - **Quick enable/disable** - toggle your Pi-hole® from your home screen or a single tap in FlutterHole.
 - **Multiple configurations** - Easily switch between every Pi-hole® that you have access to.
+- **Manage your blacklist & whitelist** - add or remove domains, wildcards and regular expressions from your lists.
 - **Recently Blocked** - see a live view of requests that are currently being blocked.
 - **Summary overview** - view the amount of queries sent and blocked.
 - **Dark mode** - because we can.

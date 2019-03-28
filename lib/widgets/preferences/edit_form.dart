@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sterrenburg.github.flutterhole/pi_config.dart';
@@ -31,6 +33,7 @@ class _EditFormState extends State<EditForm> {
   TextFormField textFormFieldString() {
     return TextFormField(
       controller: controller,
+      keyboardType: TextInputType.url,
       autofocus: true,
       validator: (value) {
         if (value.isEmpty) {
@@ -77,45 +80,70 @@ class _EditFormState extends State<EditForm> {
   }
 }
 
-/// Shows an [AlertDialog] with an editable text field
-Future openEditDialog(BuildContext context, TextEditingController controller) {
+/// Shows an [AlertDialog] with an editable text field for config creation.
+Future<String> openConfigEditDialog(BuildContext context,
+    TextEditingController controller) {
   final formKey = GlobalKey<FormState>();
   return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return alertConfigDialog(
+        return alertEditDialog(
+            'Enter a name',
             EditForm(formKey: formKey, controller: controller, type: String),
-            context);
+            context,
+            onConfigEditSuccess);
       });
 }
 
-AlertDialog alertConfigDialog(EditForm editForm, BuildContext context) {
+/// Shows an [AlertDialog] with an editable text field for list addition.
+Future<String> openListEditDialog(BuildContext context,
+    TextEditingController controller, String title) {
+  final formKey = GlobalKey<FormState>();
+  return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return alertEditDialog(
+            title,
+            EditForm(formKey: formKey, controller: controller, type: String),
+            context,
+            onWhitelistEditSuccess);
+      });
+}
+
+AlertDialog alertEditDialog(String title,
+    EditForm editForm,
+    BuildContext context,
+    void onEditSuccess(BuildContext context, String value)) {
   List<Widget> actions = [
     CancelButton(),
     FlatButton(
       child: Text('OK'),
       onPressed: () {
         if (editForm.formKey.currentState.validate()) {
-          final PiConfig piConfig = AppState
-              .of(context)
-              .piConfig;
-          piConfig
-              .addNew(editForm.controller.value.text)
-              .then((int newConfigIndex) {
-            piConfig.switchConfig(context: context, index: newConfigIndex);
-//                .then((bool didSwitch) {
-//              setState(() {});
-//            });
-          });
-          Navigator.pop(context);
+          onEditSuccess(context, editForm.controller.value.text);
         }
       },
     )
   ];
 
   return AlertDialog(
-    title: Text('Enter a name'),
+    title: Text(title),
     content: editForm,
     actions: actions,
   );
+}
+
+// TODO maybe use the popped value instead of handling the results here in the edit_form file
+void onConfigEditSuccess(BuildContext context, String value) {
+  final PiConfig piConfig = AppState
+      .of(context)
+      .piConfig;
+  piConfig.addNew(value).then((int newConfigIndex) {
+    piConfig.switchConfig(context: context, index: newConfigIndex);
+  });
+  Navigator.pop<String>(context, value);
+}
+
+void onWhitelistEditSuccess(BuildContext context, String value) {
+  Navigator.pop<String>(context, value);
 }

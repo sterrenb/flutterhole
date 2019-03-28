@@ -7,14 +7,21 @@ import 'package:sterrenburg.github.flutterhole/widgets/dashboard/status_title.da
 
 /// The default scaffold, using the [DefaultDrawer] and the [ToggleStatusButton].
 class DefaultScaffold extends StatelessWidget {
-  /// The human friendly title.
+  /// The human friendly title, defaults to the active configuration name.
   final String title;
 
   /// The body of the scaffold.
   final Widget body;
 
-  const DefaultScaffold({Key key, @required this.title, @required this.body})
-      : super(key: key);
+  /// The FAB, defaults to null.
+  final Widget fab;
+
+  const DefaultScaffold({
+    Key key,
+    @required this.body,
+    this.title,
+    this.fab,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +35,7 @@ class DefaultScaffold extends StatelessWidget {
         ),
         drawer: DefaultDrawer(),
         endDrawer: DefaultEndDrawer(),
+        floatingActionButton: fab,
         body: body);
   }
 }
