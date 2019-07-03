@@ -106,5 +106,23 @@ void main() {
 
       expect(localStorage.active, pihole);
     });
+
+    test('invalid activate throws Exception', () async {
+      final pihole = Pihole();
+
+      mockSharedPreferences(map: pihole.toJson());
+
+      localStorage = await LocalStorage.getInstance();
+      assert(localStorage.cache[pihole.key] == pihole);
+
+//      await localStorage.activate('unknown_key');
+
+      try {
+        await localStorage.activate('unknown_key');
+        fail('exception not thrown');
+      } catch (e) {
+        expect(e, TypeMatcher<Exception>());
+      }
+    });
   });
 }

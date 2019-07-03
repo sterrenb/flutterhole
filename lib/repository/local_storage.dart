@@ -93,6 +93,10 @@ class LocalStorage {
   }
 
   Future<void> activate(String key) async {
+    if (!_cache.containsKey(key)) {
+      throw Exception('key not found');
+    }
+
     await _preferences.setString(_piholeActiveKey, key);
   }
 
