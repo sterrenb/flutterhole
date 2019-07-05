@@ -3,7 +3,7 @@ import 'package:flutterhole_again/model/pihole.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// The key where a String with the active pihole preference is saved.
-const String _piholeActiveKey = 'pihole_active';
+const String _piholeActiveKey = 'active_pihole';
 
 /// The prefix used for all pihole preferences.
 const String piholePrefix = 'pihole_user_';
@@ -17,9 +17,10 @@ class LocalStorage {
 
   Map<String, Pihole> get cache => _cache;
 
-  Pihole get active => _cache[_preferences.getString(_piholeActiveKey)];
-
-  String activeKey;
+  Pihole active() {
+    final String key = _preferences.getString(_piholeActiveKey);
+    return _cache[key];
+  }
 
   final logger = FimberLog('LocalStorage');
 
@@ -38,9 +39,10 @@ class LocalStorage {
   }
 
   Future<void> init() async {
+    _cache = {};
+    await _preferences.reload();
     Set<String> keys = _preferences.getKeys();
 
-    print('all keys: ${keys.toString()}');
     keys.retainWhere((String key) => key.startsWith(piholePrefix));
 
     keys.forEach((String key) {
@@ -49,7 +51,6 @@ class LocalStorage {
             piholePrefix.length, key.length - titleKey.length - 1);
         List<String> piholeKeys = keys.toList()
           ..retainWhere((String key) => key.contains(piholeKey));
-        print('pihole keys: $piholeKeys');
 
         _cache[piholeKey] = Pihole(
           title: _preferences.get(
@@ -61,46 +62,97 @@ class LocalStorage {
           auth: _preferences.get(
               piholeKeys.firstWhere((String key) => key.contains(authKey))),
         );
-
-        print('cache size: ${_cache.length}');
       }
     });
 
-    print('leftover keys: ${keys.toString()}');
-  }
-
-  static Future<void> reset() async {
-    await _preferences?.clear();
-    _preferences = null;
-    _instance = null;
-  }
-
-  Future<void> save(Pihole pihole) async {
-    if (_cache.containsKey(pihole.key)) {
-      throw Exception('key is already in use');
+    if (active() == null && _cache.isNotEmpty) {
+      await activate(_cache.values.first);
     }
-    final map = pihole.toJson();
+  }
 
+  static Future<void> clear() async {
+    await _preferences?.clear();
+    _instance._cache = {};
+  }
+
+  /// Resets all preference keys and adds a default Pihole configuration.
+  Future<void> reset() async {
+    await clear();
+    final pihole = Pihole();
+    await _instance.add(pihole);
+    await _instance.init();
+  }
+
+  Future<bool> remove(Pihole pihole) async {
     List<Future<void>> futures = [];
 
-    map.forEach((String key, dynamic value) {
-      futures.add(_set('$piholePrefix${pihole.key}_', key, value));
+    if (!_cache.containsKey(pihole.localKey)) {
+      logger.w('cannot remove ${pihole.localKey}: key not found');
+      return false;
+    }
+
+    final map = pihole.toJson();
+    map.forEach((String key, _) {
+      futures.add(_remove('$piholePrefix${pihole.localKey}_', key));
     });
 
     await Future.wait(futures);
 
-    _cache[pihole.key] = pihole;
+    _cache.remove(pihole.localKey);
+
+    return true;
   }
 
-  Future<void> activate(String key) async {
-    if (!_cache.containsKey(key)) {
-      throw Exception('key not found');
+  Future<bool> add(Pihole pihole) async {
+    List<Future<void>> futures = [];
+
+    if (_cache.containsKey(pihole.localKey)) {
+      Fimber.w(
+          'cannot add ${pihole.title}: key ${pihole.localKey} already in use');
+      return false;
     }
 
-    await _preferences.setString(_piholeActiveKey, key);
+    final map = pihole.toJson();
+    map.forEach((String key, dynamic value) {
+      futures.add(_set('$piholePrefix${pihole.localKey}_', key, value));
+    });
+
+    await Future.wait(futures);
+
+    _cache[pihole.localKey] = pihole;
+
+    return true;
+  }
+
+  Future<void> update(Pihole original, Pihole update) async {
+    if (cache.containsKey(update.localKey) &&
+        update.localKey != original.localKey) {
+      throw Exception('cannot update: key ${update.localKey} already in use');
+    }
+
+    await remove(original);
+    await add(update);
+  }
+
+  Future<void> activate(Pihole pihole) async {
+    if (!_cache.containsKey(pihole.localKey)) {
+      throw Exception('cannot activate ${pihole.title}: key not found');
+    }
+
+    await _preferences.setString(_piholeActiveKey, pihole.localKey);
+    logger.i('activated ${pihole.localKey}');
+  }
+
+  Future<bool> _remove(String prefix, String key) async {
+    logger.i('remove key: $prefix$key');
+    return _preferences.remove('$prefix$key');
   }
 
   Future<bool> _set(String prefix, String key, dynamic value) async {
+    if (value == _preferences.get('$prefix$key')) {
+      return false;
+    }
+
     logger.i('set key: $prefix$key value: $value');
     if (value is String) {
       return _preferences.setString('$prefix$key', value);
@@ -118,6 +170,6 @@ class LocalStorage {
       return _preferences.setStringList('$prefix$key', value);
     }
 
-    throw Exception('unknown value type ${value.runtimeType}');
+    throw Exception('unsupported value type ${value.runtimeType}');
   }
 }

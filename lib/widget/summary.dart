@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole_again/bloc/status/bloc.dart';
+import 'package:flutterhole_again/bloc/summary/bloc.dart';
 
-import 'bloc/summary/bloc.dart';
-import 'bloc/summary/summary_bloc.dart';
-import 'repository/local_storage.dart';
+import 'package:flutterhole_again/service/local_storage.dart';
 
 class Summary extends StatefulWidget {
   @override

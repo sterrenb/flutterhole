@@ -1,24 +1,24 @@
+import 'package:fimber/fimber.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterhole_again/model/pihole.dart';
-import 'package:flutterhole_again/repository/local_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutterhole_again/service/local_storage.dart';
 import "package:test/test.dart";
 
-void mockSharedPreferences({Map<String, dynamic> map}) {
-  if (map == null) {
-    map = {};
-  } else {
-    print('using map titled ${map[titleKey]}');
-    final String title = map[titleKey];
-    map = map.map((String key, dynamic value) => MapEntry<String, dynamic>(
-        'flutter.$piholePrefix${title.toLowerCase().replaceAll(' ', '_')}_$key',
-        value));
-  }
+void mockSharedPreferences({List<Pihole> piholes = const []}) async {
+//void mockSharedPreferences({Map<String, dynamic> values}) async {
+  Map<String, dynamic> piholeValues = {};
 
-  const MethodChannel('plugins.flutter.io/shared_preferences')
+  piholes.forEach((pihole) {
+    final values = pihole.toJson();
+    values.forEach((String key, dynamic value) {
+      piholeValues['flutter.$piholePrefix${pihole.localKey}_$key'] = value;
+    });
+  });
+
+  MethodChannel('plugins.flutter.io/shared_preferences')
       .setMockMethodCallHandler((MethodCall methodCall) async {
     if (methodCall.method == 'getAll') {
-      return map;
+      return piholeValues;
     }
     return null;
   });
@@ -26,11 +26,12 @@ void mockSharedPreferences({Map<String, dynamic> map}) {
 
 void main() {
   LocalStorage localStorage;
+  Fimber.plantTree(DebugTree());
 
-  setUp(() {
-    LocalStorage.reset().then((_) {
-      mockSharedPreferences();
-    });
+  setUp(() async {
+    mockSharedPreferences();
+    localStorage = await LocalStorage.getInstance();
+    LocalStorage.clear();
   });
 
   test('initially empty', () async {
@@ -38,90 +39,120 @@ void main() {
     expect(localStorage.cache, {});
   });
 
-  group('save', () {
-    test('succesful save stores the keys and updates the cache', () async {
-      localStorage = await LocalStorage.getInstance();
-      final preferences = await SharedPreferences.getInstance();
+  test('clear removes all keys', () async {
+    expect(LocalStorage.clear(), completes);
+    expectLater(localStorage.cache, isEmpty);
+  });
+
+  group('remove', () {
+    test('successful remove results in empty map', () async {
       final pihole = Pihole();
+      mockSharedPreferences(piholes: [pihole]);
+      await localStorage.init();
 
-      await localStorage.save(pihole);
+      assert(localStorage.cache[pihole.localKey] == pihole);
 
-      expect(localStorage.cache['flutterhole'], pihole);
-      expect(
-          preferences.getKeys(),
-          Set<String>.from([
-            'pihole_user_flutterhole_title',
-            'pihole_user_flutterhole_host',
-            'pihole_user_flutterhole_port',
-            'pihole_user_flutterhole_auth'
-          ]));
+      final bool didRemove = await localStorage.remove(pihole);
+      expect(didRemove, isTrue);
+      expect(localStorage.cache, {});
     });
 
-    test('succesful double save stores the keys and updates the cache',
-        () async {
-      localStorage = await LocalStorage.getInstance();
-      final preferences = await SharedPreferences.getInstance();
-      assert(preferences.getKeys().length == 0);
-      final piholeA = Pihole(title: 'The coolest');
-      final piholeB = Pihole(
-        title: 'A cool test',
-      );
+    test('invalid remove results in false', () async {
+      final pihole = Pihole(title: 'staying around');
+      mockSharedPreferences(piholes: [pihole]);
+      await localStorage.init();
 
-      await localStorage.save(piholeA);
-      await localStorage.save(piholeB);
+      assert(localStorage.cache[pihole.localKey] == pihole);
 
-      expect(localStorage.cache[piholeA.key], piholeA);
-      expect(localStorage.cache[piholeB.key], piholeB);
+      final bool didRemove =
+          await localStorage.remove(Pihole.copyWith(pihole, title: 'unknown'));
+      expect(didRemove, isFalse);
+      expect(localStorage.cache, {pihole.localKey: pihole});
+    });
+  });
+
+  group('add', () {
+    test('successful add returns true', () async {
+      final pihole = Pihole();
+      await localStorage.init();
+      assert(localStorage.cache.length == 0);
+
+      final bool didAdd = await localStorage.add(pihole);
+      expect(didAdd, isTrue);
+      expect(localStorage.cache, {pihole.localKey: pihole});
     });
 
-    test('duplicate save throws Exception', () async {
-      final pihole = Pihole(title: 'no dupes allowed');
+    test('duplicate add returns false', () async {
+      final pihole = Pihole();
+      mockSharedPreferences(piholes: [pihole]);
+      await localStorage.init();
 
-      mockSharedPreferences(map: pihole.toJson());
+      assert(localStorage.cache.length == 1);
 
-      localStorage = await LocalStorage.getInstance();
-      assert(localStorage.cache[pihole.key] == pihole);
+      final bool didAdd = await localStorage.add(pihole);
+      expect(didAdd, isFalse);
+      expect(localStorage.cache, {pihole.localKey: pihole});
+    });
+  });
+
+  group('update', () {
+    test('successful update without key change', () async {
+      final pihole = Pihole(title: 'updating');
+      final update = Pihole.copyWith(pihole, port: 8080);
+      mockSharedPreferences(piholes: [pihole]);
+      await localStorage.init();
+
+      assert(localStorage.cache.length == 1);
+
+      await localStorage.update(pihole, update);
+
+      expect(localStorage.cache[pihole.localKey], update);
+    });
+
+    test('successful update with key change', () async {
+      final pihole = Pihole(title: 'updating');
+      final update =
+          Pihole.copyWith(pihole, title: 'edited', host: 'edited host');
+      mockSharedPreferences(piholes: [pihole]);
+      await localStorage.init();
+
+      assert(localStorage.cache.length == 1);
+
+      await localStorage.update(pihole, update);
+
+      expect(localStorage.cache.containsKey(pihole.localKey), isFalse);
+      expect(localStorage.cache[update.localKey], update);
+      expect(localStorage.cache.length, 1);
+    });
+
+    test('update with conflicting key change throws Exception', () async {
+      final pihole = Pihole();
+      final update = Pihole(title: 'already present', host: 'edited host');
+      mockSharedPreferences(piholes: [pihole, update]);
+      await localStorage.init();
+
+      assert(localStorage.cache.length == 2);
 
       try {
-        await localStorage.save(pihole);
+        await localStorage.update(pihole, update);
         fail('exception not thrown');
       } catch (e) {
         expect(e, TypeMatcher<Exception>());
       }
-
-      expect(localStorage.cache[pihole.key], pihole);
     });
   });
 
   group('activate', () {
-    test('succesful activate updates the cache', () async {
-      final pihole = Pihole();
-
-      mockSharedPreferences(map: pihole.toJson());
-
-      localStorage = await LocalStorage.getInstance();
-      assert(localStorage.cache[pihole.key] == pihole);
-
-      await localStorage.activate(pihole.key);
-
-      expect(localStorage.active, pihole);
-    });
-
     test('invalid activate throws Exception', () async {
       final pihole = Pihole();
-
-      mockSharedPreferences(map: pihole.toJson());
-
-      localStorage = await LocalStorage.getInstance();
-      assert(localStorage.cache[pihole.key] == pihole);
-
-//      await localStorage.activate('unknown_key');
+      mockSharedPreferences(piholes: [pihole]);
+      await localStorage.init();
 
       try {
-        await localStorage.activate('unknown_key');
+        await localStorage.activate(Pihole(title: 'unknown'));
         fail('exception not thrown');
       } catch (e) {
-        expect(e, TypeMatcher<Exception>());
+        expect(e, isException);
       }
     });
   });
