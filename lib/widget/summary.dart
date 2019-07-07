@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/status/bloc.dart';
 import 'package:flutterhole_again/bloc/summary/bloc.dart';
-
-import 'package:flutterhole_again/service/local_storage.dart';
 
 class Summary extends StatefulWidget {
   @override
@@ -11,10 +8,15 @@ class Summary extends StatefulWidget {
 }
 
 class _SummaryState extends State<Summary> {
+  String _numWithCommas(num i) {
+    final RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+    final Function matchFunc = (Match match) => '${match[1]},';
+    return i.toString().replaceAllMapped(reg, matchFunc);
+  }
+
   @override
   Widget build(BuildContext context) {
     final SummaryBloc summaryBloc = BlocProvider.of<SummaryBloc>(context);
-    final StatusBloc statusBloc = BlocProvider.of<StatusBloc>(context);
     return BlocListener(
       bloc: summaryBloc,
       listener: (context, state) {
@@ -24,51 +26,105 @@ class _SummaryState extends State<Summary> {
       },
       child: Column(
         children: <Widget>[
-          RaisedButton(
-            onPressed: () {
-              summaryBloc.dispatch(FetchSummary());
-              statusBloc.dispatch(GetStatus());
-            },
-            child: Text('load'),
-          ),
-          RaisedButton(
-            onPressed: () async {
-              final storage = await LocalStorage.getInstance();
-              storage.init();
-            },
-            child: Text('prefs'),
-          ),
           Expanded(
             child: BlocBuilder(
                 bloc: summaryBloc,
                 builder: (BuildContext context, SummaryState state) {
-                  if (state is SummaryStateEmpty) {
-                    return Center(child: Text('summary empty'));
-                  }
-                  if (state is SummaryStateLoading) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (state is SummaryStateError) {
-                    return Center(child: Text(state.errorMessage));
-                  }
                   if (state is SummaryStateSuccess) {
-                    return ListView(
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
-                        ListTile(
-                          title: Text(state.summary.adsBlockedToday.toString()),
-                          leading: Text('Ads blocked today'),
+                        SummaryTile(
+                          backgroundColor: Colors.green,
+                          title: 'Total Queries',
+                          subtitle:
+                              _numWithCommas(state.summary.dnsQueriesToday),
                         ),
-                        ListTile(
-                          title: Text(state.summary.status),
-                          leading: Text('Status'),
+                        SummaryTile(
+                          backgroundColor: Colors.blue,
+                          title: 'Queries Blocked',
+                          subtitle:
+                              _numWithCommas(state.summary.adsBlockedToday),
+                        ),
+                        SummaryTile(
+                          backgroundColor: Colors.orange,
+                          title: 'Percent Blocked',
+                          subtitle:
+                              '${state.summary.adsPercentageToday.toStringAsFixed(1)}%',
+                        ),
+                        SummaryTile(
+                          backgroundColor: Colors.red,
+                          title: 'Domains on Blocklist',
+                          subtitle:
+                              _numWithCommas(state.summary.domainsBeingBlocked),
                         ),
                       ],
                     );
                   }
+
+                  if (state is SummaryStateError) {
+                    return ErrorMessage(errorMessage: state.errorMessage);
+                  }
+
+                  return Center(child: CircularProgressIndicator());
                 }),
           ),
         ],
       ),
     );
+  }
+}
+
+class SummaryTile extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final Color backgroundColor;
+
+  const SummaryTile({
+    Key key,
+    @required this.title,
+    this.subtitle = 'nmulll',
+    @required this.backgroundColor,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+        child: Card(
+      color: backgroundColor,
+      child: Center(
+        child: ListTile(
+          title: Text(
+            title,
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+          subtitle: Text(
+            subtitle,
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 30.0,
+                fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    ));
+
+    return Expanded(
+        child: Container(color: backgroundColor, child: Text(title)));
+  }
+}
+
+class ErrorMessage extends StatelessWidget {
+  final String errorMessage;
+
+  const ErrorMessage({Key key, @required this.errorMessage}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text(errorMessage));
   }
 }

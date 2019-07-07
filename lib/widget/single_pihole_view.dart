@@ -50,6 +50,8 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
   }
 
   String _validateTitle(String val) {
+    print('check $val : ${Pihole.toKey(val)}');
+    print(_localStorage.cache.keys);
     if (val != pihole.title &&
         _localStorage.cache.containsKey(Pihole.toKey(val))) {
       return 'This title is already in use';
@@ -75,12 +77,11 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                   Expanded(
                     child: TextField(
                       controller: titleController,
+                      autofocus: pihole.title.isEmpty,
                       decoration: InputDecoration(
                           labelText: 'Configuration name',
                           helperText:
                               'Update the internal cache after changing this.',
-                          hintText:
-                              'Hints are here and here and here and there.',
                           errorText: _validateTitle(titleController.text)),
                     ),
                   ),
@@ -106,6 +107,7 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                 controller: hostController,
                 keyboardType: TextInputType.url,
                 decoration: InputDecoration(labelText: 'Host'),
+                enabled: pihole.title.isNotEmpty,
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, host: v);
@@ -125,6 +127,7 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                   LengthLimitingTextInputFormatter(6),
                 ],
                 decoration: InputDecoration(labelText: 'Port'),
+                enabled: pihole.title.isNotEmpty,
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, port: int.parse(v));
@@ -141,6 +144,7 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                 keyboardType: TextInputType.url,
                 obscureText: true,
                 decoration: InputDecoration(labelText: 'API token'),
+                enabled: pihole.title.isNotEmpty,
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, auth: v);
