@@ -2,9 +2,14 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutterhole_again/model/model.dart';
+import 'package:flutterhole_again/model/pihole.dart';
+import 'package:flutterhole_again/service/local_storage.dart';
 import 'package:flutterhole_again/service/pihole_client.dart';
 import 'package:flutterhole_again/service/pihole_exception.dart';
 import "package:test/test.dart";
+import 'package:mockito/mockito.dart';
+
+class MockLocalStorage extends Mock implements LocalStorage {}
 
 final mockSummary = Summary(
     domainsBeingBlocked: 0,
@@ -90,12 +95,15 @@ class MockAdapter extends HttpClientAdapter {
 void main() {
   PiholeClient client;
 
-  setUp(() {
+  setUp(() async {
     final dio = Dio(BaseOptions(
       baseUrl: 'http://pi.hole/admin/api.php',
     ));
     dio.httpClientAdapter = MockAdapter();
-    client = PiholeClient(dio: dio);
+    final localStorage = MockLocalStorage();
+    client = PiholeClient(dio: dio, localStorage: localStorage);
+
+    when(localStorage.active()).thenReturn(Pihole());
   });
 
   group('fetchStatus', () {
@@ -280,15 +288,15 @@ void main() {
     });
 
     test('throws PiholeException on unauthorized removeFromWhitelist',
-        () async {
-      client.dio.options.queryParameters = {'not authorized': ''};
-      try {
-        await client.removeFromWhitelist('new.com');
-        fail('exception not thrown');
-      } catch (e) {
-        expect(e, TypeMatcher<PiholeException>());
-      }
-    });
+            () async {
+          client.dio.options.queryParameters = {'not authorized': ''};
+          try {
+            await client.removeFromWhitelist('new.com');
+            fail('exception not thrown');
+          } catch (e) {
+            expect(e, TypeMatcher<PiholeException>());
+          }
+        });
 
     test('editOnWhitelist returns', () async {
       client.dio.options.queryParameters = {'successful whitelist add': ''};

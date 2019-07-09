@@ -3,14 +3,18 @@ import 'package:fimber/fimber.dart';
 import 'package:flutterhole_again/model/model.dart';
 import 'package:meta/meta.dart';
 
+import 'globals.dart';
+import 'local_storage.dart';
 import 'pihole_exception.dart';
 
 class PiholeClient {
   Dio dio;
+  LocalStorage localStorage;
 
   final logger = FimberLog('PiholeClient');
 
-  PiholeClient({@required this.dio, bool logQueries = true}) {
+  PiholeClient(
+      {@required this.dio, this.localStorage, bool logQueries = true}) {
     if (logQueries) {
       dio.interceptors
           .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
@@ -24,6 +28,10 @@ class PiholeClient {
         return error;
       }));
     }
+
+    if (localStorage == null) {
+      localStorage = Globals.localStorage;
+    }
   }
 
   /// Performs an HTTP request with [queryParameters] and returns the response.
@@ -36,7 +44,9 @@ class PiholeClient {
       {ResponseType responseType = ResponseType.json}) async {
     Response response;
     try {
-      response = await dio.get('',
+      final active = localStorage.active();
+      dio.options.baseUrl = 'http://${active.host}:${active.port.toString()}';
+      response = await dio.get('/admin/api.php',
           queryParameters: queryParameters,
           options: Options(responseType: responseType));
 
@@ -51,8 +61,10 @@ class PiholeClient {
 
       return response;
     } on DioError catch (e) {
+      logger.e('error: ${e.message}');
       throw PiholeException(message: 'request failed', e: e);
     } catch (e) {
+      logger.e('error: ${e.toString()}');
       throw PiholeException(message: 'unknown error', e: e);
     }
   }

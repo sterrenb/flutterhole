@@ -130,8 +130,14 @@ class LocalStorage {
       throw Exception('cannot update: key ${update.localKey} already in use');
     }
 
+    final originalIsActive = active() == original;
+
     await remove(original);
     await add(update);
+
+    if (originalIsActive) {
+      activate(update);
+    }
   }
 
   Future<void> activate(Pihole pihole) async {

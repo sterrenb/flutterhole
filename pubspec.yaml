@@ -26,6 +26,9 @@ dependencies:
   fimber: ^0.3.0
   fluro: ^1.5.0
   shared_preferences: ^0.5.3+1
+  url_launcher: ^5.0.3
+  launch_review: ^2.0.0
+  package_info: ^0.4.0+4
 
 dev_dependencies:
   flutter_test:

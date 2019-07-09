@@ -69,9 +69,14 @@ class ToggleButton extends StatelessWidget {
               tooltip: 'Enable Pi-hole',
             );
           }
-          if (state is StatusStateEmpty) {
-            return Container();
-          }
+
+          return IconButton(
+            onPressed: () {
+              statusBloc.dispatch(GetStatus());
+            },
+            icon: Icon(Icons.refresh),
+            tooltip: 'Check Pi-hole status',
+          );
         },
       ),
     );

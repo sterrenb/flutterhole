@@ -20,9 +20,9 @@ class _SummaryState extends State<Summary> {
     return BlocListener(
       bloc: summaryBloc,
       listener: (context, state) {
-        if (state is SummaryStateEmpty) {
-          summaryBloc.dispatch(FetchSummary());
-        }
+//        if (state is SummaryStateEmpty) {
+//          summaryBloc.dispatch(FetchSummary());
+//        }
       },
       child: Column(
         children: <Widget>[
@@ -85,7 +85,7 @@ class SummaryTile extends StatelessWidget {
   const SummaryTile({
     Key key,
     @required this.title,
-    this.subtitle = 'nmulll',
+    this.subtitle = '',
     @required this.backgroundColor,
   }) : super(key: key);
 
@@ -112,9 +112,6 @@ class SummaryTile extends StatelessWidget {
         ),
       ),
     ));
-
-    return Expanded(
-        child: Container(color: backgroundColor, child: Text(title)));
   }
 }
 
@@ -125,6 +122,10 @@ class ErrorMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text(errorMessage));
+    return Center(
+        child: Text(
+      errorMessage,
+      textAlign: TextAlign.center,
+    ));
   }
 }

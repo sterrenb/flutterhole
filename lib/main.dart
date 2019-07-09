@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole_again/repository/summary_repository.dart';
 import 'package:flutterhole_again/service/globals.dart';
+import 'package:flutterhole_again/service/local_storage.dart';
 import 'package:flutterhole_again/service/pihole_client.dart';
 import 'package:flutterhole_again/service/routes.dart';
 
@@ -14,12 +15,13 @@ import 'bloc/status/bloc.dart';
 import 'bloc/summary/bloc.dart';
 import 'repository/status_repository.dart';
 
-void main() {
+void main() async {
   Globals.router = Router();
+  Globals.localStorage = await LocalStorage.getInstance();
   configureRoutes(Globals.router);
 
   Globals.client = PiholeClient(
-      dio: Dio(BaseOptions(baseUrl: 'http://pi.hole/admin/api.php')));
+      dio: Dio(), localStorage: Globals.localStorage);
 
   assert(() {
     BlocSupervisor.delegate = SimpleBlocDelegate();

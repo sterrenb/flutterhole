@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole_again/bloc/summary/bloc.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
 import 'package:flutterhole_again/widget/status_icon.dart';
@@ -26,7 +28,7 @@ class _DefaultDrawerState extends State<DefaultDrawer> {
           UserAccountsDrawerHeader(
             accountName: Row(
               children: <Widget>[
-                Text('FlutterHole'),
+                Text(Globals.localStorage.active().title),
                 StatusIcon(),
               ],
             ),
@@ -57,7 +59,10 @@ class _DefaultDrawerMenu extends StatelessWidget {
         ListTile(
           title: Text('Dashboard'),
           leading: Icon(Icons.home),
-          onTap: () => Globals.router.navigateTo(context, rootPath),
+          onTap: () {
+            BlocProvider.of<SummaryBloc>(context).dispatch(FetchSummary());
+            Globals.router.navigateTo(context, rootPath);
+          },
         ),
 //        ListTile(
 //          title: Text('Whitelist'),
@@ -78,7 +83,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
         ListTile(
           title: Text('About'),
           leading: Icon(Icons.favorite),
-//          onTap: () => Globals.router.navigateTo(context, Routes.about),
+          onTap: () => Globals.router.navigateTo(context, aboutPath),
         ),
       ],
     );
