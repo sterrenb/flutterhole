@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole_again/bloc/summary/summary_bloc.dart';
 import 'package:flutterhole_again/bloc/summary/summary_event.dart';
+import 'package:flutterhole_again/bloc/whitelist/whitelist_bloc.dart';
+import 'package:flutterhole_again/bloc/whitelist/whitelist_event.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
 import 'package:flutterhole_again/widget/status_icon.dart';
@@ -65,11 +67,14 @@ class _DefaultDrawerMenu extends StatelessWidget {
             Globals.router.navigateTo(context, rootPath);
           },
         ),
-//        ListTile(
-//          title: Text('Whitelist'),
-//          leading: Icon(Icons.check_circle),
-//          onTap: () => Globals.router.navigateTo(context, Routes.whitelistHome),
-//        ),
+        ListTile(
+          title: Text('Whitelist'),
+          leading: Icon(Icons.check_circle),
+          onTap: () {
+            BlocProvider.of<WhitelistBloc>(context).dispatch(FetchWhitelist());
+            Globals.router.navigateTo(context, whitelistPath);
+          },
+        ),
 //        ListTile(
 //          title: Text('Blacklist'),
 //          leading: Icon(Icons.cancel),

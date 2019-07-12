@@ -152,11 +152,13 @@ class PiholeClient {
     Response response = await _get({'list': 'white'});
     if (response.data is String) {
       return Whitelist.fromString(response.data);
-    } else {
-      throw PiholeException(
-          message: 'unexpected data type ${response.data.runtimeType}',
-          e: response);
+    } else if (response.data is List<dynamic>) {
+      return Whitelist.fromJson(response.data);
     }
+
+    throw PiholeException(
+        message: 'unexpected data type ${response.data.runtimeType}',
+        e: response);
   }
 
   /// Adds the trimmed [domain] to the Pi-hole whitelist.

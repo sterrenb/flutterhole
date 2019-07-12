@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole_again/bloc/summary/summary_bloc.dart';
+import 'package:flutterhole_again/bloc/summary/summary_event.dart';
 import 'package:flutterhole_again/bloc/summary/summary_state.dart';
 
-class Summary extends StatefulWidget {
+import 'error_message.dart';
+
+class SummaryBuilder extends StatefulWidget {
   @override
-  _SummaryState createState() => _SummaryState();
+  _SummaryBuilderState createState() => _SummaryBuilderState();
 }
 
-class _SummaryState extends State<Summary> {
+class _SummaryBuilderState extends State<SummaryBuilder> {
   String _numWithCommas(num i) {
     final RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
     final Function matchFunc = (Match match) => '${match[1]},';
@@ -21,9 +24,9 @@ class _SummaryState extends State<Summary> {
     return BlocListener(
       bloc: summaryBloc,
       listener: (context, state) {
-//        if (state is SummaryStateEmpty) {
-//          summaryBloc.dispatch(FetchSummary());
-//        }
+        if (state is SummaryStateEmpty) {
+          summaryBloc.dispatch(FetchSummary());
+        }
       },
       child: Column(
         children: <Widget>[
@@ -116,17 +119,4 @@ class SummaryTile extends StatelessWidget {
   }
 }
 
-class ErrorMessage extends StatelessWidget {
-  final String errorMessage;
 
-  const ErrorMessage({Key key, @required this.errorMessage}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-        child: Text(
-      errorMessage,
-      textAlign: TextAlign.center,
-    ));
-  }
-}

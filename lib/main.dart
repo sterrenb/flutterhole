@@ -5,6 +5,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole_again/repository/summary_repository.dart';
+import 'package:flutterhole_again/repository/whitelist_repository.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/local_storage.dart';
 import 'package:flutterhole_again/service/pihole_client.dart';
@@ -13,6 +14,7 @@ import 'package:flutterhole_again/service/routes.dart';
 import 'bloc/simple_bloc_delegate.dart';
 import 'bloc/status/status_bloc.dart';
 import 'bloc/summary/summary_bloc.dart';
+import 'bloc/whitelist/whitelist_bloc.dart';
 import 'repository/status_repository.dart';
 
 void main() async {
@@ -20,8 +22,7 @@ void main() async {
   Globals.localStorage = await LocalStorage.getInstance();
   configureRoutes(Globals.router);
 
-  Globals.client = PiholeClient(
-      dio: Dio(), localStorage: Globals.localStorage);
+  Globals.client = PiholeClient(dio: Dio(), localStorage: Globals.localStorage);
 
   assert(() {
     BlocSupervisor.delegate = SimpleBlocDelegate();
@@ -38,6 +39,8 @@ class MyApp extends StatelessWidget {
       SummaryBloc(SummaryRepository(Globals.client));
 
   final StatusBloc statusBloc = StatusBloc(StatusRepository(Globals.client));
+  final WhitelistBloc whitelistBloc =
+      WhitelistBloc(WhitelistRepository(Globals.client));
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<SummaryBloc>(
             dispose: false, builder: (context) => summaryBloc),
         BlocProvider<StatusBloc>(
-            dispose: false, builder: (context) => statusBloc)
+            dispose: false, builder: (context) => statusBloc),
+        BlocProvider<WhitelistBloc>(
+            dispose: false, builder: (context) => whitelistBloc),
       ],
       child: MaterialApp(
         title: 'FlutterHole',
