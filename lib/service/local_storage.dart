@@ -65,9 +65,9 @@ class LocalStorage {
       }
     });
 
-    if (active() == null && _cache.isNotEmpty) {
-      await activate(_cache.values.first);
-    }
+//    if (active() == null && _cache.isNotEmpty) {
+//      await activate(_cache.values.first);
+//    }
   }
 
   static Future<void> clear() async {
@@ -81,6 +81,7 @@ class LocalStorage {
     final pihole = Pihole();
     await _instance.init();
     await _instance.add(pihole);
+    await _instance.activate(pihole);
   }
 
   Future<bool> remove(Pihole pihole) async {

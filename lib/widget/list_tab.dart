@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class ListTab extends StatelessWidget {
-  final String text;
+  final String title;
 
-  const ListTab(this.text);
+  const ListTab(this.title);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(text,
+      title: Text(title,
           style: Theme.of(context)
               .textTheme
               .subtitle

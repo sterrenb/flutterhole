@@ -176,7 +176,7 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
               ),
               ListTile(
                 title: Text('Example URL'),
-                subtitle: Text(pihole.toJson().toString()),
+                subtitle: Text(pihole.baseUrl),
               ),
             ],
           ),

@@ -6,6 +6,7 @@ import 'package:flutterhole_again/bloc/whitelist/whitelist_bloc.dart';
 import 'package:flutterhole_again/bloc/whitelist/whitelist_event.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
+import 'package:flutterhole_again/widget/pihole_list_builder.dart';
 import 'package:flutterhole_again/widget/status/status_icon.dart';
 
 class DefaultDrawer extends StatefulWidget {
@@ -44,10 +45,13 @@ class _DefaultDrawerState extends State<DefaultDrawer> {
                   }
                 : null,
           ),
-          Expanded(
-            child:
-                Center(child: _showDetails ? Text('hi') : _DefaultDrawerMenu()),
-          ),
+          _showDetails
+              ? Expanded(
+            child: PiholeListBuilder(
+              editable: false,
+            ),
+          )
+              : _DefaultDrawerMenu(),
         ],
       ),
     );
@@ -58,6 +62,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      shrinkWrap: true,
       children: <Widget>[
         ListTile(
           title: Text('Dashboard'),

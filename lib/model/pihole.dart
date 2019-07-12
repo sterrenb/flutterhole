@@ -15,6 +15,9 @@ class Pihole extends Equatable {
 
   String get localKey => title.toLowerCase().replaceAll(' ', '_');
 
+  String get baseUrl =>
+      '$host${port == 80 ? '' : ':${port.toString()}'}/$apiPath';
+
   static String toKey(String str) => str.toLowerCase().replaceAll(' ', '_');
 
   Pihole(
