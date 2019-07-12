@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole_again/bloc/whitelist/whitelist_bloc.dart';
 import 'package:flutterhole_again/bloc/whitelist/whitelist_event.dart';
 import 'package:flutterhole_again/bloc/whitelist/whitelist_state.dart';
+import 'package:flutterhole_again/service/globals.dart';
+import 'package:flutterhole_again/service/routes.dart';
 import 'package:flutterhole_again/widget/error_message.dart';
 import 'package:flutterhole_again/widget/removable_tile.dart';
 
@@ -67,6 +69,14 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
                           tiles: _cache.map((String domain) {
                             return RemovableTile(
                               title: domain,
+                              onTap: () async {
+                                final String message = await Globals.router
+                                    .navigateTo(
+                                        context, whitelistEditPath(domain));
+                                if (message != null)
+                                  Scaffold.of(context).showSnackBar(
+                                      SnackBar(content: Text(message)));
+                              },
                               onDismissed: (_) {
                                 setState(() {
                                   _cache.remove(domain);

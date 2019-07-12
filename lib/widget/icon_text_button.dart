@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class IconTextButton extends StatelessWidget {
   final String title;
   final IconData icon;
-  final VoidCallback onPressed;
+  final GestureTapCallback onPressed;
   final Color color;
 
   const IconTextButton(
@@ -16,11 +16,10 @@ class IconTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialButton(
-      color: color,
+    return FlatButton(
       child: Row(
         children: <Widget>[
-          Icon(icon),
+          Icon(icon, color: color,),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(title),

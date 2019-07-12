@@ -16,21 +16,13 @@ class _WhitelistAddFormState extends State<WhitelistAddForm> {
 
   String get _domain => _fbKey.currentState.value[domainAttribute];
 
-  bool submitting;
-
-  @override
-  void initState() {
-    super.initState();
-    submitting = false;
-  }
-
   @override
   Widget build(BuildContext context) {
     final WhitelistBloc whitelistBloc = BlocProvider.of<WhitelistBloc>(context);
     return BlocListener(
       bloc: whitelistBloc,
       listener: (context, state) {
-        if (submitting && state is WhitelistStateSuccess) {
+        if (state is WhitelistStateSuccess) {
           Navigator.of(context).pop(_domain);
         }
       },
@@ -38,9 +30,6 @@ class _WhitelistAddFormState extends State<WhitelistAddForm> {
         fbKey: _fbKey,
         onVoidSubmitted: () {
           _fbKey.currentState.save();
-          setState(() {
-            submitting = true;
-          });
           whitelistBloc.dispatch(
               AddToWhitelist(_domain));
         },

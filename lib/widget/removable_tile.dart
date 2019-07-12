@@ -4,9 +4,14 @@ import 'package:flutterhole_again/widget/dismissible_background.dart';
 class RemovableTile extends StatefulWidget {
   final String title;
   final DismissDirectionCallback onDismissed;
+  final GestureTapCallback onTap;
 
-  const RemovableTile({Key key, @required this.title, this.onDismissed})
-      : super(key: key);
+  const RemovableTile({
+    Key key,
+    @required this.title,
+    this.onDismissed,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   _RemovableTileState createState() => _RemovableTileState();
@@ -24,7 +29,8 @@ class _RemovableTileState extends State<RemovableTile> {
       child: ListTile(
         title: Text(widget.title),
         trailing: Icon(Icons.keyboard_arrow_right),
-        onTap: () async {
+        onTap: widget.onTap,
+//        onTap: () async {
 //                          Globals.router
 //                              .navigateTo(context, whitelistEditPath(domain));
 
@@ -32,7 +38,7 @@ class _RemovableTileState extends State<RemovableTile> {
 //                              original: domain,
 //                              update: String.fromCharCodes(
 //                                  domain.runes.toList().reversed)));
-        },
+//        },
       ),
     );
   }

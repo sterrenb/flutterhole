@@ -18,7 +18,7 @@ class StatusAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Row(
         children: <Widget>[
-          Text(title),
+          Flexible(child: Text(title, overflow: TextOverflow.fade,)),
           StatusIcon(),
         ],
       ),

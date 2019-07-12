@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutterhole_again/bloc/whitelist/whitelist_bloc.dart';
+import 'package:flutterhole_again/bloc/whitelist/whitelist_event.dart';
 import 'package:flutterhole_again/bloc/whitelist/whitelist_state.dart';
+import 'package:flutterhole_again/widget/dialog.dart';
+import 'package:flutterhole_again/widget/icon_text_button.dart';
 
 const domainAttribute = "domain";
 
@@ -31,6 +34,10 @@ class _WhitelistFormState extends State<WhitelistForm> {
     return BlocListener(
       bloc: whitelistBloc,
       listener: (context, state) {
+        if (state is WhitelistStateSuccess) {
+          Scaffold.of(context).showSnackBar(
+              SnackBar(content: Text('${widget.initialValue} removed')));
+        }
         if (state is WhitelistStateError) {
           Scaffold.of(context).showSnackBar(SnackBar(
               content: Row(children: [
@@ -56,7 +63,7 @@ class _WhitelistFormState extends State<WhitelistForm> {
                     initialValue: widget.initialValue,
                     textInputAction: TextInputAction.go,
                     keyboardType: TextInputType.url,
-                    // submission with Enter key doesn't work, see https://github.com/flutter/flutter/issues/19027
+                    // submission with Enter key doesn't work in emulators, see https://github.com/flutter/flutter/issues/19027
                     onFieldSubmitted: (_) {
                       if (widget.fbKey.currentState.validate()) {
                         widget.onVoidSubmitted();
@@ -85,6 +92,25 @@ class _WhitelistFormState extends State<WhitelistForm> {
                   widget.fbKey.currentState.reset();
                 },
               ),
+              widget.initialValue.isNotEmpty
+                  ? IconTextButton(
+                      title: 'Remove',
+                      icon: Icons.delete_outline,
+                      color: Colors.red,
+                      onPressed: () {
+                        showAlertDialog(
+                            context,
+                            Container(
+                              child: Text(
+                                  "Do you want to remove ${widget.initialValue}?"),
+                            ),
+                            continueText: 'Remove', onConfirm: () {
+                          whitelistBloc.dispatch(
+                              RemoveFromWhitelist(widget.initialValue));
+                        });
+                      },
+                    )
+                  : Container(),
               BlocBuilder(
                 bloc: whitelistBloc,
                 builder: (context, state) {
