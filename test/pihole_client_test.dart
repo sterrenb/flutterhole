@@ -1,14 +1,16 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutterhole_again/model/model.dart';
 import 'package:flutterhole_again/model/pihole.dart';
 import 'package:flutterhole_again/service/local_storage.dart';
 import 'package:flutterhole_again/service/pihole_client.dart';
 import 'package:flutterhole_again/service/pihole_exception.dart';
 import "package:test/test.dart";
 import 'package:mockito/mockito.dart';
-
+import 'package:flutterhole_again/model/blacklist.dart';
+import 'package:flutterhole_again/model/status.dart';
+import 'package:flutterhole_again/model/summary.dart';
+import 'package:flutterhole_again/model/whitelist.dart';
 class MockLocalStorage extends Mock implements LocalStorage {}
 
 final mockSummary = Summary(

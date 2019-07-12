@@ -1,8 +1,7 @@
-
 import 'package:flutterhole_again/bloc/summary/summary_bloc.dart';
 import 'package:flutterhole_again/bloc/summary/summary_event.dart';
 import 'package:flutterhole_again/bloc/summary/summary_state.dart';
-import 'package:flutterhole_again/model/model.dart';
+import 'package:flutterhole_again/model/summary.dart';
 import 'package:flutterhole_again/repository/summary_repository.dart';
 import 'package:flutterhole_again/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
