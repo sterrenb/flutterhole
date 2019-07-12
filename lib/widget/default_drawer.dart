@@ -6,7 +6,7 @@ import 'package:flutterhole_again/bloc/whitelist/whitelist_bloc.dart';
 import 'package:flutterhole_again/bloc/whitelist/whitelist_event.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
-import 'package:flutterhole_again/widget/status_icon.dart';
+import 'package:flutterhole_again/widget/status/status_icon.dart';
 
 class DefaultDrawer extends StatefulWidget {
   final bool allowConfigSelection;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/model/pihole.dart';
-import 'package:flutterhole_again/widget/single_pihole_view.dart';
+import 'package:flutterhole_again/widget/status/single_pihole_view.dart';
 
 class SinglePiholeAddScreen extends StatelessWidget {
   final Pihole provided = Pihole(title: '');

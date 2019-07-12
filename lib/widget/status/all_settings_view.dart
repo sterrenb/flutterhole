@@ -3,10 +3,9 @@ import 'package:flutterhole_again/model/pihole.dart';
 import 'package:flutterhole_again/screen/single_pihole_add_screen.dart';
 import 'package:flutterhole_again/screen/single_pihole_edit_screen.dart';
 import 'package:flutterhole_again/service/local_storage.dart';
-
-import 'dismissible_background.dart';
-import 'icon_text_button.dart';
-import 'list_tab.dart';
+import 'package:flutterhole_again/widget/dismissible_background.dart';
+import 'package:flutterhole_again/widget/icon_text_button.dart';
+import 'package:flutterhole_again/widget/list_tab.dart';
 
 class AllSettingsView extends StatefulWidget {
   @override
@@ -41,7 +40,12 @@ class _AllSettingsViewState extends State<AllSettingsView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text('No Piholes found.'),
-          PiholeButtonRow(localStorage: localStorage),
+          PiholeButtonRow(
+            localStorage: localStorage,
+            onStateChange: () {
+              setState(() {});
+            },
+          ),
         ],
       );
     }
@@ -168,8 +172,8 @@ class PiholeTile extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => SinglePiholeEditScreen(
-                  pihole: pihole,
-                ),
+              pihole: pihole,
+            ),
           ),
         );
       },
