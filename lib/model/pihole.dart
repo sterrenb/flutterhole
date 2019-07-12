@@ -39,6 +39,7 @@ class Pihole extends Equatable {
   Map<String, dynamic> toJson() => {
         titleKey: title,
         hostKey: host,
+        apiPathKey: apiPath,
         portKey: port,
         authKey: auth,
       };

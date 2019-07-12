@@ -11,8 +11,8 @@ import 'package:flutterhole_again/service/pihole_client.dart';
 import 'package:flutterhole_again/service/routes.dart';
 
 import 'bloc/simple_bloc_delegate.dart';
-import 'bloc/status/bloc.dart';
-import 'bloc/summary/bloc.dart';
+import 'bloc/status/status_bloc.dart';
+import 'bloc/summary/summary_bloc.dart';
 import 'repository/status_repository.dart';
 
 void main() async {

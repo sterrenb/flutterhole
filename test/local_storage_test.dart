@@ -5,7 +5,6 @@ import 'package:flutterhole_again/service/local_storage.dart';
 import "package:test/test.dart";
 
 void mockSharedPreferences({List<Pihole> piholes = const []}) async {
-//void mockSharedPreferences({Map<String, dynamic> values}) async {
   Map<String, dynamic> piholeValues = {};
 
   piholes.forEach((pihole) {
@@ -20,6 +19,12 @@ void mockSharedPreferences({List<Pihole> piholes = const []}) async {
     if (methodCall.method == 'getAll') {
       return piholeValues;
     }
+    if (methodCall.method == 'clear') {
+      piholeValues.clear();
+      return true;
+    }
+
+    print('mockPreferences: unknown methodCall ${methodCall.method}');
     return null;
   });
 }
@@ -42,6 +47,25 @@ void main() {
   test('clear removes all keys', () async {
     expect(LocalStorage.clear(), completes);
     expectLater(localStorage.cache, isEmpty);
+  });
+
+  group('clear', () {
+    test('reset on empty cache results in cache with 1 pihole', () async {
+      mockSharedPreferences();
+      await localStorage.reset();
+
+      final pihole = Pihole();
+      expect(localStorage.cache, {pihole.localKey: pihole});
+    });
+
+    test('reset on existing cache results in cache with 1 pihole', () async {
+      mockSharedPreferences(
+          piholes: [Pihole(title: 'one'), Pihole(title: 'two')]);
+      await localStorage.reset();
+
+      final pihole = Pihole();
+      expect(localStorage.cache, {pihole.localKey: pihole});
+    });
   });
 
   group('remove', () {

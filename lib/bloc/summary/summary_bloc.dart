@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutterhole_again/bloc/summary/summary_event.dart';
+import 'package:flutterhole_again/bloc/summary/summary_state.dart';
 import 'package:flutterhole_again/repository/summary_repository.dart';
 import 'package:flutterhole_again/service/pihole_exception.dart';
-
-import './bloc.dart';
 
 class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
   final SummaryRepository summaryRepository;
@@ -27,7 +27,7 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
       final summary = await summaryRepository.getSummary();
       yield SummaryStateSuccess(summary);
     } on PiholeException catch (e) {
-      yield SummaryStateError(errorMessage: e.toString());
+      yield SummaryStateError(errorMessage: e.message);
     }
   }
 }

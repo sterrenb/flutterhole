@@ -20,6 +20,7 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
 
   TextEditingController titleController = TextEditingController();
   TextEditingController hostController = TextEditingController();
+  TextEditingController apiPathController = TextEditingController();
   TextEditingController portController = TextEditingController();
   TextEditingController authController = TextEditingController();
 
@@ -41,6 +42,7 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
 
     titleController.text = pihole.title;
     hostController.text = pihole.host;
+    apiPathController.text = pihole.apiPath;
     portController.text = pihole.port.toString();
     authController.text = pihole.auth;
   }
@@ -111,6 +113,22 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, host: v);
+                    _save(update).then((_) {
+                      setState(() {
+                        pihole = update;
+                      });
+                    });
+                  }
+                },
+              ),
+              TextField(
+                controller: apiPathController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(labelText: 'API path'),
+                enabled: pihole.title.isNotEmpty,
+                onChanged: (v) {
+                  if (v.length > 0 && pihole.title.length > 0) {
+                    final update = Pihole.copyWith(pihole, apiPath: v);
                     _save(update).then((_) {
                       setState(() {
                         pihole = update;

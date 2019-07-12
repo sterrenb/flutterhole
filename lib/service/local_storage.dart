@@ -79,8 +79,8 @@ class LocalStorage {
   Future<void> reset() async {
     await clear();
     final pihole = Pihole();
-    await _instance.add(pihole);
     await _instance.init();
+    await _instance.add(pihole);
   }
 
   Future<bool> remove(Pihole pihole) async {

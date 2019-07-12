@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/summary/bloc.dart';
+import 'package:flutterhole_again/bloc/summary/summary_bloc.dart';
+import 'package:flutterhole_again/bloc/summary/summary_event.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
 import 'package:flutterhole_again/widget/status_icon.dart';

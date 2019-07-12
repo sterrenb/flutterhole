@@ -1,4 +1,7 @@
-import 'package:flutterhole_again/bloc/status/bloc.dart';
+
+import 'package:flutterhole_again/bloc/status/status_bloc.dart';
+import 'package:flutterhole_again/bloc/status/status_event.dart';
+import 'package:flutterhole_again/bloc/status/status_state.dart';
 import 'package:flutterhole_again/model/model.dart';
 import 'package:flutterhole_again/repository/status_repository.dart';
 import 'package:flutterhole_again/service/pihole_exception.dart';

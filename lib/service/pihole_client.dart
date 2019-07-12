@@ -46,7 +46,7 @@ class PiholeClient {
     try {
       final active = localStorage.active();
       dio.options.baseUrl = 'http://${active.host}:${active.port.toString()}';
-      response = await dio.get('/admin/api.php',
+      response = await dio.get('/${active.apiPath}',
           queryParameters: queryParameters,
           options: Options(responseType: responseType));
 
@@ -59,12 +59,19 @@ class PiholeClient {
         throw PiholeException(message: 'empty response');
       }
 
+      if (dataString.contains('<!--')) {
+        throw PiholeException(message: 'unexpected plaintext response');
+      }
+
       return response;
     } on DioError catch (e) {
-      logger.e('error: ${e.message}');
+      logger.e('dio error: ${e.message}');
       throw PiholeException(message: 'request failed', e: e);
+    } on PiholeException catch (e) {
+      logger.e('pihole error: ${e.message}');
+      rethrow;
     } catch (e) {
-      logger.e('error: ${e.toString()}');
+      logger.e('unknown error: ${e.toString()}');
       throw PiholeException(message: 'unknown error', e: e);
     }
   }
