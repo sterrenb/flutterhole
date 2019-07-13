@@ -19,7 +19,7 @@ class StatusBloc extends Bloc<StatusEvent, StatusState> {
   Stream<StatusState> mapEventToState(
     StatusEvent event,
   ) async* {
-    if (event is GetStatus) yield* _fetch();
+    if (event is FetchStatus) yield* _fetch();
     if (event is EnableStatus) yield* _enable();
     if (event is DisableStatus) yield* _disable();
     if (event is SleepStatus) yield* _sleep(event.duration);

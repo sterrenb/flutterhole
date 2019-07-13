@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/model/pihole.dart';
 import 'package:flutterhole_again/screen/single_pihole_edit_screen.dart';
+import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/local_storage.dart';
 import 'package:flutterhole_again/widget/dismissible_background.dart';
 import 'package:flutterhole_again/widget/pihole/pihole_button_row.dart';
@@ -64,9 +65,15 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
 //            shrinkWrap: true,
               itemCount: localStorage.cache.length,
               itemBuilder: (BuildContext context, int index) {
-                final pihole =
-                localStorage.cache[localStorage.cache.keys.elementAt(index)];
-                final bool active = localStorage.active() == pihole;
+                final pihole = localStorage
+                    .cache[localStorage.cache.keys.elementAt(index)];
+                final bool active = localStorage
+                    .active()
+                    .title == pihole.title;
+                print(
+                    'active: ${localStorage
+                        .active()
+                        .title} ($active), current: ${pihole.title}');
                 if (widget.editable) {
                   return Dismissible(
                     key: Key(pihole.title),
@@ -88,7 +95,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
                       pihole: pihole,
                       active: active,
                       onTap: () => _edit(pihole),
-                      onLongPress: () => _activate(pihole),
+                      onLongPress: () => _activate(pihole, context),
                     ),
                   );
                 } else {
@@ -96,7 +103,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
                     pihole: pihole,
                     active: active,
                     onTap: () async {
-                      await _activate(pihole);
+                      await _activate(pihole, context);
                       Navigator.of(context).pop();
                     },
                     onLongPress: () => _edit(pihole),
@@ -117,9 +124,12 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
     );
   }
 
-  Future _activate(Pihole pihole) async {
+  Future _activate(Pihole pihole, BuildContext context) async {
     await localStorage.activate(pihole);
+    Globals.refresh(context);
     setState(() {});
+    Scaffold.of(context)
+        .showSnackBar(SnackBar(content: Text('Changed to ${pihole.title}')));
   }
 }
 

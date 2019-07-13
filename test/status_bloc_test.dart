@@ -2,10 +2,7 @@
 import 'package:flutterhole_again/bloc/status/status_bloc.dart';
 import 'package:flutterhole_again/bloc/status/status_event.dart';
 import 'package:flutterhole_again/bloc/status/status_state.dart';
-import 'package:flutterhole_again/model/blacklist.dart';
 import 'package:flutterhole_again/model/status.dart';
-import 'package:flutterhole_again/model/summary.dart';
-import 'package:flutterhole_again/model/whitelist.dart';
 import 'package:flutterhole_again/repository/status_repository.dart';
 import 'package:flutterhole_again/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
@@ -43,7 +40,7 @@ main() {
             StatusStateSuccess(status),
           ]));
 
-      statusBloc.dispatch(GetStatus());
+      statusBloc.dispatch(FetchStatus());
     });
 
     test(
@@ -59,7 +56,7 @@ main() {
             StatusStateError(),
           ]));
 
-      statusBloc.dispatch(GetStatus());
+      statusBloc.dispatch(FetchStatus());
     });
   });
 

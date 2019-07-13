@@ -6,7 +6,7 @@ abstract class StatusEvent extends Equatable {
   StatusEvent([List props = const []]) : super(props);
 }
 
-class GetStatus extends StatusEvent {}
+class FetchStatus extends StatusEvent {}
 
 class EnableStatus extends StatusEvent {}
 

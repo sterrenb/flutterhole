@@ -49,6 +49,7 @@ class AboutScreen extends StatelessWidget {
                     subtitle: Text('unknown version'),
                   );
                 }),
+            Divider(),
             ListTile(
               leading: Icon(Icons.code),
               title: Text('View the source on GitHub'),
