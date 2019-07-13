@@ -4,6 +4,7 @@ import 'package:flutterhole_again/screen/single_pihole_edit_screen.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/local_storage.dart';
 import 'package:flutterhole_again/widget/dismissible_background.dart';
+import 'package:flutterhole_again/widget/list_tab.dart';
 import 'package:flutterhole_again/widget/pihole/pihole_button_row.dart';
 
 class PiholeListBuilder extends StatefulWidget {
@@ -60,6 +61,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
 
     return Column(
       children: <Widget>[
+        widget.editable ? Container() : ListTab('Select configuration'),
         Expanded(
           child: ListView.builder(
 //            shrinkWrap: true,
