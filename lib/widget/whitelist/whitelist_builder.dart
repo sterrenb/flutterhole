@@ -26,6 +26,27 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
     _refreshCompleter = Completer();
   }
 
+  void _removeDomain(String domain, WhitelistBloc whitelistBloc,
+      BuildContext context) {
+    setState(() {
+      _cache.remove(domain);
+    });
+    whitelistBloc.dispatch(RemoveFromWhitelist(domain));
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text("$domain removed"),
+      action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+//            setState(() {
+//              _cache.add(domain);
+//
+//            });
+            whitelistBloc.dispatch(AddToWhitelist(domain));
+          }),
+    ));
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final whitelistBloc = BlocProvider.of<WhitelistBloc>(context);
@@ -78,14 +99,7 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
                                       SnackBar(content: Text(message)));
                               },
                               onDismissed: (_) {
-                                setState(() {
-                                  _cache.remove(domain);
-                                });
-                                whitelistBloc
-                                    .dispatch(RemoveFromWhitelist(domain));
-                                Scaffold.of(context).showSnackBar(
-                                    SnackBar(content: Text("$domain removed")));
-                                setState(() {});
+                                _removeDomain(domain, whitelistBloc, context);
                               },
                             );
                           })).toList(),

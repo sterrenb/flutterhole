@@ -23,7 +23,6 @@ class WhitelistBloc extends Bloc<WhitelistEvent, WhitelistState> {
     if (event is AddToWhitelist) yield* _add(event.domain);
     if (event is RemoveFromWhitelist) yield* _remove(event.domain);
     if (event is EditOnWhitelist) yield* _edit(event.original, event.update);
-//    yield WhitelistStateLoading(cache: whitelistRepository.cache);
   }
 
   Stream<WhitelistState> _fetch() async* {
