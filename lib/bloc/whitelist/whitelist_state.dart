@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutterhole_again/model/whitelist.dart';
+import 'package:flutterhole_again/service/pihole_exception.dart';
 import 'package:meta/meta.dart';
 
 @immutable
@@ -22,8 +23,7 @@ class WhitelistStateSuccess extends WhitelistState {
 }
 
 class WhitelistStateError extends WhitelistState {
-  final String errorMessage;
+  final PiholeException e;
 
-  WhitelistStateError({this.errorMessage = 'whitelist error'})
-      : super([errorMessage]);
+  WhitelistStateError({this.e}) : super([e]);
 }

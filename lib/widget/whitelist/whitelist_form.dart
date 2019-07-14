@@ -45,7 +45,7 @@ class _WhitelistFormState extends State<WhitelistForm> {
               padding: const EdgeInsets.only(right: 8.0),
               child: Icon(Icons.error_outline),
             ),
-            Text(state.errorMessage)
+                Text(state.e.message)
           ])));
         }
       },

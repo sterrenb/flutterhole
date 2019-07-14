@@ -56,7 +56,7 @@ main() {
           emitsInOrder([
             SummaryStateEmpty(),
             SummaryStateLoading(),
-            SummaryStateError(),
+            SummaryStateError(e: PiholeException()),
           ]));
 
       summaryBloc.dispatch(FetchSummary());

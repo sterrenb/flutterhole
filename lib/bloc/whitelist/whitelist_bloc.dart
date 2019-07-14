@@ -30,7 +30,7 @@ class WhitelistBloc extends Bloc<WhitelistEvent, WhitelistState> {
       final whitelist = await whitelistRepository.getWhitelist();
       yield WhitelistStateSuccess(whitelist);
     } on PiholeException catch (e) {
-      yield WhitelistStateError(errorMessage: e.message);
+      yield WhitelistStateError(e: e);
     }
   }
 
@@ -39,7 +39,7 @@ class WhitelistBloc extends Bloc<WhitelistEvent, WhitelistState> {
       await whitelistRepository.addToWhitelist(domain);
       yield WhitelistStateSuccess(whitelistRepository.cache);
     } on PiholeException catch (e) {
-      yield WhitelistStateError(errorMessage: e.message);
+      yield WhitelistStateError(e: e);
     }
   }
 
@@ -48,7 +48,7 @@ class WhitelistBloc extends Bloc<WhitelistEvent, WhitelistState> {
       await whitelistRepository.removeFromWhitelist(domain);
       yield WhitelistStateSuccess(whitelistRepository.cache);
     } on PiholeException catch (e) {
-      yield WhitelistStateError(errorMessage: e.message);
+      yield WhitelistStateError(e: e);
     }
   }
 
@@ -57,7 +57,7 @@ class WhitelistBloc extends Bloc<WhitelistEvent, WhitelistState> {
       await whitelistRepository.editOnWhitelist(original, update);
       yield WhitelistStateSuccess(whitelistRepository.cache);
     } on PiholeException catch (e) {
-      yield WhitelistStateError(errorMessage: e.message);
+      yield WhitelistStateError(e: e);
     }
   }
 }

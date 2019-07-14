@@ -27,7 +27,7 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
       final summary = await summaryRepository.getSummary();
       yield SummaryStateSuccess(summary);
     } on PiholeException catch (e) {
-      yield SummaryStateError(errorMessage: e.message);
+      yield SummaryStateError(e: e);
     }
   }
 }

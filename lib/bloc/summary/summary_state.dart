@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutterhole_again/model/summary.dart';
+import 'package:flutterhole_again/service/pihole_exception.dart';
 import 'package:meta/meta.dart';
 
 @immutable
@@ -18,7 +19,7 @@ class SummaryStateSuccess extends SummaryState {
 }
 
 class SummaryStateError extends SummaryState {
-  final String errorMessage;
+  final PiholeException e;
 
-  SummaryStateError({this.errorMessage = 'unknown summary error'});
+  SummaryStateError({this.e}) : super([e]);
 }

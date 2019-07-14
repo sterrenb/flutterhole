@@ -53,7 +53,7 @@ main() {
           emitsInOrder([
             StatusStateEmpty(),
             StatusStateLoading(),
-            StatusStateError(),
+            StatusStateError(e: PiholeException()),
           ]));
 
       statusBloc.dispatch(FetchStatus());
@@ -89,7 +89,7 @@ main() {
           emitsInOrder([
             StatusStateEmpty(),
             StatusStateLoading(),
-            StatusStateError(),
+            StatusStateError(e: PiholeException()),
           ]));
 
       statusBloc.dispatch(EnableStatus());
@@ -125,7 +125,7 @@ main() {
           emitsInOrder([
             StatusStateEmpty(),
             StatusStateLoading(),
-            StatusStateError(),
+            StatusStateError(e: PiholeException()),
           ]));
 
       statusBloc.dispatch(DisableStatus());
@@ -164,7 +164,7 @@ main() {
           emitsInOrder([
             StatusStateEmpty(),
             StatusStateLoading(),
-            StatusStateError(),
+            StatusStateError(e: PiholeException()),
           ]));
 
       statusBloc.dispatch(SleepStatus(duration));

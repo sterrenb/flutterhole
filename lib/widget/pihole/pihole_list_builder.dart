@@ -62,9 +62,9 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
     return Column(
       children: <Widget>[
         widget.editable ? Container() : ListTab('Select configuration'),
+        widget.editable ? Container() : Divider(),
         Expanded(
           child: ListView.builder(
-//            shrinkWrap: true,
               itemCount: localStorage.cache.length,
               itemBuilder: (BuildContext context, int index) {
                 final pihole = localStorage
@@ -72,10 +72,6 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
                 final bool active = localStorage
                     .active()
                     .title == pihole.title;
-                print(
-                    'active: ${localStorage
-                        .active()
-                        .title} ($active), current: ${pihole.title}');
                 if (widget.editable) {
                   return Dismissible(
                     key: Key(pihole.title),

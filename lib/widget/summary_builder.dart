@@ -69,7 +69,7 @@ class _SummaryBuilderState extends State<SummaryBuilder> {
                   }
 
                   if (state is SummaryStateError) {
-                    return ErrorMessage(errorMessage: state.errorMessage);
+                    return ErrorMessage(errorMessage: state.e.message);
                   }
 
                   return Center(child: CircularProgressIndicator());

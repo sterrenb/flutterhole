@@ -6,7 +6,6 @@ import 'package:flutterhole_again/bloc/status/status_state.dart';
 import 'package:flutterhole_again/repository/status_repository.dart';
 import 'package:flutterhole_again/service/pihole_exception.dart';
 
-
 class StatusBloc extends Bloc<StatusEvent, StatusState> {
   final StatusRepository statusRepository;
 
@@ -31,7 +30,7 @@ class StatusBloc extends Bloc<StatusEvent, StatusState> {
       final status = await statusRepository.getStatus();
       yield StatusStateSuccess(status);
     } on PiholeException catch (e) {
-      yield StatusStateError(errorMessage: e.message);
+      yield StatusStateError(e: e);
     }
   }
 
@@ -41,7 +40,7 @@ class StatusBloc extends Bloc<StatusEvent, StatusState> {
       final status = await statusRepository.enable();
       yield StatusStateSuccess(status);
     } on PiholeException catch (e) {
-      yield StatusStateError(errorMessage: e.message);
+      yield StatusStateError(e: e);
     }
   }
 
@@ -51,7 +50,7 @@ class StatusBloc extends Bloc<StatusEvent, StatusState> {
       final status = await statusRepository.disable();
       yield StatusStateSuccess(status);
     } on PiholeException catch (e) {
-      yield StatusStateError(errorMessage: e.message);
+      yield StatusStateError(e: e);
     }
   }
 
@@ -66,7 +65,7 @@ class StatusBloc extends Bloc<StatusEvent, StatusState> {
         yield StatusStateSleeping(duration, duration);
       }
     } on PiholeException catch (e) {
-      yield StatusStateError(errorMessage: e.message);
+      yield StatusStateError(e: e);
     }
   }
 }

@@ -37,10 +37,6 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
       action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
-//            setState(() {
-//              _cache.add(domain);
-//
-//            });
             whitelistBloc.dispatch(AddToWhitelist(domain));
           }),
     ));
@@ -113,7 +109,7 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 20.0),
-                          child: ErrorMessage(errorMessage: state.errorMessage),
+                          child: ErrorMessage(errorMessage: state.e.message),
                         ),
                       ],
                     ),

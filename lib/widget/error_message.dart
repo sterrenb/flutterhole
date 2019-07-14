@@ -8,9 +8,12 @@ class ErrorMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Text(
+        child: SafeArea(
+          minimum: EdgeInsets.all(8.0),
+          child: Text(
       errorMessage,
       textAlign: TextAlign.center,
-    ));
+          ),
+        ));
   }
 }

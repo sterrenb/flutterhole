@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutterhole_again/model/status.dart';
+import 'package:flutterhole_again/service/pihole_exception.dart';
 import 'package:meta/meta.dart';
 
 @immutable
@@ -26,7 +27,7 @@ class StatusStateSleeping extends StatusState {
 }
 
 class StatusStateError extends StatusState {
-  final String errorMessage;
+  final PiholeException e;
 
-  StatusStateError({this.errorMessage = 'unknown status error'});
+  StatusStateError({this.e}) : super([e]);
 }

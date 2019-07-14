@@ -54,7 +54,7 @@ main() {
           emitsInOrder([
             WhitelistStateEmpty(),
             WhitelistStateLoading(),
-            WhitelistStateError(errorMessage: 'unknown Pihole error'),
+            WhitelistStateError(e: PiholeException()),
           ]));
 
       whitelistBloc.dispatch(FetchWhitelist());
@@ -94,7 +94,7 @@ main() {
           emitsInOrder([
             WhitelistStateEmpty(),
             WhitelistStateLoading(cache: whitelistRepository.cache),
-            WhitelistStateError(errorMessage: 'unknown Pihole error'),
+            WhitelistStateError(e: PiholeException()),
           ]));
 
       whitelistBloc.dispatch(AddToWhitelist('new'));
@@ -131,7 +131,7 @@ main() {
           emitsInOrder([
             WhitelistStateEmpty(),
             WhitelistStateLoading(),
-            WhitelistStateError(errorMessage: 'unknown Pihole error'),
+            WhitelistStateError(e: PiholeException()),
           ]));
 
       whitelistBloc.dispatch(RemoveFromWhitelist('new'));
