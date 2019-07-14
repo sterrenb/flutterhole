@@ -69,7 +69,7 @@ void main() {
   });
 
   group('remove', () {
-    test('successful remove results in empty map', () async {
+    test('successful remove results in new map', () async {
       final pihole = Pihole();
       mockSharedPreferences(piholes: [pihole]);
       await localStorage.init();
@@ -78,7 +78,7 @@ void main() {
 
       final bool didRemove = await localStorage.remove(pihole);
       expect(didRemove, isTrue);
-      expect(localStorage.cache, {});
+      expect(localStorage.cache, {Pihole().localKey: Pihole()});
     });
 
     test('invalid remove results in false', () async {
@@ -146,7 +146,7 @@ void main() {
 
       expect(localStorage.cache.containsKey(pihole.localKey), isFalse);
       expect(localStorage.cache[update.localKey], update);
-      expect(localStorage.cache.length, 1);
+      expect(localStorage.cache.length, 2);
     });
 
     test('update with conflicting key change throws Exception', () async {

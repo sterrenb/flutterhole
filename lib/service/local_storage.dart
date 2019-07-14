@@ -92,6 +92,8 @@ class LocalStorage {
       return false;
     }
 
+    final bool wasActive = active() == pihole;
+
     final map = pihole.toJson();
     map.forEach((String key, _) {
       futures.add(_remove('$piholePrefix${pihole.localKey}_', key));
@@ -100,6 +102,14 @@ class LocalStorage {
     await Future.wait(futures);
 
     _cache.remove(pihole.localKey);
+
+    if (_cache.isEmpty) {
+      await add(Pihole());
+    }
+
+    if (wasActive) {
+      activate(_cache.values.first);
+    }
 
     return true;
   }

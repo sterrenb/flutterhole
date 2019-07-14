@@ -46,12 +46,13 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    Widget body = Center(child: CircularProgressIndicator());
     if (localStorage == null) {
-      return Center(child: CircularProgressIndicator());
+      return body;
     }
 
     if (localStorage.cache.length == 0) {
-      return Column(
+      body = Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text('No Piholes found.'),
@@ -59,55 +60,65 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
       );
     }
 
+    body = ListView.builder(
+        itemCount: localStorage.cache.length,
+        itemBuilder: (BuildContext context, int index) {
+          final pihole =
+          localStorage.cache[localStorage.cache.keys.elementAt(index)];
+          final bool active = localStorage
+              .active()
+              .title == pihole.title;
+          if (widget.editable) {
+            return Dismissible(
+              key: Key(pihole.title),
+              onDismissed: (direction) async {
+                final didRemove = await localStorage.remove(pihole);
+
+                if (didRemove) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text('Removed ${pihole.title}'),
+                    action: SnackBarAction(
+                        label: 'Undo',
+                        onPressed: () async {
+                          await localStorage.add(pihole);
+                          setState(() {});
+                        }),
+                  ));
+                  setState(() {});
+                } else {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Could not remove ${pihole.title}')));
+                }
+              },
+              background: DismissibleBackground(),
+              secondaryBackground:
+              DismissibleBackground(alignment: Alignment.centerRight),
+              child: PiholeTile(
+                pihole: pihole,
+                active: active,
+                onTap: () => _edit(pihole),
+                onLongPress: () => _activate(pihole, context),
+              ),
+            );
+          } else {
+            return PiholeTile(
+              pihole: pihole,
+              active: active,
+              onTap: () async {
+                await _activate(pihole, context);
+                Navigator.of(context).pop();
+              },
+              onLongPress: () => _edit(pihole),
+            );
+          }
+        });
+
     return Column(
       children: <Widget>[
         widget.editable ? Container() : ListTab('Select configuration'),
         widget.editable ? Container() : Divider(),
         Expanded(
-          child: ListView.builder(
-              itemCount: localStorage.cache.length,
-              itemBuilder: (BuildContext context, int index) {
-                final pihole = localStorage
-                    .cache[localStorage.cache.keys.elementAt(index)];
-                final bool active = localStorage
-                    .active()
-                    .title == pihole.title;
-                if (widget.editable) {
-                  return Dismissible(
-                    key: Key(pihole.title),
-                    onDismissed: (direction) async {
-                      final didRemove = await localStorage.remove(pihole);
-
-                      if (didRemove) {
-                        Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text('Removed ${pihole.title}')));
-                      } else {
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text('Could not remove ${pihole.title}')));
-                      }
-                    },
-                    background: DismissibleBackground(),
-                    secondaryBackground:
-                        DismissibleBackground(alignment: Alignment.centerRight),
-                    child: PiholeTile(
-                      pihole: pihole,
-                      active: active,
-                      onTap: () => _edit(pihole),
-                      onLongPress: () => _activate(pihole, context),
-                    ),
-                  );
-                } else {
-                  return PiholeTile(
-                    pihole: pihole,
-                    active: active,
-                    onTap: () async {
-                      await _activate(pihole, context);
-                      Navigator.of(context).pop();
-                    },
-                    onLongPress: () => _edit(pihole),
-                  );
-                }
-              }),
+          child: body,
         ),
         Divider(),
         widget.editable

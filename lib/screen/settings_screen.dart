@@ -21,7 +21,8 @@ class SettingsScreen extends StatelessWidget {
           ],
         ),
         drawer: DefaultDrawer(
-          allowConfigSelection: false,
+          // TODO debug
+          allowConfigSelection: true,
         ),
         body: SettingsBuilder());
   }

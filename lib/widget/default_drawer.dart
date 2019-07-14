@@ -26,23 +26,24 @@ class _DefaultDrawerState extends State<DefaultDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final active = Globals.localStorage.active();
     return Drawer(
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
             accountName: Row(
               children: <Widget>[
-                Text(Globals.localStorage.active().title),
+                Text(active == null ? 'FlutterHole' : active.title),
                 StatusIcon(),
               ],
             ),
             accountEmail: null,
             onDetailsPressed: widget.allowConfigSelection
                 ? () {
-                    setState(() {
-                      _showDetails = !_showDetails;
-                    });
-                  }
+              setState(() {
+                _showDetails = !_showDetails;
+              });
+            }
                 : null,
           ),
           _showDetails

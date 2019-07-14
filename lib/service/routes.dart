@@ -26,7 +26,7 @@ void configureRoutes(Router router) {
   });
 
   router.define(rootPath,
-      handler: Handler(handlerFunc: (_, __) => SummaryScreen()));
+      handler: Handler(handlerFunc: (_, __) => SettingsScreen()));
 
   router.define(summaryPath,
       handler: Handler(handlerFunc: (_, __) => SummaryScreen()));

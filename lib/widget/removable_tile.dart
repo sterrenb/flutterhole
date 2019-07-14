@@ -30,15 +30,6 @@ class _RemovableTileState extends State<RemovableTile> {
         title: Text(widget.title),
         trailing: Icon(Icons.keyboard_arrow_right),
         onTap: widget.onTap,
-//        onTap: () async {
-//                          Globals.router
-//                              .navigateTo(context, whitelistEditPath(domain));
-
-//                          whitelistBloc.dispatch(EditOnWhitelist(
-//                              original: domain,
-//                              update: String.fromCharCodes(
-//                                  domain.runes.toList().reversed)));
-//        },
       ),
     );
   }
