@@ -8,13 +8,13 @@ const String wildcardSuffix = ('\$');
 
 const String _exact = 'exact';
 const String _wildcard = 'wildcard';
-const String _regex = 'regex';
+const String regexKey = 'regex';
 
 BlacklistType blacklistTypeFromString(String str) {
   str = str.toLowerCase();
   if (str.contains(_exact)) return BlacklistType.Exact;
   if (str.contains(_wildcard)) return BlacklistType.Wildcard;
-  if (str.contains(_regex)) return BlacklistType.Regex;
+  if (str.contains(regexKey)) return BlacklistType.Regex;
 
   throw FormatException('unknown blacklist string $str');
 }
@@ -23,6 +23,8 @@ class BlacklistItem extends Equatable {
   final String entry;
   final BlacklistType type;
 
+  String get list => type == BlacklistType.Exact ? 'black' : 'regex';
+
   String get listKey {
     switch (this.type) {
       case BlacklistType.Exact:
@@ -30,7 +32,7 @@ class BlacklistItem extends Equatable {
       case BlacklistType.Wildcard:
         return _wildcard;
       case BlacklistType.Regex:
-        return _regex;
+        return regexKey;
       default:
         throw Exception('unknown BlacklistType ${this.type}');
     }

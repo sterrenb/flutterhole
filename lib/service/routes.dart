@@ -1,11 +1,12 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/screen/about_screen.dart';
+import 'package:flutterhole_again/screen/blacklist/blacklist_view_screen.dart';
 import 'package:flutterhole_again/screen/settings_screen.dart';
 import 'package:flutterhole_again/screen/summary_screen.dart';
-import 'package:flutterhole_again/screen/whitelist_add_screen.dart';
-import 'package:flutterhole_again/screen/whitelist_edit_screen.dart';
-import 'package:flutterhole_again/screen/whitelist_view_screen.dart';
+import 'package:flutterhole_again/screen/whitelist/whitelist_add_screen.dart';
+import 'package:flutterhole_again/screen/whitelist/whitelist_edit_screen.dart';
+import 'package:flutterhole_again/screen/whitelist/whitelist_view_screen.dart';
 
 const String rootPath = '/';
 const String summaryPath = '/summary';
@@ -18,6 +19,13 @@ const String _whitelistEditPath = '/whitelist/edit/:domain';
 
 String whitelistEditPath(String domain) =>
     _whitelistEditPath.replaceAll(':domain', domain);
+
+const String blacklistPath = '/blacklist';
+const String blacklistAddPath = '/blacklist/add';
+//const String _blacklistEditPath = '/blacklist/edit/:domain';
+
+//String blacklistEditPath(String domain) =>
+//    _blacklistEditPath.replaceAll(':domain', domain);
 
 void configureRoutes(Router router) {
   router.notFoundHandler = Handler(handlerFunc: (_, __) {
@@ -42,6 +50,9 @@ void configureRoutes(Router router) {
           handlerFunc:
               (BuildContext context, Map<String, List<String>> params) =>
                   WhitelistEditScreen(original: params['domain'][0])));
+
+  router.define(blacklistPath,
+      handler: Handler(handlerFunc: (_, __) => BlacklistViewScreen()));
 
   router.define(settingsPath,
       handler: Handler(handlerFunc: (_, __) => SettingsScreen()));

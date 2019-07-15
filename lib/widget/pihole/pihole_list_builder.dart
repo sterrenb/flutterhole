@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/model/pihole.dart';
-import 'package:flutterhole_again/screen/single_pihole_edit_screen.dart';
+import 'package:flutterhole_again/screen/pihole/single_pihole_edit_screen.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/local_storage.dart';
 import 'package:flutterhole_again/widget/dismissible_background.dart';

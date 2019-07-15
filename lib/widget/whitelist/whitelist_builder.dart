@@ -40,7 +40,7 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
             whitelistBloc.dispatch(AddToWhitelist(domain));
           }),
     ));
-    setState(() {});
+//    setState(() {});
   }
 
   @override
