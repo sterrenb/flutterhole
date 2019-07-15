@@ -12,6 +12,8 @@ class EnableStatus extends StatusEvent {}
 
 class DisableStatus extends StatusEvent {}
 
+class WakeStatus extends StatusEvent {}
+
 class SleepStatus extends StatusEvent {
   final Duration duration;
 

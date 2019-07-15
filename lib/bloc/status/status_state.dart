@@ -20,10 +20,12 @@ class StatusStateSuccess extends StatusState {
 
 class StatusStateSleeping extends StatusState {
   final Duration durationTotal;
-  final Duration durationRemaining;
+  final Stopwatch stopwatch;
 
-  StatusStateSleeping(this.durationTotal, this.durationRemaining)
-      : super([durationTotal, durationRemaining]);
+  Duration get durationRemaining => durationTotal - stopwatch.elapsed;
+
+  StatusStateSleeping(this.durationTotal, this.stopwatch)
+      : super([durationTotal, stopwatch]);
 }
 
 class StatusStateError extends StatusState {

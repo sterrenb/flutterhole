@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole_again/bloc/status/status_bloc.dart';
 import 'package:flutterhole_again/bloc/status/status_state.dart';
-
 import 'package:flutterhole_again/widget/status/circular_percentage_indicator.dart';
 
 class StatusIcon extends StatefulWidget {
@@ -46,8 +45,7 @@ class _StatusIconState extends State<StatusIcon> {
                   constraints: BoxConstraints.loose(Size.fromRadius(8.0)),
                   child: CircularPercentageIndicator(
                     duration: state.durationTotal,
-                    start: (state.durationRemaining.inMilliseconds /
-                        state.durationTotal.inMilliseconds),
+                    start: _start(state),
                     color: color,
                   ))
               : Container(),
@@ -55,4 +53,9 @@ class _StatusIconState extends State<StatusIcon> {
       },
     );
   }
+
+  double _start(StatusStateSleeping state) =>
+      1.0 -
+          (state.durationRemaining.inMilliseconds /
+              state.durationTotal.inMilliseconds);
 }

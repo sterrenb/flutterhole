@@ -1,4 +1,3 @@
-
 import 'package:flutterhole_again/bloc/status/status_bloc.dart';
 import 'package:flutterhole_again/bloc/status/status_event.dart';
 import 'package:flutterhole_again/bloc/status/status_state.dart';
@@ -8,7 +7,9 @@ import 'package:flutterhole_again/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-class MockStatusRepository extends Mock implements StatusRepository {}
+class MockStatusRepository extends Mock implements StatusRepository {
+  Stopwatch stopwatch;
+}
 
 main() {
   MockStatusRepository statusRepository;
@@ -134,30 +135,12 @@ main() {
 
   group('SleepStatus', () {
     test(
-        'emits [StatusStateEmpty, StatusStateLoading, StatusStateSleeping] when status repository returns',
-        () {
-      final Status status = Status(enabled: false);
-      final Duration duration = Duration(seconds: 5);
-      when(statusRepository.sleep(duration))
-          .thenAnswer((_) => Future.value(status));
-
-      expectLater(
-          statusBloc.state,
-          emitsInOrder([
-            StatusStateEmpty(),
-            StatusStateLoading(),
-            StatusStateSleeping(duration, duration),
-          ]));
-
-      statusBloc.dispatch(SleepStatus(duration));
-    });
-
-    test(
         'emits [StatusStateEmpty, StatusStateLoading, StatusStateError] when status repository throws PiholeException',
         () {
       final Duration duration = Duration(seconds: 5);
 
-      when(statusRepository.sleep(duration)).thenThrow(PiholeException());
+      when(statusRepository.sleep(duration, () {}))
+          .thenThrow(PiholeException());
 
       expectLater(
           statusBloc.state,
