@@ -1,6 +1,6 @@
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/default_drawer.dart';
+import 'package:flutterhole_again/widget/default_scaffold.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,11 +24,8 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('About'),
-        ),
-        drawer: DefaultDrawer(),
+    return DefaultScaffold(
+        title: 'About',
         body: ListView(
           children: <Widget>[
             FutureBuilder<PackageInfo>(

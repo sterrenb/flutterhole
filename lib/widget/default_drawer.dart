@@ -6,6 +6,7 @@ import 'package:flutterhole_again/bloc/summary/summary_bloc.dart';
 import 'package:flutterhole_again/bloc/summary/summary_event.dart';
 import 'package:flutterhole_again/bloc/whitelist/whitelist_bloc.dart';
 import 'package:flutterhole_again/bloc/whitelist/whitelist_event.dart';
+import 'package:flutterhole_again/model/pihole.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
 import 'package:flutterhole_again/widget/pihole/pihole_list_builder.dart';
@@ -26,18 +27,27 @@ class DefaultDrawer extends StatefulWidget {
 class _DefaultDrawerState extends State<DefaultDrawer> {
   bool _showDetails = false;
 
+  Pihole active;
+
+  @override
+  void initState() {
+    super.initState();
+    active = Globals.localStorage.active();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final active = Globals.localStorage.active();
     return Drawer(
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
             accountName: Row(
               children: <Widget>[
-                Flexible(child: Text(
+                Flexible(
+                    child: Text(
                   active == null ? 'FlutterHole' : active.title,
-                  overflow: TextOverflow.fade,)),
+                      overflow: TextOverflow.fade,
+                    )),
                 StatusIcon(),
               ],
             ),

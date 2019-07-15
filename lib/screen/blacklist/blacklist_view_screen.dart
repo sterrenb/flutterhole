@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/widget/blacklist/blacklist_builder.dart';
-import 'package:flutterhole_again/widget/blacklist/blacklist_floating_action_button.dart';
-import 'package:flutterhole_again/widget/default_drawer.dart';
-import 'package:flutterhole_again/widget/status/status_app_bar.dart';
+import 'package:flutterhole_again/widget/default_scaffold.dart';
 
 class BlacklistViewScreen extends StatefulWidget {
   @override
@@ -12,11 +10,8 @@ class BlacklistViewScreen extends StatefulWidget {
 class _BlacklistViewScreenState extends State<BlacklistViewScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: StatusAppBar(title: 'Blacklist'),
-      drawer: DefaultDrawer(),
-      floatingActionButton: BlacklistFloatingActionButton(),
+    return DefaultScaffold(
+      title: 'Blacklist',
       body: BlacklistBuilder(),
     );
   }
