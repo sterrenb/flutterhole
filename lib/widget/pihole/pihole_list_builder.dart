@@ -5,6 +5,8 @@ import 'package:flutterhole_again/service/routes.dart';
 import 'package:flutterhole_again/widget/dismissible_background.dart';
 import 'package:flutterhole_again/widget/list_tab.dart';
 import 'package:flutterhole_again/widget/pihole/pihole_button_row.dart';
+import 'package:persist_theme/data/models/theme_model.dart';
+import 'package:provider/provider.dart';
 
 class PiholeListBuilder extends StatefulWidget {
   final bool editable;
@@ -150,13 +152,16 @@ class PiholeTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _theme = Provider.of<ThemeModel>(context);
+
     return ListTile(
       title: Text(pihole.title),
       subtitle: Text(pihole.baseUrl),
       trailing: Icon(Icons.keyboard_arrow_right),
       leading: Icon(Icons.check,
           color: active
-              ? Theme.of(context).primaryColor
+              ? _theme.accentColor
+//              ? Theme.of(context).primaryColor
               : Colors.black.withOpacity(0.0)),
       onTap: onTap,
       onLongPress: onLongPress,

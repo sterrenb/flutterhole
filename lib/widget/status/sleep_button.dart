@@ -223,7 +223,6 @@ class SleepButtonCustom extends StatelessWidget {
               NumberPickerColumn(
                   begin: 0,
                   end: Duration.secondsPerMinute - 1,
-                  initValue: 5,
                   onFormatValue: (val) => val.toString().padLeft(2, '0')),
             ]),
             delimiter: [

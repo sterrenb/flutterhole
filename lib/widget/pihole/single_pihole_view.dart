@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutterhole_again/model/pihole.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/widget/icon_text_button.dart';
+import 'package:qrcode_reader/qrcode_reader.dart';
 
 class SinglePiholeView extends StatefulWidget {
   final Pihole original;
@@ -74,8 +75,6 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                 autofocus: pihole.title.isEmpty,
                 decoration: InputDecoration(
                     labelText: 'Configuration name',
-                    helperText:
-                    'Update the internal cache after changing this.',
                     errorText: _validateTitle(titleController.text)),
               ),
               TextField(
@@ -127,63 +126,84 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                   }
                 },
               ),
-              TextField(
-                controller: authController,
-                keyboardType: TextInputType.url,
-                obscureText: true,
-                decoration: InputDecoration(labelText: 'API token'),
-                onChanged: (v) {
-                  if (v.length > 0 && pihole.title.length > 0) {
-                    final update = Pihole.copyWith(pihole, auth: v);
-                    _save(update).then((_) {
-                      setState(() {
-                        pihole = update;
-                      });
-                    });
-                  }
-                },
-              ),
-              ListTile(
-                title: Text('Example URL'),
-                subtitle: Text(pihole.baseUrl),
-              ),
               Row(
                 children: <Widget>[
-                  IconTextButton(
-                    onPressed: () {
-                      final String v = titleController.text;
-                      if (v.length > 0 &&
-                          _formKey.currentState.validate() &&
-                          _validateTitle(v) == null) {
-                        _formKey.currentState.save();
-                        final update = Pihole(
-                            title: titleController.text,
-                            host: hostController.text,
-                            apiPath: apiPathController.text,
-                            port: int.parse(portController.text),
-                            auth: authController.text);
-                        _save(update).then((_) {
-                          setState(() {
-                            pihole = update;
+                  Expanded(
+                    child: TextField(
+                      controller: authController,
+                      keyboardType: TextInputType.url,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: 'API token',
+                      ),
+                      onChanged: (v) {
+                        if (v.length > 0 && pihole.title.length > 0) {
+                          final update = Pihole.copyWith(pihole, auth: v);
+                          _save(update).then((_) {
+                            setState(() {
+                              pihole = update;
+                            });
                           });
-
-                          _pop(context);
-                        });
-                      }
-                    },
-                    title: 'Save',
-                    icon: Icons.save,
-                    color: Colors.green,
+                        }
+                      },
+                    ),
                   ),
                   IconTextButton(
+                    title: 'Scan QR code',
+                    icon: Icons.camera_alt,
                     onPressed: () async {
-                      _formKey.currentState.reset();
+                      String qr = await QRCodeReader()
+                          .setAutoFocusIntervalInMs(200)
+                          .scan();
+                      authController.text = qr;
                     },
-                    title: 'Reset',
-                    icon: Icons.delete_forever,
-                    color: Colors.red,
-                  )
+                  ),
                 ],
+              ),
+//              ListTile(
+//                title: Text('Example URL'),
+//                subtitle: Text(pihole.baseUrl),
+//              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  children: <Widget>[
+                    IconTextButton(
+                      onPressed: () {
+                        final String v = titleController.text;
+                        if (v.length > 0 &&
+                            _formKey.currentState.validate() &&
+                            _validateTitle(v) == null) {
+                          _formKey.currentState.save();
+                          final update = Pihole(
+                              title: titleController.text,
+                              host: hostController.text,
+                              apiPath: apiPathController.text,
+                              port: int.parse(portController.text),
+                              auth: authController.text);
+                          _save(update).then((_) {
+                            setState(() {
+                              pihole = update;
+                            });
+
+                            _pop(context);
+                          });
+                        }
+                      },
+                      title: 'Save',
+                      icon: Icons.save,
+                      color: Colors.green,
+                    ),
+                    IconTextButton(
+                      onPressed: () async {
+                        await _init();
+                      },
+                      title: 'Reset',
+                      icon: Icons.delete_forever,
+                      color: Colors.red,
+                    )
+                  ],
+                ),
               ),
             ],
           ),

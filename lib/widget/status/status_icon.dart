@@ -33,7 +33,7 @@ class _StatusIconState extends State<StatusIcon> {
 
         return Stack(alignment: AlignmentDirectional.center, children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: Icon(
               Icons.brightness_1,
               color: color,
