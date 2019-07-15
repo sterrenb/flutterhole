@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/model/pihole.dart';
-import 'package:flutterhole_again/screen/pihole/pihole_edit_screen.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/local_storage.dart';
 import 'package:flutterhole_again/widget/dismissible_background.dart';
 import 'package:flutterhole_again/widget/list_tab.dart';
 import 'package:flutterhole_again/widget/pihole/pihole_button_row.dart';
+import 'package:flutterhole_again/widget/screen/pihole/pihole_edit_screen.dart';
 
 class PiholeListBuilder extends StatefulWidget {
   final bool editable;
@@ -61,6 +61,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
     }
 
     body = ListView.builder(
+        padding: EdgeInsets.zero,
         shrinkWrap: true,
         itemCount: localStorage.cache.length,
         itemBuilder: (BuildContext context, int index) {

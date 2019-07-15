@@ -10,6 +10,7 @@ import 'package:flutterhole_again/model/pihole.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
 import 'package:flutterhole_again/widget/pihole/pihole_list_builder.dart';
+import 'package:flutterhole_again/widget/status/sleep_button.dart';
 import 'package:flutterhole_again/widget/status/status_icon.dart';
 
 class DefaultDrawer extends StatefulWidget {
@@ -38,7 +39,8 @@ class _DefaultDrawerState extends State<DefaultDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Column(
+      child: ListView(
+        padding: EdgeInsets.zero,
         children: <Widget>[
           UserAccountsDrawerHeader(
             accountName: Row(
@@ -61,10 +63,8 @@ class _DefaultDrawerState extends State<DefaultDrawer> {
                 : null,
           ),
           _showDetails
-              ? Expanded(
-            child: PiholeListBuilder(
-              editable: false,
-            ),
+              ? PiholeListBuilder(
+            editable: false,
           )
               : _DefaultDrawerMenu(),
         ],
@@ -76,8 +76,9 @@ class _DefaultDrawerState extends State<DefaultDrawer> {
 class _DefaultDrawerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      shrinkWrap: true,
+    return Column(
+//      padding: EdgeInsets.zero,
+//      shrinkWrap: true,
       children: <Widget>[
         ListTile(
           title: Text('Dashboard'),
@@ -103,6 +104,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
             Globals.router.navigateTo(context, blacklistPath);
           },
         ),
+        SleepButtons(),
         Divider(),
         ListTile(
           title: Text('Settings'),

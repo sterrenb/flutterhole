@@ -12,10 +12,16 @@ class ListTab extends StatelessWidget {
     final _theme = Provider.of<ThemeModel>(context);
     return ListTile(
       title: Text(title,
-          style: Theme.of(context)
+          style: Theme
+              .of(context)
               .textTheme
               .subtitle
-              .copyWith(color: _theme.accentColor)),
+              .copyWith(
+              color: _theme.accentColor.value == Colors.redAccent.value
+                  ? Theme
+                  .of(context)
+                  .primaryColor
+                  : _theme.accentColor)),
     );
   }
 }
