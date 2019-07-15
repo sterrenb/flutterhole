@@ -1,7 +1,10 @@
+import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhole_again/model/blacklist.dart';
 import 'package:flutterhole_again/screen/about_screen.dart';
 import 'package:flutterhole_again/screen/blacklist/blacklist_add_screen.dart';
+import 'package:flutterhole_again/screen/blacklist/blacklist_edit_screen.dart';
 import 'package:flutterhole_again/screen/blacklist/blacklist_view_screen.dart';
 import 'package:flutterhole_again/screen/settings_screen.dart';
 import 'package:flutterhole_again/screen/summary_screen.dart';
@@ -23,16 +26,19 @@ String whitelistEditPath(String domain) =>
 
 const String blacklistPath = '/blacklist';
 const String blacklistAddPath = '/blacklist/add';
-//const String _blacklistEditPath = '/blacklist/edit/:domain';
+const String _blacklistEditPath = '/blacklist/edit/:entry/:listType';
 
-//String blacklistEditPath(String domain) =>
-//    _blacklistEditPath.replaceAll(':domain', domain);
+String blacklistEditPath(BlacklistItem item) =>
+    _blacklistEditPath
+        .replaceAll(':entry', item.entry)
+        .replaceAll(':listType', item.listKey);
 
 void configureRoutes(Router router) {
-  router.notFoundHandler = Handler(handlerFunc: (_, __) {
-    print('route not found');
-    return Container();
-  });
+  router.notFoundHandler =
+      Handler(handlerFunc: (_, Map<String, List<String>> params) {
+        Fimber.e('route not found: $params');
+        return Container();
+      });
 
   router.define(rootPath,
       handler: Handler(handlerFunc: (_, __) => SettingsScreen()));
@@ -50,13 +56,24 @@ void configureRoutes(Router router) {
       handler: Handler(
           handlerFunc:
               (BuildContext context, Map<String, List<String>> params) =>
-                  WhitelistEditScreen(original: params['domain'][0])));
+              WhitelistEditScreen(original: params['domain'][0])));
 
   router.define(blacklistPath,
       handler: Handler(handlerFunc: (_, __) => BlacklistViewScreen()));
 
   router.define(blacklistAddPath,
       handler: Handler(handlerFunc: (_, __) => BlacklistAddScreen()));
+
+  router.define(_blacklistEditPath,
+      handler: Handler(
+          handlerFunc:
+              (BuildContext context, Map<String, List<String>> params) =>
+              BlacklistEditScreen(
+                original: BlacklistItem(
+                  entry: params['entry'][0],
+                  type: blacklistTypeFromString(params['listType'][0]),
+                ),
+              )));
 
   router.define(settingsPath,
       handler: Handler(handlerFunc: (_, __) => SettingsScreen()));

@@ -39,8 +39,10 @@ class _WhitelistEditFormState extends State<WhitelistEditForm> {
         initialValue: widget.original,
         onVoidSubmitted: () {
           _fbKey.currentState.save();
-          whitelistBloc.dispatch(
-              EditOnWhitelist(original: widget.original, update: _update));
+          if (widget.original != _update) {
+            whitelistBloc.dispatch(
+                EditOnWhitelist(original: widget.original, update: _update));
+          }
         },
       ),
     );
