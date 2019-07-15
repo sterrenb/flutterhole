@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/default_scaffold.dart';
+import 'package:flutterhole_again/widget/scaffold.dart';
 import 'package:flutterhole_again/widget/whitelist/whitelist_builder.dart';
 
 class WhitelistViewScreen extends StatefulWidget {

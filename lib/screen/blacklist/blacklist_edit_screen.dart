@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/model/blacklist.dart';
 import 'package:flutterhole_again/widget/blacklist/blacklist_edit_form.dart';
-import 'package:flutterhole_again/widget/status/status_app_bar.dart';
+import 'package:flutterhole_again/widget/scaffold.dart';
 
 class BlacklistEditScreen extends StatelessWidget {
   final BlacklistItem original;
@@ -11,9 +11,8 @@ class BlacklistEditScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: StatusAppBar(title: 'Editing ${original.entry}'),
+    return SimpleScaffold(
+      titleString: 'Editing ${original.entry}',
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlacklistEditForm(original: original),

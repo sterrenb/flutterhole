@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/widget/blacklist/blacklist_builder.dart';
-import 'package:flutterhole_again/widget/default_scaffold.dart';
+import 'package:flutterhole_again/widget/scaffold.dart';
 
 class BlacklistViewScreen extends StatefulWidget {
   @override

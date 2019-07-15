@@ -3,15 +3,17 @@ import 'package:flutterhole_again/model/pihole.dart';
 import 'package:flutterhole_again/widget/scaffold.dart';
 import 'package:flutterhole_again/widget/status/single_pihole_view.dart';
 
-class PiholeAddScreen extends StatelessWidget {
-  final Pihole provided = Pihole(title: '');
+class PiholeEditScreen extends StatelessWidget {
+  final Pihole pihole;
+
+  const PiholeEditScreen({Key key, @required this.pihole}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-        titleString: 'Add a new Pihole',
+        titleString: 'Editing ${pihole.title}',
         body: SinglePiholeView(
-          provided: provided,
+          provided: pihole,
         ));
   }
 }

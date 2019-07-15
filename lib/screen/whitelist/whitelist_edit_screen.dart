@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/status/status_app_bar.dart';
+import 'package:flutterhole_again/widget/scaffold.dart';
 import 'package:flutterhole_again/widget/whitelist/whitelist_edit_form.dart';
 
 class WhitelistEditScreen extends StatelessWidget {
@@ -10,9 +10,8 @@ class WhitelistEditScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: StatusAppBar(title: 'Editing $original'),
+    return SimpleScaffold(
+      titleString: 'Editing $original',
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: WhitelistEditForm(original: original),

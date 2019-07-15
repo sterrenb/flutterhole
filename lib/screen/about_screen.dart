@@ -1,6 +1,6 @@
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/default_scaffold.dart';
+import 'package:flutterhole_again/widget/scaffold.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';

@@ -1,25 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/widget/default_drawer.dart';
 import 'package:flutterhole_again/widget/settings/settings_builder.dart';
-import 'package:flutterhole_again/widget/status/status_icon.dart';
-import 'package:flutterhole_again/widget/status/toggle_button.dart';
+import 'package:flutterhole_again/widget/status/status_app_bar.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          title: Row(
-            children: <Widget>[
-              Text('Settings'),
-              StatusIcon(),
-            ],
-          ),
-          actions: <Widget>[
-            ToggleButton(),
-          ],
-        ),
+        appBar: StatusAppBar(title: 'Settings',),
         drawer: DefaultDrawer(
           // TODO debug
           allowConfigSelection: true,
