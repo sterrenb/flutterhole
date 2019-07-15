@@ -19,7 +19,7 @@ class WhitelistRepository extends ApiRepository {
 
   Future<Whitelist> addToWhitelist(String domain) async {
     await client.addToWhitelist(domain);
-    _cache = Whitelist.cloneWith(_cache, [domain]);
+    _cache = Whitelist.cloneWith(_cache, domain);
     return _cache;
   }
 

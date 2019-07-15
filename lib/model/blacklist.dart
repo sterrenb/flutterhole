@@ -55,8 +55,30 @@ class Blacklist extends Equatable {
   List<BlacklistItem> exact;
   List<BlacklistItem> wildcard;
 
-  Blacklist({@required this.exact, @required this.wildcard})
+  Blacklist({this.exact = const [], this.wildcard = const []})
       : super([exact, wildcard]);
+
+  Blacklist.cloneWith(Blacklist blacklist, BlacklistItem item) {
+    this.exact = blacklist.exact;
+    this.wildcard = blacklist.wildcard;
+
+    if (item.type == BlacklistType.Exact) {
+      this.exact.add(item);
+    } else {
+      this.wildcard.add(item);
+    }
+  }
+
+  Blacklist.cloneWithout(Blacklist blacklist, BlacklistItem item) {
+    this.exact = blacklist.exact;
+    this.wildcard = blacklist.wildcard;
+
+    if (item.type == BlacklistType.Exact) {
+      this.exact.remove(item);
+    } else {
+      this.wildcard.remove(item);
+    }
+  }
 
   factory Blacklist.fromJson(List<dynamic> json) {
     List<String> exactStrings = List<String>.from(json[0]);

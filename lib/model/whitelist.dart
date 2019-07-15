@@ -9,9 +9,9 @@ class Whitelist extends Equatable {
 
   Whitelist({this.list = const []}) : super([list]);
 
-  Whitelist.cloneWith(Whitelist whitelist, List<String> list) {
+  Whitelist.cloneWith(Whitelist whitelist, String domain) {
     this.list = whitelist.list;
-    this.list.addAll(list);
+    this.list.add(domain);
   }
 
   /// Returns a json String representation of [list].

@@ -4,6 +4,8 @@ import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole_again/bloc/blacklist/blacklist_bloc.dart';
+import 'package:flutterhole_again/repository/blacklist_repository.dart';
 import 'package:flutterhole_again/repository/summary_repository.dart';
 import 'package:flutterhole_again/repository/whitelist_repository.dart';
 import 'package:flutterhole_again/service/globals.dart';
@@ -37,10 +39,11 @@ void main() async {
 class MyApp extends StatelessWidget {
   final SummaryBloc summaryBloc =
       SummaryBloc(SummaryRepository(Globals.client));
-
   final StatusBloc statusBloc = StatusBloc(StatusRepository(Globals.client));
   final WhitelistBloc whitelistBloc =
       WhitelistBloc(WhitelistRepository(Globals.client));
+  final BlacklistBloc blacklistBloc =
+  BlacklistBloc(BlacklistRepository(Globals.client));
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +55,8 @@ class MyApp extends StatelessWidget {
             dispose: false, builder: (context) => statusBloc),
         BlocProvider<WhitelistBloc>(
             dispose: false, builder: (context) => whitelistBloc),
+        BlocProvider<BlacklistBloc>(
+            dispose: false, builder: (context) => blacklistBloc),
       ],
       child: MaterialApp(
         title: 'FlutterHole',
