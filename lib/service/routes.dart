@@ -1,6 +1,7 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/screen/about_screen.dart';
+import 'package:flutterhole_again/screen/blacklist/blacklist_add_screen.dart';
 import 'package:flutterhole_again/screen/blacklist/blacklist_view_screen.dart';
 import 'package:flutterhole_again/screen/settings_screen.dart';
 import 'package:flutterhole_again/screen/summary_screen.dart';
@@ -53,6 +54,9 @@ void configureRoutes(Router router) {
 
   router.define(blacklistPath,
       handler: Handler(handlerFunc: (_, __) => BlacklistViewScreen()));
+
+  router.define(blacklistAddPath,
+      handler: Handler(handlerFunc: (_, __) => BlacklistAddScreen()));
 
   router.define(settingsPath,
       handler: Handler(handlerFunc: (_, __) => SettingsScreen()));

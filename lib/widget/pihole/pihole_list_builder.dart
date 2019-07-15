@@ -108,7 +108,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
                 await _activate(pihole, context);
                 Navigator.of(context).pop();
               },
-              onLongPress: () => _edit(pihole),
+//              onLongPress: () => _edit(pihole),
             );
           }
         });
