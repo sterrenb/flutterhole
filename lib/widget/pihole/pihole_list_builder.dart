@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/model/pihole.dart';
 import 'package:flutterhole_again/service/globals.dart';
-import 'package:flutterhole_again/service/local_storage.dart';
+import 'package:flutterhole_again/service/routes.dart';
 import 'package:flutterhole_again/widget/dismissible_background.dart';
 import 'package:flutterhole_again/widget/list_tab.dart';
 import 'package:flutterhole_again/widget/pihole/pihole_button_row.dart';
-import 'package:flutterhole_again/widget/screen/pihole/pihole_edit_screen.dart';
 
 class PiholeListBuilder extends StatefulWidget {
   final bool editable;
@@ -17,31 +16,31 @@ class PiholeListBuilder extends StatefulWidget {
 }
 
 class _PiholeListBuilderState extends State<PiholeListBuilder> {
-  LocalStorage localStorage;
+  final localStorage = Globals.localStorage;
 
-  @override
-  void initState() {
-    super.initState();
-    _init();
+  void _edit(Pihole pihole) async {
+    final String message =
+    await Globals.router.navigateTo(context, piholeEditPath(pihole));
+    if (message != null) {
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
+
+//    Navigator.push(
+//      context,
+//      MaterialPageRoute(
+//        builder: (context) => PiholeEditScreen(
+//          pihole: pihole,
+//        ),
+//      ),
+//    );
+    }
   }
 
-  Future _init() async {
-    final instance = await LocalStorage.getInstance();
-    setState(() {
-      localStorage = instance;
-    });
-  }
-
-  void _edit(Pihole pihole) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            PiholeEditScreen(
-              pihole: pihole,
-            ),
-      ),
-    );
+  Future _activate(Pihole pihole, BuildContext context) async {
+    await localStorage.activate(pihole);
+    Globals.refresh(context);
+    setState(() {});
+    Scaffold.of(context)
+        .showSnackBar(SnackBar(content: Text('Changed to ${pihole.title}')));
   }
 
   @override
@@ -67,9 +66,10 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
         itemBuilder: (BuildContext context, int index) {
           final pihole =
           localStorage.cache[localStorage.cache.keys.elementAt(index)];
-          final bool active = localStorage
-              .active()
-              .title == pihole.title;
+          final bool active = localStorage.active() != null &&
+              localStorage
+                  .active()
+                  .title == pihole.title;
           if (widget.editable) {
             return Dismissible(
               key: Key(pihole.title),
@@ -131,14 +131,6 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
             : Container(),
       ],
     );
-  }
-
-  Future _activate(Pihole pihole, BuildContext context) async {
-    await localStorage.activate(pihole);
-    Globals.refresh(context);
-    setState(() {});
-    Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Changed to ${pihole.title}')));
   }
 }
 

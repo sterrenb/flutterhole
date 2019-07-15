@@ -146,7 +146,7 @@ void main() {
 
       expect(localStorage.cache.containsKey(pihole.localKey), isFalse);
       expect(localStorage.cache[update.localKey], update);
-      expect(localStorage.cache.length, 2);
+      expect(localStorage.cache.length, 1);
     });
 
     test('update with conflicting key change throws Exception', () async {

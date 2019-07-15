@@ -1,5 +1,7 @@
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhole_again/service/globals.dart';
+import 'package:flutterhole_again/service/routes.dart';
 import 'package:flutterhole_again/widget/scaffold.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:package_info/package_info.dart';
@@ -70,13 +72,11 @@ class AboutScreen extends StatelessWidget {
               onTap: () => launchURL(
                   'https://github.com/sterrenburg/flutterhole/issues/new'),
             ),
-//            ListTile(
-//              leading: Icon(Icons.lock),
-//              title: Text('Privacy'),
-//              onTap: () =>
-//                  Navigator.push(context,
-//                      MaterialPageRoute(builder: (context) => PrivacyScreen())),
-//            ),
+            ListTile(
+              leading: Icon(Icons.lock),
+              title: Text('Privacy'),
+              onTap: () => Globals.router.navigateTo(context, privacyPath),
+            ),
             ListTile(
               leading: Icon(Icons.spa),
               title: Text('Visit the Pi-hole website'),

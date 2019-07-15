@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterhole_again/model/pihole.dart';
-import 'package:flutterhole_again/service/local_storage.dart';
+import 'package:flutterhole_again/service/globals.dart';
+import 'package:flutterhole_again/widget/icon_text_button.dart';
 
 class SinglePiholeView extends StatefulWidget {
-  final Pihole provided;
+  final Pihole original;
 
-  const SinglePiholeView({Key key, @required this.provided}) : super(key: key);
+  const SinglePiholeView({Key key, @required this.original}) : super(key: key);
 
   @override
   _SinglePiholeViewState createState() => _SinglePiholeViewState();
 }
 
 class _SinglePiholeViewState extends State<SinglePiholeView> {
-  LocalStorage _localStorage;
   Pihole pihole;
 
   final _formKey = GlobalKey<FormState>();
+  final _localStorage = Globals.localStorage;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController hostController = TextEditingController();
@@ -28,18 +29,12 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
   void initState() {
     super.initState();
     setState(() {
-      pihole = widget.provided;
+      pihole = widget.original;
     });
     _init();
   }
 
   Future _init() async {
-    final localStorage = await LocalStorage.getInstance();
-
-    setState(() {
-      _localStorage = localStorage;
-    });
-
     titleController.text = pihole.title;
     hostController.text = pihole.host;
     apiPathController.text = pihole.apiPath;
@@ -74,42 +69,19 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: titleController,
-                      autofocus: pihole.title.isEmpty,
-                      decoration: InputDecoration(
-                          labelText: 'Configuration name',
-                          helperText:
-                              'Update the internal cache after changing this.',
-                          errorText: _validateTitle(titleController.text)),
-                    ),
-                  ),
-                  MaterialButton(
-                    onPressed: () {
-                      final String v = titleController.text;
-                      if (v.length > 0 && _validateTitle(v) == null) {
-                        final update = Pihole.copyWith(pihole, title: v);
-                        _save(update).then((_) {
-                          setState(() {
-                            pihole = update;
-                          });
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text(' Updated internal cache')));
-                        });
-                      }
-                    },
-                    child: Text('Update cache'),
-                  )
-                ],
+              TextField(
+                controller: titleController,
+                autofocus: pihole.title.isEmpty,
+                decoration: InputDecoration(
+                    labelText: 'Configuration name',
+                    helperText:
+                    'Update the internal cache after changing this.',
+                    errorText: _validateTitle(titleController.text)),
               ),
               TextField(
                 controller: hostController,
                 keyboardType: TextInputType.url,
                 decoration: InputDecoration(labelText: 'Host'),
-                enabled: pihole.title.isNotEmpty,
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, host: v);
@@ -125,7 +97,6 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                 controller: apiPathController,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(labelText: 'API path'),
-                enabled: pihole.title.isNotEmpty,
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, apiPath: v);
@@ -145,7 +116,6 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                   LengthLimitingTextInputFormatter(6),
                 ],
                 decoration: InputDecoration(labelText: 'Port'),
-                enabled: pihole.title.isNotEmpty,
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, port: int.parse(v));
@@ -162,7 +132,6 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                 keyboardType: TextInputType.url,
                 obscureText: true,
                 decoration: InputDecoration(labelText: 'API token'),
-                enabled: pihole.title.isNotEmpty,
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, auth: v);
@@ -178,10 +147,56 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                 title: Text('Example URL'),
                 subtitle: Text(pihole.baseUrl),
               ),
+              Row(
+                children: <Widget>[
+                  IconTextButton(
+                    onPressed: () {
+                      final String v = titleController.text;
+                      if (v.length > 0 &&
+                          _formKey.currentState.validate() &&
+                          _validateTitle(v) == null) {
+                        _formKey.currentState.save();
+                        final update = Pihole(
+                            title: titleController.text,
+                            host: hostController.text,
+                            apiPath: apiPathController.text,
+                            port: int.parse(portController.text),
+                            auth: authController.text);
+                        _save(update).then((_) {
+                          setState(() {
+                            pihole = update;
+                          });
+
+                          _pop(context);
+                        });
+                      }
+                    },
+                    title: 'Save',
+                    icon: Icons.save,
+                    color: Colors.green,
+                  ),
+                  IconTextButton(
+                    onPressed: () async {
+                      _formKey.currentState.reset();
+                    },
+                    title: 'Reset',
+                    icon: Icons.delete_forever,
+                    color: Colors.red,
+                  )
+                ],
+              ),
             ],
           ),
         ),
       );
+    }
+  }
+
+  void _pop(BuildContext context) {
+    if (widget.original != null) {
+      Navigator.of(context).pop('Edited ${pihole.title}');
+    } else {
+      Navigator.of(context).pop('Added ${pihole.title}');
     }
   }
 }

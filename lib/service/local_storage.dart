@@ -92,7 +92,7 @@ class LocalStorage {
       return false;
     }
 
-    final bool wasActive = active() == pihole;
+//    final bool wasActive = active() == pihole;
 
     final map = pihole.toJson();
     map.forEach((String key, _) {
@@ -107,17 +107,17 @@ class LocalStorage {
       await add(Pihole());
     }
 
-    if (wasActive) {
-      activate(_cache.values.first);
-    }
+//    if (wasActive) {
+//      activate(_cache.values.first);
+//    }
 
     return true;
   }
 
-  Future<bool> add(Pihole pihole) async {
+  Future<bool> add(Pihole pihole, {bool override = false}) async {
     List<Future<void>> futures = [];
 
-    if (_cache.containsKey(pihole.localKey)) {
+    if (_cache.containsKey(pihole.localKey) && !override) {
       Fimber.w(
           'cannot add ${pihole.title}: key ${pihole.localKey} already in use');
       return false;
@@ -143,11 +143,14 @@ class LocalStorage {
 
     final originalIsActive = active() == original;
 
-    await remove(original);
-    await add(update);
+    await add(update, override: true);
 
     if (originalIsActive) {
       activate(update);
+    }
+
+    if (update.localKey != original.localKey) {
+      await remove(original);
     }
   }
 

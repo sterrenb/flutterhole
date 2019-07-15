@@ -32,6 +32,7 @@ dependencies:
   flutter_form_builder: ^3.2.0
   persist_theme: ^1.5.1
   flutter_picker: ^1.0.13
+  flutter_markdown: ^0.2.0
 
 dev_dependencies:
   flutter_test:

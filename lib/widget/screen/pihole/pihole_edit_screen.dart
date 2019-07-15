@@ -13,7 +13,7 @@ class PiholeEditScreen extends StatelessWidget {
     return SimpleScaffold(
         titleString: 'Editing ${pihole.title}',
         body: SinglePiholeView(
-          provided: pihole,
+          original: pihole,
         ));
   }
 }

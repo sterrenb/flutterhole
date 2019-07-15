@@ -2,10 +2,14 @@ import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/model/blacklist.dart';
+import 'package:flutterhole_again/model/pihole.dart';
+import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/widget/screen/about_screen.dart';
 import 'package:flutterhole_again/widget/screen/blacklist/blacklist_add_screen.dart';
 import 'package:flutterhole_again/widget/screen/blacklist/blacklist_edit_screen.dart';
 import 'package:flutterhole_again/widget/screen/blacklist/blacklist_view_screen.dart';
+import 'package:flutterhole_again/widget/screen/pihole/pihole_edit_screen.dart';
+import 'package:flutterhole_again/widget/screen/privacy_screen.dart';
 import 'package:flutterhole_again/widget/screen/settings_screen.dart';
 import 'package:flutterhole_again/widget/screen/summary_screen.dart';
 import 'package:flutterhole_again/widget/screen/whitelist/whitelist_add_screen.dart';
@@ -14,8 +18,14 @@ import 'package:flutterhole_again/widget/screen/whitelist/whitelist_view_screen.
 
 const String rootPath = '/';
 const String summaryPath = '/summary';
-const String settingsPath = '/settings';
 const String aboutPath = '/about';
+const String privacyPath = '$aboutPath/privacy';
+
+const String settingsPath = '/settings';
+const String _piholeEditPath = '/settings/:key';
+
+String piholeEditPath(Pihole pihole) =>
+    _piholeEditPath.replaceAll(':key', pihole.localKey);
 
 const String whitelistPath = '/whitelist';
 const String whitelistAddPath = '/whitelist/add';
@@ -78,6 +88,16 @@ void configureRoutes(Router router) {
   router.define(settingsPath,
       handler: Handler(handlerFunc: (_, __) => SettingsScreen()));
 
+  router.define(_piholeEditPath,
+      handler: Handler(
+          handlerFunc:
+              (BuildContext context, Map<String, List<String>> params) =>
+              PiholeEditScreen(
+                  pihole: Globals.localStorage.cache[params['key'][0]])));
+
   router.define(aboutPath,
       handler: Handler(handlerFunc: (_, __) => AboutScreen()));
+
+  router.define(privacyPath,
+      handler: Handler(handlerFunc: (_, __) => PrivacyScreen()));
 }

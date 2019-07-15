@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/service/local_storage.dart';
+import 'package:flutterhole_again/widget/dialog.dart';
 import 'package:flutterhole_again/widget/icon_text_button.dart';
 import 'package:flutterhole_again/widget/screen/pihole/pihole_add_screen.dart';
 
@@ -33,10 +34,17 @@ class PiholeButtonRow extends StatelessWidget {
         ),
         IconTextButton(
           onPressed: () async {
-            await localStorage.reset();
-            onStateChange();
-            Scaffold.of(context).showSnackBar(
-                SnackBar(content: Text('Reset to default settings')));
+            showAlertDialog(
+                context,
+                Container(
+                  child: Text("Do you want to remove all configurations?"),
+                ),
+                continueText: 'Remove all', onConfirm: () async {
+              await localStorage.reset();
+              onStateChange();
+              Scaffold.of(context).showSnackBar(
+                  SnackBar(content: Text('Reset to default configuration')));
+            });
           },
           title: 'Reset to defaults',
           icon: Icons.delete_forever,
