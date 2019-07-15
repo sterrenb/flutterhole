@@ -5,6 +5,8 @@ import 'package:flutterhole_again/bloc/blacklist/blacklist_state.dart';
 import 'package:flutterhole_again/model/blacklist.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
+import 'package:persist_theme/data/models/theme_model.dart';
+import 'package:provider/provider.dart';
 
 class BlacklistFloatingActionButton extends StatefulWidget {
   @override
@@ -16,6 +18,7 @@ class _BlacklistFloatingActionButtonState
     extends State<BlacklistFloatingActionButton> {
   @override
   Widget build(BuildContext context) {
+    final _theme = Provider.of<ThemeModel>(context);
     final BlacklistBloc blacklistBloc = BlocProvider.of<BlacklistBloc>(context);
     return BlocBuilder(
       bloc: blacklistBloc,
@@ -23,9 +26,10 @@ class _BlacklistFloatingActionButtonState
         if (state is BlacklistStateSuccess) {
           return FloatingActionButton(
               tooltip: 'Add to blacklist',
+              backgroundColor: _theme.accentColor,
               onPressed: () async {
                 final BlacklistItem item =
-                    await Globals.router.navigateTo(context, blacklistAddPath);
+                await Globals.router.navigateTo(context, blacklistAddPath);
                 if (item != null)
                   Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text('Added ${item.entry} to blacklist')));

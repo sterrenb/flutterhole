@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/widget/scaffold.dart';
 import 'package:flutterhole_again/widget/whitelist/whitelist_builder.dart';
+import 'package:flutterhole_again/widget/whitelist/whitelist_floating_action_button.dart';
 
 class WhitelistViewScreen extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class _WhitelistViewScreenState extends State<WhitelistViewScreen> {
     return DefaultScaffold(
       title: 'Whitelist',
       body: WhitelistBuilder(),
+      floatingActionButton: WhitelistFloatingActionButton(),
     );
   }
 }

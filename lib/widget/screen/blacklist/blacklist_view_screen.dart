@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/widget/blacklist/blacklist_builder.dart';
+import 'package:flutterhole_again/widget/blacklist/blacklist_floating_action_button.dart';
 import 'package:flutterhole_again/widget/scaffold.dart';
 
 class BlacklistViewScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class _BlacklistViewScreenState extends State<BlacklistViewScreen> {
     return DefaultScaffold(
       title: 'Blacklist',
       body: BlacklistBuilder(),
+      floatingActionButton: BlacklistFloatingActionButton(),
     );
   }
 }

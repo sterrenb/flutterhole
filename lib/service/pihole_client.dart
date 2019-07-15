@@ -258,4 +258,14 @@ class PiholeClient {
     await addToBlacklist(newItem);
     await removeFromBlacklist(originalItem);
   }
+
+  Future<String> fetchRecentlyBlocked() async {
+    Response response =
+    await _get({'recentBlocked': ''}, responseType: ResponseType.plain);
+    if (response.data is String) {
+      return response.data;
+    } else {
+      throw PiholeException(message: 'unexpected response $response');
+    }
+  }
 }

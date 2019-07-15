@@ -6,11 +6,13 @@ import 'package:flutterhole_again/widget/status/status_app_bar.dart';
 class DefaultScaffold extends StatelessWidget {
   final String title;
   final Widget body;
+  final Widget floatingActionButton;
 
   const DefaultScaffold({
     Key key,
     @required this.title,
     @required this.body,
+    this.floatingActionButton,
   }) : super(key: key);
 
   @override
@@ -20,6 +22,7 @@ class DefaultScaffold extends StatelessWidget {
       appBar: StatusAppBar(title: title),
       drawer: DefaultDrawer(),
       endDrawer: DefaultEndDrawer(),
+      floatingActionButton: floatingActionButton,
       body: body,
     );
   }
