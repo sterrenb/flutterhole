@@ -35,7 +35,9 @@ class _DefaultDrawerState extends State<DefaultDrawer> {
           UserAccountsDrawerHeader(
             accountName: Row(
               children: <Widget>[
-                Text(active == null ? 'FlutterHole' : active.title),
+                Flexible(child: Text(
+                  active == null ? 'FlutterHole' : active.title,
+                  overflow: TextOverflow.fade,)),
                 StatusIcon(),
               ],
             ),

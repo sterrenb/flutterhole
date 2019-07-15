@@ -41,7 +41,7 @@ void configureRoutes(Router router) {
       });
 
   router.define(rootPath,
-      handler: Handler(handlerFunc: (_, __) => SettingsScreen()));
+      handler: Handler(handlerFunc: (_, __) => SummaryScreen()));
 
   router.define(summaryPath,
       handler: Handler(handlerFunc: (_, __) => SummaryScreen()));
