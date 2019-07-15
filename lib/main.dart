@@ -12,12 +12,16 @@ import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/local_storage.dart';
 import 'package:flutterhole_again/service/pihole_client.dart';
 import 'package:flutterhole_again/service/routes.dart';
+import 'package:persist_theme/persist_theme.dart';
+import 'package:provider/provider.dart';
 
 import 'bloc/simple_bloc_delegate.dart';
 import 'bloc/status/status_bloc.dart';
 import 'bloc/summary/summary_bloc.dart';
 import 'bloc/whitelist/whitelist_bloc.dart';
 import 'repository/status_repository.dart';
+
+final _model = ThemeModel();
 
 void main() async {
   Globals.router = Router();
@@ -58,9 +62,15 @@ class MyApp extends StatelessWidget {
         BlocProvider<BlacklistBloc>(
             dispose: false, builder: (context) => blacklistBloc),
       ],
-      child: MaterialApp(
-        title: 'FlutterHole',
-        onGenerateRoute: Globals.router.generator,
+      child: ListenableProvider<ThemeModel>(
+        builder: (_) => _model..init(),
+        child: Consumer<ThemeModel>(builder: (context, model, child) {
+          return MaterialApp(
+            title: 'FlutterHole',
+            theme: model.theme,
+            onGenerateRoute: Globals.router.generator,
+          );
+        }),
       ),
     );
   }

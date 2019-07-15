@@ -61,6 +61,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
     }
 
     body = ListView.builder(
+        shrinkWrap: true,
         itemCount: localStorage.cache.length,
         itemBuilder: (BuildContext context, int index) {
           final pihole =
@@ -117,9 +118,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
       children: <Widget>[
         widget.editable ? Container() : ListTab('Select configuration'),
         widget.editable ? Container() : Divider(),
-        Expanded(
-          child: body,
-        ),
+        body,
         Divider(),
         widget.editable
             ? PiholeButtonRow(

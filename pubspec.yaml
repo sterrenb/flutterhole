@@ -30,6 +30,7 @@ dependencies:
   launch_review: ^2.0.0
   package_info: ^0.4.0+4
   flutter_form_builder: ^3.2.0
+  persist_theme: ^1.5.1
 
 dev_dependencies:
   flutter_test:

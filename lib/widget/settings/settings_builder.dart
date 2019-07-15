@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/widget/list_tab.dart';
 import 'package:flutterhole_again/widget/pihole/pihole_list_builder.dart';
+import 'package:persist_theme/persist_theme.dart';
 
 class SettingsBuilder extends StatefulWidget {
   const SettingsBuilder({
@@ -17,7 +18,23 @@ class _SettingsBuilderState extends State<SettingsBuilder> {
     return Column(
       children: <Widget>[
         ListTab('Pihole settings'),
-        Expanded(child: PiholeListBuilder()),
+        PiholeListBuilder(),
+        ListTab('Theme'),
+        ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            DarkModeSwitch(),
+            CustomThemeSwitch(),
+            Flex(
+              direction: Axis.horizontal,
+              children: <Widget>[
+                Flexible(child: PrimaryColorPicker()),
+                Flexible(child: AccentColorPicker()),
+              ],
+            ),
+            DarkAccentColorPicker(),
+          ],
+        ),
       ],
     );
   }
