@@ -88,13 +88,15 @@ class Blacklist extends Equatable {
     return Blacklist(
         exact: exactStrings.map((String entry) {
           return BlacklistItem(entry: entry, type: BlacklistType.Exact);
-        }).toList(),
+        }).toList()
+          ..sort((a, b) => a.entry.compareTo(b.entry)),
         wildcard: wildcardStrings.map((String entry) {
           final type = entry.startsWith(wildcardPrefix)
               ? BlacklistType.Wildcard
               : BlacklistType.Regex;
           return BlacklistItem(entry: entry, type: type);
-        }).toList());
+        }).toList()
+          ..sort((a, b) => a.entry.compareTo(b.entry)));
   }
 
   String toJson() => ([exact, wildcard]).toString();

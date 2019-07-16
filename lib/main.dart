@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
@@ -15,6 +14,7 @@ import 'package:flutterhole_again/repository/blacklist_repository.dart';
 import 'package:flutterhole_again/repository/query_repository.dart';
 import 'package:flutterhole_again/repository/summary_repository.dart';
 import 'package:flutterhole_again/repository/whitelist_repository.dart';
+import 'package:flutterhole_again/service/assert_tree.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/local_storage.dart';
 import 'package:flutterhole_again/service/pihole_client.dart';
@@ -22,7 +22,6 @@ import 'package:flutterhole_again/service/routes.dart';
 import 'package:persist_theme/persist_theme.dart';
 import 'package:provider/provider.dart';
 
-import 'bloc/simple_bloc_delegate.dart';
 import 'bloc/status/status_bloc.dart';
 import 'bloc/summary/summary_bloc.dart';
 import 'bloc/whitelist/whitelist_bloc.dart';
@@ -38,11 +37,19 @@ void main() async {
   Globals.client = PiholeClient(dio: Dio(), localStorage: Globals.localStorage);
 
   assert(() {
-    BlocSupervisor.delegate = SimpleBlocDelegate();
-    Fimber.plantTree(DebugTree());
-    Fimber.i('Running in debug mode');
+    Globals.debug = true;
+
     return true;
   }());
+
+  if (Globals.debug) {
+//    BlocSupervisor.delegate = SimpleBlocDelegate();
+    Fimber.plantTree(DebugTree());
+    Fimber.i('Running in debug mode');
+  } else {
+    Fimber.plantTree(AssertTree(['i', 'w', 'e']));
+    Fimber.i('Running in release mode');
+  }
 
   runApp(MyApp());
 }
@@ -67,18 +74,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProviderTree(
-      blocProviders: [
-        BlocProvider<SummaryBloc>(
-            dispose: false, builder: (context) => summaryBloc),
-        BlocProvider<QueryBloc>(
-            dispose: false, builder: (context) => queryBloc),
-        BlocProvider<StatusBloc>(
-            dispose: false, builder: (context) => statusBloc),
-        BlocProvider<WhitelistBloc>(
-            dispose: false, builder: (context) => whitelistBloc),
-        BlocProvider<BlacklistBloc>(
-            dispose: false, builder: (context) => blacklistBloc),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SummaryBloc>(builder: (context) => summaryBloc),
+        BlocProvider<QueryBloc>(builder: (context) => queryBloc),
+        BlocProvider<StatusBloc>(builder: (context) => statusBloc),
+        BlocProvider<WhitelistBloc>(builder: (context) => whitelistBloc),
+        BlocProvider<BlacklistBloc>(builder: (context) => blacklistBloc),
       ],
       child: ListenableProvider<ThemeModel>(
         builder: (_) => _model..init(),

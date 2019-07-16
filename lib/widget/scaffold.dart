@@ -3,6 +3,10 @@ import 'package:flutterhole_again/widget/default_drawer.dart';
 import 'package:flutterhole_again/widget/default_end_drawer.dart';
 import 'package:flutterhole_again/widget/status/status_app_bar.dart';
 
+void showSnackBar(BuildContext context, Widget content) {
+  Scaffold.of(context).showSnackBar(SnackBar(content: content));
+}
+
 class DefaultScaffold extends StatelessWidget {
   final String title;
   final Widget body;

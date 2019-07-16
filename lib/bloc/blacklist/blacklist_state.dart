@@ -17,9 +17,9 @@ class BlacklistStateLoading extends BlacklistState {
 }
 
 class BlacklistStateSuccess extends BlacklistState {
-  final Blacklist cache;
+  final Blacklist blacklist;
 
-  BlacklistStateSuccess(this.cache) : super([cache]);
+  BlacklistStateSuccess(this.blacklist) : super([blacklist]);
 }
 
 class BlacklistStateError extends BlacklistState {

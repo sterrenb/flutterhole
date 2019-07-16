@@ -17,9 +17,9 @@ class WhitelistStateLoading extends WhitelistState {
 }
 
 class WhitelistStateSuccess extends WhitelistState {
-  final Whitelist cache;
+  final Whitelist whitelist;
 
-  WhitelistStateSuccess(this.cache) : super([cache]);
+  WhitelistStateSuccess(this.whitelist) : super([whitelist]);
 }
 
 class WhitelistStateError extends WhitelistState {

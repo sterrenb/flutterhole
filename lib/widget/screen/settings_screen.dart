@@ -8,10 +8,11 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: StatusAppBar(title: 'Settings',),
+        appBar: StatusAppBar(
+          title: 'Settings',
+        ),
         drawer: DefaultDrawer(
-          // TODO debug
-          allowConfigSelection: true,
+          allowConfigSelection: false,
         ),
         body: SettingsBuilder());
   }

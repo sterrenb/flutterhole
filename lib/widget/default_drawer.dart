@@ -111,8 +111,8 @@ class _DefaultDrawerMenu extends StatelessWidget {
           title: Text('Query Log'),
           leading: Icon(Icons.filter_list),
           onTap: () {
-            BlocProvider.of<QueryBloc>(context)
-                .dispatch(FetchQueries());
+            BlocProvider.of<QueryBloc>(context).dispatch(FetchQueries());
+            BlocProvider.of<BlacklistBloc>(context).dispatch(FetchBlacklist());
             Globals.router.navigateTo(context, queryPath);
           },
         ),

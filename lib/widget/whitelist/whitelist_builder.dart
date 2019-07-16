@@ -59,7 +59,7 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
 
             if (state is WhitelistStateSuccess) {
               setState(() {
-                _cache = state.cache.list;
+                _cache = state.whitelist.list;
               });
             }
           }
@@ -77,7 +77,7 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
                         _cache != null &&
                         _cache.isNotEmpty)) {
                   if (state is WhitelistStateSuccess) {
-                    _cache = state.cache.list;
+                    _cache = state.whitelist.list;
                   }
                   return Scrollbar(
                     child: ListView(

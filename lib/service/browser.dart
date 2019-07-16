@@ -11,7 +11,7 @@ Future<bool> launchURL(String url) async {
       return true;
     }
   } catch (e) {
-    Fimber.w('cannot launch url' + ': ' + url);
+    Fimber.w('cannot launch url' + ': ' + url, ex: e);
   }
 
   return false;

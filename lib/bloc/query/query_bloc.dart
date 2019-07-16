@@ -25,7 +25,6 @@ class QueryBloc extends Bloc<QueryEvent, QueryState> {
   Stream<QueryState> _fetch() async* {
     try {
       final cache = await queryRepository.getQueries();
-      print('bloc cache: ${cache.length}');
       yield QueryStateSuccess(cache);
     } on PiholeException catch (e) {
       yield QueryStateError(e: e);

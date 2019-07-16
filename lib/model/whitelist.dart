@@ -18,8 +18,10 @@ class Whitelist extends Equatable {
   String toJson() => json.encode(List<dynamic>.from([list]));
 
   factory Whitelist.fromString(String str) =>
-      Whitelist(list: List<String>.from(json.decode(str)[0]));
+      Whitelist(list: List<String>.from(json.decode(str)[0])
+        ..sort());
 
   factory Whitelist.fromJson(List<dynamic> json) =>
-      Whitelist(list: List<String>.from(json[0]));
+      Whitelist(list: List<String>.from(json[0])
+        ..sort());
 }

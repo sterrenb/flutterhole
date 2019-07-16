@@ -274,11 +274,9 @@ class PiholeClient {
     Response response =
     await _getSecure({'getAllQueries': max > 0 ? max.toString() : 1});
     if (response.data is Map<String, dynamic>) {
-      print('response is Map<String, dynamic>');
       try {
         List<Query> queries = [];
         (response.data['data'] as List<dynamic>).forEach((entry) {
-          print('entry ${entry.runtimeType}, ${entry[2]}');
           queries.add(Query(entry));
         });
 

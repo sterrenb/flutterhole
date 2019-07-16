@@ -77,7 +77,7 @@ class _BlacklistBuilderState extends State<BlacklistBuilder> {
 
             if (state is BlacklistStateSuccess) {
               setState(() {
-                _cache = state.cache;
+                _cache = state.blacklist;
               });
             }
           }
@@ -95,7 +95,7 @@ class _BlacklistBuilderState extends State<BlacklistBuilder> {
                         _cache != null &&
                         _cache.exact.length + _cache.wildcard.length > 0)) {
                   if (state is BlacklistStateSuccess) {
-                    _cache = state.cache;
+                    _cache = state.blacklist;
                   }
 
                   List<Widget> exactTiles = [ListTab('Exact blocking')];
