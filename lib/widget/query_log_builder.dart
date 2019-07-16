@@ -138,7 +138,8 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
             bloc: queryBloc,
             builder: (BuildContext context, QueryState state) {
               if (state is QueryStateSuccess ||
-                  state is QueryStateLoading && _queryCache != null) {
+                  state is QueryStateLoading && _queryCache != null &&
+                      _queryCache.length > 0) {
                 if (state is QueryStateSuccess) {
                   _queryCache = state.queries;
                 }

@@ -26,6 +26,8 @@ const String privacyPath = '$aboutPath/privacy';
 const String settingsPath = '/settings';
 const String _piholeEditPath = '/settings/:key';
 
+class Route {}
+
 String piholeEditPath(Pihole pihole) =>
     _piholeEditPath.replaceAll(':key', pihole.localKey);
 

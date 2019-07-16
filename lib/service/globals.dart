@@ -13,7 +13,7 @@ import 'local_storage.dart';
 
 /// Globally accessible class.
 class Globals {
-  static bool debug;
+  static bool debug = false;
   static Router router;
   static PiholeClient client;
   static LocalStorage localStorage;

@@ -67,6 +67,8 @@ class PiholeClient {
         throw PiholeException(message: 'unexpected plaintext response');
       }
 
+      await Future.delayed(Duration(seconds: 2));
+
       return response;
     } on DioError catch (e) {
       logger.e('dio error: ${e.message}');
@@ -270,7 +272,7 @@ class PiholeClient {
     }
   }
 
-  Future<List<Query>> getQueries({int max = 100}) async {
+  Future<List<Query>> getQueries({int max = 5 }) async {
     Response response =
     await _getSecure({'getAllQueries': max > 0 ? max.toString() : 1});
     if (response.data is Map<String, dynamic>) {
