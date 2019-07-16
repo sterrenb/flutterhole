@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
 import 'package:flutterhole_again/model/blacklist.dart';
+import 'package:flutterhole_again/model/query.dart';
 import 'package:flutterhole_again/model/status.dart';
 import 'package:flutterhole_again/model/summary.dart';
 import 'package:flutterhole_again/model/whitelist.dart';
@@ -259,7 +260,7 @@ class PiholeClient {
     await removeFromBlacklist(originalItem);
   }
 
-  Future<String> fetchRecentlyBlocked() async {
+  Future<String> fetchQueries() async {
     Response response =
     await _get({'recentBlocked': ''}, responseType: ResponseType.plain);
     if (response.data is String) {
@@ -267,5 +268,26 @@ class PiholeClient {
     } else {
       throw PiholeException(message: 'unexpected response $response');
     }
+  }
+
+  Future<List<Query>> getQueries({int max = 100}) async {
+    Response response =
+    await _getSecure({'getAllQueries': max > 0 ? max.toString() : 1});
+    if (response.data is Map<String, dynamic>) {
+      print('response is Map<String, dynamic>');
+      try {
+        List<Query> queries = [];
+        (response.data['data'] as List<dynamic>).forEach((entry) {
+          print('entry ${entry.runtimeType}, ${entry[2]}');
+          queries.add(Query(entry));
+        });
+
+        return queries;
+      } catch (e) {
+        throw PiholeException(message: 'unknown error', e: e);
+      }
+    }
+
+    throw PiholeException(message: 'unexpected response $response');
   }
 }

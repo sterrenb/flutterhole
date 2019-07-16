@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole_again/bloc/blacklist/blacklist_bloc.dart';
 import 'package:flutterhole_again/bloc/blacklist/blacklist_event.dart';
+import 'package:flutterhole_again/bloc/query/query_bloc.dart';
+import 'package:flutterhole_again/bloc/query/query_event.dart';
 import 'package:flutterhole_again/bloc/summary/summary_bloc.dart';
 import 'package:flutterhole_again/bloc/summary/summary_event.dart';
 import 'package:flutterhole_again/bloc/whitelist/whitelist_bloc.dart';
@@ -105,6 +107,15 @@ class _DefaultDrawerMenu extends StatelessWidget {
           },
         ),
         SleepButtons(),
+        ListTile(
+          title: Text('Query Log'),
+          leading: Icon(Icons.filter_list),
+          onTap: () {
+            BlocProvider.of<QueryBloc>(context)
+                .dispatch(FetchQueries());
+            Globals.router.navigateTo(context, queryPath);
+          },
+        ),
         Divider(),
         ListTile(
           title: Text('Settings'),

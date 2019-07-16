@@ -10,6 +10,7 @@ import 'package:flutterhole_again/widget/screen/blacklist/blacklist_edit_screen.
 import 'package:flutterhole_again/widget/screen/blacklist/blacklist_view_screen.dart';
 import 'package:flutterhole_again/widget/screen/pihole/pihole_edit_screen.dart';
 import 'package:flutterhole_again/widget/screen/privacy_screen.dart';
+import 'package:flutterhole_again/widget/screen/query_log_screen.dart';
 import 'package:flutterhole_again/widget/screen/settings_screen.dart';
 import 'package:flutterhole_again/widget/screen/summary_screen.dart';
 import 'package:flutterhole_again/widget/screen/whitelist/whitelist_add_screen.dart';
@@ -18,6 +19,7 @@ import 'package:flutterhole_again/widget/screen/whitelist/whitelist_view_screen.
 
 const String rootPath = '/';
 const String summaryPath = '/summary';
+const String queryPath = '/query';
 const String aboutPath = '/about';
 const String privacyPath = '$aboutPath/privacy';
 
@@ -55,6 +57,9 @@ void configureRoutes(Router router) {
 
   router.define(summaryPath,
       handler: Handler(handlerFunc: (_, __) => SummaryScreen()));
+
+  router.define(queryPath,
+      handler: Handler(handlerFunc: (_, __) => QueryLogScreen()));
 
   router.define(whitelistPath,
       handler: Handler(handlerFunc: (_, __) => WhitelistViewScreen()));
