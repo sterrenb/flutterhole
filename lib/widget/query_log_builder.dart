@@ -2,10 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole_again/bloc/blacklist/blacklist_bloc.dart';
+import 'package:flutterhole_again/bloc/blacklist/blacklist_event.dart';
 import 'package:flutterhole_again/bloc/query/query_bloc.dart';
 import 'package:flutterhole_again/bloc/query/query_event.dart';
 import 'package:flutterhole_again/bloc/query/query_state.dart';
+import 'package:flutterhole_again/model/blacklist.dart';
 import 'package:flutterhole_again/model/query.dart';
+import 'package:flutterhole_again/service/browser.dart';
+import 'package:flutterhole_again/widget/icon_text_button.dart';
 import 'package:intl/intl.dart';
 
 import 'error_message.dart';
@@ -81,6 +86,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
   @override
   Widget build(BuildContext context) {
     final QueryBloc queryBloc = BlocProvider.of<QueryBloc>(context);
+    final BlacklistBloc blacklistBloc = BlocProvider.of<BlacklistBloc>(context);
     return BlocListener(
       bloc: queryBloc,
       listener: (context, state) {
@@ -118,11 +124,13 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
                     itemCount: _cache.length,
                     itemBuilder: (BuildContext context, int index) {
                       final Query query = _cache[index];
+                      final bool successful =
+                      (query.queryStatus == QueryStatus.Cached ||
+                          query.queryStatus == QueryStatus.Forwarded);
                       return ExpansionTile(
                         key: Key(query.entry),
                         backgroundColor: Theme.of(context).dividerColor,
-                        leading: (query.queryStatus == QueryStatus.Cached ||
-                                query.queryStatus == QueryStatus.Forwarded)
+                        leading: successful
                             ? Icon(
                                 Icons.check_circle,
                                 color: Colors.green,
@@ -144,6 +152,27 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
                           ],
                         ),
                         children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              IconTextButton(
+                                title: 'Open in browser',
+                                icon: Icons.open_in_browser,
+                                onPressed: () {
+                                  launchURL(query.entry);
+                                },
+                              ),
+                              IconTextButton(
+                                title: 'Add to blacklist',
+                                icon: Icons.remove_circle_outline,
+                                onPressed: () {
+                                  blacklistBloc.dispatch(AddToBlacklist(
+                                      BlacklistItem.exact(entry: query.entry)));
+                                },
+                              ),
+                            ],
+                          ),
+                          Divider(),
                           ListTile(
                             title: Text(_formatter.format(query.time)),
                             subtitle: Text('Time'),

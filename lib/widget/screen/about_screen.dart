@@ -1,29 +1,12 @@
-import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhole_again/service/browser.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
 import 'package:flutterhole_again/widget/scaffold.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:package_info/package_info.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatelessWidget {
-  /// Launches the [url] in the default browser.
-  ///
-  /// Logs a warning if the url can not be launched.
-  Future<bool> launchURL(String url) async {
-    try {
-      if (await canLaunch(url)) {
-        await launch(url);
-        return true;
-      }
-    } catch (e) {
-      Fimber.w('cannot launch url' + ': ' + url);
-    }
-
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
     return DefaultScaffold(
