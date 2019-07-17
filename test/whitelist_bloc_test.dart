@@ -134,4 +134,44 @@ main() {
       whitelistBloc.dispatch(RemoveFromWhitelist('new'));
     });
   });
+
+  group('EditOnWhitelist', () {
+    setUp(() {
+      whitelistRepository.cache = Whitelist(list: ['old']);
+    });
+    test(
+        'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateSuccess] when whitelist repository edits succesfully',
+            () {
+          final Whitelist whitelistNew = Whitelist(list: ['new']);
+          when(whitelistRepository.editOnWhitelist('old', 'new'))
+              .thenAnswer((_) => Future.value(whitelistNew));
+
+          expectLater(
+              whitelistBloc.state,
+              emitsInOrder([
+                WhitelistStateEmpty(),
+                WhitelistStateLoading(cache: whitelistRepository.cache),
+                WhitelistStateSuccess(whitelistNew),
+              ]));
+
+          whitelistBloc.dispatch(EditOnWhitelist('old', 'new'));
+        });
+
+    test(
+        'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateError] when whitelist repository edit fails',
+            () {
+          when(whitelistRepository.editOnWhitelist('old', 'new'))
+              .thenThrow(PiholeException());
+
+          expectLater(
+              whitelistBloc.state,
+              emitsInOrder([
+                WhitelistStateEmpty(),
+                WhitelistStateLoading(cache: whitelistRepository.cache),
+                WhitelistStateError(e: PiholeException()),
+              ]));
+
+          whitelistBloc.dispatch(EditOnWhitelist('old', 'new'));
+        });
+  });
 }

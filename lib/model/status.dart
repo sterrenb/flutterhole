@@ -4,13 +4,11 @@
 
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
+import 'package:flutterhole_again/model/serializable.dart';
 import 'package:meta/meta.dart';
 
-String statusToJson(Status data) => json.encode(data.toJson());
-
 /// The API model for http://pi.hole/admin/api.php?status.
-class Status extends Equatable {
+class Status extends Serializable {
   final bool enabled;
 
   bool get disabled => !enabled;
@@ -19,16 +17,18 @@ class Status extends Equatable {
     @required this.enabled,
   }) : super([enabled]);
 
-  factory Status.fromMap(Map<String, dynamic> json) => Status(
+  factory Status.fromJson(Map<String, dynamic> json) =>
+      Status(
         enabled: json["status"] == "enabled",
       );
 
-  factory Status.fromString(String str) => Status.fromMap(json.decode(str));
+  factory Status.fromString(String str) => Status.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() => {
-        "status": enabled ? "enabled" : "disabled",
-      };
+//  @override
+//  String toString() => 'enabled: $enabled';
 
   @override
-  String toString() => 'enabled: $enabled';
+  Map<String, dynamic> toJson() => {
+    "status": enabled ? "enabled" : "disabled",
+  };
 }

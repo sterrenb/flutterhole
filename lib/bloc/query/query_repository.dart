@@ -11,7 +11,7 @@ class QueryRepository extends ApiRepository {
   QueryRepository(this.client);
 
   Future<List<Query>> getQueries() async {
-    final List<Query> queries = await client.getQueries();
+    final List<Query> queries = await client.fetchQueries();
     _cache = queries..sort((a, b) => b.time.compareTo(a.time));
     return queries;
   }

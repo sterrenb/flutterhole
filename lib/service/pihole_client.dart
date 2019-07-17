@@ -7,18 +7,18 @@ import 'package:flutterhole_again/model/summary.dart';
 import 'package:flutterhole_again/model/whitelist.dart';
 import 'package:meta/meta.dart';
 
-import 'globals.dart';
 import 'local_storage.dart';
 import 'pihole_exception.dart';
 
 class PiholeClient {
-  Dio dio;
-  LocalStorage localStorage;
+  final Dio dio;
+  final LocalStorage localStorage;
 
   final logger = FimberLog('PiholeClient');
 
-  PiholeClient(
-      {@required this.dio, this.localStorage, bool logQueries = true}) {
+  PiholeClient({@required this.dio,
+    @required this.localStorage,
+    bool logQueries = true}) {
     if (logQueries) {
       dio.interceptors
           .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
@@ -31,10 +31,6 @@ class PiholeClient {
         logger.e('error: ${error.message}');
         return error;
       }));
-    }
-
-    if (localStorage == null) {
-      localStorage = Globals.localStorage;
     }
   }
 
@@ -72,24 +68,26 @@ class PiholeClient {
       return response;
     } on DioError catch (e) {
       logger.e('dio error: ${e.message}');
-      throw PiholeException(message: 'request failed', e: e);
+      throw PiholeException(message: e.message, e: e);
     } on PiholeException catch (e) {
       logger.e('pihole error: ${e.message}');
       rethrow;
-    } catch (e) {
-      logger.e('unknown error: ${e.toString()}');
-      throw PiholeException(message: 'unknown error', e: e);
     }
   }
 
   /// Performs [_get] with the API token set in [queryParameters].
   Future<Response> _getSecure(Map<String, dynamic> queryParameters,
       {ResponseType responseType = ResponseType.json}) async {
+    final active = localStorage.active();
+    if (active.auth.isEmpty) {
+      throw PiholeException(message: 'API token is empty');
+    }
+
     final response = await _get(
         queryParameters
           ..addAll({
-            'auth':
-                '3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c'
+            'auth': active.auth
+//                '3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c'
           }),
         responseType: responseType);
     return response;
@@ -102,21 +100,21 @@ class PiholeClient {
     if (response.data is String) {
       return Status.fromString(response.data);
     } else {
-      return Status.fromMap(response.data);
+      return Status.fromJson(response.data);
     }
   }
 
-  /// Fetches the status from the API, then returns true if enabled.
-  Future<bool> fetchEnabled() async {
+  /// Fetches the status from the API, then returns [Status].
+  Future<Status> fetchStatus() async {
     Response response = await _get({'status': ''});
     final status = _responseToStatus(response);
-    return status.enabled;
+    return status;
   }
 
   /// Enables the Pihole.
   ///
   /// Throws a [PiholeException] if the response is disabled.
-  Future<void> enable() async {
+  Future<Status> enable() async {
     Response response = await _getSecure({'enable': ''});
     final status = _responseToStatus(response);
 
@@ -124,13 +122,13 @@ class PiholeClient {
       throw PiholeException(message: 'failed to enable');
     }
 
-    return true;
+    return status;
   }
 
   /// Disables the Pihole, optionally for the specified [duration].
   ///
   /// Throws a [PiholeException] if the response is enabled.
-  Future<void> disable({Duration duration}) async {
+  Future<Status> disable({Duration duration}) async {
     Response response =
         await _getSecure({'disable': duration?.inSeconds ?? ''});
     final status = _responseToStatus(response);
@@ -138,15 +136,17 @@ class PiholeClient {
     if (status.enabled) {
       throw PiholeException(message: 'failed to disable');
     }
+
+    return status;
   }
 
   /// Fetches summary information from the Pi-hole.
   Future<Summary> fetchSummary() async {
     Response response = await _get({'summaryRaw': ''});
     if (response.data is String) {
-      return Summary.fromJson(response.data);
+      return Summary.fromString(response.data);
     } else {
-      return Summary.fromMap(response.data);
+      return Summary.fromJson(response.data);
     }
   }
 
@@ -186,7 +186,7 @@ class PiholeClient {
 
     if (!dataString
         .contains('adding ${domain.toLowerCase()} to whitelist...')) {
-      throw PiholeException(message: 'unexpected response', e: response);
+      throw PiholeException(message: 'unexpected whitelist response');
     }
   }
 
@@ -214,12 +214,15 @@ class PiholeClient {
   /// Fetches the exact and wildcard lists of blacklisted domains.
   Future<Blacklist> fetchBlacklist() async {
     Response response = await _get({'list': 'black'});
-    try {
-      final Blacklist blacklist = Blacklist.fromJson(response.data);
-      return blacklist;
-    } catch (e) {
-      throw PiholeException(message: 'cannot parse blacklist response', e: e);
+    if (response.data is String) {
+      return Blacklist.fromString(response.data);
+    } else if (response.data is List<dynamic>) {
+      return Blacklist.fromJson(response.data);
     }
+
+    throw PiholeException(
+        message: 'unexpected data type ${response.data.runtimeType}',
+        e: response);
   }
 
   /// Adds a new domain or wildcard to the blacklist.
@@ -245,11 +248,12 @@ class PiholeClient {
 
     Response response = await _getSecure({'list': item.list, 'add': entry},
         responseType: ResponseType.plain);
-    if (response.data.toString().indexOf('already exists') >= 0) {
+    final dataString = response.data.toString();
+    if (dataString.contains('no need to add')) {
       throw PiholeException(
           message: 'Domain already exists on blacklist', e: response.data);
     }
-    if (response.data.toString().indexOf('not a valid domain') >= 0) {
+    if (dataString.contains('not a valid domain')) {
       throw PiholeException(
           message: '$entry is not a valid domain', e: response.data);
     }
@@ -267,17 +271,8 @@ class PiholeClient {
     await removeFromBlacklist(originalItem);
   }
 
-  Future<String> fetchQueries() async {
-    Response response =
-    await _get({'recentBlocked': ''}, responseType: ResponseType.plain);
-    if (response.data is String) {
-      return response.data;
-    } else {
-      throw PiholeException(message: 'unexpected response $response');
-    }
-  }
-
-  Future<List<Query>> getQueries({int max = 5}) async {
+  /// Returns a list of recent [Query]s, at most [max].
+  Future<List<Query>> fetchQueries({int max = 5}) async {
     Response response =
     await _getSecure({'getAllQueries': max > 0 ? max.toString() : 1});
     if (response.data is Map<String, dynamic>) {
@@ -293,6 +288,6 @@ class PiholeClient {
       }
     }
 
-    throw PiholeException(message: 'unexpected response $response');
+    throw PiholeException(message: 'unexpected query response', e: response);
   }
 }

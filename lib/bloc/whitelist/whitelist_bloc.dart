@@ -52,8 +52,9 @@ class WhitelistBloc extends Bloc<WhitelistEvent, WhitelistState> {
 
   Stream<WhitelistState> _edit(String original, String update) async* {
     try {
+      final whitelist =
       await whitelistRepository.editOnWhitelist(original, update);
-      yield WhitelistStateSuccess(whitelistRepository.cache);
+      yield WhitelistStateSuccess(whitelist);
     } on PiholeException catch (e) {
       yield WhitelistStateError(e: e);
     }

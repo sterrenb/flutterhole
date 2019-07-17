@@ -1,4 +1,6 @@
-import 'package:equatable/equatable.dart';
+import 'dart:convert';
+
+import 'package:flutterhole_again/model/serializable.dart';
 import 'package:meta/meta.dart';
 
 enum BlacklistType { Exact, Wildcard, Regex }
@@ -19,7 +21,7 @@ BlacklistType blacklistTypeFromString(String str) {
   throw FormatException('unknown blacklist string $str');
 }
 
-class BlacklistItem extends Equatable {
+class BlacklistItem extends Serializable {
   final String entry;
   final BlacklistType type;
 
@@ -49,16 +51,23 @@ class BlacklistItem extends Equatable {
 
   factory BlacklistItem.regex({@required entry}) =>
       BlacklistItem(entry: entry, type: BlacklistType.Regex);
+
+  @override
+  Map<String, dynamic> toJson() =>
+      {
+        'entry': entry,
+        'type': listKey,
+      };
 }
 
-class Blacklist extends Equatable {
+class Blacklist extends Serializable {
   final List<BlacklistItem> exact;
   final List<BlacklistItem> wildcard;
 
   Blacklist({this.exact = const [], this.wildcard = const []})
       : super([exact, wildcard]);
 
-  Blacklist.add(Blacklist original, BlacklistItem item)
+  Blacklist.withItem(Blacklist original, BlacklistItem item)
       : this.exact = item.type == BlacklistType.Exact
       ? List.from(original.exact..add(item))
       : original.exact,
@@ -66,7 +75,7 @@ class Blacklist extends Equatable {
             ? List.from(original.wildcard..add(item))
             : original.wildcard;
 
-  Blacklist.remove(Blacklist original, BlacklistItem item)
+  Blacklist.withoutItem(Blacklist original, BlacklistItem item)
       : this.exact = item.type == BlacklistType.Exact
       ? List.from(original.exact..remove(item))
       : original.exact,
@@ -74,8 +83,27 @@ class Blacklist extends Equatable {
             ? List.from(original.wildcard..remove(item))
             : original.wildcard;
 
+  factory Blacklist.fromString(String str) =>
+      Blacklist._fromMap(json.decode(str));
+
+  factory Blacklist._fromMap(dynamic map) {
+    final List<BlacklistItem> exact =
+    List<BlacklistItem>.from(map['exact'].map((val) {
+      return BlacklistItem.exact(entry: val['entry']);
+    }));
+    final List<BlacklistItem> wildcard =
+    List<BlacklistItem>.from(map['wildcard'].map((val) {
+      return BlacklistItem(
+          entry: val['entry'], type: blacklistTypeFromString(val['type']));
+    }));
+    return Blacklist(
+      exact: exact,
+      wildcard: wildcard,
+    );
+  }
+
   factory Blacklist.fromJson(List<dynamic> json) {
-    final List<String> exactStrings = List<String>.from(json[0]);
+    List<String> exactStrings = _exactFromJson(json);
     final List<String> wildcardStrings = List<String>.from(json[1]);
 
     List<BlacklistItem> exact =
@@ -94,8 +122,21 @@ class Blacklist extends Equatable {
           ..sort((a, b) => a.entry.compareTo(b.entry)));
 
     return Blacklist(exact: exact, wildcard: wildcard);
-//        exact: exact..sort(_compare), wildcard: wildcard..sort(_compare));
   }
 
-  String toJson() => ([exact, wildcard]).toString();
+  static List<String> _exactFromJson(List json) {
+    final List<String> exactStrings = List<String>.from(json[0]);
+    return exactStrings;
+  }
+
+  @override
+  Map<String, dynamic> toJson() =>
+      {
+        'exact': exact,
+        'wildcard': wildcard,
+      };
+//  String toJson() => json.encode(List<dynamic>.from([
+//        exact.map((item) => item.toJson()).toList(),
+//        wildcard.map((item) => item.toJson()).toList()
+//      ]));
 }

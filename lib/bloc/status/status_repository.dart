@@ -17,8 +17,8 @@ class StatusRepository extends ApiRepository {
   Duration get elapsed => _stopwatch.elapsed;
 
   Future<Status> getStatus() async {
-    final enabled = await client.fetchEnabled();
-    return Status(enabled: enabled);
+    final status = await client.fetchStatus();
+    return status;
   }
 
   Future<Status> enable() async {

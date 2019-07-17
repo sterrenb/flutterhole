@@ -1,26 +1,26 @@
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
+import 'package:flutterhole_again/model/serializable.dart';
 
 /// The Api model for http://pi.hole/admin/api.php?summary.
-class Summary extends Equatable {
-  int domainsBeingBlocked;
-  int dnsQueriesToday;
-  int adsBlockedToday;
-  double adsPercentageToday;
-  int uniqueDomains;
-  int queriesForwarded;
-  int queriesCached;
-  int clientsEverSeen;
-  int uniqueClients;
-  int dnsQueriesAllTypes;
-  int replyNodata;
-  int replyNxdomain;
-  int replyCname;
-  int replyIp;
-  int privacyLevel;
-  String status;
-  GravityLastUpdated gravityLastUpdated;
+class Summary extends Serializable {
+  final int domainsBeingBlocked;
+  final int dnsQueriesToday;
+  final int adsBlockedToday;
+  final double adsPercentageToday;
+  final int uniqueDomains;
+  final int queriesForwarded;
+  final int queriesCached;
+  final int clientsEverSeen;
+  final int uniqueClients;
+  final int dnsQueriesAllTypes;
+  final int replyNodata;
+  final int replyNxdomain;
+  final int replyCname;
+  final int replyIp;
+  final int privacyLevel;
+  final String status;
+  final GravityLastUpdated gravityLastUpdated;
 
   Summary({
     this.domainsBeingBlocked,
@@ -60,11 +60,10 @@ class Summary extends Equatable {
           gravityLastUpdated,
         ]);
 
-  factory Summary.fromJson(String str) => Summary.fromMap(json.decode(str));
+  factory Summary.fromString(String str) => Summary.fromJson(json.decode(str));
 
-  String toJson() => json.encode(toMap());
-
-  factory Summary.fromMap(Map<String, dynamic> json) => new Summary(
+  factory Summary.fromJson(Map<String, dynamic> json) =>
+      new Summary(
         domainsBeingBlocked: json["domains_being_blocked"],
         dnsQueriesToday: json["dns_queries_today"],
         adsBlockedToday: json["ads_blocked_today"],
@@ -82,10 +81,12 @@ class Summary extends Equatable {
         privacyLevel: json["privacy_level"],
         status: json["status"],
         gravityLastUpdated:
-            GravityLastUpdated.fromMap(json["gravity_last_updated"]),
+        GravityLastUpdated.fromJson(json["gravity_last_updated"]),
       );
 
-  Map<String, dynamic> toMap() => {
+  @override
+  Map<String, dynamic> toJson() =>
+      {
         "domains_being_blocked": domainsBeingBlocked,
         "dns_queries_today": dnsQueriesToday,
         "ads_blocked_today": adsBlockedToday,
@@ -102,14 +103,14 @@ class Summary extends Equatable {
         "reply_IP": replyIp,
         "privacy_level": privacyLevel,
         "status": status,
-        "gravity_last_updated": gravityLastUpdated.toMap(),
+        "gravity_last_updated": gravityLastUpdated._toMap(),
       };
 }
 
-class GravityLastUpdated extends Equatable {
-  bool fileExists;
-  int absolute;
-  Relative relative;
+class GravityLastUpdated extends Serializable {
+  final bool fileExists;
+  final int absolute;
+  final Relative relative;
 
   GravityLastUpdated({
     this.fileExists,
@@ -121,29 +122,28 @@ class GravityLastUpdated extends Equatable {
           relative,
         ]);
 
-  factory GravityLastUpdated.fromJson(String str) =>
-      GravityLastUpdated.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory GravityLastUpdated.fromMap(Map<String, dynamic> json) =>
+  factory GravityLastUpdated.fromJson(Map<String, dynamic> json) =>
       new GravityLastUpdated(
         fileExists: json["file_exists"],
         absolute: json["absolute"],
-        relative: Relative.fromMap(json["relative"]),
+        relative: Relative.fromJson(json["relative"]),
       );
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> _toMap() =>
+      {
         "file_exists": fileExists,
         "absolute": absolute,
-        "relative": relative.toMap(),
+        "relative": relative._toMap(),
       };
+
+  @override
+  String toJson() => json.encode(_toMap());
 }
 
-class Relative extends Equatable {
-  String days;
-  String hours;
-  String minutes;
+class Relative extends Serializable {
+  final String days;
+  final String hours;
+  final String minutes;
 
   Relative({
     this.days,
@@ -155,19 +155,20 @@ class Relative extends Equatable {
           minutes,
         ]);
 
-  factory Relative.fromJson(String str) => Relative.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
-
-  factory Relative.fromMap(Map<String, dynamic> json) => new Relative(
+  factory Relative.fromJson(Map<String, dynamic> json) =>
+      new Relative(
         days: json["days"],
         hours: json["hours"],
         minutes: json["minutes"],
       );
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> _toMap() =>
+      {
         "days": days,
         "hours": hours,
         "minutes": minutes,
       };
+
+  @override
+  String toJson() => json.encode(_toMap());
 }

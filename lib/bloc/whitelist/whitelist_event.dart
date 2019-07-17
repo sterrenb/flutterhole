@@ -24,6 +24,6 @@ class EditOnWhitelist extends WhitelistEvent {
   final String original;
   final String update;
 
-  EditOnWhitelist({@required this.original, @required this.update})
+  EditOnWhitelist(this.original, this.update)
       : super([original, update]);
 }

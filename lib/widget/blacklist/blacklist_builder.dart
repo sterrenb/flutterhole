@@ -38,7 +38,7 @@ class _BlacklistBuilderState extends State<BlacklistBuilder> {
   void _removeItem(
       BlacklistItem item, BlacklistBloc blacklistBloc, BuildContext context) {
     setState(() {
-      _cache = Blacklist.remove(_cache, item);
+      _cache = Blacklist.withoutItem(_cache, item);
     });
     blacklistBloc.dispatch(RemoveFromBlacklist(item));
     Scaffold.of(context).showSnackBar(SnackBar(
