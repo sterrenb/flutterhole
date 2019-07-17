@@ -2,12 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/summary/summary_bloc.dart';
-import 'package:flutterhole_again/bloc/summary/summary_event.dart';
-import 'package:flutterhole_again/bloc/summary/summary_state.dart';
+import 'package:flutterhole_again/bloc/summary/bloc.dart';
 import 'package:flutterhole_again/model/summary.dart';
-
-import 'error_message.dart';
+import 'package:flutterhole_again/widget/layout/error_message.dart';
 
 class SummaryBuilder extends StatefulWidget {
   @override

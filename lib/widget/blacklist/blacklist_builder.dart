@@ -2,15 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_event.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_state.dart';
+import 'package:flutterhole_again/bloc/blacklist/bloc.dart';
 import 'package:flutterhole_again/model/blacklist.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
-import 'package:flutterhole_again/widget/error_message.dart';
-import 'package:flutterhole_again/widget/list_tab.dart';
-import 'package:flutterhole_again/widget/removable_tile.dart';
+import 'package:flutterhole_again/widget/layout/error_message.dart';
+import 'package:flutterhole_again/widget/layout/list_tab.dart';
+import 'package:flutterhole_again/widget/layout/removable_tile.dart';
 
 class BlacklistBuilder extends StatefulWidget {
   @override
@@ -40,7 +38,7 @@ class _BlacklistBuilderState extends State<BlacklistBuilder> {
   void _removeItem(
       BlacklistItem item, BlacklistBloc blacklistBloc, BuildContext context) {
     setState(() {
-      _cache = Blacklist.cloneWithout(_cache, item);
+      _cache = Blacklist.remove(_cache, item);
     });
     blacklistBloc.dispatch(RemoveFromBlacklist(item));
     Scaffold.of(context).showSnackBar(SnackBar(

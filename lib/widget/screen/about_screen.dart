@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole_again/service/browser.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
-import 'package:flutterhole_again/widget/scaffold.dart';
+import 'package:flutterhole_again/widget/layout/scaffold.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:package_info/package_info.dart';
 

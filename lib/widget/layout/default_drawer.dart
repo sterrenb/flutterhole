@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_event.dart';
-import 'package:flutterhole_again/bloc/query/query_bloc.dart';
-import 'package:flutterhole_again/bloc/query/query_event.dart';
-import 'package:flutterhole_again/bloc/summary/summary_bloc.dart';
-import 'package:flutterhole_again/bloc/summary/summary_event.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_bloc.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_event.dart';
+import 'package:flutterhole_again/bloc/blacklist/bloc.dart';
+import 'package:flutterhole_again/bloc/query/bloc.dart';
+import 'package:flutterhole_again/bloc/summary/bloc.dart';
+import 'package:flutterhole_again/bloc/whitelist/bloc.dart';
 import 'package:flutterhole_again/model/pihole.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';

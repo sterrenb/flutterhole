@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterhole_again/model/pihole.dart';
 import 'package:flutterhole_again/service/globals.dart';
-import 'package:flutterhole_again/widget/icon_text_button.dart';
+import 'package:flutterhole_again/widget/layout/icon_text_button.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
 
 class SinglePiholeView extends StatefulWidget {

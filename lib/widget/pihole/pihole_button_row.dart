@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_again/service/local_storage.dart';
-import 'package:flutterhole_again/widget/dialog.dart';
-import 'package:flutterhole_again/widget/icon_text_button.dart';
-import 'package:flutterhole_again/widget/screen/pihole/pihole_add_screen.dart';
+import 'package:flutterhole_again/widget/layout/dialog.dart';
+import 'package:flutterhole_again/widget/layout/icon_text_button.dart';
+import 'package:flutterhole_again/widget/screen/pihole_screen.dart';
 
 class PiholeButtonRow extends StatelessWidget {
   final LocalStorage localStorage;

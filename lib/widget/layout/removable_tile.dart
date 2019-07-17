@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/dismissible_background.dart';
+import 'package:flutterhole_again/widget/layout/dismissible_background.dart';
 
 class RemovableTile extends StatefulWidget {
   final String title;

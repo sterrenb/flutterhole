@@ -8,13 +8,13 @@ const String wildcardSuffix = ('\$');
 
 const String _exact = 'exact';
 const String _wildcard = 'wildcard';
-const String regexKey = 'regex';
+const String _regex = 'regex';
 
 BlacklistType blacklistTypeFromString(String str) {
   str = str.toLowerCase();
   if (str.contains(_exact)) return BlacklistType.Exact;
   if (str.contains(_wildcard)) return BlacklistType.Wildcard;
-  if (str.contains(regexKey)) return BlacklistType.Regex;
+  if (str.contains(_regex)) return BlacklistType.Regex;
 
   throw FormatException('unknown blacklist string $str');
 }
@@ -32,13 +32,11 @@ class BlacklistItem extends Equatable {
       case BlacklistType.Wildcard:
         return _wildcard;
       case BlacklistType.Regex:
-        return regexKey;
+        return _regex;
       default:
         throw Exception('unknown BlacklistType ${this.type}');
     }
   }
-
-//  String get list => type == BlacklistType.Exact ? 'black' : 'regex';
 
   BlacklistItem({@required this.entry, @required this.type})
       : super([entry, type]);
@@ -54,49 +52,49 @@ class BlacklistItem extends Equatable {
 }
 
 class Blacklist extends Equatable {
-  List<BlacklistItem> exact;
-  List<BlacklistItem> wildcard;
+  final List<BlacklistItem> exact;
+  final List<BlacklistItem> wildcard;
 
   Blacklist({this.exact = const [], this.wildcard = const []})
       : super([exact, wildcard]);
 
-  Blacklist.cloneWith(Blacklist blacklist, BlacklistItem item) {
-    this.exact = blacklist.exact;
-    this.wildcard = blacklist.wildcard;
+  Blacklist.add(Blacklist original, BlacklistItem item)
+      : this.exact = item.type == BlacklistType.Exact
+      ? List.from(original.exact..add(item))
+      : original.exact,
+        this.wildcard = item.type != BlacklistType.Exact
+            ? List.from(original.wildcard..add(item))
+            : original.wildcard;
 
-    if (item.type == BlacklistType.Exact) {
-      this.exact.add(item);
-    } else {
-      this.wildcard.add(item);
-    }
-  }
-
-  Blacklist.cloneWithout(Blacklist blacklist, BlacklistItem item) {
-    this.exact = blacklist.exact;
-    this.wildcard = blacklist.wildcard;
-
-    if (item.type == BlacklistType.Exact) {
-      this.exact.remove(item);
-    } else {
-      this.wildcard.remove(item);
-    }
-  }
+  Blacklist.remove(Blacklist original, BlacklistItem item)
+      : this.exact = item.type == BlacklistType.Exact
+      ? List.from(original.exact..remove(item))
+      : original.exact,
+        this.wildcard = item.type != BlacklistType.Exact
+            ? List.from(original.wildcard..remove(item))
+            : original.wildcard;
 
   factory Blacklist.fromJson(List<dynamic> json) {
-    List<String> exactStrings = List<String>.from(json[0]);
-    List<String> wildcardStrings = List<String>.from(json[1]);
-    return Blacklist(
-        exact: exactStrings.map((String entry) {
-          return BlacklistItem(entry: entry, type: BlacklistType.Exact);
-        }).toList()
-          ..sort((a, b) => a.entry.compareTo(b.entry)),
-        wildcard: wildcardStrings.map((String entry) {
-          final type = entry.startsWith(wildcardPrefix)
-              ? BlacklistType.Wildcard
-              : BlacklistType.Regex;
-          return BlacklistItem(entry: entry, type: type);
-        }).toList()
+    final List<String> exactStrings = List<String>.from(json[0]);
+    final List<String> wildcardStrings = List<String>.from(json[1]);
+
+    List<BlacklistItem> exact =
+    List<BlacklistItem>.from(exactStrings.map((String entry) {
+      return BlacklistItem.exact(entry: entry);
+    }).toList()
+      ..sort((a, b) => a.entry.compareTo(b.entry)));
+
+    List<BlacklistItem> wildcard =
+    List<BlacklistItem>.from(wildcardStrings.map((String entry) {
+      final BlacklistType type = entry.startsWith(wildcardPrefix)
+          ? BlacklistType.Wildcard
+          : BlacklistType.Regex;
+      return BlacklistItem(entry: entry, type: type);
+    }).toList()
           ..sort((a, b) => a.entry.compareTo(b.entry)));
+
+    return Blacklist(exact: exact, wildcard: wildcard);
+//        exact: exact..sort(_compare), wildcard: wildcard..sort(_compare));
   }
 
   String toJson() => ([exact, wildcard]).toString();

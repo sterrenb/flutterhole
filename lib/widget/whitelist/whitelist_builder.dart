@@ -2,13 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_bloc.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_event.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_state.dart';
+import 'package:flutterhole_again/bloc/whitelist/bloc.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';
-import 'package:flutterhole_again/widget/error_message.dart';
-import 'package:flutterhole_again/widget/removable_tile.dart';
+import 'package:flutterhole_again/widget/layout/error_message.dart';
+import 'package:flutterhole_again/widget/layout/removable_tile.dart';
 
 class WhitelistBuilder extends StatefulWidget {
   @override

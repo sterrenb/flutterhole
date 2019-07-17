@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/default_drawer.dart';
+import 'package:flutterhole_again/widget/layout/default_drawer.dart';
 import 'package:flutterhole_again/widget/settings/settings_builder.dart';
 import 'package:flutterhole_again/widget/status/status_app_bar.dart';
 

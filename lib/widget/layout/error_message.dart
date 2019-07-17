@@ -11,8 +11,8 @@ class ErrorMessage extends StatelessWidget {
         child: SafeArea(
           minimum: EdgeInsets.all(8.0),
           child: Text(
-      errorMessage,
-      textAlign: TextAlign.center,
+            errorMessage,
+            textAlign: TextAlign.center,
           ),
         ));
   }

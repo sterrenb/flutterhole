@@ -1,8 +1,5 @@
-import 'package:flutterhole_again/bloc/blacklist/blacklist_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_event.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_state.dart';
+import 'package:flutterhole_again/bloc/blacklist/bloc.dart';
 import 'package:flutterhole_again/model/blacklist.dart';
-import 'package:flutterhole_again/repository/blacklist_repository.dart';
 import 'package:flutterhole_again/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

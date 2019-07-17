@@ -2,11 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutterhole_again/model/blacklist.dart';
-import 'package:flutterhole_again/repository/blacklist_repository.dart';
 import 'package:flutterhole_again/service/pihole_exception.dart';
 
-import 'blacklist_event.dart';
-import 'blacklist_state.dart';
+import 'bloc.dart';
 
 class BlacklistBloc extends Bloc<BlacklistEvent, BlacklistState> {
   final BlacklistRepository blacklistRepository;

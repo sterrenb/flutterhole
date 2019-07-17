@@ -19,7 +19,10 @@ class IconTextButton extends StatelessWidget {
     return FlatButton(
       child: Row(
         children: <Widget>[
-          Icon(icon, color: color,),
+          Icon(
+            icon,
+            color: color,
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(title),

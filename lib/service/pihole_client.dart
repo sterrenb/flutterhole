@@ -67,7 +67,7 @@ class PiholeClient {
         throw PiholeException(message: 'unexpected plaintext response');
       }
 
-      await Future.delayed(Duration(seconds: 2));
+//      await Future.delayed(Duration(seconds: 2));
 
       return response;
     } on DioError catch (e) {
@@ -214,7 +214,12 @@ class PiholeClient {
   /// Fetches the exact and wildcard lists of blacklisted domains.
   Future<Blacklist> fetchBlacklist() async {
     Response response = await _get({'list': 'black'});
-    return Blacklist.fromJson(response.data);
+    try {
+      final Blacklist blacklist = Blacklist.fromJson(response.data);
+      return blacklist;
+    } catch (e) {
+      throw PiholeException(message: 'cannot parse blacklist response', e: e);
+    }
   }
 
   /// Adds a new domain or wildcard to the blacklist.
@@ -272,7 +277,7 @@ class PiholeClient {
     }
   }
 
-  Future<List<Query>> getQueries({int max = 5 }) async {
+  Future<List<Query>> getQueries({int max = 5}) async {
     Response response =
     await _getSecure({'getAllQueries': max > 0 ? max.toString() : 1});
     if (response.data is Map<String, dynamic>) {

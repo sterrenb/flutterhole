@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_state.dart';
+import 'package:flutterhole_again/bloc/blacklist/bloc.dart';
 import 'package:flutterhole_again/model/blacklist.dart';
 import 'package:flutterhole_again/service/globals.dart';
 import 'package:flutterhole_again/service/routes.dart';

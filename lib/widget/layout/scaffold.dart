@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/default_drawer.dart';
-import 'package:flutterhole_again/widget/default_end_drawer.dart';
+import 'package:flutterhole_again/widget/layout/default_drawer.dart';
+import 'package:flutterhole_again/widget/layout/default_end_drawer.dart';
 import 'package:flutterhole_again/widget/status/status_app_bar.dart';
 
 void showSnackBar(BuildContext context, Widget content) {
@@ -46,7 +46,6 @@ class SimpleScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(this.titleString);
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(

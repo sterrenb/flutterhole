@@ -2,23 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_event.dart';
-import 'package:flutterhole_again/bloc/blacklist/blacklist_state.dart';
-import 'package:flutterhole_again/bloc/query/query_bloc.dart';
-import 'package:flutterhole_again/bloc/query/query_event.dart';
-import 'package:flutterhole_again/bloc/query/query_state.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_bloc.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_event.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_state.dart';
+import 'package:flutterhole_again/bloc/blacklist/bloc.dart';
+import 'package:flutterhole_again/bloc/query/bloc.dart';
+import 'package:flutterhole_again/bloc/whitelist/bloc.dart';
 import 'package:flutterhole_again/model/blacklist.dart';
 import 'package:flutterhole_again/model/query.dart';
 import 'package:flutterhole_again/model/whitelist.dart';
 import 'package:flutterhole_again/service/browser.dart';
-import 'package:flutterhole_again/widget/scaffold.dart';
+import 'package:flutterhole_again/widget/layout/error_message.dart';
+import 'package:flutterhole_again/widget/layout/scaffold.dart';
 import 'package:intl/intl.dart';
-
-import 'error_message.dart';
 
 String dnsSecStatusToString(DnsSecStatus dnsSecStatus) {
   return dnsSecStatus == DnsSecStatus.Empty
@@ -138,7 +131,8 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
             bloc: queryBloc,
             builder: (BuildContext context, QueryState state) {
               if (state is QueryStateSuccess ||
-                  state is QueryStateLoading && _queryCache != null &&
+                  state is QueryStateLoading &&
+                      _queryCache != null &&
                       _queryCache.length > 0) {
                 if (state is QueryStateSuccess) {
                   _queryCache = state.queries;

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_bloc.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_event.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_state.dart';
+import 'package:flutterhole_again/bloc/whitelist/bloc.dart';
 import 'package:flutterhole_again/widget/whitelist/whitelist_form.dart';
 
 class WhitelistAddForm extends StatefulWidget {
@@ -30,8 +28,7 @@ class _WhitelistAddFormState extends State<WhitelistAddForm> {
         fbKey: _fbKey,
         onVoidSubmitted: () {
           _fbKey.currentState.save();
-          whitelistBloc.dispatch(
-              AddToWhitelist(_domain));
+          whitelistBloc.dispatch(AddToWhitelist(_domain));
         },
       ),
     );

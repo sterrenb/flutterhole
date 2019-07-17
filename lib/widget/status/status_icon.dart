@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/status/status_bloc.dart';
-import 'package:flutterhole_again/bloc/status/status_state.dart';
+import 'package:flutterhole_again/bloc/status/bloc.dart';
 import 'package:flutterhole_again/widget/status/circular_percentage_indicator.dart';
 
 class StatusIcon extends StatefulWidget {

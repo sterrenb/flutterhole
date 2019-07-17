@@ -25,6 +25,5 @@ class EditOnBlacklist extends BlacklistEvent {
   final BlacklistItem original;
   final BlacklistItem update;
 
-  EditOnBlacklist(this.original, this.update)
-      : super([original, update]);
+  EditOnBlacklist(this.original, this.update) : super([original, update]);
 }

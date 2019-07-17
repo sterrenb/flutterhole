@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_event.dart';
-import 'package:flutterhole_again/bloc/whitelist/whitelist_state.dart';
-import 'package:flutterhole_again/repository/whitelist_repository.dart';
+import 'package:flutterhole_again/bloc/whitelist/bloc.dart';
 import 'package:flutterhole_again/service/pihole_exception.dart';
 
 class WhitelistBloc extends Bloc<WhitelistEvent, WhitelistState> {

@@ -64,10 +64,6 @@ class LocalStorage {
         );
       }
     });
-
-//    if (active() == null && _cache.isNotEmpty) {
-//      await activate(_cache.values.first);
-//    }
   }
 
   static Future<void> clear() async {
@@ -92,8 +88,6 @@ class LocalStorage {
       return false;
     }
 
-//    final bool wasActive = active() == pihole;
-
     final map = pihole.toJson();
     map.forEach((String key, _) {
       futures.add(_remove('$piholePrefix${pihole.localKey}_', key));
@@ -106,10 +100,6 @@ class LocalStorage {
     if (_cache.isEmpty) {
       await add(Pihole());
     }
-
-//    if (wasActive) {
-//      activate(_cache.values.first);
-//    }
 
     return true;
   }
