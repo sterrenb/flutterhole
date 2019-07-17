@@ -1,6 +1,6 @@
-import 'package:flutterhole_again/bloc/api_repository.dart';
-import 'package:flutterhole_again/model/whitelist.dart';
-import 'package:flutterhole_again/service/pihole_client.dart';
+import 'package:flutterhole/bloc/api_repository.dart';
+import 'package:flutterhole/model/whitelist.dart';
+import 'package:flutterhole/service/pihole_client.dart';
 
 class WhitelistRepository extends ApiRepository {
   final PiholeClient client;

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/bloc.dart';
-import 'package:flutterhole_again/bloc/query/bloc.dart';
-import 'package:flutterhole_again/bloc/summary/bloc.dart';
-import 'package:flutterhole_again/bloc/whitelist/bloc.dart';
-import 'package:flutterhole_again/model/pihole.dart';
-import 'package:flutterhole_again/service/globals.dart';
-import 'package:flutterhole_again/service/routes.dart';
-import 'package:flutterhole_again/widget/pihole/pihole_list_builder.dart';
-import 'package:flutterhole_again/widget/status/sleep_button.dart';
-import 'package:flutterhole_again/widget/status/status_icon.dart';
+import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/query/bloc.dart';
+import 'package:flutterhole/bloc/summary/bloc.dart';
+import 'package:flutterhole/bloc/whitelist/bloc.dart';
+import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/globals.dart';
+import 'package:flutterhole/service/routes.dart';
+import 'package:flutterhole/widget/pihole/pihole_list_builder.dart';
+import 'package:flutterhole/widget/status/sleep_button.dart';
+import 'package:flutterhole/widget/status/status_icon.dart';
 
 class DefaultDrawer extends StatefulWidget {
   final bool allowConfigSelection;

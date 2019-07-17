@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutterhole_again/model/serializable.dart';
+import 'package:flutterhole/model/serializable.dart';
 
 /// The Api model for http://pi.hole/admin/api.php?summary.
 class Summary extends Serializable {

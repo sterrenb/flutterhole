@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/status/status_icon.dart';
-import 'package:flutterhole_again/widget/status/toggle_button.dart';
+import 'package:flutterhole/widget/status/status_icon.dart';
+import 'package:flutterhole/widget/status/toggle_button.dart';
 
 class StatusAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;

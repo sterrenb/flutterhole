@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/layout/list_tab.dart';
-import 'package:flutterhole_again/widget/pihole/pihole_list_builder.dart';
+import 'package:flutterhole/widget/layout/list_tab.dart';
+import 'package:flutterhole/widget/pihole/pihole_list_builder.dart';
 import 'package:persist_theme/persist_theme.dart';
 
 class SettingsBuilder extends StatefulWidget {

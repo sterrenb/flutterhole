@@ -1,7 +1,7 @@
 import 'package:fimber/fimber.dart';
 import 'package:flutter/services.dart';
-import 'package:flutterhole_again/model/pihole.dart';
-import 'package:flutterhole_again/service/local_storage.dart';
+import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/local_storage.dart';
 import "package:test/test.dart";
 
 void mockSharedPreferences({List<Pihole> piholes = const []}) async {

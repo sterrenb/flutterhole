@@ -1,4 +1,4 @@
-import 'package:flutterhole_again/service/pihole_client.dart';
+import 'package:flutterhole/service/pihole_client.dart';
 import 'package:meta/meta.dart';
 
 /// Bloc repository with a [PiholeClient].

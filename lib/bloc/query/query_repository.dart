@@ -1,6 +1,6 @@
-import 'package:flutterhole_again/bloc/api_repository.dart';
-import 'package:flutterhole_again/model/query.dart';
-import 'package:flutterhole_again/service/pihole_client.dart';
+import 'package:flutterhole/bloc/api_repository.dart';
+import 'package:flutterhole/model/query.dart';
+import 'package:flutterhole/service/pihole_client.dart';
 
 class QueryRepository extends ApiRepository {
   final PiholeClient client;

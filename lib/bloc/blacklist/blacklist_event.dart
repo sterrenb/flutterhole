@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutterhole_again/model/blacklist.dart';
+import 'package:flutterhole/model/blacklist.dart';
 import 'package:meta/meta.dart';
 
 @immutable

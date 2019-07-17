@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutterhole_again/model/serializable.dart';
+import 'package:flutterhole/model/serializable.dart';
 
 /// The API model for http://pi.hole/admin/api.php?list=white.
 class Whitelist extends Serializable {

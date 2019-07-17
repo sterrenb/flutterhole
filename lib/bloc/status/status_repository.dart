@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutterhole_again/bloc/api_repository.dart';
-import 'package:flutterhole_again/model/status.dart';
-import 'package:flutterhole_again/service/pihole_client.dart';
+import 'package:flutterhole/bloc/api_repository.dart';
+import 'package:flutterhole/model/status.dart';
+import 'package:flutterhole/service/pihole_client.dart';
 
 class StatusRepository extends ApiRepository {
   final PiholeClient client;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/model/pihole.dart';
-import 'package:flutterhole_again/service/globals.dart';
-import 'package:flutterhole_again/service/routes.dart';
-import 'package:flutterhole_again/widget/layout/dismissible_background.dart';
-import 'package:flutterhole_again/widget/layout/list_tab.dart';
-import 'package:flutterhole_again/widget/pihole/pihole_button_row.dart';
+import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/globals.dart';
+import 'package:flutterhole/service/routes.dart';
+import 'package:flutterhole/widget/layout/dismissible_background.dart';
+import 'package:flutterhole/widget/layout/list_tab.dart';
+import 'package:flutterhole/widget/pihole/pihole_button_row.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 import 'package:provider/provider.dart';
 

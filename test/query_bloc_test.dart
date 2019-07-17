@@ -1,6 +1,6 @@
-import 'package:flutterhole_again/bloc/query/bloc.dart';
-import 'package:flutterhole_again/model/query.dart';
-import 'package:flutterhole_again/service/pihole_exception.dart';
+import 'package:flutterhole/bloc/query/bloc.dart';
+import 'package:flutterhole/model/query.dart';
+import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 

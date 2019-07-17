@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:flutterhole_again/model/serializable.dart';
+import 'package:flutterhole/model/serializable.dart';
 import 'package:meta/meta.dart';
 
 /// The API model for http://pi.hole/admin/api.php?status.

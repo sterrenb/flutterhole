@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutterhole_again/widget/layout/error_message.dart';
-import 'package:flutterhole_again/widget/layout/scaffold.dart';
+import 'package:flutterhole/widget/layout/error_message.dart';
+import 'package:flutterhole/widget/layout/scaffold.dart';
 
 class PrivacyScreen extends StatelessWidget {
   Future<String> getPrivacyString() async {

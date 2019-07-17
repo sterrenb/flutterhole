@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/model/blacklist.dart';
-import 'package:flutterhole_again/widget/blacklist/blacklist_add_form.dart';
-import 'package:flutterhole_again/widget/blacklist/blacklist_builder.dart';
-import 'package:flutterhole_again/widget/blacklist/blacklist_edit_form.dart';
-import 'package:flutterhole_again/widget/blacklist/blacklist_floating_action_button.dart';
-import 'package:flutterhole_again/widget/layout/scaffold.dart';
+import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/widget/blacklist/blacklist_add_form.dart';
+import 'package:flutterhole/widget/blacklist/blacklist_builder.dart';
+import 'package:flutterhole/widget/blacklist/blacklist_edit_form.dart';
+import 'package:flutterhole/widget/blacklist/blacklist_floating_action_button.dart';
+import 'package:flutterhole/widget/layout/scaffold.dart';
 
 class BlacklistAddScreen extends StatelessWidget {
   @override

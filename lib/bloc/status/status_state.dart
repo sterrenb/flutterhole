@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutterhole_again/model/status.dart';
-import 'package:flutterhole_again/service/pihole_exception.dart';
+import 'package:flutterhole/model/status.dart';
+import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:meta/meta.dart';
 
 @immutable

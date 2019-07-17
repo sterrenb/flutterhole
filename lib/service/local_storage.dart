@@ -1,5 +1,5 @@
 import 'package:fimber/fimber.dart';
-import 'package:flutterhole_again/model/pihole.dart';
+import 'package:flutterhole/model/pihole.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// The key where a String with the active pihole preference is saved.

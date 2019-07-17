@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutterhole_again/bloc/status/bloc.dart';
-import 'package:flutterhole_again/model/status.dart';
-import 'package:flutterhole_again/service/pihole_exception.dart';
+import 'package:flutterhole/bloc/status/bloc.dart';
+import 'package:flutterhole/model/status.dart';
+import 'package:flutterhole/service/pihole_exception.dart';
 
 class StatusBloc extends Bloc<StatusEvent, StatusState> {
   final StatusRepository statusRepository;

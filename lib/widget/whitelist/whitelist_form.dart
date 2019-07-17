@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutterhole_again/bloc/whitelist/bloc.dart';
-import 'package:flutterhole_again/widget/layout/dialog.dart';
-import 'package:flutterhole_again/widget/layout/icon_text_button.dart';
+import 'package:flutterhole/bloc/whitelist/bloc.dart';
+import 'package:flutterhole/widget/layout/dialog.dart';
+import 'package:flutterhole/widget/layout/icon_text_button.dart';
 
 const domainAttribute = "domain";
 

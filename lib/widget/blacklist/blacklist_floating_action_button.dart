@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/bloc.dart';
-import 'package:flutterhole_again/model/blacklist.dart';
-import 'package:flutterhole_again/service/globals.dart';
-import 'package:flutterhole_again/service/routes.dart';
+import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/service/globals.dart';
+import 'package:flutterhole/service/routes.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 import 'package:provider/provider.dart';
 

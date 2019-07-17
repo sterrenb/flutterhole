@@ -3,13 +3,13 @@ import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/bloc/simple_bloc_delegate.dart';
-import 'package:flutterhole_again/service/assert_tree.dart';
-import 'package:flutterhole_again/service/globals.dart';
-import 'package:flutterhole_again/service/local_storage.dart';
-import 'package:flutterhole_again/service/pihole_client.dart';
-import 'package:flutterhole_again/service/routes.dart';
-import 'package:flutterhole_again/widget/app.dart';
+import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
+import 'package:flutterhole/service/assert_tree.dart';
+import 'package:flutterhole/service/globals.dart';
+import 'package:flutterhole/service/local_storage.dart';
+import 'package:flutterhole/service/pihole_client.dart';
+import 'package:flutterhole/service/routes.dart';
+import 'package:flutterhole/widget/app.dart';
 
 void main() async {
   Globals.router = Router();

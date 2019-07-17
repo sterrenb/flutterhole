@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-import 'package:flutterhole_again/bloc/status/bloc.dart';
-import 'package:flutterhole_again/model/status.dart';
+import 'package:flutterhole/bloc/status/bloc.dart';
+import 'package:flutterhole/model/status.dart';
 
 /// A list of [SleepButton], [SleepButtonPermanent], and [SleepButtonCustom].
 class SleepButtons extends StatefulWidget {

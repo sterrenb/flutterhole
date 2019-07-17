@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutterhole_again/bloc/query/bloc.dart';
-import 'package:flutterhole_again/service/pihole_exception.dart';
+import 'package:flutterhole/bloc/query/bloc.dart';
+import 'package:flutterhole/service/pihole_exception.dart';
 
 class QueryBloc extends Bloc<QueryEvent, QueryState> {
   final QueryRepository queryRepository;

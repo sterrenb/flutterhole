@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/bloc.dart';
-import 'package:flutterhole_again/bloc/query/bloc.dart';
-import 'package:flutterhole_again/bloc/whitelist/bloc.dart';
-import 'package:flutterhole_again/model/blacklist.dart';
-import 'package:flutterhole_again/model/query.dart';
-import 'package:flutterhole_again/model/whitelist.dart';
-import 'package:flutterhole_again/service/browser.dart';
-import 'package:flutterhole_again/widget/layout/error_message.dart';
-import 'package:flutterhole_again/widget/layout/scaffold.dart';
+import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/query/bloc.dart';
+import 'package:flutterhole/bloc/whitelist/bloc.dart';
+import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/query.dart';
+import 'package:flutterhole/model/whitelist.dart';
+import 'package:flutterhole/service/browser.dart';
+import 'package:flutterhole/widget/layout/error_message.dart';
+import 'package:flutterhole/widget/layout/scaffold.dart';
 import 'package:intl/intl.dart';
 
 String dnsSecStatusToString(DnsSecStatus dnsSecStatus) {

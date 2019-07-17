@@ -1,4 +1,4 @@
-package github.sterrenburg.flutterhole_again;
+package sterrenburg.github.flutterhole;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
-import 'package:flutterhole_again/model/blacklist.dart';
-import 'package:flutterhole_again/model/query.dart';
-import 'package:flutterhole_again/model/status.dart';
-import 'package:flutterhole_again/model/summary.dart';
-import 'package:flutterhole_again/model/whitelist.dart';
+import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/query.dart';
+import 'package:flutterhole/model/status.dart';
+import 'package:flutterhole/model/summary.dart';
+import 'package:flutterhole/model/whitelist.dart';
 import 'package:meta/meta.dart';
 
 import 'local_storage.dart';

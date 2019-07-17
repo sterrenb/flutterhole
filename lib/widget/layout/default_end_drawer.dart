@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/model/pihole.dart';
-import 'package:flutterhole_again/service/globals.dart';
-import 'package:flutterhole_again/widget/pihole/pihole_list_builder.dart';
-import 'package:flutterhole_again/widget/status/status_icon.dart';
+import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/globals.dart';
+import 'package:flutterhole/widget/pihole/pihole_list_builder.dart';
+import 'package:flutterhole/widget/status/status_icon.dart';
 
 class DefaultEndDrawer extends StatefulWidget {
   @override

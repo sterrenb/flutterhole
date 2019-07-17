@@ -1,18 +1,18 @@
 import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/model/blacklist.dart';
-import 'package:flutterhole_again/model/pihole.dart';
-import 'package:flutterhole_again/service/globals.dart';
-import 'package:flutterhole_again/widget/layout/scaffold.dart';
-import 'package:flutterhole_again/widget/screen/about_screen.dart';
-import 'package:flutterhole_again/widget/screen/blacklist_screen.dart';
-import 'package:flutterhole_again/widget/screen/pihole_screen.dart';
-import 'package:flutterhole_again/widget/screen/privacy_screen.dart';
-import 'package:flutterhole_again/widget/screen/query_log_screen.dart';
-import 'package:flutterhole_again/widget/screen/settings_screen.dart';
-import 'package:flutterhole_again/widget/screen/summary_screen.dart';
-import 'package:flutterhole_again/widget/screen/whitelist_screen.dart';
+import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/globals.dart';
+import 'package:flutterhole/widget/layout/scaffold.dart';
+import 'package:flutterhole/widget/screen/about_screen.dart';
+import 'package:flutterhole/widget/screen/blacklist_screen.dart';
+import 'package:flutterhole/widget/screen/pihole_screen.dart';
+import 'package:flutterhole/widget/screen/privacy_screen.dart';
+import 'package:flutterhole/widget/screen/query_log_screen.dart';
+import 'package:flutterhole/widget/screen/settings_screen.dart';
+import 'package:flutterhole/widget/screen/summary_screen.dart';
+import 'package:flutterhole/widget/screen/whitelist_screen.dart';
 
 final FimberLog _logger = FimberLog('Routes');
 

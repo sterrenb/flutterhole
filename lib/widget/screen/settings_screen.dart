@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/layout/default_drawer.dart';
-import 'package:flutterhole_again/widget/settings/settings_builder.dart';
-import 'package:flutterhole_again/widget/status/status_app_bar.dart';
+import 'package:flutterhole/widget/layout/default_drawer.dart';
+import 'package:flutterhole/widget/settings/settings_builder.dart';
+import 'package:flutterhole/widget/status/status_app_bar.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override

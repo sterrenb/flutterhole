@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole_again/bloc/blacklist/bloc.dart';
-import 'package:flutterhole_again/bloc/query/bloc.dart';
-import 'package:flutterhole_again/bloc/status/bloc.dart';
-import 'package:flutterhole_again/bloc/summary/bloc.dart';
-import 'package:flutterhole_again/bloc/whitelist/bloc.dart';
-import 'package:flutterhole_again/service/globals.dart';
+import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/query/bloc.dart';
+import 'package:flutterhole/bloc/status/bloc.dart';
+import 'package:flutterhole/bloc/summary/bloc.dart';
+import 'package:flutterhole/bloc/whitelist/bloc.dart';
+import 'package:flutterhole/service/globals.dart';
 import 'package:persist_theme/persist_theme.dart';
 import 'package:provider/provider.dart';
 

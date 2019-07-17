@@ -1,6 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutterhole_again/service/pihole_client.dart';
+import 'package:flutterhole/service/pihole_client.dart';
 
 import 'local_storage.dart';
 

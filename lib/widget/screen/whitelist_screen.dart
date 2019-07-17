@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/layout/scaffold.dart';
-import 'package:flutterhole_again/widget/whitelist/whitelist_add_form.dart';
-import 'package:flutterhole_again/widget/whitelist/whitelist_builder.dart';
-import 'package:flutterhole_again/widget/whitelist/whitelist_edit_form.dart';
-import 'package:flutterhole_again/widget/whitelist/whitelist_floating_action_button.dart';
+import 'package:flutterhole/widget/layout/scaffold.dart';
+import 'package:flutterhole/widget/whitelist/whitelist_add_form.dart';
+import 'package:flutterhole/widget/whitelist/whitelist_builder.dart';
+import 'package:flutterhole/widget/whitelist/whitelist_edit_form.dart';
+import 'package:flutterhole/widget/whitelist/whitelist_floating_action_button.dart';
 
 class WhitelistAddScreen extends StatelessWidget {
   @override

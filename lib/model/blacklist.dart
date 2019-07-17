@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutterhole_again/model/serializable.dart';
+import 'package:flutterhole/model/serializable.dart';
 import 'package:meta/meta.dart';
 
 enum BlacklistType { Exact, Wildcard, Regex }

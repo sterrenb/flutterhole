@@ -1,6 +1,6 @@
-import 'package:flutterhole_again/bloc/summary/bloc.dart';
-import 'package:flutterhole_again/model/summary.dart';
-import 'package:flutterhole_again/service/pihole_exception.dart';
+import 'package:flutterhole/bloc/summary/bloc.dart';
+import 'package:flutterhole/model/summary.dart';
+import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_again/widget/layout/default_drawer.dart';
-import 'package:flutterhole_again/widget/layout/default_end_drawer.dart';
-import 'package:flutterhole_again/widget/status/status_app_bar.dart';
+import 'package:flutterhole/widget/layout/default_drawer.dart';
+import 'package:flutterhole/widget/layout/default_end_drawer.dart';
+import 'package:flutterhole/widget/status/status_app_bar.dart';
 
 void showSnackBar(BuildContext context, Widget content) {
   Scaffold.of(context).showSnackBar(SnackBar(content: content));

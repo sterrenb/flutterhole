@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutterhole_again/bloc/summary/bloc.dart';
-import 'package:flutterhole_again/service/pihole_exception.dart';
+import 'package:flutterhole/bloc/summary/bloc.dart';
+import 'package:flutterhole/service/pihole_exception.dart';
 
 class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
   final SummaryRepository summaryRepository;
