@@ -32,6 +32,50 @@ class DefaultScaffold extends StatelessWidget {
   }
 }
 
+class TabScaffold extends StatefulWidget {
+  final String title;
+  final List<Widget> children;
+  final List<BottomNavigationBarItem> items;
+  final Widget floatingActionButton;
+
+  const TabScaffold({
+    Key key,
+    @required this.title,
+    @required this.children,
+    @required this.items,
+    this.floatingActionButton,
+  })
+      : assert(children.length == items.length),
+        super(key: key);
+
+  @override
+  _TabScaffoldState createState() => _TabScaffoldState();
+}
+
+class _TabScaffoldState extends State<TabScaffold> {
+  int _currentIndex = 0;
+
+  void _onTap(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      appBar: StatusAppBar(title: widget.title),
+      drawer: DefaultDrawer(),
+      endDrawer: DefaultEndDrawer(),
+      bottomNavigationBar: BottomNavigationBar(
+          onTap: _onTap, currentIndex: _currentIndex, items: widget.items),
+      floatingActionButton: widget.floatingActionButton,
+      body: widget.children[_currentIndex],
+    );
+  }
+}
+
 class SimpleScaffold extends StatelessWidget {
   final String titleString;
   final Widget body;

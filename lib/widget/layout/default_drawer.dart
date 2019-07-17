@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
+import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
@@ -75,15 +76,15 @@ class _DefaultDrawerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-//      padding: EdgeInsets.zero,
-//      shrinkWrap: true,
       children: <Widget>[
         ListTile(
           title: Text('Dashboard'),
           leading: Icon(Icons.home),
           onTap: () {
             BlocProvider.of<SummaryBloc>(context).dispatch(FetchSummary());
-            Globals.router.navigateTo(context, rootPath);
+            BlocProvider.of<TopSourcesBloc>(context).dispatch(
+                FetchTopSources());
+            Globals.router.navigateTo(context, homePath);
           },
         ),
         ListTile(

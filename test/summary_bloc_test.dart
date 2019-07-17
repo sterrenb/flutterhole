@@ -21,7 +21,7 @@ main() {
 
   group('FetchSummary', () {
     test(
-        'emits [SummaryStateEmpty, SummaryStateLoading, SummaryStateSuccess] when summary repository returns Summary',
+        'emits [SummaryStateEmpty, SummaryStateLoading, SummaryStateSuccess] when dashboard repository returns Summary',
         () {
       final Summary summary = Summary(
         domainsBeingBlocked: 1,
@@ -44,7 +44,7 @@ main() {
     });
 
     test(
-        'emits [SummaryStateEmpty, SummaryStateLoading, SummaryStateError] when summary repository throws PiholeException',
+        'emits [SummaryStateEmpty, SummaryStateLoading, SummaryStateError] when dashboard repository throws PiholeException',
         () {
       when(summaryRepository.getSummary()).thenThrow(PiholeException());
 

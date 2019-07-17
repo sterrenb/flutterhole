@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
+import 'package:persist_theme/data/models/theme_model.dart';
+import 'package:provider/provider.dart';
 
 class SummaryBuilder extends StatefulWidget {
   @override
@@ -30,6 +32,7 @@ class _SummaryBuilderState extends State<SummaryBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    final _theme = Provider.of<ThemeModel>(context);
     final SummaryBloc summaryBloc = BlocProvider.of<SummaryBloc>(context);
     return BlocListener(
       bloc: summaryBloc,
@@ -59,25 +62,28 @@ class _SummaryBuilderState extends State<SummaryBuilder> {
                   if (state is SummaryStateSuccess) {
                     _cache = state.summary;
                   }
+
+                  final int tint = _theme.darkMode ? 700 : 500;
+
                   final List<Widget> summaryTiles = [
                     SummaryTile(
-                      backgroundColor: Colors.green,
+                      backgroundColor: Colors.green[tint],
                       title: 'Total Queries',
                       subtitle: _numWithCommas(_cache.dnsQueriesToday),
                     ),
                     SummaryTile(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.blue[tint],
                       title: 'Queries Blocked',
                       subtitle: _numWithCommas(_cache.adsBlockedToday),
                     ),
                     SummaryTile(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: Colors.orange[tint],
                       title: 'Percent Blocked',
                       subtitle:
                       '${_cache.adsPercentageToday.toStringAsFixed(1)}%',
                     ),
                     SummaryTile(
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.red[tint],
                       title: 'Domains on Blocklist',
                       subtitle: _numWithCommas(_cache.domainsBeingBlocked),
                     ),
@@ -128,20 +134,23 @@ class SummaryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: backgroundColor,
-      child: Center(
-        child: ListTile(
-          title: Text(
-            title,
-            style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center,
-          ),
-          subtitle: Text(
-            subtitle,
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 30.0,
-                fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Center(
+          child: ListTile(
+            title: Text(
+              title,
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+            subtitle: Text(
+              subtitle,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       ),

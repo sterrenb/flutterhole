@@ -5,49 +5,15 @@ import 'package:dio/dio.dart';
 import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/model/status.dart';
-import 'package:flutterhole/model/summary.dart';
-import 'package:flutterhole/model/whitelist.dart';
 import 'package:flutterhole/service/local_storage.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import "package:test/test.dart";
 
+import 'mock.dart';
+
 class MockLocalStorage extends Mock implements LocalStorage {}
-
-final mockSummary = Summary(
-    domainsBeingBlocked: 0,
-    dnsQueriesToday: 1,
-    adsBlockedToday: 2,
-    adsPercentageToday: 2.345,
-    uniqueDomains: 3,
-    queriesForwarded: 4,
-    queriesCached: 5,
-    clientsEverSeen: 6,
-    uniqueClients: 7,
-    dnsQueriesAllTypes: 8,
-    replyNodata: 9,
-    replyNxdomain: 10,
-    replyCname: 11,
-    replyIp: 12,
-    privacyLevel: 13,
-    status: 'enabled',
-    gravityLastUpdated: GravityLastUpdated(
-        fileExists: true,
-        absolute: 14,
-        relative: Relative(days: '15', hours: '16', minutes: '17')));
-
-final mockStatusEnabled = Status(enabled: true);
-final mockStatusDisabled = Status(enabled: false);
-
-final mockWhitelist = Whitelist(list: ['a.com', 'b.org', 'c.net']);
-final mockBlacklist = Blacklist(exact: [
-  BlacklistItem.exact(entry: 'exact.com'),
-  BlacklistItem.exact(entry: 'pi-hole.net'),
-], wildcard: [
-  BlacklistItem.wildcard(entry: 'wildcard.com'),
-  BlacklistItem.regex(entry: 'regex')
-]);
 
 typedef MockAdapterHandler = ResponseBody Function(RequestOptions options);
 
@@ -71,6 +37,13 @@ class MockAdapter extends HttpClientAdapter {
       ]);
 
   factory MockAdapter.notAuthorized() => MockAdapter.string('Not authorized!');
+
+  factory MockAdapter.json(dynamic data) =>
+      MockAdapter([
+            (_) {
+          return ResponseBody.fromString(json.encode(data), 200);
+        }
+      ]);
 
   factory MockAdapter.throwsError({dynamic e}) =>
       MockAdapter([
@@ -131,8 +104,7 @@ void main() {
 
   group('fetchStatus', () {
     test('returns Status on successful response', () async {
-      dio.httpClientAdapter =
-          MockAdapter.string(json.encode(mockStatusEnabled.toJson()));
+      dio.httpClientAdapter = MockAdapter.json(mockStatusEnabled.toJson());
       expect(client.fetchStatus(), completion(Status(enabled: true)));
     });
 
@@ -169,8 +141,7 @@ void main() {
 
   group('enable', () {
     test('returns Status enabled on successful enable', () async {
-      dio.httpClientAdapter =
-          MockAdapter.string(json.encode(mockStatusEnabled.toJson()));
+      dio.httpClientAdapter = MockAdapter.json(mockStatusEnabled.toJson());
       expect(client.enable(), completion(mockStatusEnabled));
     });
 
@@ -185,8 +156,7 @@ void main() {
     });
 
     test('throws PiholeException on disabled response', () async {
-      dio.httpClientAdapter =
-          MockAdapter.string(json.encode(mockStatusDisabled.toJson()));
+      dio.httpClientAdapter = MockAdapter.json(mockStatusDisabled.toJson());
       try {
         await client.enable();
         fail('exception not thrown');
@@ -198,14 +168,12 @@ void main() {
 
   group('disable', () {
     test('returns on successful response disabled', () async {
-      dio.httpClientAdapter =
-          MockAdapter.string(json.encode(mockStatusDisabled.toJson()));
+      dio.httpClientAdapter = MockAdapter.json(mockStatusDisabled.toJson());
       expect(client.disable(), completion(mockStatusDisabled));
     });
 
     test('throws PiholeException on enabled response', () async {
-      dio.httpClientAdapter =
-          MockAdapter.string(json.encode(mockStatusEnabled.toJson()));
+      dio.httpClientAdapter = MockAdapter.json(mockStatusEnabled.toJson());
       try {
         await client.disable();
         fail('exception not thrown');
@@ -217,8 +185,7 @@ void main() {
 
   group('fetchSummary', () {
     test('returns Summary on successful response', () async {
-      dio.httpClientAdapter =
-          MockAdapter.string(json.encode(mockSummary.toJson()));
+      dio.httpClientAdapter = MockAdapter.json(mockSummary.toJson());
       expect(client.fetchSummary(), completion(mockSummary));
     });
 
@@ -236,8 +203,7 @@ void main() {
   group('blacklist', () {
     group('fetchBlacklist', () {
       test('returns Blacklist on successful response', () async {
-        dio.httpClientAdapter =
-            MockAdapter.string(json.encode(mockBlacklist.toJson()));
+        dio.httpClientAdapter = MockAdapter.json(mockBlacklist.toJson());
         expect(client.fetchBlacklist(), completion(mockBlacklist));
       });
     });
@@ -390,6 +356,13 @@ void main() {
         dio.httpClientAdapter =
             MockAdapter.string('adding new.com to whitelist...');
         expect(client.editOnWhitelist('original.com', 'new.com'), completes);
+      });
+    });
+
+    group('fetchTopSources', () {
+      test('returns TopSources on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(mockTopSources.toJson());
+        expect(client.fetchTopSources(), completion(mockTopSources));
       });
     });
 

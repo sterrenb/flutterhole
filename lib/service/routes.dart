@@ -7,18 +7,18 @@ import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 import 'package:flutterhole/widget/screen/about_screen.dart';
 import 'package:flutterhole/widget/screen/blacklist_screen.dart';
+import 'package:flutterhole/widget/screen/home_screen.dart';
 import 'package:flutterhole/widget/screen/pihole_screen.dart';
 import 'package:flutterhole/widget/screen/privacy_screen.dart';
 import 'package:flutterhole/widget/screen/query_log_screen.dart';
 import 'package:flutterhole/widget/screen/settings_screen.dart';
-import 'package:flutterhole/widget/screen/summary_screen.dart';
 import 'package:flutterhole/widget/screen/whitelist_screen.dart';
 
 final FimberLog _logger = FimberLog('Routes');
 
 /// Provides access to the String version of all routes.
-/// The route to [SummaryScreen].
-const String rootPath = '/';
+/// The route to [HomeScreen].
+const String homePath = '/';
 
 /// The route to [QueryLogScreen].
 const String queryPath = '/query';
@@ -95,7 +95,7 @@ void configureRoutes(Router router) {
     );
   });
 
-  router.define(rootPath, handler: _SimpleHandler(SummaryScreen()));
+  router.define(homePath, handler: _SimpleHandler(HomeScreen()));
 
   router.define(queryPath, handler: _SimpleHandler(QueryLogScreen()));
 
