@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
-import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
 import 'package:flutterhole/bloc/status/bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
@@ -56,7 +54,7 @@ void main() async {
   }());
 
   if (Globals.debug) {
-    BlocSupervisor.delegate = SimpleBlocDelegate();
+//    BlocSupervisor.delegate = SimpleBlocDelegate();
     Fimber.plantTree(DebugTree());
     Fimber.i('Running in debug mode');
   } else {

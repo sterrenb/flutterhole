@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
 import 'package:flutterhole/model/blacklist.dart';
@@ -43,11 +45,20 @@ class PiholeClient {
   /// ```
   Future<Response> _get(Map<String, dynamic> queryParameters,
       {ResponseType responseType = ResponseType.json}) async {
-    Response response;
     try {
       final active = localStorage.active();
       dio.options.baseUrl = 'http://${active.host}:${active.port.toString()}';
-      response = await dio.get('/${active.apiPath}',
+
+      if (active.allowSelfSigned) {
+        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+            (HttpClient client) {
+          client.badCertificateCallback =
+              (X509Certificate cert, String host, int port) => true;
+          return client;
+        };
+      }
+
+      final Response response = await dio.get('/${active.apiPath}',
           queryParameters: queryParameters,
           options: Options(responseType: responseType));
 
@@ -131,7 +142,7 @@ class PiholeClient {
   /// Throws a [PiholeException] if the response is enabled.
   Future<Status> disable({Duration duration}) async {
     Response response =
-        await _getSecure({'disable': duration?.inSeconds ?? ''});
+    await _getSecure({'disable': duration?.inSeconds ?? ''});
     final status = _responseToStatus(response);
 
     if (status.enabled) {
@@ -266,8 +277,7 @@ class PiholeClient {
         responseType: ResponseType.plain);
   }
 
-  Future<void> editOnBlacklist(
-      BlacklistItem originalItem, BlacklistItem newItem) async {
+  Future<void> editOnBlacklist(BlacklistItem originalItem, BlacklistItem newItem) async {
     await addToBlacklist(newItem);
     await removeFromBlacklist(originalItem);
   }

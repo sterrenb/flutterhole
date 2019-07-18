@@ -1,10 +1,12 @@
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/browser.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/icon_text_button.dart';
+import 'package:flutterhole/widget/layout/list_tab.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
 
 class PiholeEditForm extends StatefulWidget {
@@ -164,7 +166,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     launchURL(apiTokenUrl);
                   },
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: RichText(
                       text: TextSpan(
                           style: Theme
@@ -196,7 +198,29 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                   ),
                 ),
               ),
-//              ListTab('Advanced'),
+              ListTab('Advanced'),
+              FormBuilderSwitch(
+                initialValue: widget.original.allowSelfSigned,
+                decoration: InputDecoration(prefixIcon: Icon(Icons.lock_open)),
+                label: Text('Allow self-signed certificates'),
+                attribute: 'attribute',
+                onChanged: (v) {
+                  final update = Pihole.copyWith(pihole, allowSelfSigned: v);
+                  setState(() {
+                    pihole = update;
+                  });
+                },
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  'Trust certificates, even when the TLS handshake fails.',
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .caption,
+                ),
+              ),
 //              ExpansionTile(
 //                title: Text('Advanced'),
 //                children: <Widget>[
@@ -209,25 +233,20 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                 child: Row(
                   children: <Widget>[
                     IconTextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         final String v = titleController.text;
                         if (v.length > 0 &&
                             _formKey.currentState.validate() &&
                             _validateTitle(v) == null) {
                           _formKey.currentState.save();
-                          final update = Pihole(
-                              title: titleController.text,
-                              host: hostController.text,
-                              apiPath: apiPathController.text,
-                              port: int.parse(portController.text),
-                              auth: authController.text);
-                          _save(update).then((_) {
-                            setState(() {
-                              pihole = update;
-                            });
-
-                            _pop(context);
+                          final update = Pihole.copyWith(pihole,
+                              title: titleController.text);
+                          print('save: $update');
+                          await _save(update);
+                          setState(() {
+                            pihole = update;
                           });
+                          _pop(context);
                         }
                       },
                       title: 'Save',
