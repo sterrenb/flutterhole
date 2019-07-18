@@ -25,15 +25,6 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
     await Globals.router.navigateTo(context, piholeEditPath(pihole));
     if (message != null) {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
-
-//    Navigator.push(
-//      context,
-//      MaterialPageRoute(
-//        builder: (context) => PiholeEditScreen(
-//          pihole: pihole,
-//        ),
-//      ),
-//    );
     }
   }
 
