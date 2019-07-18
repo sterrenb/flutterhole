@@ -1,4 +1,3 @@
-import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
@@ -10,14 +9,12 @@ import 'package:flutterhole/bloc/status/bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
-import 'package:flutterhole/service/assert_tree.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/local_storage.dart';
+import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/app.dart';
-
-import 'bloc/simple_bloc_delegate.dart';
 
 void main() async {
   Globals.router = Router();
@@ -56,13 +53,13 @@ void main() async {
     return true;
   }());
 
+  Globals.tree = MemoryTree();
+  Fimber.plantTree(MemoryTree());
+
   if (Globals.debug) {
-    BlocSupervisor.delegate = SimpleBlocDelegate();
-    Fimber.plantTree(DebugTree());
+//    BlocSupervisor.delegate = SimpleBlocDelegate();
     Fimber.i('Running in debug mode');
   } else {
-    Fimber.plantTree(AssertTree(['i', 'w', 'e']));
-
     if (Globals.localStorage.cache.isEmpty) {
       await Globals.localStorage.reset();
     }

@@ -9,7 +9,7 @@ class ListTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _theme = Provider.of<ThemeModel>(context);
+    final ThemeModel _theme = Provider.of<ThemeModel>(context);
     return ListTile(
       title: Text(title,
           style: Theme

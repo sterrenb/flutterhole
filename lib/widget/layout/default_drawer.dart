@@ -119,6 +119,11 @@ class _DefaultDrawerMenu extends StatelessWidget {
           leading: Icon(Icons.settings),
           onTap: () => Globals.navigateTo(context, settingsPath),
         ),
+        Globals.debug ? ListTile(
+          title: Text('Logs'),
+          leading: Icon(Icons.format_list_bulleted),
+          onTap: () => Globals.navigateTo(context, logPath),
+        ) : Container(),
         ListTile(
           title: Text('About'),
           leading: Icon(Icons.favorite),

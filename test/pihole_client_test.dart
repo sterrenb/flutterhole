@@ -5,7 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/model/status.dart';
+import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/local_storage.dart';
+import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
@@ -81,6 +83,7 @@ void main() {
   PiholeClient client;
 
   setUp(() async {
+    Globals.tree = MemoryTree();
     pihole = Pihole(
       title: 'Testing',
       host: 'test',

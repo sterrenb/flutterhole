@@ -3,7 +3,7 @@ import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'mock.dart';
+import '../mock.dart';
 
 class MockTopSourcesRepository extends Mock implements TopSourcesRepository {}
 

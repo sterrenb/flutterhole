@@ -97,6 +97,7 @@ class _SearchScaffoldState extends State<SearchScaffold> {
           : StatusAppBar(title: widget.title, actions: [
         IconButton(
             icon: Icon(Icons.search),
+            tooltip: 'Search',
             onPressed: () {
               setState(() {
                 searching = true;

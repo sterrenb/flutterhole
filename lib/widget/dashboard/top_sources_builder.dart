@@ -86,7 +86,7 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                         children: <Widget>[
                           Text(title),
                           Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.end,
                             children: <Widget>[
                               Row(
                                 mainAxisAlignment:
@@ -111,9 +111,18 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                                     fraction = item.requests /
                                         state.summary.dnsQueriesToday;
 
+                                    final Widget _percentageText = Text(
+                                      '${(fraction * 100).toStringAsFixed(1)}%',
+                                      style:
+                                      Theme
+                                          .of(context)
+                                          .textTheme
+                                          .caption,
+                                    );
+
                                     return Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                      CrossAxisAlignment.end,
                                       children: <Widget>[
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -123,14 +132,7 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                                             fraction: fraction,
                                           ),
                                         ),
-                                        Text(
-                                          '${(fraction * 100).toStringAsFixed(
-                                              1)}%',
-                                          style: Theme
-                                              .of(context)
-                                              .textTheme
-                                              .caption,
-                                        ),
+                                        _percentageText,
                                       ],
                                     );
                                   }
@@ -166,11 +168,7 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                         ],
                       ),
                     ),
-                    content:
-//                      Column(
-//                        children: items,
-//                      )
-                    Column(
+                    content: Column(
                       children:
                       ListTile.divideTiles(context: context, tiles: items)
                           .toList(),

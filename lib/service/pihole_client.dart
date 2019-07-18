@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fimber/fimber.dart';
 import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/model/status.dart';
@@ -10,14 +9,20 @@ import 'package:flutterhole/model/top_sources.dart';
 import 'package:flutterhole/model/whitelist.dart';
 import 'package:meta/meta.dart';
 
+import 'globals.dart';
 import 'local_storage.dart';
 import 'pihole_exception.dart';
+
+const String _authParameterKey = 'auth';
+const String _logKey = 'client';
 
 class PiholeClient {
   final Dio dio;
   final LocalStorage localStorage;
 
-  final logger = FimberLog('PiholeClient');
+  void _log(String message, {String tag}) {
+    Globals.tree.log(_logKey, message, tag: tag);
+  }
 
   PiholeClient({@required this.dio,
     @required this.localStorage,
@@ -25,13 +30,19 @@ class PiholeClient {
     if (logQueries) {
       dio.interceptors
           .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
-        logger.i('request: ${options.uri.toString()}');
+        String message = options.uri.toString();
+        if (options.queryParameters.containsKey(_authParameterKey)) {
+          message = message.replaceAll(
+              options.uri.queryParameters[_authParameterKey], 'HIDDEN');
+        }
+
+        _log(message, tag: 'request');
         return options;
       }, onResponse: (Response response) {
-        logger.i('response: ${response.data.toString()}');
+        _log(response.data.toString(), tag: 'response');
         return response;
       }, onError: (DioError error) {
-        logger.e('error: ${error.message}');
+        _log(error.message, tag: 'error');
         return error;
       }));
     }
@@ -79,10 +90,10 @@ class PiholeClient {
 
       return response;
     } on DioError catch (e) {
-      logger.e('dio error: ${e.message}');
+//      logger.e('dio error: ${e.message}');
       throw PiholeException(message: e.message, e: e);
     } on PiholeException catch (e) {
-      logger.e('pihole error: ${e.message}');
+//      logger.e('pihole error: ${e.message}');
       rethrow;
     }
   }
@@ -96,11 +107,7 @@ class PiholeClient {
     }
 
     final response = await _get(
-        queryParameters
-          ..addAll({
-            'auth': active.auth
-//                '3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c'
-          }),
+        queryParameters..addAll({_authParameterKey: active.auth}),
         responseType: responseType);
     return response;
   }
@@ -277,7 +284,8 @@ class PiholeClient {
         responseType: ResponseType.plain);
   }
 
-  Future<void> editOnBlacklist(BlacklistItem originalItem, BlacklistItem newItem) async {
+  Future<void> editOnBlacklist(BlacklistItem originalItem,
+      BlacklistItem newItem) async {
     await addToBlacklist(newItem);
     await removeFromBlacklist(originalItem);
   }

@@ -9,10 +9,10 @@ import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/model/whitelist.dart';
 import 'package:flutterhole/service/browser.dart';
+import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 import 'package:flutterhole/widget/layout/search_options.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 String dnsSecStatusToString(DnsSecStatus dnsSecStatus) {
@@ -306,7 +306,7 @@ class QueryExpansionTile extends StatelessWidget {
       {Key key, @required this.query, this.actions = const []})
       : super(key: key);
 
-  static final _formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+//  static final _formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
 
   @override
   Widget build(BuildContext context) {
@@ -323,7 +323,7 @@ class QueryExpansionTile extends StatelessWidget {
         children: <Widget>[
           Text(query.entry),
           Text(
-            _formatter.format(query.time),
+            timestampFormatter.format(query.time),
             style: Theme
                 .of(context)
                 .textTheme
@@ -345,7 +345,7 @@ class QueryExpansionTile extends StatelessWidget {
             Column(
               children: <Widget>[
                 ListTile(
-                  title: Text(_formatter.format(query.time)),
+                  title: Text(timestampFormatter.format(query.time)),
                   subtitle: Text('Time'),
                 ),
                 ListTile(

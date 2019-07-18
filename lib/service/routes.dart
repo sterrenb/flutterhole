@@ -1,4 +1,3 @@
-import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/model/blacklist.dart';
@@ -9,13 +8,14 @@ import 'package:flutterhole/widget/screen/about_screen.dart';
 import 'package:flutterhole/widget/screen/blacklist_screen.dart';
 import 'package:flutterhole/widget/screen/client_log_screen.dart';
 import 'package:flutterhole/widget/screen/home_screen.dart';
+import 'package:flutterhole/widget/screen/log_screen.dart';
 import 'package:flutterhole/widget/screen/pihole_screen.dart';
 import 'package:flutterhole/widget/screen/privacy_screen.dart';
 import 'package:flutterhole/widget/screen/query_log_screen.dart';
 import 'package:flutterhole/widget/screen/settings_screen.dart';
 import 'package:flutterhole/widget/screen/whitelist_screen.dart';
 
-final FimberLog _logger = FimberLog('Routes');
+//final FimberLog _logger = FimberLog('Routes');
 
 /// Provides access to the String version of all routes.
 /// The route to [HomeScreen].
@@ -33,6 +33,9 @@ String clientLogPath(String client) =>
 
 /// The route to [AboutScreen].
 const String aboutPath = '/about';
+
+/// The route to [LogScreen].
+const String logPath = '/log';
 
 /// The route to [PrivacyScreen].
 const String privacyPath = '$aboutPath/privacy';
@@ -96,14 +99,14 @@ class _ParamsHandler extends Handler {
 /// Logs an error if a route is not found.
 void configureRoutes(Router router) {
   router.notFoundHandler = _ParamsHandler((params) {
-    _logger.e('route not found: $params');
+    Globals.tree.log('levelhere', 'route not found', ex: params);
     return SimpleScaffold(
       title: 'Oops',
       body: Center(child: Text('Route not found: $params')),
     );
   });
 
-  router.define(homePath, handler: _SimpleHandler(HomeScreen()));
+  router.define(homePath, handler: _SimpleHandler(LogScreen()));
 
   router.define(queryPath, handler: _SimpleHandler(QueryLogScreen()));
 
@@ -142,6 +145,7 @@ void configureRoutes(Router router) {
               pihole: Globals.localStorage.cache[params['key'][0]])));
 
   router.define(aboutPath, handler: _SimpleHandler(AboutScreen()));
+  router.define(logPath, handler: _SimpleHandler(LogScreen()));
 
   router.define(privacyPath, handler: _SimpleHandler(PrivacyScreen()));
 }
