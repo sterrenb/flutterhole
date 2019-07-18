@@ -5,16 +5,16 @@ import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/icon_text_button.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
 
-class SinglePiholeView extends StatefulWidget {
+class PiholeEditForm extends StatefulWidget {
   final Pihole original;
 
-  const SinglePiholeView({Key key, @required this.original}) : super(key: key);
+  const PiholeEditForm({Key key, @required this.original}) : super(key: key);
 
   @override
-  _SinglePiholeViewState createState() => _SinglePiholeViewState();
+  _PiholeEditFormState createState() => _PiholeEditFormState();
 }
 
-class _SinglePiholeViewState extends State<SinglePiholeView> {
+class _PiholeEditFormState extends State<PiholeEditForm> {
   Pihole pihole;
 
   final _formKey = GlobalKey<FormState>();
@@ -32,15 +32,15 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
     setState(() {
       pihole = widget.original;
     });
-    _init();
+    _resetControllers();
   }
 
-  Future _init() async {
-    titleController.text = pihole.title;
-    hostController.text = pihole.host;
-    apiPathController.text = pihole.apiPath;
-    portController.text = pihole.port.toString();
-    authController.text = pihole.auth;
+  Future _resetControllers() async {
+    titleController.text = widget.original.title;
+    hostController.text = widget.original.host;
+    apiPathController.text = widget.original.apiPath;
+    portController.text = widget.original.port.toString();
+    authController.text = widget.original.auth;
   }
 
   Future<void> _save(Pihole update) async {
@@ -48,8 +48,6 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
   }
 
   String _validateTitle(String val) {
-    print('check $val : ${Pihole.toKey(val)}');
-    print(_localStorage.cache.keys);
     if (val != pihole.title &&
         _localStorage.cache.containsKey(Pihole.toKey(val))) {
       return 'This title is already in use';
@@ -84,10 +82,8 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, host: v);
-                    _save(update).then((_) {
-                      setState(() {
-                        pihole = update;
-                      });
+                    setState(() {
+                      pihole = update;
                     });
                   }
                 },
@@ -99,10 +95,8 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, apiPath: v);
-                    _save(update).then((_) {
-                      setState(() {
-                        pihole = update;
-                      });
+                    setState(() {
+                      pihole = update;
                     });
                   }
                 },
@@ -118,10 +112,8 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, port: int.parse(v));
-                    _save(update).then((_) {
-                      setState(() {
-                        pihole = update;
-                      });
+                    setState(() {
+                      pihole = update;
                     });
                   }
                 },
@@ -139,10 +131,8 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                       onChanged: (v) {
                         if (v.length > 0 && pihole.title.length > 0) {
                           final update = Pihole.copyWith(pihole, auth: v);
-                          _save(update).then((_) {
-                            setState(() {
-                              pihole = update;
-                            });
+                          setState(() {
+                            pihole = update;
                           });
                         }
                       },
@@ -160,9 +150,13 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                   ),
                 ],
               ),
-//              ListTile(
-//                title: Text('Example URL'),
-//                subtitle: Text(pihole.baseUrl),
+//              ListTab('Advanced'),
+//              ExpansionTile(
+//                title: Text('Advanced'),
+//                children: <Widget>[
+//                  Text('hi'),
+//                  Text('hi'),
+//                ],
 //              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -196,7 +190,7 @@ class _SinglePiholeViewState extends State<SinglePiholeView> {
                     ),
                     IconTextButton(
                       onPressed: () async {
-                        await _init();
+                        await _resetControllers();
                       },
                       title: 'Reset',
                       icon: Icons.delete_forever,

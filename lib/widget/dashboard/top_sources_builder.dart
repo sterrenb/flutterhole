@@ -84,7 +84,7 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                         children: <Widget>[
                           item.title.isEmpty
                               ? Text(item.ipString)
-                              : Text('${item.title} (${item.ipString})'),
+                              : Text('${item.ipString} (${item.title})'),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
