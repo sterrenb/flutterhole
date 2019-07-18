@@ -169,11 +169,11 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
                             'Open in browser ${Uri.parse(query.entry)
                                 .toString()}',
                             onPressed: () {
-                              final uri = Uri.parse(query.entry);
-                              final url = uri.scheme.length > 0
-                                  ? uri.toString()
-                                  : 'http://${uri.toString()}';
-                              launchURL(url);
+//                              final uri = Uri.parse(query.entry);
+//                              final url = uri.scheme.length > 0
+//                                  ? uri.toString()
+//                                  : 'http://${uri.toString()}';
+                              launchURL(query.entry);
                             }),
                         isOnWhitelist
                             ? IconButton(

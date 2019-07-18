@@ -88,7 +88,7 @@ void main() {
     );
 
     dio = Dio(BaseOptions(
-      baseUrl: pihole.baseUrl,
+      baseUrl: pihole.basePath,
     ));
     dio.httpClientAdapter = MockAdapter();
 

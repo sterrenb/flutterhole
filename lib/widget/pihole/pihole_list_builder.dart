@@ -156,7 +156,7 @@ class PiholeTile extends StatelessWidget {
 
     return ListTile(
       title: Text(pihole.title),
-      subtitle: Text(pihole.baseUrl),
+      subtitle: Text(pihole.basePath),
       trailing: Icon(Icons.keyboard_arrow_right),
       leading: Icon(Icons.check,
           color: active

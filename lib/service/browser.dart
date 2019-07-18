@@ -5,13 +5,17 @@ import 'package:url_launcher/url_launcher.dart';
 ///
 /// Logs a warning if the url can not be launched.
 Future<bool> launchURL(String url) async {
+  final uri = Uri.parse(url);
+  final parsedUrl =
+  uri.scheme.length > 0 ? uri.toString() : 'http://${uri.toString()}';
+
   try {
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunch(parsedUrl)) {
+      await launch(parsedUrl);
       return true;
     }
   } catch (e) {
-    Fimber.w('cannot launch url' + ': ' + url, ex: e);
+    Fimber.w('cannot launch url' + ': ' + parsedUrl, ex: e);
   }
 
   return false;

@@ -1,6 +1,8 @@
+import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/browser.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/icon_text_button.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
@@ -61,6 +63,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     if (_localStorage == null) {
       return Center(child: CircularProgressIndicator());
     } else {
+      final String apiTokenUrl = '${pihole.baseUrl}/admin/settings.php?tab=api';
       return SafeArea(
         minimum: EdgeInsets.all(16.0),
         child: Form(
@@ -142,13 +145,56 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     title: 'Scan QR code',
                     icon: Icons.camera_alt,
                     onPressed: () async {
-                      String qr = await QRCodeReader()
-                          .setAutoFocusIntervalInMs(200)
-                          .scan();
-                      authController.text = qr;
+                      try {
+                        String qr = await QRCodeReader()
+                            .setAutoFocusIntervalInMs(200)
+                            .scan();
+                        authController.text = qr;
+                      } catch (e) {
+                        Fimber.w('cannot scan QR code', ex: e);
+                      }
                     },
                   ),
                 ],
+              ),
+              Tooltip(
+                message: 'Open in browser',
+                child: InkWell(
+                  onTap: () {
+                    launchURL(apiTokenUrl);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: RichText(
+                      text: TextSpan(
+                          style: Theme
+                              .of(context)
+                              .textTheme
+                              .caption,
+                          text:
+                          'The API token can be found on the admin dashboard at Settings > API / Web interface (example: ',
+                          children: [
+                            TextSpan(
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .caption
+                                    .copyWith(color: Colors.blueAccent),
+                                text: apiTokenUrl,
+                                children: [
+                                  TextSpan(
+                                      style:
+                                      Theme
+                                          .of(context)
+                                          .textTheme
+                                          .caption,
+                                      text: ').')
+                                ]),
+                          ]),
+//                  'The API token can be found on the admin dashboard at Settings > API / Web interface (example: ${pihole.baseUrl}/admin/settings.php?tab=api).',
+                    ),
+                  ),
+                ),
               ),
 //              ListTab('Advanced'),
 //              ExpansionTile(
