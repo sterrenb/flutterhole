@@ -7,12 +7,12 @@ import 'package:test/test.dart';
 class MockQueryRepository extends Mock implements QueryRepository {}
 
 main() {
-  MockQueryRepository QueryRepository;
+  MockQueryRepository queryRepository;
   QueryBloc queryBloc;
 
   setUp(() {
-    QueryRepository = MockQueryRepository();
-    queryBloc = QueryBloc(QueryRepository);
+    queryRepository = MockQueryRepository();
+    queryBloc = QueryBloc(queryRepository);
   });
 
   test('has a correct initialState', () {
@@ -25,7 +25,7 @@ main() {
         () {
       final List<Query> queries = [];
 
-      when(QueryRepository.getQueries())
+      when(queryRepository.getQueries())
           .thenAnswer((_) => Future.value(queries));
 
       expectLater(
@@ -42,7 +42,7 @@ main() {
     test(
         'emits [QueryStateEmpty, QueryStateLoading, QueryStateError] when Query repository throws PiholeException',
         () {
-      when(QueryRepository.getQueries()).thenThrow(PiholeException());
+          when(queryRepository.getQueries()).thenThrow(PiholeException());
 
       expectLater(
           queryBloc.state,

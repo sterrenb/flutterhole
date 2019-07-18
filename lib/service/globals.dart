@@ -11,10 +11,5 @@ class Globals {
   static PiholeClient client;
   static LocalStorage localStorage;
 
-  static void refresh(BuildContext context) {
-    print('refresh here');
-//    BlocProvider.of<StatusBloc>(context).dispatch(FetchStatus());
-//    BlocProvider.of<SummaryBloc>(context).dispatch(FetchSummary());
-//    BlocProvider.of<WhitelistBloc>(context).dispatch(FetchWhitelist());
-  }
+  static VoidCallback refresh;
 }

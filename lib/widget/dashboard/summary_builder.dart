@@ -24,12 +24,6 @@ class _SummaryBuilderState extends State<SummaryBuilder> {
     _refreshCompleter = Completer();
   }
 
-  String _numWithCommas(num i) {
-    final RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
-    final Function matchFunc = (Match match) => '${match[1]},';
-    return i.toString().replaceAllMapped(reg, matchFunc);
-  }
-
   @override
   Widget build(BuildContext context) {
     final _theme = Provider.of<ThemeModel>(context);
@@ -69,12 +63,12 @@ class _SummaryBuilderState extends State<SummaryBuilder> {
                     SummaryTile(
                       backgroundColor: Colors.green[tint],
                       title: 'Total Queries',
-                      subtitle: _numWithCommas(_cache.dnsQueriesToday),
+                      subtitle: numWithCommas(_cache.dnsQueriesToday),
                     ),
                     SummaryTile(
                       backgroundColor: Colors.blue[tint],
                       title: 'Queries Blocked',
-                      subtitle: _numWithCommas(_cache.adsBlockedToday),
+                      subtitle: numWithCommas(_cache.adsBlockedToday),
                     ),
                     SummaryTile(
                       backgroundColor: Colors.orange[tint],
@@ -85,7 +79,7 @@ class _SummaryBuilderState extends State<SummaryBuilder> {
                     SummaryTile(
                       backgroundColor: Colors.red[tint],
                       title: 'Domains on Blocklist',
-                      subtitle: _numWithCommas(_cache.domainsBeingBlocked),
+                      subtitle: numWithCommas(_cache.domainsBeingBlocked),
                     ),
                   ];
 

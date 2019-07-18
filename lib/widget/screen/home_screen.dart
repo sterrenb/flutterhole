@@ -11,6 +11,7 @@ class HomeScreen extends StatelessWidget {
       children: <Widget>[
         SummaryBuilder(),
         TopSourcesBuilder(),
+        Center(child: Text('Coming soon')),
       ],
       items: [
         BottomNavigationBarItem(
@@ -20,6 +21,10 @@ class HomeScreen extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Icon(Icons.computer),
           title: Text('Clients'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.cancel),
+          title: Text('Blocked domains'),
         ),
       ],
     );

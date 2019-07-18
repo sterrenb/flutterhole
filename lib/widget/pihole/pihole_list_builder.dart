@@ -39,7 +39,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
 
   Future _activate(Pihole pihole, BuildContext context) async {
     await localStorage.activate(pihole);
-    Globals.refresh(context);
+    Globals.refresh();
     setState(() {});
     Scaffold.of(context)
         .showSnackBar(SnackBar(content: Text('Changed to ${pihole.title}')));
