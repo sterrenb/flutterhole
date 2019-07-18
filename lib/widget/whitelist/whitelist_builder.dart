@@ -85,9 +85,9 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
                             return RemovableTile(
                               title: domain,
                               onTap: () async {
-                                final String message = await Globals.router
-                                    .navigateTo(
-                                        context, whitelistEditPath(domain));
+                                final String message = await Globals.navigateTo(
+                                  context, whitelistEditPath(domain),
+                                );
                                 if (message != null)
                                   Scaffold.of(context).showSnackBar(
                                       SnackBar(content: Text(message)));

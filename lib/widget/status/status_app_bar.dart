@@ -4,10 +4,12 @@ import 'package:flutterhole/widget/status/toggle_button.dart';
 
 class StatusAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final List<Widget> actions;
 
   const StatusAppBar({
     Key key,
     @required this.title,
+    this.actions = const [],
   }) : super(key: key);
 
   @override
@@ -16,19 +18,19 @@ class StatusAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Row(
-        children: <Widget>[
-          Flexible(
-              child: Text(
-                title,
-                overflow: TextOverflow.fade,
-              )),
-          StatusIcon(),
-        ],
-      ),
-      actions: <Widget>[
-        ToggleButton(),
-      ],
-    );
+        title: Row(
+          children: <Widget>[
+            Flexible(
+                child: Text(
+                  title,
+                  overflow: TextOverflow.fade,
+                )),
+            StatusIcon(),
+          ],
+        ),
+        actions: [
+          ...actions,
+          ...[ToggleButton()]
+        ]);
   }
 }

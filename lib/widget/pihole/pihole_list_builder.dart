@@ -22,7 +22,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
 
   void _edit(Pihole pihole) async {
     final String message =
-    await Globals.router.navigateTo(context, piholeEditPath(pihole));
+    await Globals.navigateTo(context, piholeEditPath(pihole),);
     if (message != null) {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
     }

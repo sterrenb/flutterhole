@@ -84,7 +84,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
             BlocProvider.of<SummaryBloc>(context).dispatch(FetchSummary());
             BlocProvider.of<TopSourcesBloc>(context).dispatch(
                 FetchTopSources());
-            Globals.router.navigateTo(context, homePath);
+            Globals.navigateTo(context, homePath);
           },
         ),
         ListTile(
@@ -92,7 +92,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
           leading: Icon(Icons.check_circle),
           onTap: () {
             BlocProvider.of<WhitelistBloc>(context).dispatch(FetchWhitelist());
-            Globals.router.navigateTo(context, whitelistPath);
+            Globals.navigateTo(context, whitelistPath);
           },
         ),
         ListTile(
@@ -100,7 +100,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
           leading: Icon(Icons.cancel),
           onTap: () {
             BlocProvider.of<BlacklistBloc>(context).dispatch(FetchBlacklist());
-            Globals.router.navigateTo(context, blacklistPath);
+            Globals.navigateTo(context, blacklistPath);
           },
         ),
         SleepButtons(),
@@ -110,19 +110,19 @@ class _DefaultDrawerMenu extends StatelessWidget {
           onTap: () {
             BlocProvider.of<QueryBloc>(context).dispatch(FetchQueries());
             BlocProvider.of<BlacklistBloc>(context).dispatch(FetchBlacklist());
-            Globals.router.navigateTo(context, queryPath);
+            Globals.navigateTo(context, queryPath);
           },
         ),
         Divider(),
         ListTile(
           title: Text('Settings'),
           leading: Icon(Icons.settings),
-          onTap: () => Globals.router.navigateTo(context, settingsPath),
+          onTap: () => Globals.navigateTo(context, settingsPath),
         ),
         ListTile(
           title: Text('About'),
           leading: Icon(Icons.favorite),
-          onTap: () => Globals.router.navigateTo(context, aboutPath),
+          onTap: () => Globals.navigateTo(context, aboutPath),
         ),
       ],
     );

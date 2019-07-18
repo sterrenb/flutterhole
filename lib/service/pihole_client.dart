@@ -283,7 +283,7 @@ class PiholeClient {
   }
 
   /// Returns a list of recent [Query]s, at most [max].
-  Future<List<Query>> fetchQueries({int max = 5}) async {
+  Future<List<Query>> fetchQueries({int max = 100}) async {
     Response response =
     await _getSecure({'getAllQueries': max > 0 ? max.toString() : 1});
     if (response.data is Map<String, dynamic>) {

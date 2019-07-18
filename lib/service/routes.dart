@@ -98,7 +98,7 @@ void configureRoutes(Router router) {
   router.notFoundHandler = _ParamsHandler((params) {
     _logger.e('route not found: $params');
     return SimpleScaffold(
-      titleString: 'Oops',
+      title: 'Oops',
       body: Center(child: Text('Route not found: $params')),
     );
   });

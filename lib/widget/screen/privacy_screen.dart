@@ -19,7 +19,7 @@ class PrivacyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultScaffold(
+    return SimpleScaffold(
       title: 'Privacy',
       body: FutureBuilder<String>(
           future: getPrivacyString(),

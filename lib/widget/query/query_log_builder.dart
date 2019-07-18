@@ -11,7 +11,9 @@ import 'package:flutterhole/model/whitelist.dart';
 import 'package:flutterhole/service/browser.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
+import 'package:flutterhole/widget/layout/search_options.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 String dnsSecStatusToString(DnsSecStatus dnsSecStatus) {
   return dnsSecStatus == DnsSecStatus.Empty
@@ -55,9 +57,14 @@ String queryStatusToString(QueryStatus status) {
 }
 
 class QueryLogBuilder extends StatefulWidget {
+//  final ValueChanged<String> onFilter;
   final String client;
 
-  const QueryLogBuilder({Key key, this.client}) : super(key: key);
+  QueryLogBuilder({
+    Key key,
+//    @required this.onFilter,
+    this.client,
+  }) : super(key: key);
 
   @override
   _QueryLogBuilderState createState() => _QueryLogBuilderState();
@@ -150,11 +157,38 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
                   _queryCache = state.queries;
                 }
 
+                List<Query> filteredItems = [];
+
+                final SearchOptions search =
+                Provider.of<SearchOptions>(context);
+                final String str = search.str.trim();
+                if (str.isNotEmpty) {
+                  _queryCache.forEach((query) {
+                    if (query.entry.contains(str)) {
+                      filteredItems.add(query);
+                    }
+                  });
+
+                  if (filteredItems.isEmpty) {
+                    return Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Center(child: Text('No matches found.')),
+                        ),
+                      ],
+                    );
+                  }
+                }
+
+                final items =
+                filteredItems.isNotEmpty ? filteredItems : _queryCache;
+
                 return Scrollbar(
                   child: ListView.separated(
-                    itemCount: _queryCache.length,
+                    itemCount: items.length,
                     itemBuilder: (BuildContext context, int index) {
-                      final Query query = _queryCache[index];
+                      final Query query = items[index];
 
                       final bool isOnWhitelist = _whitelistCache != null &&
                           _whitelistCache.list.contains(query.entry);

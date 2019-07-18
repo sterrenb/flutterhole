@@ -5,7 +5,7 @@ import 'package:flutterhole/widget/query/query_log_builder.dart';
 class QueryLogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return DefaultScaffold(
+    return SearchScaffold(
       title: 'Query Log',
       body: QueryLogBuilder(),
     );

@@ -23,8 +23,6 @@ void mockSharedPreferences({List<Pihole> piholes = const []}) async {
       piholeValues.clear();
       return true;
     }
-
-    print('mockPreferences: unknown methodCall ${methodCall.method}');
     return null;
   });
 }

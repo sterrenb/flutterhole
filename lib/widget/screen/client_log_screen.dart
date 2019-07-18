@@ -9,11 +9,11 @@ class ClientLogScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleScaffold(
-        titleString: 'Logs for $client',
+    return SearchScaffold(
+        title: 'Logs for $client',
+        withDrawer: false,
         body: QueryLogBuilder(
           client: client,
-//          original: client,
         ));
   }
 }

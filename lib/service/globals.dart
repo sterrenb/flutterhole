@@ -12,4 +12,7 @@ class Globals {
   static LocalStorage localStorage;
 
   static VoidCallback refresh;
+
+  static Future<dynamic> navigateTo(BuildContext context, String path) =>
+      router.navigateTo(context, path, transition: TransitionType.inFromRight);
 }

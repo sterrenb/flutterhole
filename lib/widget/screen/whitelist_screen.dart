@@ -9,7 +9,7 @@ class WhitelistAddScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-      titleString: 'Add to whitelist',
+      title: 'Add to whitelist',
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: WhitelistAddForm(),
@@ -27,7 +27,7 @@ class WhitelistEditScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-      titleString: 'Editing $original',
+      title: 'Editing $original',
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: WhitelistEditForm(original: original),

@@ -9,7 +9,7 @@ class PiholeAddScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-        titleString: 'Add a new Pihole',
+        title: 'Add a new Pihole',
         body: PiholeEditForm(
           original: original,
         ));
@@ -24,7 +24,7 @@ class PiholeEditScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-        titleString: 'Editing ${pihole.title}',
+        title: 'Editing ${pihole.title}',
         body: PiholeEditForm(
           original: pihole,
         ));

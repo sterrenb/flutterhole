@@ -28,7 +28,7 @@ class _BlacklistFloatingActionButtonState
               backgroundColor: _theme.accentColor,
               onPressed: () async {
                 final BlacklistItem item =
-                await Globals.router.navigateTo(context, blacklistAddPath);
+                await Globals.navigateTo(context, blacklistAddPath,);
                 if (item != null)
                   Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text('Added ${item.entry} to blacklist')));

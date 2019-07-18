@@ -53,7 +53,7 @@ class _BlacklistBuilderState extends State<BlacklistBuilder> {
 
   void _edit(BlacklistItem item) async {
     final String message =
-        await Globals.router.navigateTo(context, blacklistEditPath(item));
+    await Globals.navigateTo(context, blacklistEditPath(item),);
     if (message != null) {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
     }

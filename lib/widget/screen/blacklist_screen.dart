@@ -10,7 +10,7 @@ class BlacklistAddScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-      titleString: 'Add to blacklist',
+      title: 'Add to blacklist',
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlacklistAddForm(),
@@ -28,7 +28,7 @@ class BlacklistEditScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-      titleString: 'Editing ${original.entry}',
+      title: 'Editing ${original.entry}',
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlacklistEditForm(original: original),

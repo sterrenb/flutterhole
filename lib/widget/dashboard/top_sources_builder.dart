@@ -72,19 +72,19 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                   List<Widget> items = [];
 
                   _cache.items.forEach((TopSourceItem item) {
+                    final String title = item.title.isEmpty
+                        ? item.ipString
+                        : '${item.ipString} (${item.title})';
                     items.add(ListTile(
                       onTap: () {
                         queryBloc
                             .dispatch(FetchQueriesForClient(item.ipString));
-                        Globals.router
-                            .navigateTo(context, clientLogPath(item.ipString));
+                        Globals.navigateTo(context, clientLogPath(title));
                       },
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          item.title.isEmpty
-                              ? Text(item.ipString)
-                              : Text('${item.ipString} (${item.title})'),
+                          Text(title),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -125,7 +125,7 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                                         ),
                                         Text(
                                           '${(fraction * 100).toStringAsFixed(
-                                              3)}%',
+                                              1)}%',
                                           style: Theme
                                               .of(context)
                                               .textTheme
