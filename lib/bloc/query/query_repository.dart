@@ -15,4 +15,10 @@ class QueryRepository extends ApiRepository {
     _cache = queries..sort((a, b) => b.time.compareTo(a.time));
     return queries;
   }
+
+  Future<List<Query>> getQueriesForClient(String client) async {
+    final List<Query> queries = await this.client.fetchQueriesForClient(client);
+    _cache = queries..sort((a, b) => b.time.compareTo(a.time));
+    return queries;
+  }
 }

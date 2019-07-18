@@ -7,3 +7,9 @@ abstract class QueryEvent extends Equatable {
 }
 
 class FetchQueries extends QueryEvent {}
+
+class FetchQueriesForClient extends QueryEvent {
+  final String client;
+
+  FetchQueriesForClient(this.client) : super([client]);
+}

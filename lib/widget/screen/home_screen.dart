@@ -12,6 +12,7 @@ class HomeScreen extends StatelessWidget {
         SummaryBuilder(),
         TopSourcesBuilder(),
         Center(child: Text('Coming soon')),
+//        Center(child: Text('soon')),
       ],
       items: [
         BottomNavigationBarItem(
@@ -23,9 +24,13 @@ class HomeScreen extends StatelessWidget {
           title: Text('Clients'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.cancel),
-          title: Text('Blocked domains'),
+          icon: Icon(Icons.check_circle),
+          title: Text('Permitted domains'),
         ),
+//        BottomNavigationBarItem(
+//          icon: Icon(Icons.cancel),
+//          title: Text('Blocked domains'),
+//        ),
       ],
     );
   }

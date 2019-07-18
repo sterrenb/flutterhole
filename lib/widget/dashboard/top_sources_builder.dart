@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/model/top_sources.dart';
+import 'package:flutterhole/service/globals.dart';
+import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
@@ -30,6 +33,7 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
     final TopSourcesBloc topSourcesBloc =
         BlocProvider.of<TopSourcesBloc>(context);
     final SummaryBloc summaryBloc = BlocProvider.of<SummaryBloc>(context);
+    final QueryBloc queryBloc = BlocProvider.of<QueryBloc>(context);
     return BlocListener(
       bloc: topSourcesBloc,
       listener: (context, state) {
@@ -69,6 +73,12 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
 
                   _cache.items.forEach((TopSourceItem item) {
                     items.add(ListTile(
+                      onTap: () {
+                        queryBloc
+                            .dispatch(FetchQueriesForClient(item.ipString));
+                        Globals.router
+                            .navigateTo(context, clientLogPath(item.ipString));
+                      },
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -95,8 +105,10 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                               BlocBuilder(
                                 bloc: summaryBloc,
                                 builder: (context, state) {
+                                  double fraction;
+
                                   if (state is SummaryStateSuccess) {
-                                    final double fraction = item.requests /
+                                    fraction = item.requests /
                                         state.summary.dnsQueriesToday;
 
                                     return Column(
@@ -123,12 +135,7 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                                     );
                                   }
 
-                                  return ColoredBox(
-                                    width: 100.0,
-                                    color: Theme
-                                        .of(context)
-                                        .backgroundColor,
-                                  );
+                                  return Container();
                                 },
                               ),
                             ],

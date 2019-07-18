@@ -292,6 +292,25 @@ class PiholeClient {
     throw PiholeException(message: 'unexpected query response', e: response);
   }
 
+  Future<List<Query>> fetchQueriesForClient(String client) async {
+    Response response =
+    await _getSecure({'getAllQueries': '', 'client': client});
+    if (response.data is Map<String, dynamic>) {
+      try {
+        List<Query> queries = [];
+        (response.data['data'] as List<dynamic>).forEach((entry) {
+          queries.add(Query(entry));
+        });
+
+        return queries;
+      } catch (e) {
+        throw PiholeException(message: 'unknown error', e: e);
+      }
+    }
+
+    throw PiholeException(message: 'unexpected query response', e: response);
+  }
+
   Future<TopSources> fetchTopSources() async {
     Response response = await _getSecure({'getQuerySources': ''});
     if (response.data is String) {

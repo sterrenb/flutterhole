@@ -7,6 +7,7 @@ import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 import 'package:flutterhole/widget/screen/about_screen.dart';
 import 'package:flutterhole/widget/screen/blacklist_screen.dart';
+import 'package:flutterhole/widget/screen/client_log_screen.dart';
 import 'package:flutterhole/widget/screen/home_screen.dart';
 import 'package:flutterhole/widget/screen/pihole_screen.dart';
 import 'package:flutterhole/widget/screen/privacy_screen.dart';
@@ -22,6 +23,13 @@ const String homePath = '/';
 
 /// The route to [QueryLogScreen].
 const String queryPath = '/query';
+
+/// The abstract route to [ClientLogScreen].
+const String _clientLogPath = '/query/:client';
+
+/// The concrete route to [ClientLogScreen] with [client].
+String clientLogPath(String client) =>
+    _clientLogPath.replaceAll(':client', client);
 
 /// The route to [AboutScreen].
 const String aboutPath = '/about';
@@ -98,6 +106,10 @@ void configureRoutes(Router router) {
   router.define(homePath, handler: _SimpleHandler(HomeScreen()));
 
   router.define(queryPath, handler: _SimpleHandler(QueryLogScreen()));
+
+  router.define(_clientLogPath,
+      handler: _ParamsHandler(
+              (params) => ClientLogScreen(client: params['client'][0])));
 
   router.define(whitelistPath, handler: _SimpleHandler(WhitelistViewScreen()));
 

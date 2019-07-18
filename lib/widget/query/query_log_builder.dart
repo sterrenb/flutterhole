@@ -55,6 +55,10 @@ String queryStatusToString(QueryStatus status) {
 }
 
 class QueryLogBuilder extends StatefulWidget {
+  final String client;
+
+  const QueryLogBuilder({Key key, this.client}) : super(key: key);
+
   @override
   _QueryLogBuilderState createState() => _QueryLogBuilderState();
 }
@@ -67,11 +71,19 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
   Whitelist _whitelistCache;
   Blacklist _blacklistCache;
 
+  QueryEvent _event;
+
   @override
   void initState() {
     super.initState();
     _refreshCompleter = Completer();
     _queryCache = [];
+
+    _event = FetchQueries();
+
+    if (widget.client != null) {
+      _event = FetchQueriesForClient(widget.client);
+    }
   }
 
   @override
@@ -85,7 +97,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
             bloc: queryBloc,
             listener: (context, state) {
               if (state is QueryStateEmpty) {
-                queryBloc.dispatch(FetchQueries());
+                queryBloc.dispatch(_event);
               }
 
               if (state is QueryStateSuccess || state is QueryStateError) {
@@ -122,7 +134,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
       ],
       child: RefreshIndicator(
         onRefresh: () {
-          queryBloc.dispatch(FetchQueries());
+          queryBloc.dispatch(_event);
           whitelistBloc.dispatch(FetchWhitelist());
           blacklistBloc.dispatch(FetchBlacklist());
           return _refreshCompleter.future;
