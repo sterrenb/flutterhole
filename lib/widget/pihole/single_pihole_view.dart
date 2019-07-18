@@ -66,10 +66,9 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
       return Center(child: CircularProgressIndicator());
     } else {
       final String apiTokenUrl = '${pihole.baseUrl}/admin/settings.php?tab=api';
-      return SafeArea(
-        minimum: EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
+      return Form(
+        key: _formKey,
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -78,12 +77,14 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                 autofocus: pihole.title.isEmpty,
                 decoration: InputDecoration(
                     labelText: 'Configuration name',
+                    prefixIcon: Icon(Icons.info_outline),
                     errorText: _validateTitle(titleController.text)),
               ),
               TextField(
                 controller: hostController,
                 keyboardType: TextInputType.url,
-                decoration: InputDecoration(labelText: 'Host'),
+                decoration: InputDecoration(
+                    labelText: 'Host', prefixIcon: Icon(Icons.home)),
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, host: v);
@@ -96,7 +97,8 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
               TextField(
                 controller: apiPathController,
                 keyboardType: TextInputType.text,
-                decoration: InputDecoration(labelText: 'API path'),
+                decoration: InputDecoration(
+                    labelText: 'API path', prefixIcon: Icon(Icons.code)),
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, apiPath: v);
@@ -113,7 +115,8 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                   WhitelistingTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(6),
                 ],
-                decoration: InputDecoration(labelText: 'Port'),
+                decoration: InputDecoration(
+                    labelText: 'Port', prefixIcon: Icon(Icons.adjust)),
                 onChanged: (v) {
                   if (v.length > 0 && pihole.title.length > 0) {
                     final update = Pihole.copyWith(pihole, port: int.parse(v));
@@ -132,6 +135,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                       obscureText: true,
                       decoration: InputDecoration(
                         labelText: 'API token',
+                          prefixIcon: Icon(Icons.vpn_key)
                       ),
                       onChanged: (v) {
                         if (v.length > 0 && pihole.title.length > 0) {
@@ -166,7 +170,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     launchURL(apiTokenUrl);
                   },
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: RichText(
                       text: TextSpan(
                           style: Theme
@@ -212,7 +216,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                 },
               ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Trust certificates, even when the TLS handshake fails.',
                   style: Theme
