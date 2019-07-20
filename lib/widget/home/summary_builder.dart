@@ -62,7 +62,7 @@ class _SummaryBuilderState extends State<SummaryBuilder> {
                   final List<Widget> summaryTiles = [
                     SummaryTile(
                       backgroundColor: Colors.green[tint],
-                      title: 'Total Queries',
+                      title: 'Total Queries (${_cache.uniqueClients} clients)',
                       subtitle: numWithCommas(_cache.dnsQueriesToday),
                     ),
                     SummaryTile(

@@ -57,12 +57,10 @@ String queryStatusToString(QueryStatus status) {
 }
 
 class QueryLogBuilder extends StatefulWidget {
-//  final ValueChanged<String> onFilter;
   final String client;
 
   QueryLogBuilder({
     Key key,
-//    @required this.onFilter,
     this.client,
   }) : super(key: key);
 

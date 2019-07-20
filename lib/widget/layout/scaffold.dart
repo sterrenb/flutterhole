@@ -41,6 +41,7 @@ class SearchScaffold extends StatefulWidget {
   final Widget body;
   final Widget floatingActionButton;
   final bool withDrawer;
+  final String initialValue;
 
   const SearchScaffold({
     Key key,
@@ -48,6 +49,7 @@ class SearchScaffold extends StatefulWidget {
     @required this.body,
     this.floatingActionButton,
     this.withDrawer = true,
+    this.initialValue = '',
   }) : super(key: key);
 
   @override
@@ -58,11 +60,27 @@ class _SearchScaffoldState extends State<SearchScaffold> {
   bool searching;
   SearchOptions options;
 
+  final _controller = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-    searching = false;
+    searching = widget.initialValue.isNotEmpty;
+    _controller.text = widget.initialValue;
     options = SearchOptions();
+
+    _controller.addListener(() {
+      setState(() {
+        options = SearchOptions(_controller.text);
+      });
+    });
+  }
+
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -74,6 +92,7 @@ class _SearchScaffoldState extends State<SearchScaffold> {
         automaticallyImplyLeading: false,
         title: TextField(
           autofocus: true,
+          controller: _controller,
           decoration: InputDecoration(
             hintText: 'Search...',
           ),

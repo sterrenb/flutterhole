@@ -24,6 +24,13 @@ const String homePath = '/';
 /// The route to [QueryLogScreen].
 const String queryPath = '/query';
 
+/// The abstract route to [QueryLogScreen] with initial search value.
+const String _querySearchPath = '/query/:search';
+
+/// The concrete route to [QueryLogScreen] with [search] as initial search value.
+String querySearchPath(String search) =>
+    _querySearchPath.replaceAll(':search', search);
+
 /// The abstract route to [ClientLogScreen].
 const String _clientLogPath = '/query/:client';
 
@@ -106,9 +113,13 @@ void configureRoutes(Router router) {
     );
   });
 
-  router.define(homePath, handler: _SimpleHandler(LogScreen()));
+  router.define(homePath, handler: _SimpleHandler(HomeScreen()));
 
   router.define(queryPath, handler: _SimpleHandler(QueryLogScreen()));
+
+  router.define(_querySearchPath,
+      handler: _ParamsHandler((params) =>
+          QueryLogScreen(withDrawer: false, search: params['search'][0])));
 
   router.define(_clientLogPath,
       handler: _ParamsHandler(

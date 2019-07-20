@@ -1,6 +1,7 @@
 import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/model/status.dart';
 import 'package:flutterhole/model/summary.dart';
+import 'package:flutterhole/model/top_items.dart';
 import 'package:flutterhole/model/top_sources.dart';
 import 'package:flutterhole/model/whitelist.dart';
 
@@ -45,3 +46,30 @@ final TopSources mockTopSources = TopSources({
   'osx|10.0.1.4': 24,
   'zenwatch3|10.0.1.5': 11,
 });
+
+final TopItems mockTopItems = TopItems(
+  {
+    "clients1.google.com": 1005,
+    "0.debian.pool.ntp.org": 728,
+    "1.debian.pool.ntp.org": 728,
+    "2.debian.pool.ntp.org": 728,
+    "3.debian.pool.ntp.org": 728,
+    "www.google.com": 222,
+    "semanticlocation-pa.googleapis.com": 186,
+    "connectivitycheck.gstatic.com": 179,
+    "play.googleapis.com": 155,
+    "time.apple.com": 101
+  },
+  {
+    "indigo.tvaddons.co.uilenstede4.duwo.lan": 98,
+    "lw10-10815.local.nl.bol.com": 32,
+    "wpad.local.nl.bol.com": 27,
+    "wpad.uilenstede4.duwo.lan": 24,
+    "ads.google.com": 18,
+    "_ldap._tcp.papendorp._sites.dc._msdcs.local.nl.bol.com": 13,
+    "_ldap._tcp.default-first-site-name._sites.dc._msdcs.local.nl.bol.com": 13,
+    "mobile.pipe.aria.microsoft.com": 11,
+    "wpad.duwo.lan": 8,
+    "update.openelec.tv.uilenstede4.duwo.lan": 8
+  },
+);

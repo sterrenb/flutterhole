@@ -9,20 +9,22 @@ class MemoryTreeBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: tree.logs.length,
-      itemBuilder: (BuildContext context, int index) {
-        final LogEntry logEntry = tree.logs[index];
-        return ListTile(
-          title: Text(logEntry.logLine),
-          subtitle: Text(
-            timestampFormatter.format(logEntry.timestamp),
-          ),
-        );
-      },
-      separatorBuilder: (BuildContext context, int index) {
-        return Divider();
-      },
+    return Scrollbar(
+      child: ListView.separated(
+        itemCount: tree.logs.length,
+        itemBuilder: (BuildContext context, int index) {
+          final LogEntry logEntry = tree.logs[index];
+          return ListTile(
+            title: Text(logEntry.logLine),
+            subtitle: Text(
+              timestampFormatter.format(logEntry.timestamp),
+            ),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) {
+          return Divider();
+        },
+      ),
     );
   }
 }

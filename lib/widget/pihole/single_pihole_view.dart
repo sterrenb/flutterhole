@@ -178,7 +178,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                               .textTheme
                               .caption,
                           text:
-                          'The API token can be found on the admin dashboard at Settings > API / Web interface (example: ',
+                          'The API token can be found on the admin home at Settings > API / Web interface (example: ',
                           children: [
                             TextSpan(
                                 style: Theme

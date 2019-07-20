@@ -5,6 +5,7 @@ import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/model/status.dart';
 import 'package:flutterhole/model/summary.dart';
+import 'package:flutterhole/model/top_items.dart';
 import 'package:flutterhole/model/top_sources.dart';
 import 'package:flutterhole/model/whitelist.dart';
 import 'package:meta/meta.dart';
@@ -159,7 +160,7 @@ class PiholeClient {
     return status;
   }
 
-  /// Fetches dashboard information from the Pi-hole.
+  /// Fetches home information from the Pi-hole.
   Future<Summary> fetchSummary() async {
     Response response = await _get({'summaryRaw': ''});
     if (response.data is String) {
@@ -335,6 +336,15 @@ class PiholeClient {
       return TopSources.fromString(response.data);
     } else {
       return TopSources.fromJson(response.data);
+    }
+  }
+
+  Future<TopItems> fetchTopItems() async {
+    Response response = await _getSecure({'topItems': ''});
+    if (response.data is String) {
+      return TopItems.fromString(response.data);
+    } else {
+      return TopItems.fromJson(response.data);
     }
   }
 }

@@ -39,7 +39,7 @@ main() {
     });
 
     test(
-        'emits [TopSourcesStateEmpty, TopSourcesStateLoading, TopSourcesStateError] when dashboard repository throws PiholeException',
+        'emits [TopSourcesStateEmpty, TopSourcesStateLoading, TopSourcesStateError] when home repository throws PiholeException',
         () {
       when(topSourcesRepository.getTopSources()).thenThrow(PiholeException());
 
