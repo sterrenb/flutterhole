@@ -22,29 +22,26 @@ class StatusRepository extends ApiRepository {
   }
 
   Future<Status> enable() async {
-    await client.enable();
+    final status = await client.enable();
     _stopwatch.stop();
     _stopwatch.reset();
-    return Status(enabled: true);
+    return status;
   }
 
   Future<Status> disable() async {
-    await client.disable();
-    return Status(enabled: false);
+    return client.disable();
   }
 
   Future<Status> sleep(Duration duration, void callback()) async {
-    await client.disable(duration: duration);
+    final status = await client.disable(duration);
     _stopwatch.reset();
     _stopwatch.start();
     _timer = Timer(duration, callback);
-    return Status(enabled: false);
+    return status;
   }
 
   void cancelSleep() {
-    if (_timer != null && _timer.isActive) {
-      _timer.cancel();
-    }
+    _timer?.cancel();
     _stopwatch.stop();
     _stopwatch.reset();
   }

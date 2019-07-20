@@ -5,25 +5,29 @@ import 'package:flutterhole/model/serializable.dart';
 /// The API model for http://pi.hole/admin/api.php?list=white.
 class Whitelist extends Serializable {
   /// The list of whitelisted domains.
-  List<String> list;
+  final List<String> list;
 
-  Whitelist({this.list = const []}) : super([list]);
+  Whitelist([this.list = const []]) : super([list]);
 
-  Whitelist.add(Whitelist whitelist, String domain) {
-    this.list = whitelist.list;
-    this.list.add(domain);
+  factory Whitelist.withItem(Whitelist whitelist, String domain) {
+    final List<String> list = List.from([
+      ...whitelist.list,
+      ...[domain]
+    ]);
+    return Whitelist(list);
   }
 
-//  /// Returns a json String representation of [list].
-//  String toJsonString() => json.encode(List<dynamic>.from([list]));
+  factory Whitelist.withoutItem(Whitelist whitelist, String domain) {
+    final List<String> list = whitelist.list.toList()
+      ..remove(domain);
+    return Whitelist(list);
+  }
 
   factory Whitelist.fromString(String str) =>
-      Whitelist(list: List<String>.from(json.decode(str)[0])
-        ..sort());
+      Whitelist(List<String>.from(json.decode(str)[0])..sort());
 
   factory Whitelist.fromJson(List<dynamic> json) =>
-      Whitelist(list: List<String>.from(json[0])
-        ..sort());
+      Whitelist(List<String>.from(json[0])..sort());
 
   @override
   String toJson() => json.encode(List<dynamic>.from([list]));

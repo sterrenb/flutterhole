@@ -8,7 +8,7 @@ import 'package:flutterhole/model/whitelist.dart';
 final mockStatusEnabled = Status(enabled: true);
 final mockStatusDisabled = Status(enabled: false);
 
-final mockWhitelist = Whitelist(list: ['a.com', 'b.org', 'c.net']);
+final mockWhitelist = Whitelist(['a.com', 'b.org', 'c.net']);
 final mockBlacklist = Blacklist(exact: [
   BlacklistItem.exact(entry: 'exact.com'),
   BlacklistItem.exact(entry: 'pi-hole.net'),

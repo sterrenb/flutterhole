@@ -9,7 +9,9 @@ class BlacklistRepository extends ApiRepository {
 
   Blacklist get cache => _cache;
 
-  BlacklistRepository(this.client);
+  BlacklistRepository(this.client, {Blacklist initialValue}) {
+    _cache = initialValue ?? Blacklist();
+  }
 
   Future<Blacklist> getBlacklist() async {
     _cache = await client.fetchBlacklist();
@@ -28,7 +30,8 @@ class BlacklistRepository extends ApiRepository {
     return _cache;
   }
 
-  Future<Blacklist> editOnBlacklist(BlacklistItem original, BlacklistItem update) async {
+  Future<Blacklist> editOnBlacklist(BlacklistItem original,
+      BlacklistItem update) async {
     await client.removeFromBlacklist(original);
     await client.addToBlacklist(update);
     _cache = Blacklist.withoutItem(_cache, original);

@@ -91,10 +91,10 @@ class PiholeClient {
 
       return response;
     } on DioError catch (e) {
-//      logger.e('dio error: ${e.message}');
+      _log(e.message, tag: 'dio error');
       throw PiholeException(message: e.message, e: e);
     } on PiholeException catch (e) {
-//      logger.e('pihole error: ${e.message}');
+      _log(e.message, tag: 'pihole exception');
       rethrow;
     }
   }
@@ -148,7 +148,7 @@ class PiholeClient {
   /// Disables the Pihole, optionally for the specified [duration].
   ///
   /// Throws a [PiholeException] if the response is enabled.
-  Future<Status> disable({Duration duration}) async {
+  Future<Status> disable([Duration duration]) async {
     Response response =
     await _getSecure({'disable': duration?.inSeconds ?? ''});
     final status = _responseToStatus(response);

@@ -60,12 +60,12 @@ main() {
 
   group('AddToWhitelist', () {
     setUp(() {
-      whitelistRepository.cache = Whitelist(list: ['new']);
+      whitelistRepository.cache = Whitelist(['new']);
     });
     test(
         'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateSuccess] when whitelist repository adds succesfully',
         () {
-      final Whitelist whitelist = Whitelist(list: ['new']);
+          final Whitelist whitelist = Whitelist(['new']);
       when(whitelistRepository.addToWhitelist('new'))
           .thenAnswer((_) => Future.value(whitelist));
 
@@ -137,12 +137,12 @@ main() {
 
   group('EditOnWhitelist', () {
     setUp(() {
-      whitelistRepository.cache = Whitelist(list: ['old']);
+      whitelistRepository.cache = Whitelist(['old']);
     });
     test(
         'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateSuccess] when whitelist repository edits succesfully',
             () {
-          final Whitelist whitelistNew = Whitelist(list: ['new']);
+          final Whitelist whitelistNew = Whitelist(['new']);
           when(whitelistRepository.editOnWhitelist('old', 'new'))
               .thenAnswer((_) => Future.value(whitelistNew));
 

@@ -9,7 +9,9 @@ class WhitelistRepository extends ApiRepository {
 
   Whitelist get cache => _cache;
 
-  WhitelistRepository(this.client);
+  WhitelistRepository(this.client, {Whitelist initialValue}) {
+    _cache = initialValue ?? Whitelist();
+  }
 
   Future<Whitelist> getWhitelist() async {
     _cache = await client.fetchWhitelist();
@@ -18,23 +20,21 @@ class WhitelistRepository extends ApiRepository {
 
   Future<Whitelist> addToWhitelist(String domain) async {
     await client.addToWhitelist(domain);
-    _cache = Whitelist.add(_cache, domain);
+    _cache = Whitelist.withItem(_cache, domain);
     return _cache;
   }
 
   Future<Whitelist> removeFromWhitelist(String domain) async {
     await client.removeFromWhitelist(domain);
-    _cache = Whitelist(list: _cache.list..remove(domain));
+    _cache = Whitelist(_cache.list..remove(domain));
     return _cache;
   }
 
   Future<Whitelist> editOnWhitelist(String original, String update) async {
     await client.removeFromWhitelist(original);
     await client.addToWhitelist(update);
-    _cache = Whitelist(
-        list: _cache.list
-          ..remove(original)
-          ..add(update));
+    _cache = Whitelist.withoutItem(_cache, original);
+    _cache = Whitelist.withItem(_cache, update);
     return _cache;
   }
 }
