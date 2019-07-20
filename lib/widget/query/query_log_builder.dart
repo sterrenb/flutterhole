@@ -172,7 +172,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(top: 16.0),
-                          child: Center(child: Text('No matches found.')),
+                          child: Center(child: Text('No queries found.')),
                         ),
                       ],
                     );

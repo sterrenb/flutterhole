@@ -67,7 +67,7 @@ class _SearchScaffoldState extends State<SearchScaffold> {
     super.initState();
     searching = widget.initialValue.isNotEmpty;
     _controller.text = widget.initialValue;
-    options = SearchOptions();
+    options = SearchOptions(widget.initialValue);
 
     _controller.addListener(() {
       setState(() {
@@ -75,7 +75,6 @@ class _SearchScaffoldState extends State<SearchScaffold> {
       });
     });
   }
-
 
   @override
   void dispose() {
@@ -91,7 +90,7 @@ class _SearchScaffoldState extends State<SearchScaffold> {
           ? AppBar(
         automaticallyImplyLeading: false,
         title: TextField(
-          autofocus: true,
+          autofocus: widget.initialValue.isEmpty,
           controller: _controller,
           decoration: InputDecoration(
             hintText: 'Search...',
