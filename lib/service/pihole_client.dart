@@ -299,7 +299,7 @@ class PiholeClient {
       try {
         List<Query> queries = [];
         (response.data['data'] as List<dynamic>).forEach((entry) {
-          queries.add(Query(entry));
+          queries.add(Query.fromJson(entry));
         });
 
         return queries;
@@ -318,7 +318,7 @@ class PiholeClient {
       try {
         List<Query> queries = [];
         (response.data['data'] as List<dynamic>).forEach((entry) {
-          queries.add(Query(entry));
+          queries.add(Query.fromJson(entry));
         });
 
         return queries;

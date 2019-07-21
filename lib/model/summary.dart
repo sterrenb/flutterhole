@@ -63,7 +63,7 @@ class Summary extends Serializable {
   factory Summary.fromString(String str) => Summary.fromJson(json.decode(str));
 
   factory Summary.fromJson(Map<String, dynamic> json) =>
-      new Summary(
+      Summary(
         domainsBeingBlocked: json["domains_being_blocked"],
         dnsQueriesToday: json["dns_queries_today"],
         adsBlockedToday: json["ads_blocked_today"],

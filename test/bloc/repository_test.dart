@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/status/bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
+import 'package:flutterhole/bloc/top_items/bloc.dart';
+import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/model/whitelist.dart';
@@ -30,6 +33,59 @@ main() {
     test('getSummary', () {
       when(client.fetchSummary()).thenAnswer((_) => Future.value(mockSummary));
       expect(summaryRepository.getSummary(), completion(mockSummary));
+    });
+  });
+
+  group('TopItemsRepository', () {
+    TopItemsRepository topItemsRepository;
+
+    setUp(() {
+      topItemsRepository = TopItemsRepository(client);
+    });
+
+    test('getTopItems', () {
+      when(client.fetchTopItems())
+          .thenAnswer((_) => Future.value(mockTopItems));
+      expect(topItemsRepository.getTopItems(), completion(mockTopItems));
+    });
+  });
+
+  group('QueryRepository', () {
+    QueryRepository queryRepository;
+
+    setUp(() {
+      queryRepository = QueryRepository(client);
+    });
+
+    test('initial cache is empty', () {
+      expect(queryRepository.cache, []);
+    });
+
+    test('getQueries', () {
+      when(client.fetchQueries()).thenAnswer((_) => Future.value(mockQueries));
+
+      expect(queryRepository.getQueries(), completion(mockQueries));
+    });
+
+    test('getQueriesForClient', () {
+      when(client.fetchQueriesForClient('client'))
+          .thenAnswer((_) => Future.value(mockQueries));
+      expect(queryRepository.getQueriesForClient('client'),
+          completion(mockQueries));
+    });
+  });
+
+  group('TopSourcesRepository', () {
+    TopSourcesRepository topSourcesRepository;
+
+    setUp(() {
+      topSourcesRepository = TopSourcesRepository(client);
+    });
+
+    test('getTopSources', () {
+      when(client.fetchTopSources())
+          .thenAnswer((_) => Future.value(mockTopSources));
+      expect(topSourcesRepository.getTopSources(), completion(mockTopSources));
     });
   });
 

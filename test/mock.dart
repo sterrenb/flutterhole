@@ -1,4 +1,5 @@
 import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/model/status.dart';
 import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/model/top_items.dart';
@@ -73,3 +74,20 @@ final TopItems mockTopItems = TopItems(
     "update.openelec.tv.uilenstede4.duwo.lan": 8
   },
 );
+
+final List<Query> mockQueries = [
+  Query(
+      time: DateTime(0),
+      queryType: QueryType.A,
+      entry: 'test.com',
+      client: 'localhost',
+      queryStatus: QueryStatus.Cached,
+      dnsSecStatus: DnsSecStatus.Secure),
+  Query(
+      time: DateTime(1),
+      queryType: QueryType.PTR,
+      entry: 'example.org',
+      client: 'remotehost',
+      queryStatus: QueryStatus.Unknown,
+      dnsSecStatus: DnsSecStatus.Bogus),
+];
