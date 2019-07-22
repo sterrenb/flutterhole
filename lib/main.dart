@@ -15,6 +15,7 @@ import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/app.dart';
+import 'package:persist_theme/data/models/theme_model.dart';
 
 import 'bloc/top_items/bloc.dart';
 
@@ -76,6 +77,7 @@ void main() async {
   Globals.refresh();
 
   runApp(App(
+    themeModel: ThemeModel(),
     providers: [
       BlocProvider<SummaryBloc>(builder: (context) => summaryBloc),
       BlocProvider<TopSourcesBloc>(builder: (context) => topSourcesBloc),
