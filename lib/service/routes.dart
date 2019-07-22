@@ -106,7 +106,7 @@ class _ParamsHandler extends Handler {
 /// Logs an error if a route is not found.
 void configureRoutes(Router router) {
   router.notFoundHandler = _ParamsHandler((params) {
-    Globals.tree.log('levelhere', 'route not found', ex: params);
+    Globals.tree.log('router', 'route not found', ex: params);
     return SimpleScaffold(
       title: 'Oops',
       body: Center(child: Text('Route not found: $params')),

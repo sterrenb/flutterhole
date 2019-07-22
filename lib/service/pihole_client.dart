@@ -21,6 +21,8 @@ class PiholeClient {
   final Dio dio;
   final LocalStorage localStorage;
 
+  CancelToken token;
+
   void _log(String message, {String tag}) {
     Globals.tree.log(_logKey, message, tag: tag);
   }
@@ -28,6 +30,8 @@ class PiholeClient {
   PiholeClient({@required this.dio,
     @required this.localStorage,
     bool logQueries = true}) {
+    token = CancelToken();
+
     if (logQueries) {
       dio.interceptors
           .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
@@ -47,6 +51,12 @@ class PiholeClient {
         return error;
       }));
     }
+  }
+
+  void cancel() {
+    dio?.clear();
+    token.cancel();
+    token = CancelToken();
   }
 
   /// Performs an HTTP request with [queryParameters] and returns the response.
@@ -72,7 +82,8 @@ class PiholeClient {
 
       final Response response = await dio.get('/${active.apiPath}',
           queryParameters: queryParameters,
-          options: Options(responseType: responseType));
+          options: Options(responseType: responseType),
+          cancelToken: token);
 
       final String dataString = response.data.toString().toLowerCase();
       if (dataString.contains('not authorized')) {
