@@ -15,11 +15,20 @@ class LocalStorage {
 
   Map<String, Pihole> _cache = {};
 
+  Pihole _active;
+
   Map<String, Pihole> get cache => _cache;
 
   Pihole active() {
+    if (_active != null) {
+      return _active;
+    }
     final String key = _preferences.getString(_piholeActiveKey);
-    return _cache[key];
+    _active = _cache[key];
+    if (_active == null) {
+      logger.w('cannot find active Pihole $key');
+    }
+    return _active;
   }
 
   final logger = FimberLog('LocalStorage');
@@ -64,6 +73,13 @@ class LocalStorage {
         );
       }
     });
+
+//    if (active() == null) {
+//      print('falling back to first active in cache');
+//      if (_cache.isEmpty) {
+//        await reset();
+//      }
+//    }
   }
 
   static Future<void> clear() async {
@@ -150,6 +166,7 @@ class LocalStorage {
     }
 
     await _preferences.setString(_piholeActiveKey, pihole.localKey);
+    _active = pihole;
     logger.i('activated ${pihole.localKey}');
   }
 

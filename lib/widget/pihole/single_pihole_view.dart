@@ -1,10 +1,11 @@
 import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/browser.dart';
-import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/icon_text_button.dart';
 import 'package:flutterhole/widget/layout/list_tab.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
@@ -22,7 +23,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
   Pihole pihole;
 
   final _formKey = GlobalKey<FormState>();
-  final _localStorage = Globals.localStorage;
 
   TextEditingController titleController = TextEditingController();
   TextEditingController hostController = TextEditingController();
@@ -47,38 +47,52 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     authController.text = widget.original.auth;
   }
 
-  Future<void> _save(Pihole update) async {
-    await _localStorage.update(pihole, update);
-  }
-
-  String _validateTitle(String val) {
-    if (val != pihole.title &&
-        _localStorage.cache.containsKey(Pihole.toKey(val))) {
-      return 'This title is already in use';
-    }
-
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_localStorage == null) {
-      return Center(child: CircularProgressIndicator());
-    } else {
-      final String apiTokenUrl = '${pihole.baseUrl}/admin/settings.php?tab=api';
-      return Form(
+    final piholeBloc = BlocProvider.of<PiholeBloc>(context);
+    final String apiTokenUrl = '${pihole.baseUrl}/admin/settings.php?tab=api';
+    return BlocListener(
+      bloc: piholeBloc,
+      listener: (context, state) {
+        if (state is PiholeStateSuccess) {
+          print('successful listener');
+          _pop(context);
+        }
+        if (state is PiholeStateError) {
+          Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text(state.e.toString())));
+        }
+      },
+      child: Form(
         key: _formKey,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Card(
+                child: Column(
+                  children: <Widget>[
+                    BlocBuilder(
+                      bloc: piholeBloc,
+                      builder: (context, state) {
+                        if (state is PiholeStateSuccess) {
+                          return ListTile(
+                            title: Text('active: ${state.active.title}'),
+                          );
+                        }
+                        return CircularProgressIndicator();
+                      },
+                    )
+                  ],
+                ),
+              ),
               TextField(
                 controller: titleController,
                 autofocus: pihole.title.isEmpty,
                 decoration: InputDecoration(
-                    labelText: 'Configuration name',
-                    prefixIcon: Icon(Icons.info_outline),
-                    errorText: _validateTitle(titleController.text)),
+                  labelText: 'Configuration name',
+                  prefixIcon: Icon(Icons.info_outline),
+                ),
               ),
               TextField(
                 controller: hostController,
@@ -134,9 +148,8 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                       keyboardType: TextInputType.url,
                       obscureText: true,
                       decoration: InputDecoration(
-                        labelText: 'API token',
-                          prefixIcon: Icon(Icons.vpn_key)
-                      ),
+                          labelText: 'API token',
+                          prefixIcon: Icon(Icons.vpn_key)),
                       onChanged: (v) {
                         if (v.length > 0 && pihole.title.length > 0) {
                           final update = Pihole.copyWith(pihole, auth: v);
@@ -239,18 +252,16 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     IconTextButton(
                       onPressed: () async {
                         final String v = titleController.text;
-                        if (v.length > 0 &&
-                            _formKey.currentState.validate() &&
-                            _validateTitle(v) == null) {
+                        if (v.length > 0 && _formKey.currentState.validate()) {
                           _formKey.currentState.save();
                           final update = Pihole.copyWith(pihole,
                               title: titleController.text);
                           print('save: $update');
-                          await _save(update);
+                          piholeBloc
+                              .dispatch(UpdatePihole(widget.original, update));
                           setState(() {
                             pihole = update;
                           });
-                          _pop(context);
                         }
                       },
                       title: 'Save',
@@ -271,8 +282,8 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
             ],
           ),
         ),
-      );
-    }
+      ),
+    );
   }
 
   void _pop(BuildContext context) {

@@ -5,6 +5,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
 import 'package:flutterhole/bloc/status/bloc.dart';
@@ -31,6 +32,9 @@ void main() async {
 
   Globals.client = PiholeClient(dio: Dio(), localStorage: Globals.localStorage);
 
+  final PiholeBloc piholeBloc =
+  PiholeBloc(PiholeRepository(Globals.localStorage));
+
   final SummaryBloc summaryBloc =
   SummaryBloc(SummaryRepository(Globals.client));
 
@@ -52,6 +56,7 @@ void main() async {
 
   Globals.refreshAllBlocs = () {
     Globals.client.cancel();
+    piholeBloc.dispatch(FetchPiholes());
     summaryBloc.dispatch(FetchSummary());
     topSourcesBloc.dispatch(FetchTopSources());
     topItemsBloc.dispatch(FetchTopItems());
@@ -73,15 +78,13 @@ void main() async {
     Fimber.i('Running in release mode');
   }
 
-  if (Globals.localStorage.cache.isEmpty) {
-    await Globals.localStorage.reset();
-  }
-
+  await Globals.localStorage.reset();
   Globals.refreshAllBlocs();
 
   runApp(App(
     themeModel: ThemeModel(),
     providers: [
+      BlocProvider<PiholeBloc>(builder: (context) => piholeBloc),
       BlocProvider<SummaryBloc>(builder: (context) => summaryBloc),
       BlocProvider<TopSourcesBloc>(builder: (context) => topSourcesBloc),
       BlocProvider<TopItemsBloc>(builder: (context) => topItemsBloc),

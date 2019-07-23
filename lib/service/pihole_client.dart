@@ -7,6 +7,7 @@ import 'package:flutterhole/model/status.dart';
 import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/model/top_items.dart';
 import 'package:flutterhole/model/top_sources.dart';
+import 'package:flutterhole/model/versions.dart';
 import 'package:flutterhole/model/whitelist.dart';
 import 'package:meta/meta.dart';
 
@@ -356,6 +357,15 @@ class PiholeClient {
       return TopItems.fromString(response.data);
     } else {
       return TopItems.fromJson(response.data);
+    }
+  }
+
+  Future<Versions> fetchVersions() async {
+    Response response = await _getSecure({'versions': ''});
+    if (response.data is String) {
+      return Versions.fromString(response.data);
+    } else {
+      return Versions.fromJson(response.data);
     }
   }
 }
