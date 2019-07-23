@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
+import 'package:flutterhole/bloc/versions/bloc.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
@@ -24,7 +25,8 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
   List<Pihole> _all;
   Pihole _active;
 
-  void _edit(Pihole pihole) async {
+  void _onTap(Pihole pihole) async {
+    BlocProvider.of<VersionsBloc>(context).dispatch(FetchVersions(pihole));
     final String message = await Globals.navigateTo(
       context,
       piholeEditPath(pihole),
@@ -55,7 +57,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
           if (_all != null) {
             _all.forEach((pihole) {
               Widget tile;
-              bool isActive = (pihole.title == _active.title);
+              final bool isActive = (pihole.title == _active.title);
               if (widget.editable) {
                 tile = Dismissible(
                   key: Key(pihole.title),
@@ -79,7 +81,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
                   child: PiholeTile(
                     pihole: pihole,
                     active: isActive,
-                    onTap: () => _edit(pihole),
+                    onTap: () => _onTap(pihole),
                     onLongPress: () => _activate(pihole, context),
                   ),
                 );
@@ -116,7 +118,16 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
         }
 
         if (state is PiholeStateError) {
-          return ErrorMessage(errorMessage: state.e.toString());
+          return Column(
+            children: <Widget>[
+              ErrorMessage(errorMessage: state.e.toString()),
+              PiholeButtonRow(
+                onStateChange: () {
+                  setState(() {});
+                },
+              )
+            ],
+          );
         }
 
         return Center(child: CircularProgressIndicator());
@@ -150,7 +161,6 @@ class PiholeTile extends StatelessWidget {
       leading: Icon(Icons.check,
           color: active
               ? _theme.accentColor
-//              ? Theme.of(context).primaryColor
               : Colors.black.withOpacity(0.0)),
       onTap: onTap,
       onLongPress: onLongPress,

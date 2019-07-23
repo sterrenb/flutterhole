@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/model/status.dart';
 import 'package:flutterhole/model/summary.dart';
@@ -67,12 +68,12 @@ class PiholeClient {
   /// _get({'list': 'white', 'add': true});
   /// ```
   Future<Response> _get(Map<String, dynamic> queryParameters,
-      {ResponseType responseType = ResponseType.json}) async {
+      {ResponseType responseType = ResponseType.json, Pihole pihole}) async {
     try {
-      final active = localStorage.active();
-      dio.options.baseUrl = 'http://${active.host}:${active.port.toString()}';
+      pihole = pihole ?? localStorage.active();
+      dio.options.baseUrl = 'http://${pihole.host}:${pihole.port.toString()}';
 
-      if (active.allowSelfSigned) {
+      if (pihole.allowSelfSigned) {
         (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
             (HttpClient client) {
           client.badCertificateCallback =
@@ -81,7 +82,7 @@ class PiholeClient {
         };
       }
 
-      final Response response = await dio.get('/${active.apiPath}',
+      final Response response = await dio.get('/${pihole.apiPath}',
           queryParameters: queryParameters,
           options: Options(responseType: responseType),
           cancelToken: token);
@@ -113,17 +114,16 @@ class PiholeClient {
 
   /// Performs [_get] with the API token set in [queryParameters].
   Future<Response> _getSecure(Map<String, dynamic> queryParameters,
-      {ResponseType responseType = ResponseType.json}) async {
-    final active = localStorage.active();
-    print('using auth for ${active.toString()}');
-    print('auth: ${active.auth}');
-    if (active.auth.isEmpty) {
+      {ResponseType responseType = ResponseType.json, Pihole pihole}) async {
+    pihole = pihole ?? localStorage.active();
+    if (pihole.auth.isEmpty) {
       throw PiholeException(message: 'API token is empty');
     }
 
     final response = await _get(
-        queryParameters..addAll({_authParameterKey: active.auth}),
-        responseType: responseType);
+        queryParameters..addAll({_authParameterKey: pihole.auth}),
+        responseType: responseType,
+        pihole: pihole);
     return response;
   }
 
@@ -364,8 +364,8 @@ class PiholeClient {
     }
   }
 
-  Future<Versions> fetchVersions() async {
-    Response response = await _getSecure({'versions': ''});
+  Future<Versions> fetchVersions([Pihole pihole]) async {
+    Response response = await _get({'versions': ''}, pihole: pihole);
     if (response.data is String) {
       return Versions.fromString(response.data);
     } else {

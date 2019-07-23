@@ -6,12 +6,11 @@ import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
-import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
+import 'package:flutterhole/widget/layout/title_row.dart';
 import 'package:flutterhole/widget/pihole/pihole_list_builder.dart';
 import 'package:flutterhole/widget/status/sleep_button.dart';
-import 'package:flutterhole/widget/status/status_icon.dart';
 
 class DefaultDrawer extends StatefulWidget {
   final bool allowConfigSelection;
@@ -28,14 +27,6 @@ class DefaultDrawer extends StatefulWidget {
 class _DefaultDrawerState extends State<DefaultDrawer> {
   bool _showDetails = false;
 
-  Pihole active;
-
-  @override
-  void initState() {
-    super.initState();
-    active = Globals.localStorage.active();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -43,16 +34,7 @@ class _DefaultDrawerState extends State<DefaultDrawer> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Row(
-              children: <Widget>[
-                Flexible(
-                    child: Text(
-                  active == null ? 'FlutterHole' : active.title,
-                      overflow: TextOverflow.fade,
-                    )),
-                StatusIcon(),
-              ],
-            ),
+            accountName: TitleRow(),
             accountEmail: null,
             onDetailsPressed: widget.allowConfigSelection
                 ? () {

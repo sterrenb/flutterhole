@@ -11,6 +11,7 @@ import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
 import 'package:flutterhole/bloc/status/bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
+import 'package:flutterhole/bloc/versions/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/local_storage.dart';
@@ -28,6 +29,7 @@ void main() async {
 
   Globals.router = Router();
   Globals.localStorage = await LocalStorage.getInstance();
+
   configureRoutes(Globals.router);
 
   Globals.client = PiholeClient(dio: Dio(), localStorage: Globals.localStorage);
@@ -39,6 +41,9 @@ void main() async {
 
   final SummaryBloc summaryBloc =
   SummaryBloc(SummaryRepository(Globals.client));
+
+  final VersionsBloc versionsBloc =
+  VersionsBloc(VersionsRepository(Globals.client));
 
   final TopSourcesBloc topSourcesBloc =
   TopSourcesBloc(TopSourcesRepository(Globals.client));
@@ -58,11 +63,12 @@ void main() async {
 
   Globals.refreshAllBlocs = () {
     Globals.client.cancel();
+    statusBloc.dispatch(FetchStatus());
     summaryBloc.dispatch(FetchSummary());
+    versionsBloc.dispatch(FetchVersions());
     topSourcesBloc.dispatch(FetchTopSources());
     topItemsBloc.dispatch(FetchTopItems());
     queryBloc.dispatch(FetchQueries());
-    statusBloc.dispatch(FetchStatus());
     whitelistBloc.dispatch(FetchWhitelist());
     blacklistBloc.dispatch(FetchBlacklist());
   };
@@ -96,6 +102,7 @@ void main() async {
     providers: [
       BlocProvider<PiholeBloc>(builder: (context) => piholeBloc),
       BlocProvider<SummaryBloc>(builder: (context) => summaryBloc),
+      BlocProvider<VersionsBloc>(builder: (context) => versionsBloc),
       BlocProvider<TopSourcesBloc>(builder: (context) => topSourcesBloc),
       BlocProvider<TopItemsBloc>(builder: (context) => topItemsBloc),
       BlocProvider<QueryBloc>(builder: (context) => queryBloc),
