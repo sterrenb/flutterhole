@@ -119,7 +119,7 @@ packages:
       name: fimber
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.2"
   fluro:
     dependency: "direct main"
     description:
@@ -146,11 +146,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
-  flutter_driver:
-    dependency: "direct dev"
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_form_builder:
     dependency: "direct main"
     description:
@@ -205,11 +200,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.19"
-  fuchsia_remote_debug_protocol:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   glob:
     dependency: transitive
     description:
@@ -356,7 +346,7 @@ packages:
       name: node_preamble
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.4"
+    version: "1.4.5"
   package_config:
     dependency: transitive
     description:
@@ -475,14 +465,14 @@ packages:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.22.0"
+    version: "0.22.1"
   screenshots:
     dependency: "direct dev"
     description:
       name: screenshots
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.3.0"
   shared_preferences:
     dependency: "direct main"
     description:
