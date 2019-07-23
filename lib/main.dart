@@ -76,10 +76,19 @@ void main() async {
     Fimber.i('Running in debug mode');
   } else {
     Fimber.i('Running in release mode');
+    if (Globals.localStorage.cache.isEmpty) {
+      await Globals.localStorage.reset();
+      Globals.tree.log('main', 'No configurations found, using default');
+    }
   }
 
-  await Globals.localStorage.reset();
-  Globals.refreshAllBlocs();
+  await Globals.localStorage.init();
+
+  print(
+      'running app with cache ${Globals.localStorage.cache.length}, ${Globals
+          .localStorage
+          .active()
+          .title}');
 
   runApp(App(
     themeModel: ThemeModel(),
@@ -94,4 +103,6 @@ void main() async {
       BlocProvider<BlacklistBloc>(builder: (context) => blacklistBloc),
     ],
   ));
+
+  Globals.refreshAllBlocs();
 }

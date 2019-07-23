@@ -73,13 +73,6 @@ class LocalStorage {
         );
       }
     });
-
-//    if (active() == null) {
-//      print('falling back to first active in cache');
-//      if (_cache.isEmpty) {
-//        await reset();
-//      }
-//    }
   }
 
   static Future<void> clear() async {

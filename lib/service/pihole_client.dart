@@ -174,7 +174,9 @@ class PiholeClient {
 
   /// Fetches home information from the Pi-hole.
   Future<Summary> fetchSummary() async {
+    print('fetchSummary');
     Response response = await _get({'summaryRaw': ''});
+    print('fetchSummary response');
     if (response.data is String) {
       return Summary.fromString(response.data);
     } else {
