@@ -35,6 +35,8 @@ void main() async {
   final PiholeBloc piholeBloc =
   PiholeBloc(PiholeRepository(Globals.localStorage));
 
+  piholeBloc.dispatch(FetchPiholes());
+
   final SummaryBloc summaryBloc =
   SummaryBloc(SummaryRepository(Globals.client));
 
@@ -56,7 +58,6 @@ void main() async {
 
   Globals.refreshAllBlocs = () {
     Globals.client.cancel();
-    piholeBloc.dispatch(FetchPiholes());
     summaryBloc.dispatch(FetchSummary());
     topSourcesBloc.dispatch(FetchTopSources());
     topItemsBloc.dispatch(FetchTopItems());

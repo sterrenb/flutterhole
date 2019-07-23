@@ -115,6 +115,8 @@ class PiholeClient {
   Future<Response> _getSecure(Map<String, dynamic> queryParameters,
       {ResponseType responseType = ResponseType.json}) async {
     final active = localStorage.active();
+    print('using auth for ${active.toString()}');
+    print('auth: ${active.auth}');
     if (active.auth.isEmpty) {
       throw PiholeException(message: 'API token is empty');
     }

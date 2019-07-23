@@ -254,8 +254,13 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                         final String v = titleController.text;
                         if (v.length > 0 && _formKey.currentState.validate()) {
                           _formKey.currentState.save();
-                          final update = Pihole.copyWith(pihole,
-                              title: titleController.text);
+                          final update = Pihole.copyWith(
+                            pihole,
+                            title: titleController.text,
+                            host: hostController.text,
+                            port: int.parse(portController.text),
+                            auth: authController.text,
+                          );
                           print('save: $update');
                           piholeBloc
                               .dispatch(UpdatePihole(widget.original, update));

@@ -166,7 +166,8 @@ class _TopDomainsBuilderState extends State<TopDomainsBuilder> {
               }
 
               if (state is TopItemsStateError) {
-                return ErrorMessage(errorMessage: state.e.message);
+                return ListView(
+                    children: [ErrorMessage(errorMessage: state.e.message)]);
               }
 
               return Center(child: CircularProgressIndicator());
