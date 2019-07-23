@@ -7,7 +7,7 @@ class LogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultScaffold(
-      title: 'Logs',
+      title: 'Internal Log',
       body: MemoryTreeBuilder(
         tree: Globals.tree,
       ),
