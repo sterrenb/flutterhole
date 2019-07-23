@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
@@ -82,8 +83,8 @@ class _DefaultDrawerMenu extends StatelessWidget {
           leading: Icon(Icons.home),
           onTap: () {
             BlocProvider.of<SummaryBloc>(context).dispatch(FetchSummary());
-            BlocProvider.of<TopSourcesBloc>(context).dispatch(
-                FetchTopSources());
+            BlocProvider.of<TopSourcesBloc>(context)
+                .dispatch(FetchTopSources());
             Globals.navigateTo(context, homePath);
           },
         ),
@@ -115,15 +116,17 @@ class _DefaultDrawerMenu extends StatelessWidget {
         ),
         Divider(),
         ListTile(
-          title: Text('Settings'),
-          leading: Icon(Icons.settings),
-          onTap: () => Globals.navigateTo(context, settingsPath),
-        ),
-        Globals.debug ? ListTile(
-          title: Text('Logs'),
+            title: Text('Settings'),
+            leading: Icon(Icons.settings),
+            onTap: () {
+              BlocProvider.of<PiholeBloc>(context).dispatch(FetchPiholes());
+              Globals.navigateTo(context, settingsPath);
+            }),
+        ListTile(
+          title: Text('Internal Log'),
           leading: Icon(Icons.format_list_bulleted),
           onTap: () => Globals.navigateTo(context, logPath),
-        ) : Container(),
+        ),
         ListTile(
           title: Text('About'),
           leading: Icon(Icons.favorite),

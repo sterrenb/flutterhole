@@ -1,10 +1,26 @@
+import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/query/bloc.dart';
+import 'package:flutterhole/bloc/status/bloc.dart';
+import 'package:flutterhole/bloc/summary/bloc.dart';
+import 'package:flutterhole/bloc/top_items/bloc.dart';
+import 'package:flutterhole/bloc/top_sources/bloc.dart';
+import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/model/status.dart';
 import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/model/top_items.dart';
 import 'package:flutterhole/model/top_sources.dart';
+import 'package:flutterhole/model/versions.dart';
 import 'package:flutterhole/model/whitelist.dart';
+import 'package:mockito/mockito.dart';
+
+final mockPiholes = [
+  Pihole(),
+  Pihole(title: 'second', host: 'example.com'),
+  Pihole(title: 'third', host: 'pi-hole.net'),
+];
 
 final mockStatusEnabled = Status(enabled: true);
 final mockStatusDisabled = Status(enabled: false);
@@ -47,6 +63,20 @@ final TopSources mockTopSources = TopSources({
   'osx|10.0.1.4': 24,
   'zenwatch3|10.0.1.5': 11,
 });
+
+final Versions mockVersions = Versions(
+    coreUpdate: true,
+    webUpdate: false,
+    ftlUpdate: false,
+    coreCurrent: 'v1.2.3',
+    webCurrent: 'v1.2.3',
+    ftlCurrent: 'v1.2.6',
+    coreLatest: "",
+    webLatest: "",
+    ftlLatest: "",
+    coreBranch: 'master',
+    webBranch: 'master',
+    ftlBranch: 'master');
 
 final TopItems mockTopItems = TopItems(
   {
@@ -91,3 +121,52 @@ final List<Query> mockQueries = [
       queryStatus: QueryStatus.Unknown,
       dnsSecStatus: DnsSecStatus.Bogus),
 ];
+
+class MockSummaryBloc extends Mock implements SummaryBloc {
+  @override
+  Stream<SummaryState> mapEventToState(SummaryEvent event) async* {
+    yield SummaryStateSuccess(mockSummary);
+  }
+}
+
+class MockTopSourcesBloc extends Mock implements TopSourcesBloc {
+  @override
+  Stream<TopSourcesState> mapEventToState(TopSourcesEvent event) async* {
+    yield TopSourcesStateSuccess(mockTopSources);
+  }
+}
+
+class MockTopItemsBloc extends Mock implements TopItemsBloc {
+  @override
+  Stream<TopItemsState> mapEventToState(TopItemsEvent event) async* {
+    yield TopItemsStateSuccess(mockTopItems);
+  }
+}
+
+class MockQueryBloc extends Mock implements QueryBloc {
+  @override
+  Stream<QueryState> mapEventToState(QueryEvent event) async* {
+    yield QueryStateSuccess(mockQueries);
+  }
+}
+
+class MockStatusBloc extends Mock implements StatusBloc {
+  @override
+  Stream<StatusState> mapEventToState(StatusEvent event) async* {
+    yield StatusStateSuccess(mockStatusEnabled);
+  }
+}
+
+class MockWhitelistBloc extends Mock implements WhitelistBloc {
+  @override
+  Stream<WhitelistState> mapEventToState(WhitelistEvent event) async* {
+    yield WhitelistStateSuccess(mockWhitelist);
+  }
+}
+
+class MockBlacklistBloc extends Mock implements BlacklistBloc {
+  @override
+  Stream<BlacklistState> mapEventToState(BlacklistEvent event) async* {
+    yield BlacklistStateSuccess(mockBlacklist);
+  }
+}

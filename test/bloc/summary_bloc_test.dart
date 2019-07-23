@@ -21,7 +21,7 @@ main() {
 
   group('FetchSummary', () {
     test(
-        'emits [SummaryStateEmpty, SummaryStateLoading, SummaryStateSuccess] when home repository returns Summary',
+        'emits [SummaryStateEmpty, SummaryStateLoading, SummaryStateSuccess] when repository returns Summary',
         () {
       final Summary summary = Summary(
         domainsBeingBlocked: 1,

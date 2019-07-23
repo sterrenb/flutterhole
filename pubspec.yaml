@@ -34,7 +34,6 @@ dependencies:
   flutter_picker: ^1.0.13
   flutter_markdown: ^0.2.0
   qrcode_reader: ^0.4.4
-  intl: ^0.15.8
   sticky_headers: ^0.1.8
   provider: ^3.0.0+1
 

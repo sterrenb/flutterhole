@@ -16,7 +16,7 @@ class Globals {
   static PiholeClient client;
   static LocalStorage localStorage;
 
-  static VoidCallback refresh;
+  static VoidCallback refreshAllBlocs;
 
   static Future<dynamic> navigateTo(BuildContext context, String path) =>
       router.navigateTo(context, path, transition: TransitionType.inFromRight);

@@ -1,10 +1,13 @@
+import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
+import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
 import 'package:flutterhole/bloc/status/bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
@@ -15,15 +18,24 @@ import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/app.dart';
+import 'package:persist_theme/data/models/theme_model.dart';
 
 import 'bloc/top_items/bloc.dart';
 
 void main() async {
+  Globals.tree = MemoryTree();
+  Fimber.plantTree(MemoryTree());
+
   Globals.router = Router();
   Globals.localStorage = await LocalStorage.getInstance();
   configureRoutes(Globals.router);
 
   Globals.client = PiholeClient(dio: Dio(), localStorage: Globals.localStorage);
+
+  final PiholeBloc piholeBloc =
+  PiholeBloc(PiholeRepository(Globals.localStorage));
+
+  piholeBloc.dispatch(FetchPiholes());
 
   final SummaryBloc summaryBloc =
   SummaryBloc(SummaryRepository(Globals.client));
@@ -44,7 +56,8 @@ void main() async {
   final BlacklistBloc blacklistBloc =
   BlacklistBloc(BlacklistRepository(Globals.client));
 
-  Globals.refresh = () {
+  Globals.refreshAllBlocs = () {
+    Globals.client.cancel();
     summaryBloc.dispatch(FetchSummary());
     topSourcesBloc.dispatch(FetchTopSources());
     topItemsBloc.dispatch(FetchTopItems());
@@ -59,24 +72,29 @@ void main() async {
     return true;
   }());
 
-  Globals.tree = MemoryTree();
-  Fimber.plantTree(MemoryTree());
-
   if (Globals.debug) {
-//    BlocSupervisor.delegate = SimpleBlocDelegate();
+    BlocSupervisor.delegate = SimpleBlocDelegate();
     Fimber.i('Running in debug mode');
   } else {
+    Fimber.i('Running in release mode');
     if (Globals.localStorage.cache.isEmpty) {
       await Globals.localStorage.reset();
+      Globals.tree.log('main', 'No configurations found, using default');
     }
-
-    Fimber.i('Running in release mode');
   }
 
-  Globals.refresh();
+  await Globals.localStorage.init();
+
+  print(
+      'running app with cache ${Globals.localStorage.cache.length}, ${Globals
+          .localStorage
+          .active()
+          .title}');
 
   runApp(App(
+    themeModel: ThemeModel(),
     providers: [
+      BlocProvider<PiholeBloc>(builder: (context) => piholeBloc),
       BlocProvider<SummaryBloc>(builder: (context) => summaryBloc),
       BlocProvider<TopSourcesBloc>(builder: (context) => topSourcesBloc),
       BlocProvider<TopItemsBloc>(builder: (context) => topItemsBloc),
@@ -86,4 +104,6 @@ void main() async {
       BlocProvider<BlacklistBloc>(builder: (context) => blacklistBloc),
     ],
   ));
+
+  Globals.refreshAllBlocs();
 }

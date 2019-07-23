@@ -28,9 +28,7 @@ class Pihole extends Equatable {
       this.host = 'pi.hole',
       this.apiPath = 'admin/api.php',
       this.port = 80,
-      this.auth =
-      '3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c',
-        this.allowSelfSigned = false})
+        this.auth = '', this.allowSelfSigned = false})
       : super([title, host, port, auth, allowSelfSigned]);
 
   /// Returns a new Pihole with the given parameters, using the [source] as base.

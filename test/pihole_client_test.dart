@@ -369,12 +369,11 @@ void main() {
       });
     });
 
-//    group('fetchQueries', () {
-//      test('returns list of Queries on successful fetch', () async {
-//        dio.httpClientAdapter =
-//            MockAdapter.string('adding new.com to whitelist...');
-//        expect(client.fetchQueries(), completion(mockQueries));
-//      });
-//    });
+    group('fetchVersions', () {
+      test('returns Versions on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(mockVersions.toJson());
+        expect(client.fetchVersions(), completion(mockVersions));
+      });
+    });
   });
 }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/layout/dismissible_background.dart';
+import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:flutterhole/widget/layout/list_tab.dart';
 import 'package:flutterhole/widget/pihole/pihole_button_row.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
@@ -18,111 +21,106 @@ class PiholeListBuilder extends StatefulWidget {
 }
 
 class _PiholeListBuilderState extends State<PiholeListBuilder> {
-  final localStorage = Globals.localStorage;
+  List<Pihole> _all;
+  Pihole _active;
 
   void _edit(Pihole pihole) async {
-    final String message =
-    await Globals.navigateTo(context, piholeEditPath(pihole),);
+    final String message = await Globals.navigateTo(
+      context,
+      piholeEditPath(pihole),
+    );
     if (message != null) {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
   Future _activate(Pihole pihole, BuildContext context) async {
-    await localStorage.activate(pihole);
-    Globals.refresh();
-    setState(() {});
+    BlocProvider.of<PiholeBloc>(context).dispatch(ActivatePihole(pihole));
     Scaffold.of(context)
-        .showSnackBar(SnackBar(content: Text('Changed to ${pihole.title}')));
+        .showSnackBar(SnackBar(content: Text('Changing to ${pihole.title}')));
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget body = Center(child: CircularProgressIndicator());
-    if (localStorage == null) {
-      return body;
-    }
+    final piholeBloc = BlocProvider.of<PiholeBloc>(context);
+    return BlocBuilder(
+      bloc: piholeBloc,
+      builder: (context, state) {
+        if (state is PiholeStateSuccess) {
+          _all = state.all;
+          _active = state.active;
 
-    if (localStorage.cache.length == 0) {
-      body = Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text('No Piholes found.'),
-        ],
-      );
-    }
+          List<Widget> items = [];
 
-    body = ListView.builder(
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        itemCount: localStorage.cache.length,
-        itemBuilder: (BuildContext context, int index) {
-          final pihole =
-          localStorage.cache[localStorage.cache.keys.elementAt(index)];
-          final bool active = localStorage.active() != null &&
-              localStorage
-                  .active()
-                  .title == pihole.title;
-          if (widget.editable) {
-            return Dismissible(
-              key: Key(pihole.title),
-              onDismissed: (direction) async {
-                final didRemove = await localStorage.remove(pihole);
+          if (_all != null) {
+            _all.forEach((pihole) {
+              Widget tile;
+              bool isActive = (pihole.title == _active.title);
+              if (widget.editable) {
+                tile = Dismissible(
+                  key: Key(pihole.title),
+                  onDismissed: (direction) async {
+                    setState(() {
+                      _all.remove(pihole);
+                    });
+                    piholeBloc.dispatch(RemovePihole(pihole));
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Removing ${pihole.title}'),
+                      action: SnackBarAction(
+                          label: 'Undo',
+                          onPressed: () async {
+                            piholeBloc.dispatch(AddPihole(pihole));
+                          }),
+                    ));
+                  },
+                  background: DismissibleBackground(),
+                  secondaryBackground:
+                  DismissibleBackground(alignment: Alignment.centerRight),
+                  child: PiholeTile(
+                    pihole: pihole,
+                    active: isActive,
+                    onTap: () => _edit(pihole),
+                    onLongPress: () => _activate(pihole, context),
+                  ),
+                );
+              } else {
+                tile = PiholeTile(
+                  pihole: pihole,
+                  active: isActive,
+                  onTap: () async {
+                    await _activate(pihole, context);
+                    Navigator.of(context).pop();
+                  },
+                );
+              }
 
-                if (didRemove) {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text('Removed ${pihole.title}'),
-                    action: SnackBarAction(
-                        label: 'Undo',
-                        onPressed: () async {
-                          await localStorage.add(pihole);
-                          setState(() {});
-                        }),
-                  ));
-                  setState(() {});
-                } else {
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Could not remove ${pihole.title}')));
-                }
-              },
-              background: DismissibleBackground(),
-              secondaryBackground:
-              DismissibleBackground(alignment: Alignment.centerRight),
-              child: PiholeTile(
-                pihole: pihole,
-                active: active,
-                onTap: () => _edit(pihole),
-                onLongPress: () => _activate(pihole, context),
-              ),
-            );
-          } else {
-            return PiholeTile(
-              pihole: pihole,
-              active: active,
-              onTap: () async {
-                await _activate(pihole, context);
-                Navigator.of(context).pop();
-              },
-//              onLongPress: () => _edit(pihole),
-            );
+              items.add(tile);
+            });
           }
-        });
 
-    return Column(
-      children: <Widget>[
-        widget.editable ? Container() : ListTab('Select configuration'),
-        widget.editable ? Container() : Divider(),
-        body,
-        Divider(),
-        widget.editable
-            ? PiholeButtonRow(
-          localStorage: localStorage,
-          onStateChange: () {
-            setState(() {});
-          },
-        )
-            : Container(),
-      ],
+          return Column(
+            children: <Widget>[
+              widget.editable ? Container() : ListTab('Select configuration'),
+              widget.editable ? Container() : Divider(),
+              ...items,
+              Divider(),
+              widget.editable
+                  ? PiholeButtonRow(
+                onStateChange: () {
+                  setState(() {});
+                },
+              )
+                  : Container(),
+            ],
+          );
+        }
+
+        if (state is PiholeStateError) {
+          return ErrorMessage(errorMessage: state.e.toString());
+        }
+
+        return Center(child: CircularProgressIndicator());
+      },
     );
   }
 }

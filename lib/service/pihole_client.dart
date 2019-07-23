@@ -7,6 +7,7 @@ import 'package:flutterhole/model/status.dart';
 import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/model/top_items.dart';
 import 'package:flutterhole/model/top_sources.dart';
+import 'package:flutterhole/model/versions.dart';
 import 'package:flutterhole/model/whitelist.dart';
 import 'package:meta/meta.dart';
 
@@ -21,6 +22,8 @@ class PiholeClient {
   final Dio dio;
   final LocalStorage localStorage;
 
+  CancelToken token;
+
   void _log(String message, {String tag}) {
     Globals.tree.log(_logKey, message, tag: tag);
   }
@@ -28,6 +31,8 @@ class PiholeClient {
   PiholeClient({@required this.dio,
     @required this.localStorage,
     bool logQueries = true}) {
+    token = CancelToken();
+
     if (logQueries) {
       dio.interceptors
           .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
@@ -47,6 +52,12 @@ class PiholeClient {
         return error;
       }));
     }
+  }
+
+  void cancel() {
+    dio?.clear();
+    token.cancel();
+    token = CancelToken();
   }
 
   /// Performs an HTTP request with [queryParameters] and returns the response.
@@ -72,7 +83,8 @@ class PiholeClient {
 
       final Response response = await dio.get('/${active.apiPath}',
           queryParameters: queryParameters,
-          options: Options(responseType: responseType));
+          options: Options(responseType: responseType),
+          cancelToken: token);
 
       final String dataString = response.data.toString().toLowerCase();
       if (dataString.contains('not authorized')) {
@@ -103,6 +115,8 @@ class PiholeClient {
   Future<Response> _getSecure(Map<String, dynamic> queryParameters,
       {ResponseType responseType = ResponseType.json}) async {
     final active = localStorage.active();
+    print('using auth for ${active.toString()}');
+    print('auth: ${active.auth}');
     if (active.auth.isEmpty) {
       throw PiholeException(message: 'API token is empty');
     }
@@ -162,7 +176,9 @@ class PiholeClient {
 
   /// Fetches home information from the Pi-hole.
   Future<Summary> fetchSummary() async {
+    print('fetchSummary');
     Response response = await _get({'summaryRaw': ''});
+    print('fetchSummary response');
     if (response.data is String) {
       return Summary.fromString(response.data);
     } else {
@@ -345,6 +361,15 @@ class PiholeClient {
       return TopItems.fromString(response.data);
     } else {
       return TopItems.fromJson(response.data);
+    }
+  }
+
+  Future<Versions> fetchVersions() async {
+    Response response = await _getSecure({'versions': ''});
+    if (response.data is String) {
+      return Versions.fromString(response.data);
+    } else {
+      return Versions.fromJson(response.data);
     }
   }
 }
