@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
+import 'package:flutterhole/bloc/query_types/bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
@@ -67,6 +68,8 @@ class _DefaultDrawerMenu extends StatelessWidget {
             BlocProvider.of<SummaryBloc>(context).dispatch(FetchSummary());
             BlocProvider.of<TopSourcesBloc>(context)
                 .dispatch(FetchTopSources());
+            BlocProvider.of<QueryTypesBloc>(context)
+                .dispatch(FetchQueryTypes());
             Globals.navigateTo(context, homePath);
           },
         ),

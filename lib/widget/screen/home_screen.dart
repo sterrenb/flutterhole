@@ -11,6 +11,7 @@ class HomeScreen extends StatelessWidget {
       title: 'Dashboard',
       children: <Widget>[
         SummaryBuilder(),
+//        PieChartPage(),
         TopSourcesBuilder(),
         TopDomainsBuilder(),
 //        Center(child: Text('Coming soon')),

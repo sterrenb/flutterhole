@@ -1,6 +1,9 @@
 // For example queries, see https://github.com/pi-hole/AdminLTE/blob/44aff727e59d129e6201341caa1d74c8b2954bd2/scripts/pi-hole/js/queries.js.
 
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
+import 'package:flutterhole/model/serializable.dart';
 
 enum QueryType {
   A,
@@ -95,4 +98,38 @@ class Query extends Equatable {
 
     return QueryStatus.values[index - 1];
   }
+}
+
+class QueryTypes extends Serializable {
+  final Map<String, double> queryTypes;
+
+  QueryTypes([
+    this.queryTypes,
+  ]);
+
+  factory QueryTypes.fromString(String str) =>
+      QueryTypes.fromJson(json.decode(str));
+
+//  String toRawJson() => json.encode(toJson());
+
+  factory QueryTypes.fromJson(Map<String, dynamic> json) {
+    final x = QueryTypes(
+      Map.from(json["querytypes"]).map((k, v) {
+        if (v is int) v = v.toDouble();
+
+        print('$k: $v of type ${v.runtimeType}');
+        return MapEntry<String, double>(k, v);
+      }),
+    );
+
+    print('result length: ${x.queryTypes.length}');
+
+    return x;
+  }
+
+  Map<String, dynamic> toJson() =>
+      {
+        "querytypes":
+        Map.from(queryTypes).map((k, v) => MapEntry<String, dynamic>(k, v)),
+      };
 }

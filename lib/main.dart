@@ -21,6 +21,7 @@ import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/app.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 
+import 'bloc/query_types/bloc.dart';
 import 'bloc/top_items/bloc.dart';
 
 void main() async {
@@ -45,6 +46,9 @@ void main() async {
   final VersionsBloc versionsBloc =
   VersionsBloc(VersionsRepository(Globals.client));
 
+  final QueryTypesBloc queryTypesBloc =
+  QueryTypesBloc(QueryTypesRepository(Globals.client));
+
   final TopSourcesBloc topSourcesBloc =
   TopSourcesBloc(TopSourcesRepository(Globals.client));
 
@@ -66,6 +70,7 @@ void main() async {
     statusBloc.dispatch(FetchStatus());
     summaryBloc.dispatch(FetchSummary());
     versionsBloc.dispatch(FetchVersions());
+    queryTypesBloc.dispatch(FetchQueryTypes());
     topSourcesBloc.dispatch(FetchTopSources());
     topItemsBloc.dispatch(FetchTopItems());
     queryBloc.dispatch(FetchQueries());
@@ -103,6 +108,7 @@ void main() async {
       BlocProvider<PiholeBloc>(builder: (context) => piholeBloc),
       BlocProvider<SummaryBloc>(builder: (context) => summaryBloc),
       BlocProvider<VersionsBloc>(builder: (context) => versionsBloc),
+      BlocProvider<QueryTypesBloc>(builder: (context) => queryTypesBloc),
       BlocProvider<TopSourcesBloc>(builder: (context) => topSourcesBloc),
       BlocProvider<TopItemsBloc>(builder: (context) => topItemsBloc),
       BlocProvider<QueryBloc>(builder: (context) => queryBloc),

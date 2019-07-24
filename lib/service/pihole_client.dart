@@ -372,4 +372,15 @@ class PiholeClient {
       return Versions.fromJson(response.data);
     }
   }
+
+  Future<QueryTypes> fetchQueryTypes() async {
+    Response response = await _getSecure({'getQueryTypes': ''});
+    if (response.data is String) {
+      return QueryTypes.fromString(response.data);
+    } else {
+      final x = QueryTypes.fromJson(response.data);
+      print('x: ${x.queryTypes.length}');
+      return x;
+    }
+  }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
+import 'package:flutterhole/bloc/query_types/bloc.dart';
 import 'package:flutterhole/bloc/status/bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_items/bloc.dart';
@@ -33,6 +34,20 @@ main() {
     test('getSummary', () {
       when(client.fetchSummary()).thenAnswer((_) => Future.value(mockSummary));
       expect(summaryRepository.getSummary(), completion(mockSummary));
+    });
+  });
+
+  group('QueryTypesRepository', () {
+    QueryTypesRepository queryTypesRepository;
+
+    setUp(() {
+      queryTypesRepository = QueryTypesRepository(client);
+    });
+
+    test('getQueryTypes', () {
+      when(client.fetchQueryTypes())
+          .thenAnswer((_) => Future.value(mockQueryTypes));
+      expect(queryTypesRepository.getQueryTypes(), completion(mockQueryTypes));
     });
   });
 

@@ -78,6 +78,16 @@ final Versions mockVersions = Versions(
     webBranch: 'master',
     ftlBranch: 'master');
 
+final QueryTypes mockQueryTypes = QueryTypes({
+  "A (IPv4)": 58.46,
+  "AAAA (IPv6)": 10.12,
+  "ANY": 10.50,
+  "SRV": 0.45,
+  "SOA": 9.50,
+  "PTR": 2.97,
+  "TXT": 8.0,
+});
+
 final TopItems mockTopItems = TopItems(
   {
     "clients1.google.com": 1005,
