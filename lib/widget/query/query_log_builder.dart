@@ -76,7 +76,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
   Whitelist _whitelistCache;
   Blacklist _blacklistCache;
 
-  QueryEvent _event;
+  QueryEvent _fetchEvent;
 
   @override
   void initState() {
@@ -84,10 +84,10 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
     _refreshCompleter = Completer();
     _queryCache = [];
 
-    _event = FetchQueries();
+    _fetchEvent = FetchQueries();
 
     if (widget.client != null) {
-      _event = FetchQueriesForClient(widget.client);
+      _fetchEvent = FetchQueriesForClient(widget.client);
     }
   }
 
@@ -102,7 +102,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
             bloc: queryBloc,
             listener: (context, state) {
               if (state is QueryStateEmpty) {
-                queryBloc.dispatch(_event);
+                queryBloc.dispatch(_fetchEvent);
               }
 
               if (state is QueryStateSuccess || state is QueryStateError) {
@@ -139,7 +139,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
       ],
       child: RefreshIndicator(
         onRefresh: () {
-          queryBloc.dispatch(_event);
+          queryBloc.dispatch(_fetchEvent);
           whitelistBloc.dispatch(FetchWhitelist());
           blacklistBloc.dispatch(FetchBlacklist());
           return _refreshCompleter.future;
@@ -201,10 +201,6 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
                             'Open in browser ${Uri.parse(query.entry)
                                 .toString()}',
                             onPressed: () {
-//                              final uri = Uri.parse(query.entry);
-//                              final url = uri.scheme.length > 0
-//                                  ? uri.toString()
-//                                  : 'http://${uri.toString()}';
                               launchURL(query.entry);
                             }),
                         isOnWhitelist

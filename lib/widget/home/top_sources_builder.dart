@@ -91,7 +91,8 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                           onTap: () {
                             queryBloc
                                 .dispatch(FetchQueriesForClient(item.ipString));
-                            Globals.navigateTo(context, clientLogPath(title));
+                            Globals.navigateTo(
+                                context, clientLogPath(item.ipString));
                           },
                         );
                       },

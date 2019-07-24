@@ -25,14 +25,14 @@ const String homePath = '/';
 const String queryPath = '/query';
 
 /// The abstract route to [QueryLogScreen] with initial search value.
-const String _querySearchPath = '/query/:search';
+const String _querySearchPath = '/search/:search';
 
 /// The concrete route to [QueryLogScreen] with [search] as initial search value.
 String querySearchPath(String search) =>
     _querySearchPath.replaceAll(':search', search);
 
 /// The abstract route to [ClientLogScreen].
-const String _clientLogPath = '/query/:client';
+const String _clientLogPath = '/client/:client';
 
 /// The concrete route to [ClientLogScreen] with [client].
 String clientLogPath(String client) =>
