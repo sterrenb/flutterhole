@@ -21,6 +21,7 @@ import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/app.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 
+import 'bloc/forward_destinations/bloc.dart';
 import 'bloc/query_types/bloc.dart';
 import 'bloc/top_items/bloc.dart';
 
@@ -49,6 +50,9 @@ void main() async {
   final QueryTypesBloc queryTypesBloc =
   QueryTypesBloc(QueryTypesRepository(Globals.client));
 
+  final ForwardDestinationsBloc forwardDestinationsBloc =
+  ForwardDestinationsBloc(ForwardDestinationsRepository(Globals.client));
+
   final TopSourcesBloc topSourcesBloc =
   TopSourcesBloc(TopSourcesRepository(Globals.client));
 
@@ -71,6 +75,7 @@ void main() async {
     summaryBloc.dispatch(FetchSummary());
     versionsBloc.dispatch(FetchVersions());
     queryTypesBloc.dispatch(FetchQueryTypes());
+    forwardDestinationsBloc.dispatch(FetchForwardDestinations());
     topSourcesBloc.dispatch(FetchTopSources());
     topItemsBloc.dispatch(FetchTopItems());
     queryBloc.dispatch(FetchQueries());
@@ -109,6 +114,8 @@ void main() async {
       BlocProvider<SummaryBloc>(builder: (context) => summaryBloc),
       BlocProvider<VersionsBloc>(builder: (context) => versionsBloc),
       BlocProvider<QueryTypesBloc>(builder: (context) => queryTypesBloc),
+      BlocProvider<ForwardDestinationsBloc>(
+          builder: (context) => forwardDestinationsBloc),
       BlocProvider<TopSourcesBloc>(builder: (context) => topSourcesBloc),
       BlocProvider<TopItemsBloc>(builder: (context) => topItemsBloc),
       BlocProvider<QueryBloc>(builder: (context) => queryBloc),

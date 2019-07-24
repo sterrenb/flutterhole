@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/forward_destinations.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/model/status.dart';
@@ -381,6 +382,15 @@ class PiholeClient {
       final x = QueryTypes.fromJson(response.data);
       print('x: ${x.queryTypes.length}');
       return x;
+    }
+  }
+
+  Future<ForwardDestinations> fetchForwardDestinations() async {
+    Response response = await _getSecure({'getForwardDestinations': ''});
+    if (response.data is String) {
+      return ForwardDestinations.fromString(response.data);
+    } else {
+      return ForwardDestinations.fromJson(response.data);
     }
   }
 }

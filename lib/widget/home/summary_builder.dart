@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/model/summary.dart';
+import 'package:flutterhole/widget/home/forward_destinations_chart_builder.dart';
 import 'package:flutterhole/widget/home/query_types_chart_builder.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
@@ -94,6 +95,7 @@ class _SummaryBuilderState extends State<SummaryBuilder> {
                       children: [
                         ...summaryTiles.map((tile) => tile).toList(),
                         QueryTypesChartBuilder(),
+                        ForwardDestinationsChartBuilder(),
                       ],
                     );
                   }

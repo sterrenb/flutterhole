@@ -112,20 +112,15 @@ class QueryTypes extends Serializable {
 
 //  String toRawJson() => json.encode(toJson());
 
-  factory QueryTypes.fromJson(Map<String, dynamic> json) {
-    final x = QueryTypes(
+  factory QueryTypes.fromJson(Map<String, dynamic> json)
+  =>
+      QueryTypes(
       Map.from(json["querytypes"]).map((k, v) {
         if (v is int) v = v.toDouble();
-
-        print('$k: $v of type ${v.runtimeType}');
         return MapEntry<String, double>(k, v);
       }),
     );
 
-    print('result length: ${x.queryTypes.length}');
-
-    return x;
-  }
 
   Map<String, dynamic> toJson() =>
       {

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/forward_destinations/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/query_types/bloc.dart';
 import 'package:flutterhole/bloc/status/bloc.dart';
@@ -34,6 +35,21 @@ main() {
     test('getSummary', () {
       when(client.fetchSummary()).thenAnswer((_) => Future.value(mockSummary));
       expect(summaryRepository.getSummary(), completion(mockSummary));
+    });
+  });
+
+  group('ForwardDestinationsRepository', () {
+    ForwardDestinationsRepository forwardDestinationsRepository;
+
+    setUp(() {
+      forwardDestinationsRepository = ForwardDestinationsRepository(client);
+    });
+
+    test('getForwardDestinations', () {
+      when(client.fetchForwardDestinations())
+          .thenAnswer((_) => Future.value(mockForwardDestinations));
+      expect(forwardDestinationsRepository.getForwardDestinations(),
+          completion(mockForwardDestinations));
     });
   });
 

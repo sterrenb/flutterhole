@@ -6,6 +6,7 @@ import 'package:flutterhole/bloc/top_items/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/forward_destinations.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/model/status.dart';
@@ -114,6 +115,13 @@ final TopItems mockTopItems = TopItems(
     "update.openelec.tv.uilenstede4.duwo.lan": 8
   },
 );
+
+final ForwardDestinations mockForwardDestinations = ForwardDestinations({
+  "blocklist|blocklist": 9.7,
+  "cache|cache": 14.37,
+  "dns.google|8.8.4.4": 40.41,
+  "dns.google|8.8.8.8": 35.53
+});
 
 final List<Query> mockQueries = [
   Query(
