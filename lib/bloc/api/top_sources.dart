@@ -1,6 +1,6 @@
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/bloc/base/repository.dart';
-import 'package:flutterhole/model/top_sources.dart';
+import 'package:flutterhole/model/api/top_sources.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 
 class TopSourcesBloc extends BaseBloc<TopSources> {
@@ -12,6 +12,6 @@ class TopSourcesRepository extends BaseRepository<TopSources> {
 
   @override
   Future<TopSources> get() async {
-    return client.Fetch();
+    return client.fetchTopSources();
   }
 }

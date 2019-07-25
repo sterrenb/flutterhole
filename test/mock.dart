@@ -1,13 +1,13 @@
-import 'package:flutterhole/model/blacklist.dart';
-import 'package:flutterhole/model/forward_destinations.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/forward_destinations.dart';
+import 'package:flutterhole/model/api/query.dart';
+import 'package:flutterhole/model/api/status.dart';
+import 'package:flutterhole/model/api/summary.dart';
+import 'package:flutterhole/model/api/top_items.dart';
+import 'package:flutterhole/model/api/top_sources.dart';
+import 'package:flutterhole/model/api/versions.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/model/pihole.dart';
-import 'package:flutterhole/model/query.dart';
-import 'package:flutterhole/model/status.dart';
-import 'package:flutterhole/model/summary.dart';
-import 'package:flutterhole/model/top_items.dart';
-import 'package:flutterhole/model/top_sources.dart';
-import 'package:flutterhole/model/versions.dart';
-import 'package:flutterhole/model/whitelist.dart';
 
 final mockPiholes = [
   Pihole(),

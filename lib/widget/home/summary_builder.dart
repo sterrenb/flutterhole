@@ -5,19 +5,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/summary.dart';
 import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/base/state.dart';
-import 'package:flutterhole/model/summary.dart';
+import 'package:flutterhole/model/api/summary.dart';
 import 'package:flutterhole/widget/home/forward_destinations_chart_builder.dart';
 import 'package:flutterhole/widget/home/query_types_chart_builder.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 import 'package:provider/provider.dart';
 
-class SumBuilder extends StatefulWidget {
+class SummaryBuilder extends StatefulWidget {
   @override
-  _SumBuilderState createState() => _SumBuilderState();
+  _SummaryBuilderState createState() => _SummaryBuilderState();
 }
 
-class _SumBuilderState extends State<SumBuilder> {
+class _SummaryBuilderState extends State<SummaryBuilder> {
   Completer _refreshCompleter;
 
   Summary _cache;

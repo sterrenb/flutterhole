@@ -2,12 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/api/summary.dart';
 import 'package:flutterhole/bloc/api/top_items.dart';
 import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/base/state.dart';
-import 'package:flutterhole/model/summary.dart';
-import 'package:flutterhole/model/top_items.dart';
+import 'package:flutterhole/model/api/summary.dart';
+import 'package:flutterhole/model/api/top_items.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/home/frequency_tile.dart';
@@ -34,6 +35,7 @@ class _TopItemsBuilderState extends State<TopItemsBuilder> {
   Widget build(BuildContext context) {
     final TopItemsBloc topItemsBloc = BlocProvider.of<TopItemsBloc>(context);
     final SummaryBloc summaryBloc = BlocProvider.of<SummaryBloc>(context);
+    final QueryBloc queryBloc = BlocProvider.of<QueryBloc>(context);
 
     return BlocListener(
         bloc: topItemsBloc,
@@ -84,6 +86,7 @@ class _TopItemsBuilderState extends State<TopItemsBuilder> {
                         requests: frequency,
                         totalRequests: total,
                         onTap: () {
+                          queryBloc.dispatch(Fetch());
                           Globals.navigateTo(context, querySearchPath(domain));
                         },
                       );

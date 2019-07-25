@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/api/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/api/query.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart' as White;
 import 'package:flutterhole/bloc/base/bloc.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
-import 'package:flutterhole/model/blacklist.dart';
-import 'package:flutterhole/model/query.dart';
-import 'package:flutterhole/model/whitelist.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/query.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/service/browser.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
@@ -57,16 +57,38 @@ String queryStatusToString(QueryStatus status) {
   }
 }
 
+enum FilterType {
+  Client,
+  QueryType,
+}
+
 class QueryLogBuilder extends StatefulWidget {
-  final String client;
+  final String searchString;
+  final FilterType filterType;
 
   QueryLogBuilder({
     Key key,
-    this.client,
+    this.searchString,
+    this.filterType,
   }) : super(key: key);
 
   @override
-  _QueryLogBuilderState createState() => _QueryLogBuilderState();
+  _QueryLogBuilderState createState() {
+    BlocEvent event;
+
+    switch (filterType) {
+      case FilterType.Client:
+        event = FetchForClient(searchString);
+        break;
+      case FilterType.QueryType:
+        event = FetchForQueryType(stringToQueryType(searchString));
+        break;
+      default:
+        event = Fetch();
+    }
+
+    return _QueryLogBuilderState(event);
+  }
 }
 
 class _QueryLogBuilderState extends State<QueryLogBuilder> {
@@ -77,7 +99,9 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
   Whitelist _whitelistCache;
   Blacklist _blacklistCache;
 
-  BlocEvent _fetchEvent;
+  final BlocEvent fetchEvent;
+
+  _QueryLogBuilderState(this.fetchEvent);
 
   @override
   void initState() {
@@ -85,17 +109,18 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
     _refreshCompleter = Completer();
     _queryCache = [];
 
-    _fetchEvent = Fetch();
-
-    if (widget.client != null) {
-      _fetchEvent = FetchForClient(widget.client);
-    }
+//    fetchEvent = Fetch();
+//
+//    if (widget.client != null) {
+//      fetchEvent = FetchForClient(widget.client);
+//    }
   }
 
   @override
   Widget build(BuildContext context) {
     final QueryBloc queryBloc = BlocProvider.of<QueryBloc>(context);
-    final WhitelistBloc whitelistBloc = BlocProvider.of<WhitelistBloc>(context);
+    final White.WhitelistBloc whitelistBloc =
+    BlocProvider.of<White.WhitelistBloc>(context);
     final BlacklistBloc blacklistBloc = BlocProvider.of<BlacklistBloc>(context);
     return MultiBlocListener(
       listeners: [
@@ -103,7 +128,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
             bloc: queryBloc,
             listener: (context, state) {
               if (state is BlocStateEmpty<List<Query>>) {
-                queryBloc.dispatch(_fetchEvent);
+                queryBloc.dispatch(fetchEvent);
               }
 
               if (state is BlocStateSuccess<List<Query>> ||
@@ -121,9 +146,9 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
         BlocListener(
           bloc: whitelistBloc,
           listener: (context, state) {
-            if (state is WhitelistStateSuccess) {
+            if (state is BlocStateSuccess<Whitelist>) {
               setState(() {
-                _whitelistCache = state.whitelist;
+                _whitelistCache = state.data;
               });
             }
           },
@@ -141,8 +166,8 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
       ],
       child: RefreshIndicator(
         onRefresh: () {
-          queryBloc.dispatch(_fetchEvent);
-          whitelistBloc.dispatch(FetchWhitelist());
+          queryBloc.dispatch(fetchEvent);
+          whitelistBloc.dispatch(Fetch());
           blacklistBloc.dispatch(Fetch());
           return _refreshCompleter.future;
         },
@@ -210,8 +235,8 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
                           icon: Icon(Icons.delete),
                           tooltip: 'Remove from whitelist',
                           onPressed: () {
-                            whitelistBloc.dispatch(
-                                RemoveFromWhitelist(query.entry));
+                            whitelistBloc
+                                .dispatch(White.Remove(query.entry));
                             showSnackBar(
                                 context,
                                 Text(
@@ -230,8 +255,8 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
                           ),
                           tooltip: 'Add to whitelist',
                           onPressed: () {
-                            whitelistBloc.dispatch(
-                                AddToWhitelist(query.entry));
+                            whitelistBloc
+                                .dispatch(White.Add(query.entry));
                             showSnackBar(
                                 context,
                                 Text(

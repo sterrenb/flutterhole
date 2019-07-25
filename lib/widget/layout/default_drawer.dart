@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/api/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/api/query_types.dart';
 import 'package:flutterhole/bloc/api/summary.dart';
 import 'package:flutterhole/bloc/api/top_sources.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
 import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/layout/title_row.dart';
@@ -76,7 +76,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
           title: Text('Whitelist'),
           leading: Icon(Icons.check_circle),
           onTap: () {
-            BlocProvider.of<WhitelistBloc>(context).dispatch(FetchWhitelist());
+            BlocProvider.of<WhitelistBloc>(context).dispatch(Fetch());
             Globals.navigateTo(context, whitelistPath);
           },
         ),

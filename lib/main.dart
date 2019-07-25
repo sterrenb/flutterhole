@@ -4,6 +4,7 @@ import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/api/query_types.dart';
@@ -11,9 +12,9 @@ import 'package:flutterhole/bloc/api/summary.dart';
 import 'package:flutterhole/bloc/api/top_items.dart';
 import 'package:flutterhole/bloc/api/top_sources.dart';
 import 'package:flutterhole/bloc/api/versions.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/local_storage.dart';
 import 'package:flutterhole/service/memory_tree.dart';
@@ -22,7 +23,6 @@ import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/app.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 
-import 'bloc/api/blacklist/bloc.dart';
 import 'bloc/api/status.dart';
 import 'bloc/base/event.dart';
 
@@ -80,7 +80,7 @@ void main() async {
     topSourcesBloc.dispatch(Fetch());
     topItemsBloc.dispatch(Fetch());
     queryBloc.dispatch(Fetch());
-    whitelistBloc.dispatch(FetchWhitelist());
+    whitelistBloc.dispatch(Fetch());
     blacklistBloc.dispatch(Fetch());
   };
 

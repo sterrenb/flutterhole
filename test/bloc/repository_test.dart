@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutterhole/bloc/api/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/api/query_types.dart';
@@ -8,9 +8,9 @@ import 'package:flutterhole/bloc/api/status.dart';
 import 'package:flutterhole/bloc/api/summary.dart';
 import 'package:flutterhole/bloc/api/top_items.dart';
 import 'package:flutterhole/bloc/api/top_sources.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
-import 'package:flutterhole/model/blacklist.dart';
-import 'package:flutterhole/model/whitelist.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -113,7 +113,8 @@ main() {
     });
 
     test('getTopSources', () {
-      when(client.Fetch()).thenAnswer((_) => Future.value(mockTopSources));
+      when(client.fetchTopSources()).thenAnswer((_) =>
+          Future.value(mockTopSources));
       expect(topSourcesRepository.get(), completion(mockTopSources));
     });
   });
@@ -195,7 +196,7 @@ main() {
       when(client.fetchWhitelist())
           .thenAnswer((_) => Future.value(mockWhitelist));
 
-      expect(whitelistRepository.getWhitelist(), completion(mockWhitelist));
+      expect(whitelistRepository.get(), completion(mockWhitelist));
     });
 
     test('addToWhitelist', () {

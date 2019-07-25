@@ -1,16 +1,16 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutterhole/model/blacklist.dart';
-import 'package:flutterhole/model/forward_destinations.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/forward_destinations.dart';
+import 'package:flutterhole/model/api/query.dart';
+import 'package:flutterhole/model/api/status.dart';
+import 'package:flutterhole/model/api/summary.dart';
+import 'package:flutterhole/model/api/top_items.dart';
+import 'package:flutterhole/model/api/top_sources.dart';
+import 'package:flutterhole/model/api/versions.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/model/pihole.dart';
-import 'package:flutterhole/model/query.dart';
-import 'package:flutterhole/model/status.dart';
-import 'package:flutterhole/model/summary.dart';
-import 'package:flutterhole/model/top_items.dart';
-import 'package:flutterhole/model/top_sources.dart';
-import 'package:flutterhole/model/versions.dart';
-import 'package:flutterhole/model/whitelist.dart';
 import 'package:meta/meta.dart';
 
 import 'globals.dart';
@@ -47,7 +47,10 @@ class PiholeClient {
         _log(message, tag: 'request');
         return options;
       }, onResponse: (Response response) {
-        _log(response.data.toString(), tag: 'response');
+        _log(response.data
+            .toString()
+            .length
+            .toString(), tag: 'response');
         return response;
       }, onError: (DioError error) {
         _log(error.message, tag: 'error');
@@ -309,7 +312,7 @@ class PiholeClient {
   }
 
   /// Returns a list of recent [Query]s, at most [max].
-  Future<List<Query>> fetchQueries({int max = 100}) async {
+  Future<List<Query>> fetchQueries({int max = 1000}) async {
     Response response =
     await _getSecure({'getAllQueries': max > 0 ? max.toString() : 1});
     if (response.data is Map<String, dynamic>) {
@@ -347,7 +350,28 @@ class PiholeClient {
     throw PiholeException(message: 'unexpected query response', e: response);
   }
 
-  Future<TopSources> Fetch() async {
+  Future<List<Query>> fetchQueriesForQueryType(QueryType type) async {
+    print('fetchQueriesForQueryType $type');
+    Response response =
+    await _getSecure(
+        {'getAllQueries': '', 'querytype': QueryType.values.indexOf(type) + 1});
+    if (response.data is Map<String, dynamic>) {
+      try {
+        List<Query> queries = [];
+        (response.data['data'] as List<dynamic>).forEach((entry) {
+          queries.add(Query.fromJson(entry));
+        });
+
+        return queries;
+      } catch (e) {
+        throw PiholeException(message: 'unknown error', e: e);
+      }
+    }
+
+    throw PiholeException(message: 'unexpected query response', e: response);
+  }
+
+  Future<TopSources> fetchTopSources() async {
     Response response = await _getSecure({'getQuerySources': ''});
     if (response.data is String) {
       return TopSources.fromString(response.data);
@@ -379,9 +403,7 @@ class PiholeClient {
     if (response.data is String) {
       return QueryTypes.fromString(response.data);
     } else {
-      final x = QueryTypes.fromJson(response.data);
-      print('x: ${x.queryTypes.length}');
-      return x;
+      return QueryTypes.fromJson(response.data);
     }
   }
 

@@ -1,6 +1,6 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
@@ -13,9 +13,8 @@ import 'package:flutterhole/widget/screen/pihole_screen.dart';
 import 'package:flutterhole/widget/screen/privacy_screen.dart';
 import 'package:flutterhole/widget/screen/query_log_screen.dart';
 import 'package:flutterhole/widget/screen/settings_screen.dart';
+import 'package:flutterhole/widget/screen/type_log_screen.dart';
 import 'package:flutterhole/widget/screen/whitelist_screen.dart';
-
-//final FimberLog _logger = FimberLog('Routes');
 
 /// Provides access to the String version of all routes.
 /// The route to [HomeScreen].
@@ -25,18 +24,25 @@ const String homePath = '/';
 const String queryPath = '/query';
 
 /// The abstract route to [QueryLogScreen] with initial search value.
-const String _querySearchPath = '/search/:search';
+const String _querySearchPath = '/query/search/:search';
 
 /// The concrete route to [QueryLogScreen] with [search] as initial search value.
 String querySearchPath(String search) =>
     _querySearchPath.replaceAll(':search', search);
 
 /// The abstract route to [ClientLogScreen].
-const String _clientLogPath = '/client/:client';
+const String _clientLogPath = '/query/client/:client';
 
 /// The concrete route to [ClientLogScreen] with [client].
 String clientLogPath(String client) =>
     _clientLogPath.replaceAll(':client', client);
+
+/// The abstract route to [QueryTypeLogScreen].
+const String _queryTypeLogPath = '/query/queryType/:queryType';
+
+/// The concrete route to [QueryTypeLogScreen] with [queryType].
+String queryTypeLogPath(String queryType) =>
+    _queryTypeLogPath.replaceAll(':queryType', queryType);
 
 /// The route to [AboutScreen].
 const String aboutPath = '/about';
@@ -124,6 +130,11 @@ void configureRoutes(Router router) {
   router.define(_clientLogPath,
       handler: _ParamsHandler(
               (params) => ClientLogScreen(client: params['client'][0])));
+
+  router.define(_queryTypeLogPath,
+      handler: _ParamsHandler(
+              (params) =>
+              QueryTypeLogScreen(queryType: params['queryType'][0])));
 
   router.define(whitelistPath, handler: _SimpleHandler(WhitelistViewScreen()));
 

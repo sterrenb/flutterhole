@@ -1,7 +1,7 @@
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/bloc/base/repository.dart';
+import 'package:flutterhole/model/api/versions.dart';
 import 'package:flutterhole/model/pihole.dart';
-import 'package:flutterhole/model/versions.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 

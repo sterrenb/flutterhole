@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole/model/summary.dart';
+import 'package:flutterhole/model/api/summary.dart';
 import 'package:flutterhole/widget/home/percentage_box.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 

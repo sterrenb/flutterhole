@@ -1,6 +1,6 @@
 import 'package:flutterhole/bloc/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
-import 'package:flutterhole/model/forward_destinations.dart';
+import 'package:flutterhole/model/api/forward_destinations.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

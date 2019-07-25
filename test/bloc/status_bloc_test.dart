@@ -1,6 +1,6 @@
 import 'package:flutterhole/bloc/api/status.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
-import 'package:flutterhole/model/status.dart';
+import 'package:flutterhole/model/api/status.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

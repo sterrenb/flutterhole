@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
-import 'package:flutterhole/model/forward_destinations.dart';
+import 'package:flutterhole/model/api/forward_destinations.dart';
 import 'package:flutterhole/widget/home/indicator.dart';
 import 'package:flutterhole/widget/home/pi_chart.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';

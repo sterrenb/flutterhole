@@ -16,6 +16,16 @@ enum QueryType {
   UNKN,
 }
 
+QueryType stringToQueryType(String json) {
+  for (QueryType type in QueryType.values) {
+    if (type.toString().contains(json
+        .split(' ')
+        .first)) return type;
+  }
+
+  return QueryType.values.last;
+}
+
 enum QueryStatus {
   BlockedWithGravity,
   Forwarded,
@@ -64,7 +74,7 @@ class Query extends Equatable {
   factory Query.fromJson(List<dynamic> json) =>
       Query(
         time: DateTime.fromMillisecondsSinceEpoch(int.parse(json[0] + '000')),
-        queryType: _stringToQueryType(json[1]),
+        queryType: stringToQueryType(json[1]),
         entry: json[2],
         client: json[3],
         queryStatus: _stringToQueryStatus(json[4]),
@@ -79,14 +89,6 @@ class Query extends Equatable {
       return DnsSecStatus.values.last;
 
     return DnsSecStatus.values[index - 1];
-  }
-
-  static QueryType _stringToQueryType(String json) {
-    for (QueryType type in QueryType.values) {
-      if (type.toString().contains(json)) return type;
-    }
-
-    return QueryType.values.last;
   }
 
   // https://github.com/pi-hole/AdminLTE/blob/44aff727e59d129e6201341caa1d74c8b2954bd2/scripts/pi-hole/js/queries.js#L181

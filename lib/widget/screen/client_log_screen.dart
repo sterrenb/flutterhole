@@ -13,7 +13,8 @@ class ClientLogScreen extends StatelessWidget {
         title: 'Logs for $client',
         withDrawer: false,
         body: QueryLogBuilder(
-          client: client,
+          searchString: client,
+          filterType: FilterType.Client,
         ));
   }
 }

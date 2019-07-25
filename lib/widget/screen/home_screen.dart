@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole/widget/home/sum_builder.dart';
+import 'package:flutterhole/widget/home/summary_builder.dart';
 import 'package:flutterhole/widget/home/top_items_builder.dart';
 import 'package:flutterhole/widget/home/top_sources_builder.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
     return TabScaffold(
       title: 'Dashboard',
       children: <Widget>[
-        SumBuilder(),
+        SummaryBuilder(),
 //        SummaryBuilder(),
         TopSourcesBuilder(),
         TopItemsBuilder(),

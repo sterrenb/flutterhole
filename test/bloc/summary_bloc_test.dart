@@ -1,7 +1,7 @@
 import 'package:flutterhole/bloc/api/summary.dart';
 import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/base/state.dart';
-import 'package:flutterhole/model/summary.dart';
+import 'package:flutterhole/model/api/summary.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

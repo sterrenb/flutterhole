@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutterhole/bloc/api/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/base/state.dart';
-import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/widget/layout/dialog.dart';
 import 'package:flutterhole/widget/layout/icon_text_button.dart';
 

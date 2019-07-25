@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/status.dart';
 import 'package:flutterhole/model/pihole.dart';
-import 'package:flutterhole/model/status.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/local_storage.dart';
 import 'package:flutterhole/service/memory_tree.dart';
@@ -362,10 +362,10 @@ void main() {
       });
     });
 
-    group('Fetch', () {
+    group('fetchTopSources', () {
       test('returns TopSources on successful fetch', () async {
         dio.httpClientAdapter = MockAdapter.json(mockTopSources.toJson());
-        expect(client.Fetch(), completion(mockTopSources));
+        expect(client.fetchTopSources(), completion(mockTopSources));
       });
     });
 

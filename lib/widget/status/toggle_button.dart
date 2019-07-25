@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/status.dart';
 import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/base/state.dart';
-import 'package:flutterhole/model/status.dart';
+import 'package:flutterhole/model/api/status.dart';
 
 class ToggleButton extends StatelessWidget {
   const ToggleButton({

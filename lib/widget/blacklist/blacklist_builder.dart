@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/api/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/base/state.dart';
-import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
@@ -29,13 +31,13 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
     setState(() {
       _cache.remove(domain);
     });
-    whitelistBloc.dispatch(RemoveFromWhitelist(domain));
+    whitelistBloc.dispatch(Remove(domain));
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text("$domain removed"),
       action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
-            whitelistBloc.dispatch(AddToWhitelist(domain));
+            whitelistBloc.dispatch(Add(domain));
           }),
     ));
 //    setState(() {});
@@ -47,35 +49,36 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
     return BlocListener(
         bloc: whitelistBloc,
         listener: (context, state) {
-          if (state is WhitelistStateEmpty) {
-            whitelistBloc.dispatch(FetchWhitelist());
+          if (state is BlocStateEmpty<Whitelist>) {
+            whitelistBloc.dispatch(Fetch());
           }
 
-          if (state is WhitelistStateSuccess || state is WhitelistStateError) {
+          if (state is BlocStateSuccess<Whitelist> ||
+              state is BlocStateError<Whitelist>) {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
 
-            if (state is WhitelistStateSuccess) {
+            if (state is BlocStateSuccess<Whitelist>) {
               setState(() {
-                _cache = state.whitelist.list;
+                _cache = state.data.list;
               });
             }
           }
         },
         child: RefreshIndicator(
           onRefresh: () {
-            whitelistBloc.dispatch(FetchWhitelist());
+            whitelistBloc.dispatch(Fetch());
             return _refreshCompleter.future;
           },
           child: BlocBuilder(
               bloc: whitelistBloc,
               builder: (context, state) {
-                if (state is WhitelistStateSuccess ||
-                    (state is WhitelistStateLoading &&
+                if (state is BlocStateSuccess<Whitelist> ||
+                    (state is BlocStateLoading<Whitelist> &&
                         _cache != null &&
                         _cache.isNotEmpty)) {
-                  if (state is WhitelistStateSuccess) {
-                    _cache = state.whitelist.list;
+                  if (state is BlocStateSuccess<Whitelist>) {
+                    _cache = state.data.list;
                   }
                   return Scrollbar(
                     child: ListView(
@@ -102,7 +105,7 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
                   );
                 }
 
-                if (state is WhitelistStateError) {
+                if (state is BlocStateError<Whitelist>) {
                   return Center(
                     child: ListView(
                       children: <Widget>[
