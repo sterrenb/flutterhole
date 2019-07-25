@@ -1,5 +1,5 @@
+import 'package:flutterhole/bloc/base/api/query.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
-import 'package:flutterhole/bloc/base/pihole/query.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
@@ -23,36 +23,36 @@ main() {
   group('FetchQueries', () {
     test(
         'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateSuccess<List<Query>>] when Query repository returns Query',
-        () {
-      final List<Query> queries = [];
+            () {
+          final List<Query> queries = [];
 
-      when(queryRepository.get()).thenAnswer((_) => Future.value(queries));
+          when(queryRepository.get()).thenAnswer((_) => Future.value(queries));
 
-      expectLater(
-          queryBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<List<Query>>(),
-            BlocStateLoading<List<Query>>(),
-            BlocStateSuccess<List<Query>>(queries),
-          ]));
+          expectLater(
+              queryBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<List<Query>>(),
+                BlocStateLoading<List<Query>>(),
+                BlocStateSuccess<List<Query>>(queries),
+              ]));
 
-      queryBloc.dispatch(Fetch());
-    });
+          queryBloc.dispatch(Fetch());
+        });
 
     test(
         'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateError<List<Query>>] when Query repository throws PiholeException',
-        () {
+            () {
           when(queryRepository.get()).thenThrow(PiholeException());
 
-      expectLater(
-          queryBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<List<Query>>(),
-            BlocStateLoading<List<Query>>(),
-            BlocStateError<List<Query>>(PiholeException()),
-          ]));
+          expectLater(
+              queryBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<List<Query>>(),
+                BlocStateLoading<List<Query>>(),
+                BlocStateError<List<Query>>(PiholeException()),
+              ]));
 
           queryBloc.dispatch(Fetch());
-    });
+        });
   });
 }

@@ -1,5 +1,5 @@
+import 'package:flutterhole/bloc/base/api/summary.dart';
 import 'package:flutterhole/bloc/base/event.dart';
-import 'package:flutterhole/bloc/base/pihole/summary.dart';
 import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
@@ -26,34 +26,34 @@ main() {
   group('FetchSum', () {
     test(
         'emits [SumStateEmpty, SumStateLoading, SumStateSuccess] when repository returns Sum',
-        () {
-      when(sumRepository.get()).thenAnswer((_) => Future.value(mockSummary));
+            () {
+          when(sumRepository.get()).thenAnswer((_) => Future.value(mockSummary));
 
-      expectLater(
-          sumBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<Summary>(),
-            BlocStateLoading<Summary>(),
-            BlocStateSuccess<Summary>(mockSummary),
-          ]));
+          expectLater(
+              sumBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<Summary>(),
+                BlocStateLoading<Summary>(),
+                BlocStateSuccess<Summary>(mockSummary),
+              ]));
 
-      sumBloc.dispatch(Fetch());
-    });
+          sumBloc.dispatch(Fetch());
+        });
 
     test(
         'emits [SumStateEmpty, SumStateLoading, SumStateError] when home repository throws PiholeException',
-        () {
-      when(sumRepository.get()).thenThrow(PiholeException());
+            () {
+          when(sumRepository.get()).thenThrow(PiholeException());
 
-      expectLater(
-          sumBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<Summary>(),
-            BlocStateLoading<Summary>(),
-            BlocStateError<Summary>(PiholeException()),
-          ]));
+          expectLater(
+              sumBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<Summary>(),
+                BlocStateLoading<Summary>(),
+                BlocStateError<Summary>(PiholeException()),
+              ]));
 
-      sumBloc.dispatch(Fetch());
-    });
+          sumBloc.dispatch(Fetch());
+        });
   });
 }

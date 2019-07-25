@@ -1,8 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/base/api/query_types.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
-import 'package:flutterhole/bloc/base/pihole/query_types.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/widget/home/indicator.dart';
 import 'package:flutterhole/widget/home/pi_chart.dart';

@@ -362,10 +362,10 @@ void main() {
       });
     });
 
-    group('fetchTopSources', () {
+    group('Fetch', () {
       test('returns TopSources on successful fetch', () async {
         dio.httpClientAdapter = MockAdapter.json(mockTopSources.toJson());
-        expect(client.fetchTopSources(), completion(mockTopSources));
+        expect(client.Fetch(), completion(mockTopSources));
       });
     });
 

@@ -26,8 +26,8 @@ abstract class BaseBloc<T> extends Bloc<BlocEvent, BlocState> {
   Stream<BlocState> fetch() async* {
     yield BlocStateLoading<T>();
     try {
-      final generic = await repository.get();
-      yield BlocStateSuccess<T>(generic);
+      final data = await repository.get();
+      yield BlocStateSuccess<T>(data);
     } on PiholeException catch (e) {
       yield BlocStateError<T>(e);
     }

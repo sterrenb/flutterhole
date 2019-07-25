@@ -347,7 +347,7 @@ class PiholeClient {
     throw PiholeException(message: 'unexpected query response', e: response);
   }
 
-  Future<TopSources> fetchTopSources() async {
+  Future<TopSources> Fetch() async {
     Response response = await _getSecure({'getQuerySources': ''});
     if (response.data is String) {
       return TopSources.fromString(response.data);

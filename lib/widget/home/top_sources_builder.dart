@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/base/api/query.dart';
+import 'package:flutterhole/bloc/base/api/summary.dart';
+import 'package:flutterhole/bloc/base/api/top_sources.dart';
 import 'package:flutterhole/bloc/base/event.dart';
-import 'package:flutterhole/bloc/base/pihole/query.dart';
-import 'package:flutterhole/bloc/base/pihole/summary.dart';
 import 'package:flutterhole/bloc/base/state.dart';
-import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/model/top_sources.dart';
 import 'package:flutterhole/service/globals.dart';
@@ -40,24 +40,25 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
     return BlocListener(
       bloc: topSourcesBloc,
       listener: (context, state) {
-        if (state is TopSourcesStateEmpty) {
-          topSourcesBloc.dispatch(FetchTopSources());
+        if (state is BlocStateEmpty<TopSources>) {
+          topSourcesBloc.dispatch(Fetch());
         }
 
-        if (state is TopSourcesStateSuccess || state is TopSourcesStateError) {
+        if (state is BlocStateSuccess<TopSources> ||
+            state is BlocStateError<TopSources>) {
           _refreshCompleter?.complete();
           _refreshCompleter = Completer();
 
-          if (state is TopSourcesStateSuccess) {
+          if (state is BlocStateSuccess<TopSources>) {
             setState(() {
-              _cache = state.topSources;
+              _cache = state.data;
             });
           }
         }
       },
       child: RefreshIndicator(
         onRefresh: () {
-          topSourcesBloc.dispatch(FetchTopSources());
+          topSourcesBloc.dispatch(Fetch());
           summaryBloc.dispatch(Fetch());
           return _refreshCompleter.future;
         },
@@ -65,11 +66,11 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
           physics: AlwaysScrollableScrollPhysics(),
           child: BlocBuilder(
               bloc: topSourcesBloc,
-              builder: (BuildContext context, TopSourcesState state) {
-                if (state is TopSourcesStateSuccess ||
-                    state is TopSourcesStateLoading && _cache != null) {
-                  if (state is TopSourcesStateSuccess) {
-                    _cache = state.topSources;
+              builder: (BuildContext context, BlocState state) {
+                if (state is BlocStateSuccess<TopSources> ||
+                    state is BlocStateLoading<TopSources> && _cache != null) {
+                  if (state is BlocStateSuccess<TopSources>) {
+                    _cache = state.data;
                   }
 
                   List<Widget> items = [];
@@ -130,7 +131,7 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                   );
                 }
 
-                if (state is TopSourcesStateError) {
+                if (state is BlocStateError<TopSources>) {
                   return ErrorMessage(errorMessage: state.e.message);
                 }
 

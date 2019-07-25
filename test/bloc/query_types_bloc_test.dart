@@ -1,5 +1,5 @@
+import 'package:flutterhole/bloc/base/api/query_types.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
-import 'package:flutterhole/bloc/base/pihole/query_types.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
@@ -25,35 +25,35 @@ main() {
   group('FetchQueryTypes', () {
     test(
         'emits [BlocStateEmpty<QueryTypes>, BlocStateLoading<QueryTypes>, BlocStateSuccess<QueryTypes>] when repository returns QueryTypes',
-        () {
+            () {
           when(queryTypesRepository.get())
-          .thenAnswer((_) => Future.value(mockQueryTypes));
+              .thenAnswer((_) => Future.value(mockQueryTypes));
 
-      expectLater(
-          queryTypesBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<QueryTypes>(),
-            BlocStateLoading<QueryTypes>(),
-            BlocStateSuccess<QueryTypes>(mockQueryTypes),
-          ]));
+          expectLater(
+              queryTypesBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<QueryTypes>(),
+                BlocStateLoading<QueryTypes>(),
+                BlocStateSuccess<QueryTypes>(mockQueryTypes),
+              ]));
 
           queryTypesBloc.dispatch(Fetch());
-    });
+        });
 
     test(
         'emits [BlocStateEmpty<QueryTypes>, BlocStateLoading<QueryTypes>, BlocStateError<QueryTypes>] when home repository throws PiholeException',
-        () {
+            () {
           when(queryTypesRepository.get()).thenThrow(PiholeException());
 
-      expectLater(
-          queryTypesBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<QueryTypes>(),
-            BlocStateLoading<QueryTypes>(),
-            BlocStateError<QueryTypes>(PiholeException()),
-          ]));
+          expectLater(
+              queryTypesBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<QueryTypes>(),
+                BlocStateLoading<QueryTypes>(),
+                BlocStateError<QueryTypes>(PiholeException()),
+              ]));
 
           queryTypesBloc..dispatch(Fetch());
-    });
+        });
   });
 }

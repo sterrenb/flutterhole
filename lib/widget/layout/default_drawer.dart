@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/base/api/query.dart';
+import 'package:flutterhole/bloc/base/api/query_types.dart';
+import 'package:flutterhole/bloc/base/api/summary.dart';
+import 'package:flutterhole/bloc/base/api/top_sources.dart';
 import 'package:flutterhole/bloc/base/event.dart';
-import 'package:flutterhole/bloc/base/pihole/query.dart';
-import 'package:flutterhole/bloc/base/pihole/query_types.dart';
-import 'package:flutterhole/bloc/base/pihole/summary.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
-import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
@@ -68,7 +68,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
           onTap: () {
             BlocProvider.of<SummaryBloc>(context).dispatch(Fetch());
             BlocProvider.of<TopSourcesBloc>(context)
-                .dispatch(FetchTopSources());
+                .dispatch(Fetch());
             BlocProvider.of<QueryTypesBloc>(context).dispatch(Fetch());
             Globals.navigateTo(context, homePath);
           },

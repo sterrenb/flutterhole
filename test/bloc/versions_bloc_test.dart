@@ -1,4 +1,7 @@
-import 'package:flutterhole/bloc/versions/bloc.dart';
+import 'package:flutterhole/bloc/base/api/versions.dart';
+import 'package:flutterhole/bloc/base/event.dart';
+import 'package:flutterhole/bloc/base/state.dart';
+import 'package:flutterhole/model/versions.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -17,41 +20,41 @@ main() {
   });
 
   test('has a correct initialState', () {
-    expect(versionsBloc.initialState, VersionsStateEmpty());
+    expect(versionsBloc.initialState, BlocStateEmpty<Versions>());
   });
 
   group('FetchVersions', () {
     test(
-        'emits [VersionsStateEmpty, VersionsStateLoading, VersionsStateSuccess] when repository returns Versions',
+        'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateSuccess<Versions>] when repository returns Versions',
         () {
-      when(versionsRepository.getVersions())
+          when(versionsRepository.get())
           .thenAnswer((_) => Future.value(mockVersions));
 
       expectLater(
           versionsBloc.state,
           emitsInOrder([
-            VersionsStateEmpty(),
-            VersionsStateLoading(),
-            VersionsStateSuccess(mockVersions),
+            BlocStateEmpty<Versions>(),
+            BlocStateLoading<Versions>(),
+            BlocStateSuccess<Versions>(mockVersions),
           ]));
 
-      versionsBloc.dispatch(FetchVersions());
+          versionsBloc.dispatch(Fetch());
     });
 
     test(
-        'emits [VersionsStateEmpty, VersionsStateLoading, VersionsStateError] when home repository throws PiholeException',
+        'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateError<Versions>] when home repository throws PiholeException',
         () {
-      when(versionsRepository.getVersions()).thenThrow(PiholeException());
+          when(versionsRepository.get()).thenThrow(PiholeException());
 
       expectLater(
           versionsBloc.state,
           emitsInOrder([
-            VersionsStateEmpty(),
-            VersionsStateLoading(),
-            VersionsStateError(e: PiholeException()),
+            BlocStateEmpty<Versions>(),
+            BlocStateLoading<Versions>(),
+            BlocStateError<Versions>(PiholeException()),
           ]));
 
-      versionsBloc.dispatch(FetchVersions());
+          versionsBloc.dispatch(Fetch());
     });
   });
 }

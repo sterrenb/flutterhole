@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/base/api/versions.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
-import 'package:flutterhole/bloc/versions/bloc.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
@@ -26,7 +26,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
   Pihole _active;
 
   void _onTap(Pihole pihole) async {
-    BlocProvider.of<VersionsBloc>(context).dispatch(FetchVersions(pihole));
+    BlocProvider.of<VersionsBloc>(context).dispatch(FetchForPihole(pihole));
     final String message = await Globals.navigateTo(
       context,
       piholeEditPath(pihole),
@@ -159,9 +159,7 @@ class PiholeTile extends StatelessWidget {
       subtitle: Text(pihole.basePath),
       trailing: Icon(Icons.keyboard_arrow_right),
       leading: Icon(Icons.check,
-          color: active
-              ? _theme.accentColor
-              : Colors.black.withOpacity(0.0)),
+          color: active ? _theme.accentColor : Colors.black.withOpacity(0.0)),
       onTap: onTap,
       onLongPress: onLongPress,
     );

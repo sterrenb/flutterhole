@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutterhole/bloc/base/api/versions.dart';
+import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
-import 'package:flutterhole/bloc/versions/bloc.dart';
 import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/model/versions.dart';
 import 'package:flutterhole/service/browser.dart';
 import 'package:flutterhole/widget/layout/icon_text_button.dart';
 import 'package:flutterhole/widget/layout/list_tab.dart';
@@ -52,7 +54,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     if (_formKey.currentState.validate()) {
       setState(() {
         pihole = update;
-        BlocProvider.of<VersionsBloc>(context).dispatch(FetchVersions(update));
+        BlocProvider.of<VersionsBloc>(context).dispatch(FetchForPihole(update));
       });
     }
   }
@@ -306,8 +308,8 @@ class _HealthCheck extends StatelessWidget {
         builder: (context, state) {
           List<Widget> items = [];
 
-          if (state is VersionsStateSuccess) {
-            final versions = state.versions;
+          if (state is BlocStateSuccess<Versions>) {
+            final versions = state.data;
             items.addAll([
               _ListTile(
                 title: versions.coreCurrent,
@@ -326,14 +328,14 @@ class _HealthCheck extends StatelessWidget {
             ]);
           }
 
-          if (state is VersionsStateError) {
+          if (state is BlocStateError<Versions>) {
             items.add(ListTile(
               leading: Icon(Icons.error),
               title: Text(state.e.message),
             ));
           }
 
-          if (state is VersionsStateLoading) {
+          if (state is BlocStateLoading<Versions>) {
             items.add(Center(
               child: CircularProgressIndicator(),
             ));

@@ -1,5 +1,5 @@
+import 'package:flutterhole/bloc/base/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
-import 'package:flutterhole/bloc/base/pihole/forward_destinations.dart';
 import 'package:flutterhole/model/forward_destinations.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
@@ -28,36 +28,36 @@ main() {
   group('FetchForwardDestinations', () {
     test(
         'emits [BlocStateEmpty<ForwardDestinations>, BlocStateLoading<ForwardDestinations>, BlocStateSuccess<ForwardDestinations>] when repository returns ForwardDestinations',
-        () {
+            () {
           when(forwardDestinationsRepository.get())
-          .thenAnswer((_) => Future.value(mockForwardDestinations));
+              .thenAnswer((_) => Future.value(mockForwardDestinations));
 
-      expectLater(
-          forwardDestinationsBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<ForwardDestinations>(),
-            BlocStateLoading<ForwardDestinations>(),
-            BlocStateSuccess<ForwardDestinations>(mockForwardDestinations),
-          ]));
+          expectLater(
+              forwardDestinationsBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<ForwardDestinations>(),
+                BlocStateLoading<ForwardDestinations>(),
+                BlocStateSuccess<ForwardDestinations>(mockForwardDestinations),
+              ]));
 
           forwardDestinationsBloc.dispatch(Fetch());
-    });
+        });
 
     test(
         'emits [BlocStateEmpty<ForwardDestinations>, BlocStateLoading<ForwardDestinations>, BlocStateError<ForwardDestinations>] when home repository throws PiholeException',
-        () {
+            () {
           when(forwardDestinationsRepository.get()).thenThrow(
               PiholeException());
 
-      expectLater(
-          forwardDestinationsBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<ForwardDestinations>(),
-            BlocStateLoading<ForwardDestinations>(),
-            BlocStateError<ForwardDestinations>(PiholeException()),
-          ]));
+          expectLater(
+              forwardDestinationsBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<ForwardDestinations>(),
+                BlocStateLoading<ForwardDestinations>(),
+                BlocStateError<ForwardDestinations>(PiholeException()),
+              ]));
 
           forwardDestinationsBloc.dispatch(Fetch());
-    });
+        });
   });
 }

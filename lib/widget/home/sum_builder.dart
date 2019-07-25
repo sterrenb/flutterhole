@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/base/api/summary.dart';
 import 'package:flutterhole/bloc/base/event.dart';
-import 'package:flutterhole/bloc/base/pihole/summary.dart';
 import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/widget/home/forward_destinations_chart_builder.dart';

@@ -1,5 +1,5 @@
+import 'package:flutterhole/bloc/base/api/top_items.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
-import 'package:flutterhole/bloc/base/pihole/top_items.dart';
 import 'package:flutterhole/model/top_items.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
@@ -25,35 +25,35 @@ main() {
   group('FetchTopItems', () {
     test(
         'emits [BlocStateEmpty<TopItems>, BlocStateLoading<TopItems>, BlocStateSuccess<TopItems>] when repository returns TopItems',
-        () {
+            () {
           when(topItemsRepository.get())
-          .thenAnswer((_) => Future.value(mockTopItems));
+              .thenAnswer((_) => Future.value(mockTopItems));
 
-      expectLater(
-          topItemsBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<TopItems>(),
-            BlocStateLoading<TopItems>(),
-            BlocStateSuccess<TopItems>(mockTopItems),
-          ]));
+          expectLater(
+              topItemsBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<TopItems>(),
+                BlocStateLoading<TopItems>(),
+                BlocStateSuccess<TopItems>(mockTopItems),
+              ]));
 
           topItemsBloc.dispatch(Fetch());
-    });
+        });
 
     test(
         'emits [BlocStateEmpty<TopItems>, BlocStateLoading<TopItems>, BlocStateError<TopItems>] when home repository throws PiholeException',
-        () {
+            () {
           when(topItemsRepository.get()).thenThrow(PiholeException());
 
-      expectLater(
-          topItemsBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<TopItems>(),
-            BlocStateLoading<TopItems>(),
-            BlocStateError<TopItems>(PiholeException()),
-          ]));
+          expectLater(
+              topItemsBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<TopItems>(),
+                BlocStateLoading<TopItems>(),
+                BlocStateError<TopItems>(PiholeException()),
+              ]));
 
           topItemsBloc.dispatch(Fetch());
-    });
+        });
   });
 }
