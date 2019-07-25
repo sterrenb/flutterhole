@@ -375,5 +375,12 @@ void main() {
         expect(client.fetchVersions(), completion(mockVersions));
       });
     });
+
+    group('fetchQueriesOverTime', () {
+      test('returns QueriesOverTime on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(mockQueriesOverTime.toJson());
+        expect(client.fetchQueriesOverTime(), completion(mockQueriesOverTime));
+      });
+    });
   });
 }

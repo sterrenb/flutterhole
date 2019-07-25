@@ -1,137 +1,11 @@
-import 'package:flutterhole/model/api/blacklist.dart';
-import 'package:flutterhole/model/api/forward_destinations.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/api/queries_over_time.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/api/queries_over_time.dart';
-import 'package:flutterhole/model/api/query.dart';
-import 'package:flutterhole/model/api/status.dart';
-import 'package:flutterhole/model/api/summary.dart';
-import 'package:flutterhole/model/api/top_items.dart';
-import 'package:flutterhole/model/api/top_sources.dart';
-import 'package:flutterhole/model/api/versions.dart';
-import 'package:flutterhole/model/api/whitelist.dart';
-import 'package:flutterhole/model/pihole.dart';
-
-final mockPiholes = [
-  Pihole(),
-  Pihole(title: 'second', host: 'example.com'),
-  Pihole(title: 'third', host: 'pi-hole.net'),
-];
-
-final mockStatusEnabled = Status(enabled: true);
-final mockStatusDisabled = Status(enabled: false);
-
-final mockWhitelist = Whitelist(['a.com', 'b.org', 'c.net']);
-final mockBlacklist = Blacklist(exact: [
-  BlacklistItem.exact(entry: 'exact.com'),
-  BlacklistItem.exact(entry: 'pi-hole.net'),
-], wildcard: [
-  BlacklistItem.wildcard(entry: 'wildcard.com'),
-  BlacklistItem.regex(entry: 'regex')
-]);
-
-final mockSummary = Summary(
-    domainsBeingBlocked: 0,
-    dnsQueriesToday: 1,
-    adsBlockedToday: 2,
-    adsPercentageToday: 2.345,
-    uniqueDomains: 3,
-    queriesForwarded: 4,
-    queriesCached: 5,
-    clientsEverSeen: 6,
-    uniqueClients: 7,
-    dnsQueriesAllTypes: 8,
-    replyNodata: 9,
-    replyNxdomain: 10,
-    replyCname: 11,
-    replyIp: 12,
-    privacyLevel: 13,
-    status: 'enabled',
-    gravityLastUpdated: GravityLastUpdated(
-        fileExists: true,
-        absolute: 14,
-        relative: Relative(days: '15', hours: '16', minutes: '17')));
-
-final TopSources mockTopSources = TopSources({
-  '10.0.1.1': 55,
-  '10.0.1.2': 42,
-  'windows|10.0.1.3': 33,
-  'osx|10.0.1.4': 24,
-  'zenwatch3|10.0.1.5': 11,
-});
-
-final Versions mockVersions = Versions(
-    coreUpdate: true,
-    webUpdate: false,
-    ftlUpdate: false,
-    coreCurrent: 'v1.2.3',
-    webCurrent: 'v1.2.3',
-    ftlCurrent: 'v1.2.6',
-    coreLatest: "",
-    webLatest: "",
-    ftlLatest: "",
-    coreBranch: 'master',
-    webBranch: 'master',
-    ftlBranch: 'master');
-
-final QueryTypes mockQueryTypes = QueryTypes({
-  "A (IPv4)": 58.46,
-  "AAAA (IPv6)": 10.12,
-  "ANY": 10.50,
-  "SRV": 0.45,
-  "SOA": 9.50,
-  "PTR": 2.97,
-  "TXT": 8.0,
-});
-
-final TopItems mockTopItems = TopItems(
-  {
-    "clients1.google.com": 1005,
-    "0.debian.pool.ntp.org": 728,
-    "1.debian.pool.ntp.org": 728,
-    "2.debian.pool.ntp.org": 728,
-    "3.debian.pool.ntp.org": 728,
-    "www.google.com": 222,
-    "semanticlocation-pa.googleapis.com": 186,
-    "connectivitycheck.gstatic.com": 179,
-    "play.googleapis.com": 155,
-    "time.apple.com": 101
-  },
-  {
-    "indigo.tvaddons.co.uilenstede4.duwo.lan": 98,
-    "lw10-10815.local.nl.bol.com": 32,
-    "wpad.local.nl.bol.com": 27,
-    "wpad.uilenstede4.duwo.lan": 24,
-    "ads.google.com": 18,
-    "_ldap._tcp.papendorp._sites.dc._msdcs.local.nl.bol.com": 13,
-    "_ldap._tcp.default-first-site-name._sites.dc._msdcs.local.nl.bol.com": 13,
-    "mobile.pipe.aria.millisoft.com": 11,
-    "wpad.duwo.lan": 8,
-    "update.openelec.tv.uilenstede4.duwo.lan": 8
-  },
-);
-
-final ForwardDestinations mockForwardDestinations = ForwardDestinations({
-  "blocklist|blocklist": 9.7,
-  "cache|cache": 14.37,
-  "dns.google|8.8.4.4": 40.41,
-  "dns.google|8.8.8.8": 35.53
-});
-
-final List<Query> mockQueries = [
-  Query(
-      time: DateTime(0),
-      queryType: QueryType.A,
-      entry: 'test.com',
-      client: 'localhost',
-      queryStatus: QueryStatus.Cached,
-      dnsSecStatus: DnsSecStatus.Secure),
-  Query(
-      time: DateTime(1),
-      queryType: QueryType.PTR,
-      entry: 'example.org',
-      client: 'remotehost',
-      queryStatus: QueryStatus.Unknown,
-      dnsSecStatus: DnsSecStatus.Bogus),
-];
+import 'package:flutterhole/widget/home/chart/my_line_chart.dart';
+import 'package:flutterhole/widget/layout/error_message.dart';
 
 final mockQueriesOverTime = QueriesOverTime(adsOverTime: {
   '1563991500000': 1,
@@ -416,3 +290,62 @@ final mockQueriesOverTime = QueriesOverTime(adsOverTime: {
   '1564074300000': 63,
   '1564074900000': 69
 });
+
+class QueriesOverTimeChartBuilder extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final QueriesOverTimeBloc queriesOverTimeBloc =
+        BlocProvider.of<QueriesOverTimeBloc>(context);
+    return BlocBuilder(
+      bloc: queriesOverTimeBloc,
+      builder: (context, state) {
+        if (state is BlocStateSuccess<QueriesOverTime>) {
+          final queriesOverTime = state.data;
+
+          List<FlSpot> domainSpots = [];
+          List<FlSpot> adSpots = [];
+          double maxY = 0;
+
+          int index = 0;
+          queriesOverTime.domainsOverTime.forEach((String str, int hits) {
+            if (hits.toDouble() > maxY) maxY = hits.toDouble();
+
+            domainSpots.add(FlSpot(
+                index.toDouble() *
+                    (2400 / queriesOverTime.domainsOverTime.length),
+                hits.toDouble()));
+            index++;
+          });
+
+          index = 0;
+          queriesOverTime.adsOverTime.forEach((String str, int hits) {
+            if (hits.toDouble() > maxY) maxY = hits.toDouble();
+
+            adSpots.add(FlSpot(
+                index.toDouble() * (2400 / queriesOverTime.adsOverTime.length),
+                hits.toDouble()));
+            index++;
+          });
+
+          return MyLineChart(
+            greenSpots: domainSpots,
+//            greenSpots: domainSpots..removeLast(),
+            redSpots: adSpots,
+//            redSpots: adSpots..removeLast(),
+            maxY: maxY,
+          );
+        }
+        if (state is BlocStateError<QueriesOverTime>) {
+          return ErrorMessage(errorMessage: state.e.message);
+        }
+        return Center(
+            child: Column(children: <Widget>[
+          Text('Oh no!'),
+          CircularProgressIndicator(),
+          Text(state.toString()),
+          Text(state.runtimeType.toString()),
+        ]));
+      },
+    );
+  }
+}

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/api/forward_destinations.dart';
+import 'package:flutterhole/bloc/api/queries_over_time.dart';
 import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/api/query_types.dart';
 import 'package:flutterhole/bloc/api/summary.dart';
@@ -48,6 +49,9 @@ void main() async {
   final VersionsBloc versionsBloc =
   VersionsBloc(VersionsRepository(Globals.client));
 
+  final QueriesOverTimeBloc queriesOverTimeBloc =
+  QueriesOverTimeBloc(QueriesOverTimeRepository(Globals.client));
+
   final QueryTypesBloc queryTypesBloc =
   QueryTypesBloc(QueryTypesRepository(Globals.client));
 
@@ -75,6 +79,7 @@ void main() async {
     statusBloc.dispatch(Fetch());
     summaryBloc.dispatch(Fetch());
     versionsBloc.dispatch(Fetch());
+    queriesOverTimeBloc.dispatch(Fetch());
     queryTypesBloc..dispatch(Fetch());
     forwardDestinationsBloc.dispatch(Fetch());
     topSourcesBloc.dispatch(Fetch());
@@ -114,6 +119,8 @@ void main() async {
       BlocProvider<PiholeBloc>(builder: (context) => piholeBloc),
       BlocProvider<SummaryBloc>(builder: (context) => summaryBloc),
       BlocProvider<VersionsBloc>(builder: (context) => versionsBloc),
+      BlocProvider<QueriesOverTimeBloc>(
+          builder: (context) => queriesOverTimeBloc),
       BlocProvider<QueryTypesBloc>(builder: (context) => queryTypesBloc),
       BlocProvider<ForwardDestinationsBloc>(
           builder: (context) => forwardDestinationsBloc),

@@ -353,8 +353,7 @@ class PiholeClient {
 
   Future<List<Query>> fetchQueriesForQueryType(QueryType type) async {
     print('fetchQueriesForQueryType $type');
-    Response response =
-    await _getSecure(
+    Response response = await _getSecure(
         {'getAllQueries': '', 'querytype': QueryType.values.indexOf(type) + 1});
     if (response.data is Map<String, dynamic>) {
       try {
@@ -418,7 +417,7 @@ class PiholeClient {
   }
 
   Future<QueriesOverTime> fetchQueriesOverTime() async {
-    Response response = await _getSecure({'overTimeData10mins': ''});
+    Response response = await _get({'overTimeData10mins': ''});
     if (response.data is String) {
       return QueriesOverTime.fromString(response.data);
     } else {
