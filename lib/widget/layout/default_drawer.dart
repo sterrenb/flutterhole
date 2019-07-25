@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/base/event.dart';
+import 'package:flutterhole/bloc/base/pihole/summary.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
-import 'package:flutterhole/bloc/generic/event.dart';
-import 'package:flutterhole/bloc/generic/pihole/bloc.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/query_types/bloc.dart';

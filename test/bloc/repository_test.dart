@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:flutterhole/bloc/base/pihole/summary.dart';
+import 'package:flutterhole/bloc/base/pihole/top_items.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
 import 'package:flutterhole/bloc/forward_destinations/bloc.dart';
-import 'package:flutterhole/bloc/generic/pihole/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/query_types/bloc.dart';
 import 'package:flutterhole/bloc/status/bloc.dart';
-import 'package:flutterhole/bloc/top_items/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/model/blacklist.dart';
@@ -33,7 +33,7 @@ main() {
     });
 
     test('get', () {
-      when(client.Fetch()).thenAnswer((_) => Future.value(mockSummary));
+      when(client.fetchSummary()).thenAnswer((_) => Future.value(mockSummary));
       expect(summaryRepository.get(), completion(mockSummary));
     });
   });
@@ -77,7 +77,7 @@ main() {
     test('getTopItems', () {
       when(client.fetchTopItems())
           .thenAnswer((_) => Future.value(mockTopItems));
-      expect(topItemsRepository.getTopItems(), completion(mockTopItems));
+      expect(topItemsRepository.get(), completion(mockTopItems));
     });
   });
 

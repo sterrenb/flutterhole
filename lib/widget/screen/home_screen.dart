@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/widget/home/sum_builder.dart';
-import 'package:flutterhole/widget/home/top_domains_builder.dart';
+import 'package:flutterhole/widget/home/top_items_builder.dart';
 import 'package:flutterhole/widget/home/top_sources_builder.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 
@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
         SumBuilder(),
 //        SummaryBuilder(),
         TopSourcesBuilder(),
-        TopDomainsBuilder(),
+        TopItemsBuilder(),
       ],
       items: [
         BottomNavigationBarItem(

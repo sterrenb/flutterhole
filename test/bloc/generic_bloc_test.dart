@@ -1,13 +1,13 @@
-import 'package:flutterhole/bloc/generic/bloc.dart';
-import 'package:flutterhole/bloc/generic/repository.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/bloc/base/repository.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-class MockGenericRepository extends Mock implements GenericRepository<int> {}
+class MockGenericRepository extends Mock implements BaseRepository<int> {}
 
-class IntBloc extends GenericBloc<int> {
-  IntBloc(GenericRepository<int> genericRepository) : super(genericRepository);
+class IntBloc extends BaseBloc<int> {
+  IntBloc(BaseRepository<int> genericRepository) : super(genericRepository);
 }
 
 main() {
@@ -20,7 +20,7 @@ main() {
   });
 
   test('has a correct initialState', () {
-    expect(intBloc.initialState, GenericStateEmpty<int>());
+    expect(intBloc.initialState, BlocStateEmpty<int>());
   });
 
   group('FetchGeneric', () {
@@ -32,9 +32,9 @@ main() {
       expectLater(
           intBloc.state,
           emitsInOrder([
-            GenericStateEmpty<int>(),
-            GenericStateLoading<int>(),
-            GenericStateSuccess<int>(5),
+            BlocStateEmpty<int>(),
+            BlocStateLoading<int>(),
+            BlocStateSuccess<int>(5),
           ]));
 
       intBloc.dispatch(Fetch());
@@ -48,9 +48,9 @@ main() {
       expectLater(
           intBloc.state,
           emitsInOrder([
-            GenericStateEmpty<int>(),
-            GenericStateLoading<int>(),
-            GenericStateError<int>(PiholeException()),
+            BlocStateEmpty<int>(),
+            BlocStateLoading<int>(),
+            BlocStateError<int>(PiholeException()),
           ]));
 
       intBloc.dispatch(Fetch());

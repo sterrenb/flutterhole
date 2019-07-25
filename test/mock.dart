@@ -1,10 +1,3 @@
-import 'package:flutterhole/bloc/blacklist/bloc.dart';
-import 'package:flutterhole/bloc/generic/pihole/bloc.dart';
-import 'package:flutterhole/bloc/query/bloc.dart';
-import 'package:flutterhole/bloc/status/bloc.dart';
-import 'package:flutterhole/bloc/top_items/bloc.dart';
-import 'package:flutterhole/bloc/top_sources/bloc.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/model/forward_destinations.dart';
 import 'package:flutterhole/model/pihole.dart';
@@ -15,7 +8,6 @@ import 'package:flutterhole/model/top_items.dart';
 import 'package:flutterhole/model/top_sources.dart';
 import 'package:flutterhole/model/versions.dart';
 import 'package:flutterhole/model/whitelist.dart';
-import 'package:mockito/mockito.dart';
 
 final mockPiholes = [
   Pihole(),
@@ -139,54 +131,3 @@ final List<Query> mockQueries = [
       queryStatus: QueryStatus.Unknown,
       dnsSecStatus: DnsSecStatus.Bogus),
 ];
-
-class MockSummaryBloc extends Mock implements SummaryBloc {
-//  @override
-//  Stream<GenericState> mapEventToState(
-//      GenericEvent event,
-//      ) async* {
-//
-//  }
-}
-
-class MockTopSourcesBloc extends Mock implements TopSourcesBloc {
-  @override
-  Stream<TopSourcesState> mapEventToState(TopSourcesEvent event) async* {
-    yield TopSourcesStateSuccess(mockTopSources);
-  }
-}
-
-class MockTopItemsBloc extends Mock implements TopItemsBloc {
-  @override
-  Stream<TopItemsState> mapEventToState(TopItemsEvent event) async* {
-    yield TopItemsStateSuccess(mockTopItems);
-  }
-}
-
-class MockQueryBloc extends Mock implements QueryBloc {
-  @override
-  Stream<QueryState> mapEventToState(QueryEvent event) async* {
-    yield QueryStateSuccess(mockQueries);
-  }
-}
-
-class MockStatusBloc extends Mock implements StatusBloc {
-  @override
-  Stream<StatusState> mapEventToState(StatusEvent event) async* {
-    yield StatusStateSuccess(mockStatusEnabled);
-  }
-}
-
-class MockWhitelistBloc extends Mock implements WhitelistBloc {
-  @override
-  Stream<WhitelistState> mapEventToState(WhitelistEvent event) async* {
-    yield WhitelistStateSuccess(mockWhitelist);
-  }
-}
-
-class MockBlacklistBloc extends Mock implements BlacklistBloc {
-  @override
-  Stream<BlacklistState> mapEventToState(BlacklistEvent event) async* {
-    yield BlacklistStateSuccess(mockBlacklist);
-  }
-}

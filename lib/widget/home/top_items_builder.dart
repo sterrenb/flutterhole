@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/generic/event.dart';
-import 'package:flutterhole/bloc/generic/pihole/bloc.dart';
-import 'package:flutterhole/bloc/generic/state.dart';
-import 'package:flutterhole/bloc/top_items/bloc.dart';
+import 'package:flutterhole/bloc/base/event.dart';
+import 'package:flutterhole/bloc/base/pihole/summary.dart';
+import 'package:flutterhole/bloc/base/pihole/top_items.dart';
+import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/model/top_items.dart';
 import 'package:flutterhole/service/globals.dart';
@@ -14,12 +14,12 @@ import 'package:flutterhole/widget/home/frequency_tile.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
-class TopDomainsBuilder extends StatefulWidget {
+class TopItemsBuilder extends StatefulWidget {
   @override
-  _TopDomainsBuilderState createState() => _TopDomainsBuilderState();
+  _TopItemsBuilderState createState() => _TopItemsBuilderState();
 }
 
-class _TopDomainsBuilderState extends State<TopDomainsBuilder> {
+class _TopItemsBuilderState extends State<TopItemsBuilder> {
   Completer _refreshCompleter;
 
   TopItems _cache;
@@ -38,34 +38,35 @@ class _TopDomainsBuilderState extends State<TopDomainsBuilder> {
     return BlocListener(
         bloc: topItemsBloc,
         listener: (context, state) {
-          if (state is TopItemsStateEmpty) {
-            topItemsBloc.dispatch(FetchTopItems());
+          if (state is BlocStateEmpty<TopItems>) {
+            topItemsBloc.dispatch(Fetch());
           }
 
-          if (state is TopItemsStateSuccess || state is TopItemsStateError) {
+          if (state is BlocStateSuccess<TopItems> ||
+              state is BlocStateError<TopItems>) {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
 
-            if (state is TopItemsStateSuccess) {
+            if (state is BlocStateSuccess<TopItems>) {
               setState(() {
-                _cache = state.topItems;
+                _cache = state.data;
               });
             }
           }
         },
         child: RefreshIndicator(
           onRefresh: () {
-            topItemsBloc.dispatch(FetchTopItems());
+            topItemsBloc.dispatch(Fetch());
             summaryBloc.dispatch(Fetch());
             return _refreshCompleter.future;
           },
           child: BlocBuilder(
             bloc: topItemsBloc,
             builder: (context, state) {
-              if (state is TopItemsStateSuccess ||
-                  state is TopItemsStateLoading && _cache != null) {
-                if (state is TopItemsStateSuccess) {
-                  _cache = state.topItems;
+              if (state is BlocStateSuccess<TopItems> ||
+                  state is BlocStateLoading<TopItems> && _cache != null) {
+                if (state is BlocStateSuccess<TopItems>) {
+                  _cache = state.data;
                 }
 
                 List<Widget> topQueryItems = [];
@@ -74,8 +75,8 @@ class _TopDomainsBuilderState extends State<TopDomainsBuilder> {
                     bloc: summaryBloc,
                     builder: (context, state) {
                       int total = 0;
-                      if (state is GenericStateSuccess<Summary>) {
-                        total = state.generic.dnsQueriesToday;
+                      if (state is BlocStateSuccess<Summary>) {
+                        total = state.data.dnsQueriesToday;
                       }
 
                       return FrequencyTile(
@@ -96,8 +97,8 @@ class _TopDomainsBuilderState extends State<TopDomainsBuilder> {
                     bloc: summaryBloc,
                     builder: (context, state) {
                       int total = 0;
-                      if (state is GenericStateSuccess<Summary>) {
-                        total = state.generic.adsBlockedToday;
+                      if (state is BlocStateSuccess<Summary>) {
+                        total = state.data.adsBlockedToday;
                       }
 
                       return FrequencyTile(
@@ -168,7 +169,7 @@ class _TopDomainsBuilderState extends State<TopDomainsBuilder> {
                 );
               }
 
-              if (state is TopItemsStateError) {
+              if (state is BlocStateError<TopItems>) {
                 return ListView(
                     children: [ErrorMessage(errorMessage: state.e.message)]);
               }

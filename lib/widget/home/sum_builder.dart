@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/generic/event.dart';
-import 'package:flutterhole/bloc/generic/pihole/bloc.dart';
-import 'package:flutterhole/bloc/generic/state.dart';
+import 'package:flutterhole/bloc/base/event.dart';
+import 'package:flutterhole/bloc/base/pihole/summary.dart';
+import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/widget/home/forward_destinations_chart_builder.dart';
 import 'package:flutterhole/widget/home/query_types_chart_builder.dart';
@@ -35,17 +35,17 @@ class _SumBuilderState extends State<SumBuilder> {
     return BlocListener(
       bloc: sumBloc,
       listener: (context, state) {
-        if (state is GenericStateEmpty) {
+        if (state is BlocStateEmpty) {
           sumBloc.dispatch(Fetch());
         }
 
-        if (state is GenericStateSuccess || state is GenericStateError) {
+        if (state is BlocStateSuccess || state is BlocStateError) {
           _refreshCompleter?.complete();
           _refreshCompleter = Completer();
 
-          if (state is GenericStateSuccess) {
+          if (state is BlocStateSuccess) {
             setState(() {
-              _cache = state.generic;
+              _cache = state.data;
             });
           }
         }
@@ -58,11 +58,11 @@ class _SumBuilderState extends State<SumBuilder> {
           child: SingleChildScrollView(
             child: BlocBuilder(
                 bloc: sumBloc,
-                builder: (BuildContext context, GenericState state) {
-                  if (state is GenericStateSuccess ||
-                      state is GenericStateLoading && _cache != null) {
-                    if (state is GenericStateSuccess) {
-                      _cache = state.generic;
+                builder: (BuildContext context, BlocState state) {
+                  if (state is BlocStateSuccess ||
+                      state is BlocStateLoading && _cache != null) {
+                    if (state is BlocStateSuccess) {
+                      _cache = state.data;
                     }
 
                     final int tint = _theme.darkMode ? 700 : 500;
@@ -102,7 +102,7 @@ class _SumBuilderState extends State<SumBuilder> {
                     );
                   }
 
-                  if (state is GenericStateError) {
+                  if (state is BlocStateError) {
                     return ErrorMessage(errorMessage: state.e.message);
                   }
 

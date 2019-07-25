@@ -186,16 +186,16 @@ void main() {
     });
   });
 
-  group('Fetch', () {
-    test('returns Summary on successful response', () async {
-      dio.httpClientAdapter = MockAdapter.json(mockSummary.toJson());
-      expect(client.Fetch(), completion(mockSummary));
+  group('fetchTopItems', () {
+    test('returns TopItems on successful response', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockTopItems.toJson());
+      expect(client.fetchTopItems(), completion(mockTopItems));
     });
 
     test('throws PiholeException on plaintext response', () async {
       dio.httpClientAdapter = MockAdapter.string('<!-- hello -->');
       try {
-        await client.Fetch();
+        await client.fetchTopItems();
         fail('exception not thrown');
       } on PiholeException catch (e) {
         expect(e.message.contains('unexpected plaintext response'), isTrue);

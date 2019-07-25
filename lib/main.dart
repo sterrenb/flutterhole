@@ -4,8 +4,9 @@ import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/base/pihole/summary.dart';
+import 'package:flutterhole/bloc/base/pihole/top_items.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
-import 'package:flutterhole/bloc/generic/pihole/bloc.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
@@ -21,10 +22,9 @@ import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/app.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 
+import 'bloc/base/event.dart';
 import 'bloc/forward_destinations/bloc.dart';
-import 'bloc/generic/event.dart';
 import 'bloc/query_types/bloc.dart';
-import 'bloc/top_items/bloc.dart';
 
 void main() async {
   Globals.tree = MemoryTree();
@@ -78,7 +78,7 @@ void main() async {
     queryTypesBloc.dispatch(FetchQueryTypes());
     forwardDestinationsBloc.dispatch(FetchForwardDestinations());
     topSourcesBloc.dispatch(FetchTopSources());
-    topItemsBloc.dispatch(FetchTopItems());
+    topItemsBloc.dispatch(Fetch());
     queryBloc.dispatch(FetchQueries());
     whitelistBloc.dispatch(FetchWhitelist());
     blacklistBloc.dispatch(FetchBlacklist());
