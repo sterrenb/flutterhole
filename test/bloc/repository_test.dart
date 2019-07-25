@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:flutterhole/bloc/base/pihole/forward_destinations.dart';
+import 'package:flutterhole/bloc/base/pihole/query.dart';
+import 'package:flutterhole/bloc/base/pihole/query_types.dart';
 import 'package:flutterhole/bloc/base/pihole/summary.dart';
 import 'package:flutterhole/bloc/base/pihole/top_items.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
-import 'package:flutterhole/bloc/forward_destinations/bloc.dart';
-import 'package:flutterhole/bloc/query/bloc.dart';
-import 'package:flutterhole/bloc/query_types/bloc.dart';
 import 'package:flutterhole/bloc/status/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
@@ -48,7 +48,7 @@ main() {
     test('getForwardDestinations', () {
       when(client.fetchForwardDestinations())
           .thenAnswer((_) => Future.value(mockForwardDestinations));
-      expect(forwardDestinationsRepository.getForwardDestinations(),
+      expect(forwardDestinationsRepository.get(),
           completion(mockForwardDestinations));
     });
   });
@@ -63,7 +63,7 @@ main() {
     test('getQueryTypes', () {
       when(client.fetchQueryTypes())
           .thenAnswer((_) => Future.value(mockQueryTypes));
-      expect(queryTypesRepository.getQueryTypes(), completion(mockQueryTypes));
+      expect(queryTypesRepository.get(), completion(mockQueryTypes));
     });
   });
 
@@ -88,20 +88,20 @@ main() {
       queryRepository = QueryRepository(client);
     });
 
-    test('initial cache is empty', () {
-      expect(queryRepository.cache, []);
-    });
+//    test('initial cache is empty', () {
+//      expect(queryRepository.cache, []);
+//    });
 
     test('getQueries', () {
       when(client.fetchQueries()).thenAnswer((_) => Future.value(mockQueries));
 
-      expect(queryRepository.getQueries(), completion(mockQueries));
+      expect(queryRepository.get(), completion(mockQueries));
     });
 
     test('getQueriesForClient', () {
       when(client.fetchQueriesForClient('client'))
           .thenAnswer((_) => Future.value(mockQueries));
-      expect(queryRepository.getQueriesForClient('client'),
+      expect(queryRepository.getForClient('client'),
           completion(mockQueries));
     });
   });

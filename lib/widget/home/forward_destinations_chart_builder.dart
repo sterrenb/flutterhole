@@ -1,7 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/forward_destinations/bloc.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/bloc/base/pihole/forward_destinations.dart';
 import 'package:flutterhole/model/forward_destinations.dart';
 import 'package:flutterhole/widget/home/indicator.dart';
 import 'package:flutterhole/widget/home/pi_chart.dart';
@@ -89,18 +90,16 @@ class ForwardDestinationsChartBuilder extends StatelessWidget {
     return BlocBuilder(
       bloc: forwardDestinationsBloc,
       builder: (context, state) {
-        if (state is ForwardDestinationsStateSuccess) {
+        if (state is BlocStateSuccess<ForwardDestinations>) {
           final screenWidth = MediaQuery.of(context).size.width;
           return PiChart(
             title: 'Forward destinations',
             centerSpaceRadius: screenWidth / 8,
-            sections:
-            _sectionsFromForwardDestinations(state.forwardDestinations, 50),
-            indicators: _indicatorsFromForwardDestinations(
-                context, state.forwardDestinations),
+            sections: _sectionsFromForwardDestinations(state.data, 50),
+            indicators: _indicatorsFromForwardDestinations(context, state.data),
           );
         }
-        if (state is ForwardDestinationsStateError) {
+        if (state is BlocStateError<ForwardDestinations>) {
           return ErrorMessage(errorMessage: state.e.message);
         }
         return Center(child: CircularProgressIndicator());

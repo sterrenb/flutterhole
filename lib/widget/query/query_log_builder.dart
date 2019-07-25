@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/bloc/base/pihole/query.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
-import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/model/query.dart';
@@ -76,7 +77,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
   Whitelist _whitelistCache;
   Blacklist _blacklistCache;
 
-  QueryEvent _fetchEvent;
+  BlocEvent _fetchEvent;
 
   @override
   void initState() {
@@ -84,10 +85,10 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
     _refreshCompleter = Completer();
     _queryCache = [];
 
-    _fetchEvent = FetchQueries();
+    _fetchEvent = Fetch();
 
     if (widget.client != null) {
-      _fetchEvent = FetchQueriesForClient(widget.client);
+      _fetchEvent = FetchForClient(widget.client);
     }
   }
 
@@ -101,17 +102,18 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
         BlocListener(
             bloc: queryBloc,
             listener: (context, state) {
-              if (state is QueryStateEmpty) {
+              if (state is BlocStateEmpty<List<Query>>) {
                 queryBloc.dispatch(_fetchEvent);
               }
 
-              if (state is QueryStateSuccess || state is QueryStateError) {
+              if (state is BlocStateSuccess<List<Query>> ||
+                  state is BlocStateError<List<Query>>) {
                 _refreshCompleter?.complete();
                 _refreshCompleter = Completer();
 
-                if (state is QueryStateSuccess) {
+                if (state is BlocStateSuccess<List<Query>>) {
                   setState(() {
-                    _queryCache = state.queries;
+                    _queryCache = state.data;
                   });
                 }
               }
@@ -146,13 +148,13 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
         },
         child: BlocBuilder(
             bloc: queryBloc,
-            builder: (BuildContext context, QueryState state) {
-              if (state is QueryStateSuccess ||
-                  state is QueryStateLoading &&
+            builder: (BuildContext context, BlocState state) {
+              if (state is BlocStateSuccess<List<Query>> ||
+                  state is BlocStateLoading<List<Query>> &&
                       _queryCache != null &&
                       _queryCache.length > 0) {
-                if (state is QueryStateSuccess) {
-                  _queryCache = state.queries;
+                if (state is BlocStateSuccess<List<Query>>) {
+                  _queryCache = state.data;
                 }
 
                 List<Query> filteredItems = [];
@@ -280,7 +282,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
                 );
               }
 
-              if (state is QueryStateError) {
+              if (state is BlocStateError<List<Query>>) {
                 return ErrorMessage(errorMessage: state.e.message);
               }
 

@@ -1,7 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/query_types/bloc.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/bloc/base/pihole/query_types.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/widget/home/indicator.dart';
 import 'package:flutterhole/widget/home/pi_chart.dart';
@@ -70,16 +71,16 @@ class QueryTypesChartBuilder extends StatelessWidget {
     return BlocBuilder(
       bloc: queryTypesBloc,
       builder: (context, state) {
-        if (state is QueryTypesStateSuccess) {
+        if (state is BlocStateSuccess<QueryTypes>) {
           final screenWidth = MediaQuery.of(context).size.width;
           return PiChart(
             title: 'Query Types',
             centerSpaceRadius: screenWidth / 8,
-            sections: _sectionsFromQueryTypes(state.queryTypes, 50),
-            indicators: _indicatorsFromQueryTypes(context, state.queryTypes),
+            sections: _sectionsFromQueryTypes(state.data, 50),
+            indicators: _indicatorsFromQueryTypes(context, state.data),
           );
         }
-        if (state is QueryTypesStateError) {
+        if (state is BlocStateError<QueryTypes>) {
           return Card(
               child: ListTile(
                 leading: Icon(Icons.warning),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/base/event.dart';
+import 'package:flutterhole/bloc/base/pihole/query.dart';
+import 'package:flutterhole/bloc/base/pihole/query_types.dart';
 import 'package:flutterhole/bloc/base/pihole/summary.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
-import 'package:flutterhole/bloc/query/bloc.dart';
-import 'package:flutterhole/bloc/query_types/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/service/globals.dart';
@@ -69,8 +69,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
             BlocProvider.of<SummaryBloc>(context).dispatch(Fetch());
             BlocProvider.of<TopSourcesBloc>(context)
                 .dispatch(FetchTopSources());
-            BlocProvider.of<QueryTypesBloc>(context)
-                .dispatch(FetchQueryTypes());
+            BlocProvider.of<QueryTypesBloc>(context).dispatch(Fetch());
             Globals.navigateTo(context, homePath);
           },
         ),
@@ -95,7 +94,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
           title: Text('Query Log'),
           leading: Icon(Icons.filter_list),
           onTap: () {
-            BlocProvider.of<QueryBloc>(context).dispatch(FetchQueries());
+            BlocProvider.of<QueryBloc>(context).dispatch(Fetch());
             BlocProvider.of<BlacklistBloc>(context).dispatch(FetchBlacklist());
             Globals.navigateTo(context, queryPath);
           },
