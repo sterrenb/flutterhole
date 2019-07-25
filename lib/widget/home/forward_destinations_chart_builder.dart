@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/base/api/forward_destinations.dart';
+import 'package:flutterhole/bloc/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/forward_destinations.dart';
 import 'package:flutterhole/widget/home/indicator.dart';

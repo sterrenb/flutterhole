@@ -15,7 +15,6 @@ class VersionsBloc extends BaseBloc<Versions> {
   VersionsBloc(BaseRepository<Versions> repository) : super(repository);
 
   Stream<BlocState> _fetchForPihole(Pihole pihole) async* {
-    yield BlocStateLoading<Versions>();
     try {
       final data = await (repository as VersionsRepository).get(pihole);
       yield BlocStateSuccess<Versions>(data);
@@ -28,6 +27,7 @@ class VersionsBloc extends BaseBloc<Versions> {
   Stream<BlocState> mapEventToState(
     BlocEvent event,
   ) async* {
+    yield BlocStateLoading<Versions>();
     if (event is Fetch) yield* fetch();
     if (event is FetchForPihole) yield* _fetchForPihole(event.pihole);
   }

@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:flutterhole/bloc/base/api/forward_destinations.dart';
-import 'package:flutterhole/bloc/base/api/query.dart';
-import 'package:flutterhole/bloc/base/api/query_types.dart';
-import 'package:flutterhole/bloc/base/api/summary.dart';
-import 'package:flutterhole/bloc/base/api/top_items.dart';
-import 'package:flutterhole/bloc/base/api/top_sources.dart';
-import 'package:flutterhole/bloc/blacklist/bloc.dart';
-import 'package:flutterhole/bloc/status/bloc.dart';
+import 'package:flutterhole/bloc/api/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/api/forward_destinations.dart';
+import 'package:flutterhole/bloc/api/query.dart';
+import 'package:flutterhole/bloc/api/query_types.dart';
+import 'package:flutterhole/bloc/api/status.dart';
+import 'package:flutterhole/bloc/api/summary.dart';
+import 'package:flutterhole/bloc/api/top_items.dart';
+import 'package:flutterhole/bloc/api/top_sources.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/model/whitelist.dart';
@@ -134,7 +134,7 @@ main() {
       when(client.fetchBlacklist())
           .thenAnswer((_) => Future.value(mockBlacklist));
 
-      expect(blacklistRepository.getBlacklist(), completion(mockBlacklist));
+      expect(blacklistRepository.get(), completion(mockBlacklist));
     });
 
     test('addToBlacklist', () {
@@ -254,7 +254,7 @@ main() {
       when(client.fetchStatus())
           .thenAnswer((_) => Future.value(mockStatusEnabled));
 
-      expect(statusRepository.getStatus(), completion(mockStatusEnabled));
+      expect(statusRepository.get(), completion(mockStatusEnabled));
     });
 
     test('enable', () {

@@ -86,7 +86,8 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
                               title: domain,
                               onTap: () async {
                                 final String message = await Globals.navigateTo(
-                                  context, whitelistEditPath(domain),
+                                  context,
+                                  whitelistEditPath(domain),
                                 );
                                 if (message != null)
                                   Scaffold.of(context).showSnackBar(

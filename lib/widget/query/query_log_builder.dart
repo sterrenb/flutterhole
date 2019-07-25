@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/base/api/query.dart';
+import 'package:flutterhole/bloc/api/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
-import 'package:flutterhole/bloc/blacklist/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/model/query.dart';
@@ -131,9 +131,9 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
         BlocListener(
           bloc: blacklistBloc,
           listener: (context, state) {
-            if (state is BlacklistStateSuccess) {
+            if (state is BlocStateSuccess<Blacklist>) {
               setState(() {
-                _blacklistCache = state.blacklist;
+                _blacklistCache = state.data;
               });
             }
           },
@@ -143,7 +143,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
         onRefresh: () {
           queryBloc.dispatch(_fetchEvent);
           whitelistBloc.dispatch(FetchWhitelist());
-          blacklistBloc.dispatch(FetchBlacklist());
+          blacklistBloc.dispatch(Fetch());
           return _refreshCompleter.future;
         },
         child: BlocBuilder(
@@ -243,7 +243,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
                           icon: Icon(Icons.delete),
                           tooltip: 'Remove from blacklist',
                           onPressed: () {
-                            blacklistBloc.dispatch(RemoveFromBlacklist(
+                            blacklistBloc.dispatch(Remove(
                                 BlacklistItem.exact(entry: query.entry)));
                             showSnackBar(
                                 context,
@@ -259,7 +259,7 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
                           ),
                           tooltip: 'Add to blacklist',
                           onPressed: () {
-                            blacklistBloc.dispatch(AddToBlacklist(
+                            blacklistBloc.dispatch(Add(
                                 BlacklistItem.exact(
                                     entry: query.entry)));
                             showSnackBar(

@@ -1,4 +1,4 @@
-import 'package:flutterhole/bloc/base/api/query.dart';
+import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/service/pihole_exception.dart';

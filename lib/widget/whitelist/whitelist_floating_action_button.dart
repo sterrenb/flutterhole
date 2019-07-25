@@ -26,8 +26,10 @@ class _WhitelistFloatingActionButtonState
               tooltip: 'Add to whitelist',
               backgroundColor: _theme.accentColor,
               onPressed: () async {
-                final domain =
-                await Globals.navigateTo(context, whitelistAddPath,);
+                final domain = await Globals.navigateTo(
+                  context,
+                  whitelistAddPath,
+                );
                 if (domain != null)
                   Scaffold.of(context).showSnackBar(
                       SnackBar(content: Text('Added $domain to whitelist')));

@@ -1,5 +1,5 @@
-import 'package:flutterhole/bloc/status/bloc.dart';
-import 'package:flutterhole/bloc/status/status_repository.dart';
+import 'package:flutterhole/bloc/api/status.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/status.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
@@ -19,49 +19,48 @@ main() {
   });
 
   test('has a correct initialState', () {
-    expect(statusBloc.initialState, StatusStateEmpty());
+    expect(statusBloc.initialState, BlocStateEmpty<Status>());
   });
 
   group('GetStatus', () {
     test(
-        'emits [StatusStateEmpty, StatusStateLoading, StatusStateSuccess] when status repository returns Status',
+        'emits [BlocStateEmpty<Status>, BlocStateLoading<Status>, BlocStateSuccess<Status>] when status repository returns Status',
         () {
       final Status status = Status(enabled: true);
 
-      when(statusRepository.getStatus())
-          .thenAnswer((_) => Future.value(status));
+      when(statusRepository.get()).thenAnswer((_) => Future.value(status));
 
       expectLater(
           statusBloc.state,
           emitsInOrder([
-            StatusStateEmpty(),
-            StatusStateLoading(),
-            StatusStateSuccess(status),
+            BlocStateEmpty<Status>(),
+            BlocStateLoading<Status>(),
+            BlocStateSuccess<Status>(status),
           ]));
 
-      statusBloc.dispatch(FetchStatus());
+      statusBloc.dispatch(Fetch());
     });
 
     test(
-        'emits [StatusStateEmpty, StatusStateLoading, StatusStateError] when status repository throws PiholeException',
+        'emits [BlocStateEmpty<Status>, BlocStateLoading<Status>, BlocStateError<Status>] when status repository throws PiholeException',
         () {
-      when(statusRepository.getStatus()).thenThrow(PiholeException());
+          when(statusRepository.get()).thenThrow(PiholeException());
 
       expectLater(
           statusBloc.state,
           emitsInOrder([
-            StatusStateEmpty(),
-            StatusStateLoading(),
-            StatusStateError(e: PiholeException()),
+            BlocStateEmpty<Status>(),
+            BlocStateLoading<Status>(),
+            BlocStateError<Status>(PiholeException()),
           ]));
 
-      statusBloc.dispatch(FetchStatus());
+          statusBloc.dispatch(Fetch());
     });
   });
 
   group('EnableStatus', () {
     test(
-        'emits [StatusStateEmpty, StatusStateLoading, StatusStateSuccess] when status repository returns',
+        'emits [BlocStateEmpty<Status>, BlocStateLoading<Status>, BlocStateSuccess<Status>] when status repository returns',
         () {
       final Status status = Status(enabled: true);
 
@@ -70,25 +69,25 @@ main() {
       expectLater(
           statusBloc.state,
           emitsInOrder([
-            StatusStateEmpty(),
-            StatusStateLoading(),
-            StatusStateSuccess(status),
+            BlocStateEmpty<Status>(),
+            BlocStateLoading<Status>(),
+            BlocStateSuccess<Status>(status),
           ]));
 
       statusBloc.dispatch(EnableStatus());
     });
 
     test(
-        'emits [StatusStateEmpty, StatusStateLoading, StatusStateError] when status repository throws PiholeException',
+        'emits [BlocStateEmpty<Status>, BlocStateLoading<Status>, BlocStateError<Status>] when status repository throws PiholeException',
         () {
       when(statusRepository.enable()).thenThrow(PiholeException());
 
       expectLater(
           statusBloc.state,
           emitsInOrder([
-            StatusStateEmpty(),
-            StatusStateLoading(),
-            StatusStateError(e: PiholeException()),
+            BlocStateEmpty<Status>(),
+            BlocStateLoading<Status>(),
+            BlocStateError<Status>(PiholeException()),
           ]));
 
       statusBloc.dispatch(EnableStatus());
@@ -97,7 +96,7 @@ main() {
 
   group('DisableStatus', () {
     test(
-        'emits [StatusStateEmpty, StatusStateLoading, StatusStateSuccess] when status repository returns',
+        'emits [BlocStateEmpty<Status>, BlocStateLoading<Status>, BlocStateSuccess<Status>] when status repository returns',
         () {
       final Status status = Status(enabled: false);
 
@@ -106,25 +105,25 @@ main() {
       expectLater(
           statusBloc.state,
           emitsInOrder([
-            StatusStateEmpty(),
-            StatusStateLoading(),
-            StatusStateSuccess(status),
+            BlocStateEmpty<Status>(),
+            BlocStateLoading<Status>(),
+            BlocStateSuccess<Status>(status),
           ]));
 
       statusBloc.dispatch(DisableStatus());
     });
 
     test(
-        'emits [StatusStateEmpty, StatusStateLoading, StatusStateError] when status repository throws PiholeException',
+        'emits [BlocStateEmpty<Status>, BlocStateLoading<Status>, BlocStateError<Status>] when status repository throws PiholeException',
         () {
       when(statusRepository.disable()).thenThrow(PiholeException());
 
       expectLater(
           statusBloc.state,
           emitsInOrder([
-            StatusStateEmpty(),
-            StatusStateLoading(),
-            StatusStateError(e: PiholeException()),
+            BlocStateEmpty<Status>(),
+            BlocStateLoading<Status>(),
+            BlocStateError<Status>(PiholeException()),
           ]));
 
       statusBloc.dispatch(DisableStatus());
@@ -133,7 +132,7 @@ main() {
 
   group('SleepStatus', () {
     test(
-        'emits [StatusStateEmpty, StatusStateLoading, StatusStateError] when status repository throws PiholeException',
+        'emits [BlocStateEmpty<Status>, BlocStateLoading<Status>, BlocStateError<Status>] when status repository throws PiholeException',
         () {
       final Duration duration = Duration(seconds: 5);
 
@@ -143,9 +142,9 @@ main() {
       expectLater(
           statusBloc.state,
           emitsInOrder([
-            StatusStateEmpty(),
-            StatusStateLoading(),
-            StatusStateError(e: PiholeException()),
+            BlocStateEmpty<Status>(),
+            BlocStateLoading<Status>(),
+            BlocStateError<Status>(PiholeException()),
           ]));
 
       statusBloc.dispatch(SleepStatus(duration));

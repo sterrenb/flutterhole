@@ -1,4 +1,4 @@
-import 'package:flutterhole/bloc/base/api/versions.dart';
+import 'package:flutterhole/bloc/api/versions.dart';
 import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/model/versions.dart';

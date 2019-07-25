@@ -1,4 +1,4 @@
-import 'package:flutterhole/bloc/base/api/top_items.dart';
+import 'package:flutterhole/bloc/api/top_items.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/top_items.dart';
 import 'package:flutterhole/service/pihole_exception.dart';

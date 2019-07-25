@@ -4,17 +4,15 @@ import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/base/api/forward_destinations.dart';
-import 'package:flutterhole/bloc/base/api/query.dart';
-import 'package:flutterhole/bloc/base/api/query_types.dart';
-import 'package:flutterhole/bloc/base/api/summary.dart';
-import 'package:flutterhole/bloc/base/api/top_items.dart';
-import 'package:flutterhole/bloc/base/api/top_sources.dart';
-import 'package:flutterhole/bloc/base/api/versions.dart';
-import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/api/forward_destinations.dart';
+import 'package:flutterhole/bloc/api/query.dart';
+import 'package:flutterhole/bloc/api/query_types.dart';
+import 'package:flutterhole/bloc/api/summary.dart';
+import 'package:flutterhole/bloc/api/top_items.dart';
+import 'package:flutterhole/bloc/api/top_sources.dart';
+import 'package:flutterhole/bloc/api/versions.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
-import 'package:flutterhole/bloc/status/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/local_storage.dart';
@@ -24,6 +22,8 @@ import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/app.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 
+import 'bloc/api/blacklist/bloc.dart';
+import 'bloc/api/status.dart';
 import 'bloc/base/event.dart';
 
 void main() async {
@@ -72,7 +72,7 @@ void main() async {
 
   Globals.refreshAllBlocs = () {
     Globals.client.cancel();
-    statusBloc.dispatch(FetchStatus());
+    statusBloc.dispatch(Fetch());
     summaryBloc.dispatch(Fetch());
     versionsBloc.dispatch(Fetch());
     queryTypesBloc..dispatch(Fetch());
@@ -81,7 +81,7 @@ void main() async {
     topItemsBloc.dispatch(Fetch());
     queryBloc.dispatch(Fetch());
     whitelistBloc.dispatch(FetchWhitelist());
-    blacklistBloc.dispatch(FetchBlacklist());
+    blacklistBloc.dispatch(Fetch());
   };
 
   assert(() {

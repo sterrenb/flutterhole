@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/api/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/model/blacklist.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
@@ -22,13 +23,15 @@ class _BlacklistFloatingActionButtonState
     return BlocBuilder(
       bloc: blacklistBloc,
       builder: (context, state) {
-        if (state is BlacklistStateSuccess) {
+        if (state is BlocStateSuccess<Blacklist>) {
           return FloatingActionButton(
               tooltip: 'Add to blacklist',
               backgroundColor: _theme.accentColor,
               onPressed: () async {
-                final BlacklistItem item =
-                await Globals.navigateTo(context, blacklistAddPath,);
+                final BlacklistItem item = await Globals.navigateTo(
+                  context,
+                  blacklistAddPath,
+                );
                 if (item != null)
                   Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text('Added ${item.entry} to blacklist')));

@@ -58,7 +58,11 @@ class AboutScreen extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.lock),
               title: Text('Privacy'),
-              onTap: () => Globals.navigateTo(context, privacyPath,),
+              onTap: () =>
+                  Globals.navigateTo(
+                    context,
+                    privacyPath,
+                  ),
             ),
             ListTile(
               leading: Icon(Icons.spa),
