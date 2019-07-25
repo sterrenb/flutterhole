@@ -13,9 +13,6 @@ class QueriesOverTimeRepository extends BaseRepository<QueriesOverTime> {
 
   @override
   Future<QueriesOverTime> get() async {
-    print('bloc: fetching');
-    final x = await client.fetchQueriesOverTime();
-    print(x.domainsOverTime.values.first);
-    return x;
+    return client.fetchQueriesOverTime();
   }
 }

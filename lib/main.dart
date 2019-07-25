@@ -107,12 +107,6 @@ void main() async {
 
   await Globals.localStorage.init();
 
-  print(
-      'running app with cache ${Globals.localStorage.cache.length}, ${Globals
-          .localStorage
-          .active()
-          .title}');
-
   runApp(App(
     themeModel: ThemeModel(),
     providers: [

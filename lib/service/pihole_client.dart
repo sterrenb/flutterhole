@@ -181,9 +181,7 @@ class PiholeClient {
 
   /// Fetches home information from the Pi-hole.
   Future<Summary> fetchSummary() async {
-    print('Fetch');
     Response response = await _get({'summaryRaw': ''});
-    print('Fetch response');
     if (response.data is String) {
       return Summary.fromString(response.data);
     } else {
@@ -352,7 +350,6 @@ class PiholeClient {
   }
 
   Future<List<Query>> fetchQueriesForQueryType(QueryType type) async {
-    print('fetchQueriesForQueryType $type');
     Response response = await _getSecure(
         {'getAllQueries': '', 'querytype': QueryType.values.indexOf(type) + 1});
     if (response.data is Map<String, dynamic>) {

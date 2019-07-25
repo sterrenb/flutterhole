@@ -101,7 +101,6 @@ class _BlacklistFormState extends State<BlacklistForm> {
                             .replaceAll('BlacklistType.', '')
                         : "Exact",
                     onChanged: (val) {
-                      print('onchanged $val');
                       setState(() {
                         selectedType = blacklistTypeFromString(val);
                       });

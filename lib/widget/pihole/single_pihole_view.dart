@@ -67,7 +67,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
       bloc: piholeBloc,
       listener: (context, state) {
         if (state is PiholeStateSuccess) {
-          print('successful listener');
           _pop(context);
         }
         if (state is PiholeStateError) {
@@ -111,12 +110,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     labelText: 'API path', prefixIcon: Icon(Icons.code)),
                 onChanged: (v) {
                   _onChange(context, Pihole.copyWith(pihole, apiPath: v));
-//                  if (v.length > 0 && pihole.title.length > 0) {
-//                    final update = Pihole.copyWith(pihole, apiPath: v);
-//                    setState(() {
-//                      pihole = update;
-//                    });
-//                  }
                 },
               ),
               TextField(
@@ -256,7 +249,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                             port: int.parse(portController.text),
                             auth: authController.text,
                           );
-                          print('save: $update');
                           piholeBloc
                               .dispatch(UpdatePihole(widget.original, update));
                           setState(() {

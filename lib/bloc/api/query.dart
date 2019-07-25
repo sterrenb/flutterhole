@@ -38,7 +38,6 @@ class QueryBloc extends BaseBloc<List<Query>> {
 
   Stream<BlocState> _fetchForQueryType(QueryType type) async* {
     try {
-      print('bloc: getting queries for query type');
       final data = await (repository as QueryRepository).getForQueryType(type);
       yield BlocStateSuccess<List<Query>>(data);
     } on PiholeException catch (e) {
@@ -62,7 +61,6 @@ class QueryRepository extends BaseRepository<List<Query>> {
   }
 
   Future<List<Query>> getForQueryType(QueryType type) async {
-    print('get for type');
     final List<Query> queries =
     await this.client.fetchQueriesForQueryType(type);
     return queries..sort((a, b) => b.time.compareTo(a.time));

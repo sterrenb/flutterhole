@@ -10,7 +10,6 @@ class QueryTypeLogScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('log screen with query type $queryType');
     return SearchScaffold(
         title: 'Logs for $queryType',
         withDrawer: false,
