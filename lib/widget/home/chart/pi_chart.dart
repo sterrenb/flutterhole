@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
-import 'indicator.dart';
+import 'package:flutterhole/widget/home/chart/indicator.dart';
 
 class PiChart extends StatelessWidget {
   final String title;
@@ -28,10 +27,16 @@ class PiChart extends StatelessWidget {
               alignment: Alignment.topLeft,
               child: SafeArea(
                   minimum: EdgeInsets.all(16.0),
-                  child: Text(title, style: Theme
-                      .of(context)
-                      .textTheme
-                      .title)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(title, style: Theme
+                          .of(context)
+                          .textTheme
+                          .title),
+                      Divider(),
+                    ],
+                  )),
             ),
             SafeArea(
               minimum: EdgeInsets.symmetric(vertical: 16.0),

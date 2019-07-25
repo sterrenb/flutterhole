@@ -7,8 +7,8 @@ import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/api/query.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
-import 'package:flutterhole/widget/home/indicator.dart';
-import 'package:flutterhole/widget/home/pi_chart.dart';
+import 'package:flutterhole/widget/home/chart/indicator.dart';
+import 'package:flutterhole/widget/home/chart/pi_chart.dart';
 
 class QueryTypesChartBuilder extends StatelessWidget {
   static final _colors = [

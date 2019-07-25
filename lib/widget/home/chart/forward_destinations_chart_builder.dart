@@ -4,19 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/api/forward_destinations.dart';
-import 'package:flutterhole/widget/home/indicator.dart';
-import 'package:flutterhole/widget/home/pi_chart.dart';
+import 'package:flutterhole/widget/home/chart/indicator.dart';
+import 'package:flutterhole/widget/home/chart/pi_chart.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 
 class ForwardDestinationsChartBuilder extends StatelessWidget {
   static final _colors = [
+    Colors.green,
     Colors.cyan,
     Colors.red,
-    Colors.green,
     Colors.orange,
+    Colors.purple,
     Colors.indigo,
     Colors.blue,
-    Colors.purple,
   ];
 
   MaterialColor _color(int index) => _colors[index % _colors.length];

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/model/api/forward_destinations.dart';
+import 'package:flutterhole/model/api/queries_over_time.dart';
 import 'package:flutterhole/model/api/query.dart';
 import 'package:flutterhole/model/api/status.dart';
 import 'package:flutterhole/model/api/summary.dart';
@@ -413,6 +414,15 @@ class PiholeClient {
       return ForwardDestinations.fromString(response.data);
     } else {
       return ForwardDestinations.fromJson(response.data);
+    }
+  }
+
+  Future<QueriesOverTime> fetchQueriesOverTime() async {
+    Response response = await _getSecure({'overTimeData10mins': ''});
+    if (response.data is String) {
+      return QueriesOverTime.fromString(response.data);
+    } else {
+      return QueriesOverTime.fromJson(response.data);
     }
   }
 }

@@ -8,6 +8,7 @@ class FrequencyTile extends StatelessWidget {
   final int requests;
   final int totalRequests;
   final GestureTapCallback onTap;
+  final Color color;
 
   final double _fraction;
 
@@ -17,6 +18,7 @@ class FrequencyTile extends StatelessWidget {
     @required this.requests,
     this.totalRequests,
     this.onTap,
+    this.color = Colors.green,
   })  : _fraction = requests / totalRequests ?? 0,
         super(key: key);
 
@@ -56,6 +58,7 @@ class FrequencyTile extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 2.0),
                           child: PercentageBox(
+                            color: this.color,
                             width: 100,
                             fraction: _fraction,
                           ),

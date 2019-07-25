@@ -105,6 +105,7 @@ class _TopItemsBuilderState extends State<TopItemsBuilder> {
                       }
 
                       return FrequencyTile(
+                        color: Colors.red,
                         title: domain,
                         requests: frequency,
                         totalRequests: total,
