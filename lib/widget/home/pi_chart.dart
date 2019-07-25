@@ -28,7 +28,11 @@ class PiChart extends StatelessWidget {
               alignment: Alignment.topLeft,
               child: SafeArea(
                   minimum: EdgeInsets.all(16.0),
-                  child: Text(title, style: Theme.of(context).textTheme.title)),
+                  child: Text(title, style: Theme
+                      .of(context)
+                      .textTheme
+                      .title)
+              ),
             ),
             SafeArea(
               minimum: EdgeInsets.symmetric(vertical: 16.0),

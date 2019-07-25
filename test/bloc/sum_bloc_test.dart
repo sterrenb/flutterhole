@@ -11,50 +11,49 @@ import '../mock.dart';
 class MockSummaryRepository extends Mock implements SummaryRepository {}
 
 main() {
-  MockSummaryRepository summaryRepository;
-  SummaryBloc summaryBloc;
+  MockSummaryRepository sumRepository;
+  SummaryBloc sumBloc;
 
   setUp(() {
-    summaryRepository = MockSummaryRepository();
-    summaryBloc = SummaryBloc(summaryRepository);
+    sumRepository = MockSummaryRepository();
+    sumBloc = SummaryBloc(sumRepository);
   });
 
   test('has a correct initialState', () {
-    expect(summaryBloc.initialState, GenericStateEmpty<Summary>());
+    expect(sumBloc.initialState, GenericStateEmpty<Summary>());
   });
 
-  group('Fetch', () {
+  group('FetchSum', () {
     test(
-        'emits [GenericStateEmpty<Summary>, GenericStateLoading<Summary>, GenericStateSuccess<Summary>] when repository returns Summary',
+        'emits [SumStateEmpty, SumStateLoading, SumStateSuccess] when repository returns Sum',
         () {
-          when(summaryRepository.get())
-          .thenAnswer((_) => Future.value(mockSummary));
+      when(sumRepository.get()).thenAnswer((_) => Future.value(mockSummary));
 
       expectLater(
-          summaryBloc.state,
+          sumBloc.state,
           emitsInOrder([
             GenericStateEmpty<Summary>(),
             GenericStateLoading<Summary>(),
             GenericStateSuccess<Summary>(mockSummary),
           ]));
 
-          summaryBloc.dispatch(Fetch());
+      sumBloc.dispatch(Fetch());
     });
 
     test(
-        'emits [GenericStateEmpty<Summary>, GenericStateLoading<Summary>, GenericStateError<Summary>] when home repository throws PiholeException',
+        'emits [SumStateEmpty, SumStateLoading, SumStateError] when home repository throws PiholeException',
         () {
-          when(summaryRepository.get()).thenThrow(PiholeException());
+      when(sumRepository.get()).thenThrow(PiholeException());
 
       expectLater(
-          summaryBloc.state,
+          sumBloc.state,
           emitsInOrder([
             GenericStateEmpty<Summary>(),
             GenericStateLoading<Summary>(),
             GenericStateError<Summary>(PiholeException()),
           ]));
 
-          summaryBloc.dispatch(Fetch());
+      sumBloc.dispatch(Fetch());
     });
   });
 }

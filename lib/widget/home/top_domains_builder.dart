@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/summary/bloc.dart';
+import 'package:flutterhole/bloc/generic/event.dart';
+import 'package:flutterhole/bloc/generic/pihole/bloc.dart';
+import 'package:flutterhole/bloc/generic/state.dart';
 import 'package:flutterhole/bloc/top_items/bloc.dart';
+import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/model/top_items.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
@@ -53,7 +56,7 @@ class _TopDomainsBuilderState extends State<TopDomainsBuilder> {
         child: RefreshIndicator(
           onRefresh: () {
             topItemsBloc.dispatch(FetchTopItems());
-            summaryBloc.dispatch(FetchSummary());
+            summaryBloc.dispatch(Fetch());
             return _refreshCompleter.future;
           },
           child: BlocBuilder(
@@ -71,8 +74,8 @@ class _TopDomainsBuilderState extends State<TopDomainsBuilder> {
                     bloc: summaryBloc,
                     builder: (context, state) {
                       int total = 0;
-                      if (state is SummaryStateSuccess) {
-                        total = state.summary.dnsQueriesToday;
+                      if (state is GenericStateSuccess<Summary>) {
+                        total = state.generic.dnsQueriesToday;
                       }
 
                       return FrequencyTile(
@@ -93,8 +96,8 @@ class _TopDomainsBuilderState extends State<TopDomainsBuilder> {
                     bloc: summaryBloc,
                     builder: (context, state) {
                       int total = 0;
-                      if (state is SummaryStateSuccess) {
-                        total = state.summary.adsBlockedToday;
+                      if (state is GenericStateSuccess<Summary>) {
+                        total = state.generic.adsBlockedToday;
                       }
 
                       return FrequencyTile(

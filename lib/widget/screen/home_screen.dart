@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole/widget/home/summary_builder.dart';
+import 'package:flutterhole/widget/home/sum_builder.dart';
 import 'package:flutterhole/widget/home/top_domains_builder.dart';
 import 'package:flutterhole/widget/home/top_sources_builder.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
@@ -10,11 +10,10 @@ class HomeScreen extends StatelessWidget {
     return TabScaffold(
       title: 'Dashboard',
       children: <Widget>[
-        SummaryBuilder(),
-//        PieChartPage(),
+        SumBuilder(),
+//        SummaryBuilder(),
         TopSourcesBuilder(),
         TopDomainsBuilder(),
-//        Center(child: Text('Coming soon')),
       ],
       items: [
         BottomNavigationBarItem(

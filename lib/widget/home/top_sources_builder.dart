@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/generic/event.dart';
+import 'package:flutterhole/bloc/generic/pihole/bloc.dart';
+import 'package:flutterhole/bloc/generic/state.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
-import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
+import 'package:flutterhole/model/summary.dart';
 import 'package:flutterhole/model/top_sources.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
@@ -55,7 +58,7 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
       child: RefreshIndicator(
         onRefresh: () {
           topSourcesBloc.dispatch(FetchTopSources());
-          summaryBloc.dispatch(FetchSummary());
+          summaryBloc.dispatch(Fetch());
           return _refreshCompleter.future;
         },
         child: SingleChildScrollView(
@@ -80,8 +83,8 @@ class _TopSourcesBuilderState extends State<TopSourcesBuilder> {
                       bloc: summaryBloc,
                       builder: (context, state) {
                         int total = 0;
-                        if (state is SummaryStateSuccess) {
-                          total = state.summary.dnsQueriesToday;
+                        if (state is GenericStateSuccess<Summary>) {
+                          total = state.generic.dnsQueriesToday;
                         }
 
                         return FrequencyTile(

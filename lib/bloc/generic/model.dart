@@ -1,0 +1,1 @@
+typedef S ItemCreator<S>();

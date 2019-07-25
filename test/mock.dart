@@ -1,7 +1,7 @@
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/generic/pihole/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/status/bloc.dart';
-import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_items/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
@@ -141,10 +141,12 @@ final List<Query> mockQueries = [
 ];
 
 class MockSummaryBloc extends Mock implements SummaryBloc {
-  @override
-  Stream<SummaryState> mapEventToState(SummaryEvent event) async* {
-    yield SummaryStateSuccess(mockSummary);
-  }
+//  @override
+//  Stream<GenericState> mapEventToState(
+//      GenericEvent event,
+//      ) async* {
+//
+//  }
 }
 
 class MockTopSourcesBloc extends Mock implements TopSourcesBloc {

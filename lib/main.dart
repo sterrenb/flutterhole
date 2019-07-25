@@ -5,11 +5,11 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/generic/pihole/bloc.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/bloc/query/bloc.dart';
 import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
 import 'package:flutterhole/bloc/status/bloc.dart';
-import 'package:flutterhole/bloc/summary/bloc.dart';
 import 'package:flutterhole/bloc/top_sources/bloc.dart';
 import 'package:flutterhole/bloc/versions/bloc.dart';
 import 'package:flutterhole/bloc/whitelist/bloc.dart';
@@ -22,6 +22,7 @@ import 'package:flutterhole/widget/app.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 
 import 'bloc/forward_destinations/bloc.dart';
+import 'bloc/generic/event.dart';
 import 'bloc/query_types/bloc.dart';
 import 'bloc/top_items/bloc.dart';
 
@@ -72,7 +73,7 @@ void main() async {
   Globals.refreshAllBlocs = () {
     Globals.client.cancel();
     statusBloc.dispatch(FetchStatus());
-    summaryBloc.dispatch(FetchSummary());
+    summaryBloc.dispatch(Fetch());
     versionsBloc.dispatch(FetchVersions());
     queryTypesBloc.dispatch(FetchQueryTypes());
     forwardDestinationsBloc.dispatch(FetchForwardDestinations());
