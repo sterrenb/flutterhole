@@ -31,40 +31,31 @@ class PiChart extends StatelessWidget {
                   child: Text(title, style: Theme.of(context).textTheme.title)),
             ),
             SafeArea(
-              minimum: EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  AspectRatio(
-                    aspectRatio: 0.8,
-                    child: FlChart(
-                      chart: PieChart(
-                        PieChartData(
-                            borderData: FlBorderData(
-                              show: false,
-                            ),
-                            sectionsSpace: 2.0,
-                            centerSpaceRadius: centerSpaceRadius,
-                            sections: sections),
-                      ),
+              minimum: EdgeInsets.symmetric(vertical: 16.0),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: AspectRatio(
+                  aspectRatio: 1.0,
+                  child: FlChart(
+                    chart: PieChart(
+                      PieChartData(
+                          borderData: FlBorderData(
+                            show: false,
+                          ),
+                          sectionsSpace: 2.0,
+                          centerSpaceRadius: centerSpaceRadius,
+                          sections: sections),
                     ),
                   ),
-                ],
+                ),
               ),
             ),
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: indicators
-                      .map((indicator) => Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: indicator,
-                          ))
-                      .toList(),
-                ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: indicators,
               ),
             ),
           ],

@@ -45,15 +45,33 @@ class ForwardDestinationsChartBuilder extends StatelessWidget {
     int index = 0;
     forwardDestinations.items.forEach((ForwardDestinationItem item) {
       indicators.add(Indicator(
-        title: Row(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2.0),
-                child: Text(item.title)),
-            Text(
-              '${item.percent.toString()}%',
-              style: Theme.of(context).textTheme.caption,
-            )
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 2.0),
+                    child: Text(item.title)),
+                Text(
+                  '${item.percent.toString()}%',
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .caption,
+                )
+              ],
+            ),
+            item.title == item.ipString
+                ? Container()
+                : Text(
+              item.ipString,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .caption,
+            ),
           ],
         ),
         color: _color(index),
@@ -77,7 +95,7 @@ class ForwardDestinationsChartBuilder extends StatelessWidget {
             title: 'Forward destinations',
             centerSpaceRadius: screenWidth / 8,
             sections:
-                _sectionsFromForwardDestinations(state.forwardDestinations, 60),
+            _sectionsFromForwardDestinations(state.forwardDestinations, 50),
             indicators: _indicatorsFromForwardDestinations(
                 context, state.forwardDestinations),
           );

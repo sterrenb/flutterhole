@@ -5,7 +5,6 @@ import 'package:flutterhole/bloc/query_types/bloc.dart';
 import 'package:flutterhole/model/query.dart';
 import 'package:flutterhole/widget/home/indicator.dart';
 import 'package:flutterhole/widget/home/pi_chart.dart';
-import 'package:flutterhole/widget/layout/error_message.dart';
 
 class QueryTypesChartBuilder extends StatelessWidget {
   static final _colors = [
@@ -76,12 +75,16 @@ class QueryTypesChartBuilder extends StatelessWidget {
           return PiChart(
             title: 'Query Types',
             centerSpaceRadius: screenWidth / 8,
-            sections: _sectionsFromQueryTypes(state.queryTypes, 60),
+            sections: _sectionsFromQueryTypes(state.queryTypes, 50),
             indicators: _indicatorsFromQueryTypes(context, state.queryTypes),
           );
         }
         if (state is QueryTypesStateError) {
-          return ErrorMessage(errorMessage: state.e.message);
+          return Card(
+              child: ListTile(
+                leading: Icon(Icons.warning),
+                title: Text('Cannot load query types: ${state.e.message}'),
+              ));
         }
         return Center(child: CircularProgressIndicator());
       },
