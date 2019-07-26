@@ -10,8 +10,8 @@ import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/model/api/summary.dart';
 import 'package:flutterhole/widget/home/chart/forward_destinations_chart_builder.dart';
-import 'package:flutterhole/widget/home/chart/queries_over_time_chart_builder.dart';
 import 'package:flutterhole/widget/home/chart/query_types_chart_builder.dart';
+import 'package:flutterhole/widget/home/queries_over_time_card.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 import 'package:provider/provider.dart';
@@ -113,8 +113,8 @@ class _SummaryBuilderState extends State<SummaryBuilder> {
 
                         return Column(
                           children: [
-                            ...summaryTiles.map((tile) => tile).toList(),
-                            QueriesOverTimeChartBuilder(),
+                            ...summaryTiles,
+                            QueriesOverTimeCard(),
                             QueryTypesChartBuilder(),
                             ForwardDestinationsChartBuilder(),
                           ],

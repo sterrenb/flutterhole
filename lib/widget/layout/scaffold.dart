@@ -181,12 +181,16 @@ class SimpleScaffold extends StatelessWidget {
   final String title;
   final Widget body;
   final Widget drawer;
+  final List<Widget> actions;
+  final Widget floatingActionButton;
 
   const SimpleScaffold({
     Key key,
     @required this.title,
     @required this.body,
     this.drawer,
+    this.actions,
+    this.floatingActionButton,
   }) : super(key: key);
 
   @override
@@ -194,11 +198,14 @@ class SimpleScaffold extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-          title: Text(
-            title,
-            overflow: TextOverflow.fade,
-          )),
+        title: Text(
+          title,
+          overflow: TextOverflow.fade,
+        ),
+        actions: this.actions,
+      ),
       drawer: this.drawer,
+      floatingActionButton: this.floatingActionButton,
       body: SafeArea(child: body),
     );
   }

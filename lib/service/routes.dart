@@ -7,6 +7,7 @@ import 'package:flutterhole/widget/layout/scaffold.dart';
 import 'package:flutterhole/widget/screen/about_screen.dart';
 import 'package:flutterhole/widget/screen/blacklist_screen.dart';
 import 'package:flutterhole/widget/screen/client_log_screen.dart';
+import 'package:flutterhole/widget/screen/graph_screen.dart';
 import 'package:flutterhole/widget/screen/home_screen.dart';
 import 'package:flutterhole/widget/screen/log_screen.dart';
 import 'package:flutterhole/widget/screen/pihole_screen.dart';
@@ -43,6 +44,9 @@ const String _queryTypeLogPath = '/query/queryType/:queryType';
 /// The concrete route to [QueryTypeLogScreen] with [queryType].
 String queryTypeLogPath(String queryType) =>
     _queryTypeLogPath.replaceAll(':queryType', queryType);
+
+/// The route to [GraphScreen].
+const String graphPath = '/graph';
 
 /// The route to [AboutScreen].
 const String aboutPath = '/about';
@@ -167,7 +171,10 @@ void configureRoutes(Router router) {
               pihole: Globals.localStorage.cache[params['key'][0]])));
 
   router.define(aboutPath, handler: _SimpleHandler(AboutScreen()));
+
   router.define(logPath, handler: _SimpleHandler(LogScreen()));
+
+  router.define(graphPath, handler: _SimpleHandler(GraphScreen()));
 
   router.define(privacyPath, handler: _SimpleHandler(PrivacyScreen()));
 }
