@@ -42,10 +42,6 @@ class MyLineChartState extends State<MyLineChart> {
 
   @override
   Widget build(BuildContext context) {
-    print('maxY: ${widget.maxY}');
-    print('mod: ${widget.maxY % 50}');
-    print('xx: ${50 - (widget.maxY % 50)}');
-    print('max: ${widget.maxY + 50 - (widget.maxY % 50)}');
     final double maxY = (widget.maxY + 50 - (widget.maxY % 50));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
