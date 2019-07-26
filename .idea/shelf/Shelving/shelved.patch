@@ -1,0 +1,1013 @@
+Index: lib/main.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:dio/dio.dart';\r\nimport 'package:fimber/fimber.dart';\r\nimport 'package:fluro/fluro.dart';\r\nimport 'package:flutter/material.dart';\r\nimport 'package:flutter_bloc/flutter_bloc.dart';\r\nimport 'package:flutterhole/bloc/blacklist/bloc.dart';\r\nimport 'package:flutterhole/bloc/query/bloc.dart';\r\nimport 'package:flutterhole/bloc/status/bloc.dart';\r\nimport 'package:flutterhole/bloc/summary/bloc.dart';\r\nimport 'package:flutterhole/bloc/top_sources/bloc.dart';\r\nimport 'package:flutterhole/bloc/whitelist/bloc.dart';\r\nimport 'package:flutterhole/service/globals.dart';\r\nimport 'package:flutterhole/service/local_storage.dart';\r\nimport 'package:flutterhole/service/memory_tree.dart';\r\nimport 'package:flutterhole/service/pihole_client.dart';\r\nimport 'package:flutterhole/service/routes.dart';\r\nimport 'package:flutterhole/widget/app.dart';\r\n\r\nimport 'bloc/top_items/bloc.dart';\r\n\r\nvoid main() async {\r\n  Globals.router = Router();\r\n  Globals.localStorage = await LocalStorage.getInstance();\r\n  configureRoutes(Globals.router);\r\n\r\n  Globals.client = PiholeClient(dio: Dio(), localStorage: Globals.localStorage);\r\n\r\n  final SummaryBloc summaryBloc =\r\n  SummaryBloc(SummaryRepository(Globals.client));\r\n\r\n  final TopSourcesBloc topSourcesBloc =\r\n  TopSourcesBloc(TopSourcesRepository(Globals.client));\r\n\r\n  final TopItemsBloc topItemsBloc =\r\n  TopItemsBloc(TopItemsRepository(Globals.client));\r\n\r\n  final QueryBloc queryBloc = QueryBloc(QueryRepository(Globals.client));\r\n\r\n  final StatusBloc statusBloc = StatusBloc(StatusRepository(Globals.client));\r\n\r\n  final WhitelistBloc whitelistBloc =\r\n  WhitelistBloc(WhitelistRepository(Globals.client));\r\n\r\n  final BlacklistBloc blacklistBloc =\r\n  BlacklistBloc(BlacklistRepository(Globals.client));\r\n\r\n  Globals.refresh = () {\r\n    summaryBloc.dispatch(FetchSummary());\r\n    topSourcesBloc.dispatch(FetchTopSources());\r\n    topItemsBloc.dispatch(FetchTopItems());\r\n    queryBloc.dispatch(FetchQueries());\r\n    statusBloc.dispatch(FetchStatus());\r\n    whitelistBloc.dispatch(FetchWhitelist());\r\n    blacklistBloc.dispatch(FetchBlacklist());\r\n  };\r\n\r\n  assert(() {\r\n    Globals.debug = true;\r\n    return true;\r\n  }());\r\n\r\n  Globals.tree = MemoryTree();\r\n  Fimber.plantTree(MemoryTree());\r\n\r\n  if (Globals.debug) {\r\n//    BlocSupervisor.delegate = SimpleBlocDelegate();\r\n    Fimber.i('Running in debug mode');\r\n  } else {\r\n    if (Globals.localStorage.cache.isEmpty) {\r\n      await Globals.localStorage.reset();\r\n    }\r\n\r\n    Fimber.i('Running in release mode');\r\n  }\r\n\r\n  Globals.refresh();\r\n\r\n  runApp(App(\r\n    providers: [\r\n      BlocProvider<SummaryBloc>(builder: (context) => summaryBloc),\r\n      BlocProvider<TopSourcesBloc>(builder: (context) => topSourcesBloc),\r\n      BlocProvider<TopItemsBloc>(builder: (context) => topItemsBloc),\r\n      BlocProvider<QueryBloc>(builder: (context) => queryBloc),\r\n      BlocProvider<StatusBloc>(builder: (context) => statusBloc),\r\n      BlocProvider<WhitelistBloc>(builder: (context) => whitelistBloc),\r\n      BlocProvider<BlacklistBloc>(builder: (context) => blacklistBloc),\r\n    ],\r\n  ));\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/main.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/main.dart	(date 1563821092148)
+@@ -6,11 +6,12 @@
+ import 'package:flutterhole/bloc/blacklist/bloc.dart';
+ import 'package:flutterhole/bloc/query/bloc.dart';
+ import 'package:flutterhole/bloc/status/bloc.dart';
++import 'package:flutterhole/bloc/storage/bloc.dart';
++import 'package:flutterhole/bloc/storage/local_storage.dart';
+ import 'package:flutterhole/bloc/summary/bloc.dart';
+ import 'package:flutterhole/bloc/top_sources/bloc.dart';
+ import 'package:flutterhole/bloc/whitelist/bloc.dart';
+ import 'package:flutterhole/service/globals.dart';
+-import 'package:flutterhole/service/local_storage.dart';
+ import 'package:flutterhole/service/memory_tree.dart';
+ import 'package:flutterhole/service/pihole_client.dart';
+ import 'package:flutterhole/service/routes.dart';
+@@ -21,6 +22,7 @@
+ void main() async {
+   Globals.router = Router();
+   Globals.localStorage = await LocalStorage.getInstance();
++  await Globals.localStorage.refresh();
+   configureRoutes(Globals.router);
+ 
+   Globals.client = PiholeClient(dio: Dio(), localStorage: Globals.localStorage);
+@@ -28,6 +30,9 @@
+   final SummaryBloc summaryBloc =
+   SummaryBloc(SummaryRepository(Globals.client));
+ 
++  final StorageBloc storageBloc =
++  StorageBloc(StorageRepository(Globals.localStorage));
++
+   final TopSourcesBloc topSourcesBloc =
+   TopSourcesBloc(TopSourcesRepository(Globals.client));
+ 
+@@ -45,6 +50,7 @@
+   BlacklistBloc(BlacklistRepository(Globals.client));
+ 
+   Globals.refresh = () {
++    storageBloc.dispatch(FetchPiholes());
+     summaryBloc.dispatch(FetchSummary());
+     topSourcesBloc.dispatch(FetchTopSources());
+     topItemsBloc.dispatch(FetchTopItems());
+@@ -78,6 +84,7 @@
+   runApp(App(
+     providers: [
+       BlocProvider<SummaryBloc>(builder: (context) => summaryBloc),
++      BlocProvider<StorageBloc>(builder: (context) => storageBloc),
+       BlocProvider<TopSourcesBloc>(builder: (context) => topSourcesBloc),
+       BlocProvider<TopItemsBloc>(builder: (context) => topItemsBloc),
+       BlocProvider<QueryBloc>(builder: (context) => queryBloc),
+Index: pubspec.yaml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>name: flutterhole\r\ndescription: A new Flutter application.\r\n\r\n# The following defines the version and build number for your application.\r\n# A version number is three numbers separated by dots, like 1.2.43\r\n# followed by an optional build number separated by a +.\r\n# Both the version and the builder number may be overridden in flutter\r\n# build by specifying --build-name and --build-number, respectively.\r\n# In Android, build-name is used as versionName while build-number used as versionCode.\r\n# Read more about Android versioning at https://developer.android.com/studio/publish/versioning\r\n# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.\r\n# Read more about iOS versioning at\r\n# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html\r\nversion: 1.0.0+1\r\n\r\nenvironment:\r\n  sdk: \">=2.2.2 <3.0.0\"\r\n\r\ndependencies:\r\n  flutter:\r\n    sdk: flutter\r\n  dio: ^2.1.7\r\n  equatable: ^0.2.6\r\n  bloc: ^0.14.4\r\n  flutter_bloc: ^0.19.1\r\n  fimber: ^0.3.0\r\n  fluro: ^1.5.0\r\n  shared_preferences: ^0.5.3+1\r\n  url_launcher: ^5.0.3\r\n  launch_review: ^2.0.0\r\n  package_info: ^0.4.0+4\r\n  flutter_form_builder: ^3.2.0\r\n  persist_theme: ^1.5.1\r\n  flutter_picker: ^1.0.13\r\n  flutter_markdown: ^0.2.0\r\n  qrcode_reader: ^0.4.4\r\n  intl: ^0.15.8\r\n  sticky_headers: ^0.1.8\r\n  provider: ^3.0.0+1\r\n\r\ndev_dependencies:\r\n  flutter_test:\r\n    sdk: flutter\r\n  test: ^1.5.1\r\n  mockito: ^4.1.0\r\n  flutter_launcher_icons: ^0.7.2+1\r\n\r\nflutter_icons:\r\n  android: \"launcher_icon\"\r\n  image_path: \"assets/icon/icon.png\"\r\n\r\nflutter:\r\n  uses-material-design: true
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- pubspec.yaml	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ pubspec.yaml	(date 1563741454430)
+@@ -1,16 +1,6 @@
+ name: flutterhole
+ description: A new Flutter application.
+ 
+-# The following defines the version and build number for your application.
+-# A version number is three numbers separated by dots, like 1.2.43
+-# followed by an optional build number separated by a +.
+-# Both the version and the builder number may be overridden in flutter
+-# build by specifying --build-name and --build-number, respectively.
+-# In Android, build-name is used as versionName while build-number used as versionCode.
+-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+-# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+-# Read more about iOS versioning at
+-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+ version: 1.0.0+1
+ 
+ environment:
+@@ -37,6 +27,7 @@
+   intl: ^0.15.8
+   sticky_headers: ^0.1.8
+   provider: ^3.0.0+1
++  flutter_secure_storage: ^3.2.1+1
+ 
+ dev_dependencies:
+   flutter_test:
+Index: android/app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>def localProperties = new Properties()\r\ndef localPropertiesFile = rootProject.file('local.properties')\r\nif (localPropertiesFile.exists()) {\r\n    localPropertiesFile.withReader('UTF-8') { reader ->\r\n        localProperties.load(reader)\r\n    }\r\n}\r\n\r\ndef flutterRoot = localProperties.getProperty('flutter.sdk')\r\nif (flutterRoot == null) {\r\n    throw new GradleException(\"Flutter SDK not found. Define location with flutter.sdk in the local.properties file.\")\r\n}\r\n\r\ndef flutterVersionCode = localProperties.getProperty('flutter.versionCode')\r\nif (flutterVersionCode == null) {\r\n    flutterVersionCode = '200'\r\n}\r\n\r\ndef flutterVersionName = localProperties.getProperty('flutter.versionName')\r\nif (flutterVersionName == null) {\r\n    flutterVersionName = '2.0.0'\r\n}\r\n\r\napply plugin: 'com.android.application'\r\napply from: \"$flutterRoot/packages/flutter_tools/gradle/flutter.gradle\"\r\n\r\ndef keystoreProperties = new Properties()\r\ndef keystorePropertiesFile = rootProject.file('key.properties')\r\nif (keystorePropertiesFile.exists()) {\r\n    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))\r\n}\r\n\r\nandroid {\r\n    compileSdkVersion 28\r\n\r\n    lintOptions {\r\n        disable 'InvalidPackage'\r\n    }\r\n\r\n    defaultConfig {\r\n        applicationId \"sterrenburg.github.flutterhole\"\r\n        minSdkVersion 16\r\n        targetSdkVersion 28\r\n        versionCode flutterVersionCode.toInteger()\r\n        versionName flutterVersionName\r\n        testInstrumentationRunner \"android.support.test.runner.AndroidJUnitRunner\"\r\n    }\r\n\r\n    signingConfigs {\r\n        release {\r\n            keyAlias keystoreProperties['keyAlias']\r\n            keyPassword keystoreProperties['keyPassword']\r\n            storeFile file(keystoreProperties['storeFile'])\r\n            storePassword keystoreProperties['storePassword']\r\n        }\r\n    }\r\n\r\n    buildTypes {\r\n        release {\r\n            signingConfig signingConfigs.release\r\n        }\r\n    }\r\n}\r\n\r\nflutter {\r\n    source '../..'\r\n}\r\n\r\ndependencies {\r\n    testImplementation 'junit:junit:4.12'\r\n    androidTestImplementation 'com.android.support.test:runner:1.0.2'\r\n    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- android/app/build.gradle	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ android/app/build.gradle	(date 1563741413935)
+@@ -39,7 +39,7 @@
+ 
+     defaultConfig {
+         applicationId "sterrenburg.github.flutterhole"
+-        minSdkVersion 16
++        minSdkVersion 18
+         targetSdkVersion 28
+         versionCode flutterVersionCode.toInteger()
+         versionName flutterVersionName
+Index: lib/widget/layout/default_drawer.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:flutter/material.dart';\r\nimport 'package:flutter_bloc/flutter_bloc.dart';\r\nimport 'package:flutterhole/bloc/blacklist/bloc.dart';\r\nimport 'package:flutterhole/bloc/query/bloc.dart';\r\nimport 'package:flutterhole/bloc/summary/bloc.dart';\r\nimport 'package:flutterhole/bloc/top_sources/bloc.dart';\r\nimport 'package:flutterhole/bloc/whitelist/bloc.dart';\r\nimport 'package:flutterhole/model/pihole.dart';\r\nimport 'package:flutterhole/service/globals.dart';\r\nimport 'package:flutterhole/service/routes.dart';\r\nimport 'package:flutterhole/widget/pihole/pihole_list_builder.dart';\r\nimport 'package:flutterhole/widget/status/sleep_button.dart';\r\nimport 'package:flutterhole/widget/status/status_icon.dart';\r\n\r\nclass DefaultDrawer extends StatefulWidget {\r\n  final bool allowConfigSelection;\r\n\r\n  const DefaultDrawer({\r\n    Key key,\r\n    this.allowConfigSelection = true,\r\n  }) : super(key: key);\r\n\r\n  @override\r\n  _DefaultDrawerState createState() => _DefaultDrawerState();\r\n}\r\n\r\nclass _DefaultDrawerState extends State<DefaultDrawer> {\r\n  bool _showDetails = false;\r\n\r\n  Pihole active;\r\n\r\n  @override\r\n  void initState() {\r\n    super.initState();\r\n    active = Globals.localStorage.active();\r\n  }\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return Drawer(\r\n      child: ListView(\r\n        padding: EdgeInsets.zero,\r\n        children: <Widget>[\r\n          UserAccountsDrawerHeader(\r\n            accountName: Row(\r\n              children: <Widget>[\r\n                Flexible(\r\n                    child: Text(\r\n                  active == null ? 'FlutterHole' : active.title,\r\n                      overflow: TextOverflow.fade,\r\n                    )),\r\n                StatusIcon(),\r\n              ],\r\n            ),\r\n            accountEmail: null,\r\n            onDetailsPressed: widget.allowConfigSelection\r\n                ? () {\r\n              setState(() {\r\n                _showDetails = !_showDetails;\r\n              });\r\n            }\r\n                : null,\r\n          ),\r\n          _showDetails\r\n              ? PiholeListBuilder(\r\n            editable: false,\r\n          )\r\n              : _DefaultDrawerMenu(),\r\n        ],\r\n      ),\r\n    );\r\n  }\r\n}\r\n\r\nclass _DefaultDrawerMenu extends StatelessWidget {\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return Column(\r\n      children: <Widget>[\r\n        ListTile(\r\n          title: Text('Dashboard'),\r\n          leading: Icon(Icons.home),\r\n          onTap: () {\r\n            BlocProvider.of<SummaryBloc>(context).dispatch(FetchSummary());\r\n            BlocProvider.of<TopSourcesBloc>(context).dispatch(\r\n                FetchTopSources());\r\n            Globals.navigateTo(context, homePath);\r\n          },\r\n        ),\r\n        ListTile(\r\n          title: Text('Whitelist'),\r\n          leading: Icon(Icons.check_circle),\r\n          onTap: () {\r\n            BlocProvider.of<WhitelistBloc>(context).dispatch(FetchWhitelist());\r\n            Globals.navigateTo(context, whitelistPath);\r\n          },\r\n        ),\r\n        ListTile(\r\n          title: Text('Blacklist'),\r\n          leading: Icon(Icons.cancel),\r\n          onTap: () {\r\n            BlocProvider.of<BlacklistBloc>(context).dispatch(FetchBlacklist());\r\n            Globals.navigateTo(context, blacklistPath);\r\n          },\r\n        ),\r\n        SleepButtons(),\r\n        ListTile(\r\n          title: Text('Query Log'),\r\n          leading: Icon(Icons.filter_list),\r\n          onTap: () {\r\n            BlocProvider.of<QueryBloc>(context).dispatch(FetchQueries());\r\n            BlocProvider.of<BlacklistBloc>(context).dispatch(FetchBlacklist());\r\n            Globals.navigateTo(context, queryPath);\r\n          },\r\n        ),\r\n        Divider(),\r\n        ListTile(\r\n          title: Text('Settings'),\r\n          leading: Icon(Icons.settings),\r\n          onTap: () => Globals.navigateTo(context, settingsPath),\r\n        ),\r\n        Globals.debug ? ListTile(\r\n          title: Text('Logs'),\r\n          leading: Icon(Icons.format_list_bulleted),\r\n          onTap: () => Globals.navigateTo(context, logPath),\r\n        ) : Container(),\r\n        ListTile(\r\n          title: Text('About'),\r\n          leading: Icon(Icons.favorite),\r\n          onTap: () => Globals.navigateTo(context, aboutPath),\r\n        ),\r\n      ],\r\n    );\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/widget/layout/default_drawer.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/widget/layout/default_drawer.dart	(date 1563821092503)
+@@ -8,13 +8,17 @@
+ import 'package:flutterhole/model/pihole.dart';
+ import 'package:flutterhole/service/globals.dart';
+ import 'package:flutterhole/service/routes.dart';
++import 'package:flutterhole/widget/pihole/pihole_active_text.dart';
+ import 'package:flutterhole/widget/pihole/pihole_list_builder.dart';
+ import 'package:flutterhole/widget/status/sleep_button.dart';
+ import 'package:flutterhole/widget/status/status_icon.dart';
+ 
++/// A [Drawer] with [DefaultDrawerMenu].
+ class DefaultDrawer extends StatefulWidget {
++  /// Whether the drawer creates a [Pihole] configuration selection menu.
+   final bool allowConfigSelection;
+ 
++  /// Creates a drawer with a menu to all main routes.
+   const DefaultDrawer({
+     Key key,
+     this.allowConfigSelection = true,
+@@ -25,14 +29,12 @@
+ }
+ 
+ class _DefaultDrawerState extends State<DefaultDrawer> {
+-  bool _showDetails = false;
+-
+-  Pihole active;
++  bool _showConfigSelectionMenu;
+ 
+   @override
+   void initState() {
+     super.initState();
+-    active = Globals.localStorage.active();
++    _showConfigSelectionMenu = false;
+   }
+ 
+   @override
+@@ -44,11 +46,7 @@
+           UserAccountsDrawerHeader(
+             accountName: Row(
+               children: <Widget>[
+-                Flexible(
+-                    child: Text(
+-                  active == null ? 'FlutterHole' : active.title,
+-                      overflow: TextOverflow.fade,
+-                    )),
++                PiholeActiveText(),
+                 StatusIcon(),
+               ],
+             ),
+@@ -56,23 +54,25 @@
+             onDetailsPressed: widget.allowConfigSelection
+                 ? () {
+               setState(() {
+-                _showDetails = !_showDetails;
++                _showConfigSelectionMenu = !_showConfigSelectionMenu;
+               });
+             }
+                 : null,
+           ),
+-          _showDetails
++          _showConfigSelectionMenu
+               ? PiholeListBuilder(
+             editable: false,
+           )
+-              : _DefaultDrawerMenu(),
++              : DefaultDrawerMenu(),
+         ],
+       ),
+     );
+   }
+ }
+ 
+-class _DefaultDrawerMenu extends StatelessWidget {
++
++/// A [ListView] with routes to all main routes.
++class DefaultDrawerMenu extends StatelessWidget {
+   @override
+   Widget build(BuildContext context) {
+     return Column(
+@@ -82,8 +82,8 @@
+           leading: Icon(Icons.home),
+           onTap: () {
+             BlocProvider.of<SummaryBloc>(context).dispatch(FetchSummary());
+-            BlocProvider.of<TopSourcesBloc>(context).dispatch(
+-                FetchTopSources());
++            BlocProvider.of<TopSourcesBloc>(context)
++                .dispatch(FetchTopSources());
+             Globals.navigateTo(context, homePath);
+           },
+         ),
+@@ -119,11 +119,13 @@
+           leading: Icon(Icons.settings),
+           onTap: () => Globals.navigateTo(context, settingsPath),
+         ),
+-        Globals.debug ? ListTile(
++        Globals.debug
++            ? ListTile(
+           title: Text('Logs'),
+           leading: Icon(Icons.format_list_bulleted),
+           onTap: () => Globals.navigateTo(context, logPath),
+-        ) : Container(),
++        )
++            : Container(),
+         ListTile(
+           title: Text('About'),
+           leading: Icon(Icons.favorite),
+Index: lib/service/local_storage.dart
+===================================================================
+--- lib/service/local_storage.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/bloc/storage/local_storage.dart	(date 1563820745526)
+@@ -17,9 +17,10 @@
+ 
+   Map<String, Pihole> get cache => _cache;
+ 
+-  Pihole active() {
+-    final String key = _preferences.getString(_piholeActiveKey);
+-    return _cache[key];
++  Pihole _active;
++
++  Pihole get active {
++    return _active ?? _cache[_preferences.getString(_piholeActiveKey)];
+   }
+ 
+   final logger = FimberLog('LocalStorage');
+@@ -32,13 +33,14 @@
+ 
+     if (_instance == null) {
+       _instance = LocalStorage();
+-      await _instance.init();
++      print('refresh here');
++      await _instance.refresh();
+     }
+ 
+     return _instance;
+   }
+ 
+-  Future<void> init() async {
++  Future<void> refresh() async {
+     _cache = {};
+     await _preferences.reload();
+     Set<String> keys = _preferences.getKeys();
+@@ -75,7 +77,7 @@
+   Future<void> reset() async {
+     await clear();
+     final pihole = Pihole();
+-    await _instance.init();
++    await _instance.refresh();
+     await _instance.add(pihole);
+     await _instance.activate(pihole);
+   }
+@@ -131,7 +133,7 @@
+       throw Exception('cannot update: key ${update.localKey} already in use');
+     }
+ 
+-    final originalIsActive = active() == original;
++    final originalIsActive = active == original;
+ 
+     await add(update, override: true);
+ 
+Index: lib/bloc/summary/summary_repository.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:flutterhole/bloc/api_repository.dart';\r\nimport 'package:flutterhole/model/summary.dart';\r\nimport 'package:flutterhole/service/pihole_client.dart';\r\n\r\n\r\nclass SummaryRepository extends ApiRepository {\r\n  final PiholeClient client;\r\n\r\n  SummaryRepository(this.client);\r\n\r\n  Future<Summary> getSummary() {\r\n    return client.fetchSummary();\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/bloc/summary/summary_repository.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/bloc/summary/summary_repository.dart	(date 1563740696186)
+@@ -2,11 +2,8 @@
+ import 'package:flutterhole/model/summary.dart';
+ import 'package:flutterhole/service/pihole_client.dart';
+ 
+-
+ class SummaryRepository extends ApiRepository {
+-  final PiholeClient client;
+-
+-  SummaryRepository(this.client);
++  SummaryRepository(PiholeClient client) : super(client: client);
+ 
+   Future<Summary> getSummary() {
+     return client.fetchSummary();
+Index: lib/widget/whitelist/whitelist_floating_action_button.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:flutter/material.dart';\r\nimport 'package:flutter_bloc/flutter_bloc.dart';\r\nimport 'package:flutterhole/bloc/whitelist/bloc.dart';\r\nimport 'package:flutterhole/service/globals.dart';\r\nimport 'package:flutterhole/service/routes.dart';\r\nimport 'package:persist_theme/data/models/theme_model.dart';\r\nimport 'package:provider/provider.dart';\r\n\r\nclass WhitelistFloatingActionButton extends StatefulWidget {\r\n  @override\r\n  _WhitelistFloatingActionButtonState createState() =>\r\n      _WhitelistFloatingActionButtonState();\r\n}\r\n\r\nclass _WhitelistFloatingActionButtonState\r\n    extends State<WhitelistFloatingActionButton> {\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    final _theme = Provider.of<ThemeModel>(context);\r\n    final WhitelistBloc whitelistBloc = BlocProvider.of<WhitelistBloc>(context);\r\n    return BlocBuilder(\r\n      bloc: whitelistBloc,\r\n      builder: (context, state) {\r\n        if (state is WhitelistStateSuccess) {\r\n          return FloatingActionButton(\r\n              tooltip: 'Add to whitelist',\r\n              backgroundColor: _theme.accentColor,\r\n              onPressed: () async {\r\n                final domain =\r\n                await Globals.navigateTo(context, whitelistAddPath,);\r\n                if (domain != null)\r\n                  Scaffold.of(context).showSnackBar(\r\n                      SnackBar(content: Text('Added $domain to whitelist')));\r\n              },\r\n              child: Icon(Icons.add));\r\n        }\r\n\r\n        return Container();\r\n      },\r\n    );\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/widget/whitelist/whitelist_floating_action_button.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/widget/whitelist/whitelist_floating_action_button.dart	(date 1563821091999)
+@@ -16,7 +16,6 @@
+     extends State<WhitelistFloatingActionButton> {
+   @override
+   Widget build(BuildContext context) {
+-    final _theme = Provider.of<ThemeModel>(context);
+     final WhitelistBloc whitelistBloc = BlocProvider.of<WhitelistBloc>(context);
+     return BlocBuilder(
+       bloc: whitelistBloc,
+@@ -24,7 +23,9 @@
+         if (state is WhitelistStateSuccess) {
+           return FloatingActionButton(
+               tooltip: 'Add to whitelist',
+-              backgroundColor: _theme.accentColor,
++              backgroundColor: Provider
++                  .of<ThemeModel>(context)
++                  .accentColor,
+               onPressed: () async {
+                 final domain =
+                 await Globals.navigateTo(context, whitelistAddPath,);
+Index: lib/widget/blacklist/blacklist_floating_action_button.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:flutter/material.dart';\r\nimport 'package:flutter_bloc/flutter_bloc.dart';\r\nimport 'package:flutterhole/bloc/blacklist/bloc.dart';\r\nimport 'package:flutterhole/model/blacklist.dart';\r\nimport 'package:flutterhole/service/globals.dart';\r\nimport 'package:flutterhole/service/routes.dart';\r\nimport 'package:persist_theme/data/models/theme_model.dart';\r\nimport 'package:provider/provider.dart';\r\n\r\nclass BlacklistFloatingActionButton extends StatefulWidget {\r\n  @override\r\n  _BlacklistFloatingActionButtonState createState() =>\r\n      _BlacklistFloatingActionButtonState();\r\n}\r\n\r\nclass _BlacklistFloatingActionButtonState\r\n    extends State<BlacklistFloatingActionButton> {\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    final _theme = Provider.of<ThemeModel>(context);\r\n    final BlacklistBloc blacklistBloc = BlocProvider.of<BlacklistBloc>(context);\r\n    return BlocBuilder(\r\n      bloc: blacklistBloc,\r\n      builder: (context, state) {\r\n        if (state is BlacklistStateSuccess) {\r\n          return FloatingActionButton(\r\n              tooltip: 'Add to blacklist',\r\n              backgroundColor: _theme.accentColor,\r\n              onPressed: () async {\r\n                final BlacklistItem item =\r\n                await Globals.navigateTo(context, blacklistAddPath,);\r\n                if (item != null)\r\n                  Scaffold.of(context).showSnackBar(SnackBar(\r\n                      content: Text('Added ${item.entry} to blacklist')));\r\n              },\r\n              child: Icon(Icons.add));\r\n        }\r\n\r\n        return Container();\r\n      },\r\n    );\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/widget/blacklist/blacklist_floating_action_button.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/widget/blacklist/blacklist_floating_action_button.dart	(date 1563821092045)
+@@ -17,7 +17,6 @@
+     extends State<BlacklistFloatingActionButton> {
+   @override
+   Widget build(BuildContext context) {
+-    final _theme = Provider.of<ThemeModel>(context);
+     final BlacklistBloc blacklistBloc = BlocProvider.of<BlacklistBloc>(context);
+     return BlocBuilder(
+       bloc: blacklistBloc,
+@@ -25,10 +24,12 @@
+         if (state is BlacklistStateSuccess) {
+           return FloatingActionButton(
+               tooltip: 'Add to blacklist',
+-              backgroundColor: _theme.accentColor,
++              backgroundColor: Provider
++                  .of<ThemeModel>(context)
++                  .accentColor,
+               onPressed: () async {
+                 final BlacklistItem item =
+-                await Globals.navigateTo(context, blacklistAddPath,);
++                await Globals.navigateTo(context, blacklistAddPath);
+                 if (item != null)
+                   Scaffold.of(context).showSnackBar(SnackBar(
+                       content: Text('Added ${item.entry} to blacklist')));
+Index: lib/widget/pihole/pihole_button_row.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:flutter/material.dart';\r\nimport 'package:flutterhole/service/local_storage.dart';\r\nimport 'package:flutterhole/widget/layout/dialog.dart';\r\nimport 'package:flutterhole/widget/layout/icon_text_button.dart';\r\nimport 'package:flutterhole/widget/screen/pihole_screen.dart';\r\n\r\nclass PiholeButtonRow extends StatelessWidget {\r\n  final LocalStorage localStorage;\r\n  final VoidCallback onStateChange;\r\n\r\n  const PiholeButtonRow({\r\n    Key key,\r\n    @required this.localStorage,\r\n    @required this.onStateChange,\r\n  }) : super(key: key);\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return Row(\r\n      mainAxisAlignment: MainAxisAlignment.spaceAround,\r\n      children: <Widget>[\r\n        IconTextButton(\r\n          onPressed: () {\r\n            Navigator.push(\r\n              context,\r\n              MaterialPageRoute(\r\n                builder: (context) => PiholeAddScreen(),\r\n              ),\r\n            );\r\n          },\r\n          title: 'Add a new Pihole',\r\n          icon: Icons.add,\r\n          color: Colors.green,\r\n        ),\r\n        IconTextButton(\r\n          onPressed: () async {\r\n            showAlertDialog(\r\n                context,\r\n                Container(\r\n                  child: Text(\"Do you want to remove all configurations?\"),\r\n                ),\r\n                continueText: 'Remove all', onConfirm: () async {\r\n              await localStorage.reset();\r\n              onStateChange();\r\n              Scaffold.of(context).showSnackBar(\r\n                  SnackBar(content: Text('Reset to default configuration')));\r\n            });\r\n          },\r\n          title: 'Reset to defaults',\r\n          icon: Icons.delete_forever,\r\n          color: Colors.red,\r\n        )\r\n      ],\r\n    );\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/widget/pihole/pihole_button_row.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/widget/pihole/pihole_button_row.dart	(date 1563740450746)
+@@ -1,5 +1,5 @@
+ import 'package:flutter/material.dart';
+-import 'package:flutterhole/service/local_storage.dart';
++import 'package:flutterhole/bloc/storage/local_storage.dart';
+ import 'package:flutterhole/widget/layout/dialog.dart';
+ import 'package:flutterhole/widget/layout/icon_text_button.dart';
+ import 'package:flutterhole/widget/screen/pihole_screen.dart';
+Index: lib/widget/pihole/pihole_list_builder.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:flutter/material.dart';\r\nimport 'package:flutterhole/model/pihole.dart';\r\nimport 'package:flutterhole/service/globals.dart';\r\nimport 'package:flutterhole/service/routes.dart';\r\nimport 'package:flutterhole/widget/layout/dismissible_background.dart';\r\nimport 'package:flutterhole/widget/layout/list_tab.dart';\r\nimport 'package:flutterhole/widget/pihole/pihole_button_row.dart';\r\nimport 'package:persist_theme/data/models/theme_model.dart';\r\nimport 'package:provider/provider.dart';\r\n\r\nclass PiholeListBuilder extends StatefulWidget {\r\n  final bool editable;\r\n\r\n  const PiholeListBuilder({Key key, this.editable = true}) : super(key: key);\r\n\r\n  @override\r\n  _PiholeListBuilderState createState() => _PiholeListBuilderState();\r\n}\r\n\r\nclass _PiholeListBuilderState extends State<PiholeListBuilder> {\r\n  final localStorage = Globals.localStorage;\r\n\r\n  void _edit(Pihole pihole) async {\r\n    final String message =\r\n    await Globals.navigateTo(context, piholeEditPath(pihole),);\r\n    if (message != null) {\r\n      Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));\r\n    }\r\n  }\r\n\r\n  Future _activate(Pihole pihole, BuildContext context) async {\r\n    await localStorage.activate(pihole);\r\n    Globals.refresh();\r\n    setState(() {});\r\n    Scaffold.of(context)\r\n        .showSnackBar(SnackBar(content: Text('Changed to ${pihole.title}')));\r\n  }\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    Widget body = Center(child: CircularProgressIndicator());\r\n    if (localStorage == null) {\r\n      return body;\r\n    }\r\n\r\n    if (localStorage.cache.length == 0) {\r\n      body = Column(\r\n        mainAxisAlignment: MainAxisAlignment.center,\r\n        children: <Widget>[\r\n          Text('No Piholes found.'),\r\n        ],\r\n      );\r\n    }\r\n\r\n    body = ListView.builder(\r\n        padding: EdgeInsets.zero,\r\n        shrinkWrap: true,\r\n        itemCount: localStorage.cache.length,\r\n        itemBuilder: (BuildContext context, int index) {\r\n          final pihole =\r\n          localStorage.cache[localStorage.cache.keys.elementAt(index)];\r\n          final bool active = localStorage.active() != null &&\r\n              localStorage\r\n                  .active()\r\n                  .title == pihole.title;\r\n          if (widget.editable) {\r\n            return Dismissible(\r\n              key: Key(pihole.title),\r\n              onDismissed: (direction) async {\r\n                final didRemove = await localStorage.remove(pihole);\r\n\r\n                if (didRemove) {\r\n                  Scaffold.of(context).showSnackBar(SnackBar(\r\n                    content: Text('Removed ${pihole.title}'),\r\n                    action: SnackBarAction(\r\n                        label: 'Undo',\r\n                        onPressed: () async {\r\n                          await localStorage.add(pihole);\r\n                          setState(() {});\r\n                        }),\r\n                  ));\r\n                  setState(() {});\r\n                } else {\r\n                  Scaffold.of(context).showSnackBar(SnackBar(\r\n                      content: Text('Could not remove ${pihole.title}')));\r\n                }\r\n              },\r\n              background: DismissibleBackground(),\r\n              secondaryBackground:\r\n              DismissibleBackground(alignment: Alignment.centerRight),\r\n              child: PiholeTile(\r\n                pihole: pihole,\r\n                active: active,\r\n                onTap: () => _edit(pihole),\r\n                onLongPress: () => _activate(pihole, context),\r\n              ),\r\n            );\r\n          } else {\r\n            return PiholeTile(\r\n              pihole: pihole,\r\n              active: active,\r\n              onTap: () async {\r\n                await _activate(pihole, context);\r\n                Navigator.of(context).pop();\r\n              },\r\n//              onLongPress: () => _edit(pihole),\r\n            );\r\n          }\r\n        });\r\n\r\n    return Column(\r\n      children: <Widget>[\r\n        widget.editable ? Container() : ListTab('Select configuration'),\r\n        widget.editable ? Container() : Divider(),\r\n        body,\r\n        Divider(),\r\n        widget.editable\r\n            ? PiholeButtonRow(\r\n          localStorage: localStorage,\r\n          onStateChange: () {\r\n            setState(() {});\r\n          },\r\n        )\r\n            : Container(),\r\n      ],\r\n    );\r\n  }\r\n}\r\n\r\nclass PiholeTile extends StatelessWidget {\r\n  final Pihole pihole;\r\n  final bool active;\r\n  final GestureTapCallback onTap;\r\n  final GestureLongPressCallback onLongPress;\r\n\r\n  const PiholeTile(\r\n      {Key key,\r\n      @required this.pihole,\r\n        this.active = false,\r\n        this.onTap,\r\n        this.onLongPress})\r\n      : super(key: key);\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    final _theme = Provider.of<ThemeModel>(context);\r\n\r\n    return ListTile(\r\n      title: Text(pihole.title),\r\n      subtitle: Text(pihole.basePath),\r\n      trailing: Icon(Icons.keyboard_arrow_right),\r\n      leading: Icon(Icons.check,\r\n          color: active\r\n              ? _theme.accentColor\r\n//              ? Theme.of(context).primaryColor\r\n              : Colors.black.withOpacity(0.0)),\r\n      onTap: onTap,\r\n      onLongPress: onLongPress,\r\n    );\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/widget/pihole/pihole_list_builder.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/widget/pihole/pihole_list_builder.dart	(date 1563821092027)
+@@ -1,4 +1,6 @@
+ import 'package:flutter/material.dart';
++import 'package:flutter_bloc/flutter_bloc.dart';
++import 'package:flutterhole/bloc/storage/bloc.dart';
+ import 'package:flutterhole/model/pihole.dart';
+ import 'package:flutterhole/service/globals.dart';
+ import 'package:flutterhole/service/routes.dart';
+@@ -21,8 +23,10 @@
+   final localStorage = Globals.localStorage;
+ 
+   void _edit(Pihole pihole) async {
+-    final String message =
+-    await Globals.navigateTo(context, piholeEditPath(pihole),);
++    final String message = await Globals.navigateTo(
++      context,
++      piholeEditPath(pihole),
++    );
+     if (message != null) {
+       Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
+     }
+@@ -59,10 +63,6 @@
+         itemBuilder: (BuildContext context, int index) {
+           final pihole =
+           localStorage.cache[localStorage.cache.keys.elementAt(index)];
+-          final bool active = localStorage.active() != null &&
+-              localStorage
+-                  .active()
+-                  .title == pihole.title;
+           if (widget.editable) {
+             return Dismissible(
+               key: Key(pihole.title),
+@@ -90,7 +90,6 @@
+               DismissibleBackground(alignment: Alignment.centerRight),
+               child: PiholeTile(
+                 pihole: pihole,
+-                active: active,
+                 onTap: () => _edit(pihole),
+                 onLongPress: () => _activate(pihole, context),
+               ),
+@@ -98,7 +97,6 @@
+           } else {
+             return PiholeTile(
+               pihole: pihole,
+-              active: active,
+               onTap: () async {
+                 await _activate(pihole, context);
+                 Navigator.of(context).pop();
+@@ -129,33 +127,37 @@
+ 
+ class PiholeTile extends StatelessWidget {
+   final Pihole pihole;
+-  final bool active;
+   final GestureTapCallback onTap;
+   final GestureLongPressCallback onLongPress;
+ 
+   const PiholeTile(
+-      {Key key,
+-      @required this.pihole,
+-        this.active = false,
+-        this.onTap,
+-        this.onLongPress})
++      {Key key, @required this.pihole, this.onTap, this.onLongPress})
+       : super(key: key);
+ 
+   @override
+   Widget build(BuildContext context) {
+-    final _theme = Provider.of<ThemeModel>(context);
+-
+-    return ListTile(
+-      title: Text(pihole.title),
+-      subtitle: Text(pihole.basePath),
+-      trailing: Icon(Icons.keyboard_arrow_right),
+-      leading: Icon(Icons.check,
+-          color: active
+-              ? _theme.accentColor
+-//              ? Theme.of(context).primaryColor
+-              : Colors.black.withOpacity(0.0)),
+-      onTap: onTap,
+-      onLongPress: onLongPress,
++    final StorageBloc storageBloc = BlocProvider.of<StorageBloc>(context);
++    return BlocBuilder(
++      bloc: storageBloc,
++      builder: (context, state) {
++        bool isActive = false;
++        if (state is StorageStateSuccess) {
++          isActive = pihole == state.active;
++        }
++        return ListTile(
++          title: Text(pihole.title),
++          subtitle: Text(pihole.basePath),
++          trailing: Icon(Icons.keyboard_arrow_right),
++          leading: Icon(Icons.check,
++              color: isActive
++                  ? Provider
++                  .of<ThemeModel>(context)
++                  .accentColor
++                  : Colors.black.withOpacity(0.0)),
++          onTap: onTap,
++          onLongPress: onLongPress,
++        );
++      },
+     );
+   }
+ }
+Index: test/pihole_client_test.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'dart:async';\r\nimport 'dart:convert';\r\n\r\nimport 'package:dio/dio.dart';\r\nimport 'package:flutterhole/model/blacklist.dart';\r\nimport 'package:flutterhole/model/pihole.dart';\r\nimport 'package:flutterhole/model/status.dart';\r\nimport 'package:flutterhole/service/globals.dart';\r\nimport 'package:flutterhole/service/local_storage.dart';\r\nimport 'package:flutterhole/service/memory_tree.dart';\r\nimport 'package:flutterhole/service/pihole_client.dart';\r\nimport 'package:flutterhole/service/pihole_exception.dart';\r\nimport 'package:mockito/mockito.dart';\r\nimport \"package:test/test.dart\";\r\n\r\nimport 'mock.dart';\r\n\r\nclass MockLocalStorage extends Mock implements LocalStorage {}\r\n\r\ntypedef MockAdapterHandler = ResponseBody Function(RequestOptions options);\r\n\r\nclass MockAdapter extends HttpClientAdapter {\r\n  List<MockAdapterHandler> handlers;\r\n\r\n  MockAdapter([this.handlers = const []]);\r\n\r\n  factory MockAdapter.string(String str) =>\r\n      MockAdapter([\r\n            (_) {\r\n          return ResponseBody.fromString(str, 200);\r\n        }\r\n      ]);\r\n\r\n  factory MockAdapter.emptyString() =>\r\n      MockAdapter([\r\n            (_) {\r\n          return ResponseBody.fromString('', 200);\r\n        }\r\n      ]);\r\n\r\n  factory MockAdapter.notAuthorized() => MockAdapter.string('Not authorized!');\r\n\r\n  factory MockAdapter.json(dynamic data) =>\r\n      MockAdapter([\r\n            (_) {\r\n          return ResponseBody.fromString(json.encode(data), 200);\r\n        }\r\n      ]);\r\n\r\n  factory MockAdapter.throwsError({dynamic e}) =>\r\n      MockAdapter([\r\n            (_) {\r\n          throw e ?? DioError();\r\n        }\r\n      ]);\r\n\r\n  factory MockAdapter.emptyList() =>\r\n      MockAdapter([\r\n            (_) {\r\n          return ResponseBody.fromString('[]', 200);\r\n        }\r\n      ]);\r\n\r\n  @override\r\n  Future<ResponseBody> fetch(RequestOptions options,\r\n      Stream<List<int>> requestStream, Future cancelFuture) async {\r\n    ResponseBody response;\r\n\r\n    for (final handler in handlers) {\r\n      response = handler(options);\r\n      if (response != null) return response;\r\n    }\r\n\r\n    throw UnimplementedError();\r\n//    return handler(options);\r\n  }\r\n}\r\n\r\nvoid main() {\r\n  Pihole pihole;\r\n  Dio dio;\r\n  LocalStorage localStorage;\r\n  PiholeClient client;\r\n\r\n  setUp(() async {\r\n    Globals.tree = MemoryTree();\r\n    pihole = Pihole(\r\n      title: 'Testing',\r\n      host: 'test',\r\n      auth: 'test_token',\r\n    );\r\n\r\n    dio = Dio(BaseOptions(\r\n      baseUrl: pihole.basePath,\r\n    ));\r\n    dio.httpClientAdapter = MockAdapter();\r\n\r\n    localStorage = MockLocalStorage();\r\n    when(localStorage.active()).thenReturn(pihole);\r\n\r\n    client = PiholeClient(dio: dio, localStorage: localStorage);\r\n  });\r\n\r\n  test('constructor', () {\r\n    expect(client.dio.interceptors.isNotEmpty, isTrue);\r\n  });\r\n\r\n  group('fetchStatus', () {\r\n    test('returns Status on successful response', () async {\r\n      dio.httpClientAdapter = MockAdapter.json(mockStatusEnabled.toJson());\r\n      expect(client.fetchStatus(), completion(Status(enabled: true)));\r\n    });\r\n\r\n    test('throws PiholeException on empty response', () async {\r\n      dio.httpClientAdapter = MockAdapter.emptyList();\r\n      try {\r\n        await client.fetchStatus();\r\n        fail('exception not thrown');\r\n      } on PiholeException catch (e) {\r\n        expect(e.message, 'empty response');\r\n      }\r\n    });\r\n\r\n    test('throws PiholeException on unresolved hostname', () async {\r\n      dio.httpClientAdapter = MockAdapter.throwsError();\r\n      try {\r\n        await client.fetchStatus();\r\n        fail('exception not thrown');\r\n      } on PiholeException catch (e) {\r\n        expect(e.e, TypeMatcher<DioError>());\r\n      }\r\n    });\r\n\r\n    test('throws PiholeException on not authorized response', () async {\r\n      dio.httpClientAdapter = MockAdapter.notAuthorized();\r\n      try {\r\n        await client.fetchStatus();\r\n        fail('exception not thrown');\r\n      } on PiholeException catch (e) {\r\n        expect(e.message, 'not authorized');\r\n      }\r\n    });\r\n  });\r\n\r\n  group('enable', () {\r\n    test('returns Status enabled on successful enable', () async {\r\n      dio.httpClientAdapter = MockAdapter.json(mockStatusEnabled.toJson());\r\n      expect(client.enable(), completion(mockStatusEnabled));\r\n    });\r\n\r\n    test('throws PiholeException when API token is empty', () async {\r\n      pihole.auth = '';\r\n      try {\r\n        await client.enable();\r\n        fail('exception not thrown');\r\n      } on PiholeException catch (e) {\r\n        expect(e.message, 'API token is empty');\r\n      }\r\n    });\r\n\r\n    test('throws PiholeException on disabled response', () async {\r\n      dio.httpClientAdapter = MockAdapter.json(mockStatusDisabled.toJson());\r\n      try {\r\n        await client.enable();\r\n        fail('exception not thrown');\r\n      } on PiholeException catch (e) {\r\n        expect(e.message, 'failed to enable');\r\n      }\r\n    });\r\n  });\r\n\r\n  group('disable', () {\r\n    test('returns on successful response disabled', () async {\r\n      dio.httpClientAdapter = MockAdapter.json(mockStatusDisabled.toJson());\r\n      expect(client.disable(), completion(mockStatusDisabled));\r\n    });\r\n\r\n    test('throws PiholeException on enabled response', () async {\r\n      dio.httpClientAdapter = MockAdapter.json(mockStatusEnabled.toJson());\r\n      try {\r\n        await client.disable();\r\n        fail('exception not thrown');\r\n      } on PiholeException catch (e) {\r\n        expect(e.message, 'failed to disable');\r\n      }\r\n    });\r\n  });\r\n\r\n  group('fetchSummary', () {\r\n    test('returns Summary on successful response', () async {\r\n      dio.httpClientAdapter = MockAdapter.json(mockSummary.toJson());\r\n      expect(client.fetchSummary(), completion(mockSummary));\r\n    });\r\n\r\n    test('throws PiholeException on plaintext response', () async {\r\n      dio.httpClientAdapter = MockAdapter.string('<!-- hello -->');\r\n      try {\r\n        await client.fetchSummary();\r\n        fail('exception not thrown');\r\n      } on PiholeException catch (e) {\r\n        expect(e.message.contains('unexpected plaintext response'), isTrue);\r\n      }\r\n    });\r\n  });\r\n\r\n  group('blacklist', () {\r\n    group('fetchBlacklist', () {\r\n      test('returns Blacklist on successful response', () async {\r\n        dio.httpClientAdapter = MockAdapter.json(mockBlacklist.toJson());\r\n        expect(client.fetchBlacklist(), completion(mockBlacklist));\r\n      });\r\n    });\r\n\r\n    group('addToBlacklist', () {\r\n      test('returns on successful exact add', () async {\r\n        dio.httpClientAdapter = MockAdapter.emptyString();\r\n        final BlacklistItem toAdd = BlacklistItem.exact(entry: 'example');\r\n\r\n        expect(client.addToBlacklist(toAdd), completes);\r\n      });\r\n\r\n      test('returns on successful wildcard add', () async {\r\n        dio.httpClientAdapter = MockAdapter.emptyString();\r\n        final BlacklistItem toAdd = BlacklistItem.wildcard(entry: 'wild');\r\n\r\n        expect(client.addToBlacklist(toAdd), completes);\r\n      });\r\n\r\n      test('returns on successful regex add', () async {\r\n        dio.httpClientAdapter = MockAdapter.emptyString();\r\n        final BlacklistItem toAdd = BlacklistItem.regex(entry: 'regex');\r\n\r\n        expect(client.addToBlacklist(toAdd), completes);\r\n      });\r\n\r\n      test('throws PiholeException on duplicate blacklist add', () async {\r\n        dio.httpClientAdapter = MockAdapter.string('no need to add');\r\n        final BlacklistItem toAdd = BlacklistItem.exact(entry: 'a.com');\r\n\r\n        try {\r\n          await client.addToBlacklist(toAdd);\r\n          fail('exception not thrown');\r\n        } on PiholeException catch (e) {\r\n          expect(e.message.contains('already exists'), isTrue);\r\n        }\r\n      });\r\n\r\n      test('throws PiholeException on invalid blacklist add', () async {\r\n        dio.httpClientAdapter = MockAdapter.string('not a valid domain');\r\n        final BlacklistItem toAdd = BlacklistItem.exact(entry: 'invalid');\r\n\r\n        try {\r\n          await client.addToBlacklist(toAdd);\r\n          fail('exception not thrown');\r\n        } on PiholeException catch (e) {\r\n          expect(e.message.contains('${toAdd.entry} is not a valid domain'),\r\n              isTrue);\r\n        }\r\n      });\r\n    });\r\n\r\n    group('editOnBlacklist', () {\r\n      test('returns on successful blacklist edit', () async {\r\n        dio.httpClientAdapter = MockAdapter.emptyString();\r\n        expect(\r\n            client.editOnBlacklist(\r\n                BlacklistItem(\r\n                    entry: 'wildcard.com', type: BlacklistType.Wildcard),\r\n                BlacklistItem(\r\n                    entry: 'wildcard.edited.com',\r\n                    type: BlacklistType.Wildcard)),\r\n            completes);\r\n      });\r\n    });\r\n\r\n    group('removeFromBlacklist', () {\r\n      test('returns on successful exact remove', () async {\r\n        dio.httpClientAdapter = MockAdapter.emptyString();\r\n        expect(\r\n            client.removeFromBlacklist(\r\n                BlacklistItem(entry: 'example.com', type: BlacklistType.Exact)),\r\n            completes);\r\n      });\r\n    });\r\n  });\r\n\r\n  group('whitelist', () {\r\n    group('fetchWhitelist', () {\r\n      test('returns Whitelist on successful fetch', () async {\r\n        dio.httpClientAdapter = MockAdapter.string(mockWhitelist.toJson());\r\n        final whitelist = await client.fetchWhitelist();\r\n        expect(whitelist, mockWhitelist);\r\n      });\r\n    });\r\n\r\n    group('addToWhitelist', () {\r\n      test('returns on succesful add', () async {\r\n        dio.httpClientAdapter =\r\n            MockAdapter.string('adding new.com to whitelist...');\r\n        expect(client.addToWhitelist('new.com'), completes);\r\n      });\r\n\r\n      test('throws PiholeException on duplicate add', () async {\r\n        dio.httpClientAdapter =\r\n            MockAdapter.string('already exists in whitelist');\r\n        try {\r\n          await client.addToWhitelist('new.com');\r\n          fail('exception not thrown');\r\n        } on PiholeException catch (e) {\r\n          expect(e.message, 'new.com is already whitelisted');\r\n        }\r\n      });\r\n\r\n      test('throws PiholeException on empty add', () async {\r\n        try {\r\n          await client.addToWhitelist('');\r\n          fail('exception not thrown');\r\n        } on PiholeException catch (e) {\r\n          expect(e.message, 'cannot add empty domain to whitelist');\r\n        }\r\n      });\r\n\r\n      test('throws PiholeException on unexpected response', () async {\r\n        dio.httpClientAdapter = MockAdapter.string('hello');\r\n        try {\r\n          await client.addToWhitelist('new.com');\r\n          fail('exception not thrown');\r\n        } on PiholeException catch (e) {\r\n          expect(e.message, 'unexpected whitelist response');\r\n        }\r\n      });\r\n\r\n      test('throws PiholeException on unauthorized add', () async {\r\n        dio.httpClientAdapter = MockAdapter.notAuthorized();\r\n        try {\r\n          await client.addToWhitelist('new.com');\r\n          fail('exception not thrown');\r\n        } on PiholeException catch (e) {\r\n          expect(e.message, 'not authorized');\r\n        }\r\n      });\r\n    });\r\n\r\n    group('removeFromWhitelist', () {\r\n      test('throws PiholeException on unauthorized removeFromWhitelist',\r\n              () async {\r\n            dio.httpClientAdapter = MockAdapter.notAuthorized();\r\n            try {\r\n              await client.removeFromWhitelist('new.com');\r\n              fail('exception not thrown');\r\n            } on PiholeException catch (e) {\r\n              expect(e.message, 'not authorized');\r\n            }\r\n          });\r\n    });\r\n\r\n    group('editOnWhitelist', () {\r\n      test('returns on successful edit', () async {\r\n        dio.httpClientAdapter =\r\n            MockAdapter.string('adding new.com to whitelist...');\r\n        expect(client.editOnWhitelist('original.com', 'new.com'), completes);\r\n      });\r\n    });\r\n\r\n    group('fetchTopSources', () {\r\n      test('returns TopSources on successful fetch', () async {\r\n        dio.httpClientAdapter = MockAdapter.json(mockTopSources.toJson());\r\n        expect(client.fetchTopSources(), completion(mockTopSources));\r\n      });\r\n    });\r\n\r\n//    group('fetchQueries', () {\r\n//      test('returns list of Queries on successful fetch', () async {\r\n//        dio.httpClientAdapter =\r\n//            MockAdapter.string('adding new.com to whitelist...');\r\n//        expect(client.fetchQueries(), completion(mockQueries));\r\n//      });\r\n//    });\r\n  });\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- test/pihole_client_test.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ test/pihole_client_test.dart	(date 1563821092125)
+@@ -2,11 +2,11 @@
+ import 'dart:convert';
+ 
+ import 'package:dio/dio.dart';
++import 'package:flutterhole/bloc/storage/local_storage.dart';
+ import 'package:flutterhole/model/blacklist.dart';
+ import 'package:flutterhole/model/pihole.dart';
+ import 'package:flutterhole/model/status.dart';
+ import 'package:flutterhole/service/globals.dart';
+-import 'package:flutterhole/service/local_storage.dart';
+ import 'package:flutterhole/service/memory_tree.dart';
+ import 'package:flutterhole/service/pihole_client.dart';
+ import 'package:flutterhole/service/pihole_exception.dart';
+@@ -96,7 +96,7 @@
+     dio.httpClientAdapter = MockAdapter();
+ 
+     localStorage = MockLocalStorage();
+-    when(localStorage.active()).thenReturn(pihole);
++    when(localStorage.active).thenReturn(pihole);
+ 
+     client = PiholeClient(dio: dio, localStorage: localStorage);
+   });
+Index: pubspec.lock
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+># Generated by pub\r\n# See https://dart.dev/tools/pub/glossary#lockfile\r\npackages:\r\n  analyzer:\r\n    dependency: transitive\r\n    description:\r\n      name: analyzer\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.36.4\"\r\n  archive:\r\n    dependency: transitive\r\n    description:\r\n      name: archive\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.0.10\"\r\n  args:\r\n    dependency: transitive\r\n    description:\r\n      name: args\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.5.2\"\r\n  async:\r\n    dependency: transitive\r\n    description:\r\n      name: async\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.3.0\"\r\n  bloc:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: bloc\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.14.4\"\r\n  boolean_selector:\r\n    dependency: transitive\r\n    description:\r\n      name: boolean_selector\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.0.5\"\r\n  charcode:\r\n    dependency: transitive\r\n    description:\r\n      name: charcode\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.1.2\"\r\n  collection:\r\n    dependency: transitive\r\n    description:\r\n      name: collection\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.14.11\"\r\n  convert:\r\n    dependency: transitive\r\n    description:\r\n      name: convert\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.1.1\"\r\n  cookie_jar:\r\n    dependency: transitive\r\n    description:\r\n      name: cookie_jar\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.0.1\"\r\n  crypto:\r\n    dependency: transitive\r\n    description:\r\n      name: crypto\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.0.6\"\r\n  csslib:\r\n    dependency: transitive\r\n    description:\r\n      name: csslib\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.16.1\"\r\n  datetime_picker_formfield:\r\n    dependency: transitive\r\n    description:\r\n      name: datetime_picker_formfield\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.2.0\"\r\n  dio:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: dio\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.1.13\"\r\n  equatable:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: equatable\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.2.6\"\r\n  fimber:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: fimber\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.3.0\"\r\n  fluro:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: fluro\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.5.1\"\r\n  flutter:\r\n    dependency: \"direct main\"\r\n    description: flutter\r\n    source: sdk\r\n    version: \"0.0.0\"\r\n  flutter_bloc:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: flutter_bloc\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.19.1\"\r\n  flutter_chips_input:\r\n    dependency: transitive\r\n    description:\r\n      name: flutter_chips_input\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.3.0\"\r\n  flutter_form_builder:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: flutter_form_builder\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"3.2.9\"\r\n  flutter_launcher_icons:\r\n    dependency: \"direct dev\"\r\n    description:\r\n      name: flutter_launcher_icons\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.7.2+1\"\r\n  flutter_markdown:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: flutter_markdown\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.2.0\"\r\n  flutter_material_color_picker:\r\n    dependency: transitive\r\n    description:\r\n      name: flutter_material_color_picker\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.0.2\"\r\n  flutter_picker:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: flutter_picker\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.0.13\"\r\n  flutter_test:\r\n    dependency: \"direct dev\"\r\n    description: flutter\r\n    source: sdk\r\n    version: \"0.0.0\"\r\n  flutter_typeahead:\r\n    dependency: transitive\r\n    description:\r\n      name: flutter_typeahead\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.6.1\"\r\n  front_end:\r\n    dependency: transitive\r\n    description:\r\n      name: front_end\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.1.19\"\r\n  glob:\r\n    dependency: transitive\r\n    description:\r\n      name: glob\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.1.7\"\r\n  html:\r\n    dependency: transitive\r\n    description:\r\n      name: html\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.14.0+2\"\r\n  http:\r\n    dependency: transitive\r\n    description:\r\n      name: http\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.12.0+2\"\r\n  http_multi_server:\r\n    dependency: transitive\r\n    description:\r\n      name: http_multi_server\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.1.0\"\r\n  http_parser:\r\n    dependency: transitive\r\n    description:\r\n      name: http_parser\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"3.1.3\"\r\n  image:\r\n    dependency: transitive\r\n    description:\r\n      name: image\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.1.4\"\r\n  intl:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: intl\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.15.8\"\r\n  io:\r\n    dependency: transitive\r\n    description:\r\n      name: io\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.3.3\"\r\n  js:\r\n    dependency: transitive\r\n    description:\r\n      name: js\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.6.1+1\"\r\n  json_rpc_2:\r\n    dependency: transitive\r\n    description:\r\n      name: json_rpc_2\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.1.0\"\r\n  kernel:\r\n    dependency: transitive\r\n    description:\r\n      name: kernel\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.3.19\"\r\n  keyboard_visibility:\r\n    dependency: transitive\r\n    description:\r\n      name: keyboard_visibility\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.5.6\"\r\n  launch_review:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: launch_review\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.0.0\"\r\n  localstorage:\r\n    dependency: transitive\r\n    description:\r\n      name: localstorage\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.0.0\"\r\n  markdown:\r\n    dependency: transitive\r\n    description:\r\n      name: markdown\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.0.3\"\r\n  matcher:\r\n    dependency: transitive\r\n    description:\r\n      name: matcher\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.12.5\"\r\n  meta:\r\n    dependency: transitive\r\n    description:\r\n      name: meta\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.1.7\"\r\n  mime:\r\n    dependency: transitive\r\n    description:\r\n      name: mime\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.9.6+3\"\r\n  mockito:\r\n    dependency: \"direct dev\"\r\n    description:\r\n      name: mockito\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"4.1.0\"\r\n  multi_server_socket:\r\n    dependency: transitive\r\n    description:\r\n      name: multi_server_socket\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.0.2\"\r\n  node_preamble:\r\n    dependency: transitive\r\n    description:\r\n      name: node_preamble\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.4.4\"\r\n  package_config:\r\n    dependency: transitive\r\n    description:\r\n      name: package_config\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.0.5\"\r\n  package_info:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: package_info\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.4.0+5\"\r\n  package_resolver:\r\n    dependency: transitive\r\n    description:\r\n      name: package_resolver\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.0.10\"\r\n  path:\r\n    dependency: transitive\r\n    description:\r\n      name: path\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.6.2\"\r\n  path_provider:\r\n    dependency: transitive\r\n    description:\r\n      name: path_provider\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.1.2\"\r\n  pedantic:\r\n    dependency: transitive\r\n    description:\r\n      name: pedantic\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.8.0+1\"\r\n  persist_theme:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: persist_theme\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.5.1\"\r\n  petitparser:\r\n    dependency: transitive\r\n    description:\r\n      name: petitparser\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.4.0\"\r\n  pool:\r\n    dependency: transitive\r\n    description:\r\n      name: pool\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.4.0\"\r\n  provider:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: provider\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"3.0.0+1\"\r\n  pub_semver:\r\n    dependency: transitive\r\n    description:\r\n      name: pub_semver\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.4.2\"\r\n  qrcode_reader:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: qrcode_reader\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.4.4\"\r\n  quiver:\r\n    dependency: transitive\r\n    description:\r\n      name: quiver\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.0.3\"\r\n  rxdart:\r\n    dependency: transitive\r\n    description:\r\n      name: rxdart\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.22.0\"\r\n  shared_preferences:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: shared_preferences\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.5.3+4\"\r\n  shelf:\r\n    dependency: transitive\r\n    description:\r\n      name: shelf\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.7.5\"\r\n  shelf_packages_handler:\r\n    dependency: transitive\r\n    description:\r\n      name: shelf_packages_handler\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.0.4\"\r\n  shelf_static:\r\n    dependency: transitive\r\n    description:\r\n      name: shelf_static\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.2.8\"\r\n  shelf_web_socket:\r\n    dependency: transitive\r\n    description:\r\n      name: shelf_web_socket\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.2.3\"\r\n  sky_engine:\r\n    dependency: transitive\r\n    description: flutter\r\n    source: sdk\r\n    version: \"0.0.99\"\r\n  source_map_stack_trace:\r\n    dependency: transitive\r\n    description:\r\n      name: source_map_stack_trace\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.1.5\"\r\n  source_maps:\r\n    dependency: transitive\r\n    description:\r\n      name: source_maps\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.10.8\"\r\n  source_span:\r\n    dependency: transitive\r\n    description:\r\n      name: source_span\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.5.5\"\r\n  stack_trace:\r\n    dependency: transitive\r\n    description:\r\n      name: stack_trace\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.9.3\"\r\n  sticky_headers:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: sticky_headers\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.1.8\"\r\n  stream_channel:\r\n    dependency: transitive\r\n    description:\r\n      name: stream_channel\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.0.0\"\r\n  string_scanner:\r\n    dependency: transitive\r\n    description:\r\n      name: string_scanner\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.0.4\"\r\n  sy_flutter_widgets:\r\n    dependency: transitive\r\n    description:\r\n      name: sy_flutter_widgets\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.1.4\"\r\n  term_glyph:\r\n    dependency: transitive\r\n    description:\r\n      name: term_glyph\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.1.0\"\r\n  test:\r\n    dependency: \"direct dev\"\r\n    description:\r\n      name: test\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.6.3\"\r\n  test_api:\r\n    dependency: transitive\r\n    description:\r\n      name: test_api\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.2.5\"\r\n  test_core:\r\n    dependency: transitive\r\n    description:\r\n      name: test_core\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.2.5\"\r\n  typed_data:\r\n    dependency: transitive\r\n    description:\r\n      name: typed_data\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.1.6\"\r\n  url_launcher:\r\n    dependency: \"direct main\"\r\n    description:\r\n      name: url_launcher\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"5.1.0\"\r\n  validators:\r\n    dependency: transitive\r\n    description:\r\n      name: validators\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.0.0+1\"\r\n  vector_math:\r\n    dependency: transitive\r\n    description:\r\n      name: vector_math\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.0.8\"\r\n  vm_service_client:\r\n    dependency: transitive\r\n    description:\r\n      name: vm_service_client\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.2.6+2\"\r\n  watcher:\r\n    dependency: transitive\r\n    description:\r\n      name: watcher\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"0.9.7+12\"\r\n  web_socket_channel:\r\n    dependency: transitive\r\n    description:\r\n      name: web_socket_channel\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"1.0.14\"\r\n  xml:\r\n    dependency: transitive\r\n    description:\r\n      name: xml\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"3.5.0\"\r\n  yaml:\r\n    dependency: transitive\r\n    description:\r\n      name: yaml\r\n      url: \"https://pub.dartlang.org\"\r\n    source: hosted\r\n    version: \"2.1.16\"\r\nsdks:\r\n  dart: \">=2.4.0 <3.0.0\"\r\n  flutter: \">=1.5.0 <2.0.0\"\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- pubspec.lock	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ pubspec.lock	(date 1563741460758)
+@@ -174,6 +174,13 @@
+       url: "https://pub.dartlang.org"
+     source: hosted
+     version: "1.0.13"
++  flutter_secure_storage:
++    dependency: "direct main"
++    description:
++      name: flutter_secure_storage
++      url: "https://pub.dartlang.org"
++    source: hosted
++    version: "3.2.1+1"
+   flutter_test:
+     dependency: "direct dev"
+     description: flutter
+Index: lib/service/pihole_client.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'dart:io';\r\n\r\nimport 'package:dio/dio.dart';\r\nimport 'package:flutterhole/model/blacklist.dart';\r\nimport 'package:flutterhole/model/query.dart';\r\nimport 'package:flutterhole/model/status.dart';\r\nimport 'package:flutterhole/model/summary.dart';\r\nimport 'package:flutterhole/model/top_items.dart';\r\nimport 'package:flutterhole/model/top_sources.dart';\r\nimport 'package:flutterhole/model/whitelist.dart';\r\nimport 'package:meta/meta.dart';\r\n\r\nimport 'globals.dart';\r\nimport 'local_storage.dart';\r\nimport 'pihole_exception.dart';\r\n\r\nconst String _authParameterKey = 'auth';\r\nconst String _logKey = 'client';\r\n\r\nclass PiholeClient {\r\n  final Dio dio;\r\n  final LocalStorage localStorage;\r\n\r\n  void _log(String message, {String tag}) {\r\n    Globals.tree.log(_logKey, message, tag: tag);\r\n  }\r\n\r\n  PiholeClient({@required this.dio,\r\n    @required this.localStorage,\r\n    bool logQueries = true}) {\r\n    if (logQueries) {\r\n      dio.interceptors\r\n          .add(InterceptorsWrapper(onRequest: (RequestOptions options) {\r\n        String message = options.uri.toString();\r\n        if (options.queryParameters.containsKey(_authParameterKey)) {\r\n          message = message.replaceAll(\r\n              options.uri.queryParameters[_authParameterKey], 'HIDDEN');\r\n        }\r\n\r\n        _log(message, tag: 'request');\r\n        return options;\r\n      }, onResponse: (Response response) {\r\n        _log(response.data.toString(), tag: 'response');\r\n        return response;\r\n      }, onError: (DioError error) {\r\n        _log(error.message, tag: 'error');\r\n        return error;\r\n      }));\r\n    }\r\n  }\r\n\r\n  /// Performs an HTTP request with [queryParameters] and returns the response.\r\n  ///\r\n  /// [queryParameters] example:\r\n  /// ```dart\r\n  /// _get({'list': 'white', 'add': true});\r\n  /// ```\r\n  Future<Response> _get(Map<String, dynamic> queryParameters,\r\n      {ResponseType responseType = ResponseType.json}) async {\r\n    try {\r\n      final active = localStorage.active();\r\n      dio.options.baseUrl = 'http://${active.host}:${active.port.toString()}';\r\n\r\n      if (active.allowSelfSigned) {\r\n        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =\r\n            (HttpClient client) {\r\n          client.badCertificateCallback =\r\n              (X509Certificate cert, String host, int port) => true;\r\n          return client;\r\n        };\r\n      }\r\n\r\n      final Response response = await dio.get('/${active.apiPath}',\r\n          queryParameters: queryParameters,\r\n          options: Options(responseType: responseType));\r\n\r\n      final String dataString = response.data.toString().toLowerCase();\r\n      if (dataString.contains('not authorized')) {\r\n        throw PiholeException(message: 'not authorized');\r\n      }\r\n\r\n      if (dataString.length == 2 && dataString.contains('[]')) {\r\n        throw PiholeException(message: 'empty response');\r\n      }\r\n\r\n      if (dataString.contains('<!--')) {\r\n        throw PiholeException(message: 'unexpected plaintext response');\r\n      }\r\n\r\n//      await Future.delayed(Duration(seconds: 2));\r\n\r\n      return response;\r\n    } on DioError catch (e) {\r\n      _log(e.message, tag: 'dio error');\r\n      throw PiholeException(message: e.message, e: e);\r\n    } on PiholeException catch (e) {\r\n      _log(e.message, tag: 'pihole exception');\r\n      rethrow;\r\n    }\r\n  }\r\n\r\n  /// Performs [_get] with the API token set in [queryParameters].\r\n  Future<Response> _getSecure(Map<String, dynamic> queryParameters,\r\n      {ResponseType responseType = ResponseType.json}) async {\r\n    final active = localStorage.active();\r\n    if (active.auth.isEmpty) {\r\n      throw PiholeException(message: 'API token is empty');\r\n    }\r\n\r\n    final response = await _get(\r\n        queryParameters..addAll({_authParameterKey: active.auth}),\r\n        responseType: responseType);\r\n    return response;\r\n  }\r\n\r\n  /// Tries to convert an HTTP response to a [Status].\r\n  ///\r\n  /// The implicit data type for the response is a [Map<String, dynamic>];\r\n  Status _responseToStatus(Response response) {\r\n    if (response.data is String) {\r\n      return Status.fromString(response.data);\r\n    } else {\r\n      return Status.fromJson(response.data);\r\n    }\r\n  }\r\n\r\n  /// Fetches the status from the API, then returns [Status].\r\n  Future<Status> fetchStatus() async {\r\n    Response response = await _get({'status': ''});\r\n    final status = _responseToStatus(response);\r\n    return status;\r\n  }\r\n\r\n  /// Enables the Pihole.\r\n  ///\r\n  /// Throws a [PiholeException] if the response is disabled.\r\n  Future<Status> enable() async {\r\n    Response response = await _getSecure({'enable': ''});\r\n    final status = _responseToStatus(response);\r\n\r\n    if (status.disabled) {\r\n      throw PiholeException(message: 'failed to enable');\r\n    }\r\n\r\n    return status;\r\n  }\r\n\r\n  /// Disables the Pihole, optionally for the specified [duration].\r\n  ///\r\n  /// Throws a [PiholeException] if the response is enabled.\r\n  Future<Status> disable([Duration duration]) async {\r\n    Response response =\r\n    await _getSecure({'disable': duration?.inSeconds ?? ''});\r\n    final status = _responseToStatus(response);\r\n\r\n    if (status.enabled) {\r\n      throw PiholeException(message: 'failed to disable');\r\n    }\r\n\r\n    return status;\r\n  }\r\n\r\n  /// Fetches home information from the Pi-hole.\r\n  Future<Summary> fetchSummary() async {\r\n    Response response = await _get({'summaryRaw': ''});\r\n    if (response.data is String) {\r\n      return Summary.fromString(response.data);\r\n    } else {\r\n      return Summary.fromJson(response.data);\r\n    }\r\n  }\r\n\r\n  /// Fetches the list of whitelisted domains from the Pi-hole.\r\n  Future<Whitelist> fetchWhitelist() async {\r\n    Response response = await _get({'list': 'white'});\r\n    if (response.data is String) {\r\n      return Whitelist.fromString(response.data);\r\n    } else if (response.data is List<dynamic>) {\r\n      return Whitelist.fromJson(response.data);\r\n    }\r\n\r\n    throw PiholeException(\r\n        message: 'unexpected data type ${response.data.runtimeType}',\r\n        e: response);\r\n  }\r\n\r\n  /// Adds the trimmed [domain] to the Pi-hole whitelist.\r\n  /// Throws a [PiholeException] if:\r\n  /// - the [domain] String is 0;\r\n  /// - The [domain] is already whitelisted;\r\n  /// - The HTTP response is not parsable.\r\n  Future<void> addToWhitelist(String domain) async {\r\n    if (domain.length == 0) {\r\n      throw PiholeException(message: 'cannot add empty domain to whitelist');\r\n    }\r\n\r\n    domain = domain.trim();\r\n    Response response = await _getSecure({'list': 'white', 'add': domain},\r\n        responseType: ResponseType.plain);\r\n\r\n    final String dataString = response.data.toString().toLowerCase();\r\n\r\n    if (dataString.contains('already exists in whitelist')) {\r\n      throw PiholeException(message: '$domain is already whitelisted');\r\n    }\r\n\r\n    if (!dataString\r\n        .contains('adding ${domain.toLowerCase()} to whitelist...')) {\r\n      throw PiholeException(message: 'unexpected whitelist response');\r\n    }\r\n  }\r\n\r\n  /// Removes the trimmed [domain] from the Pihole whitelist.\r\n  ///\r\n  /// Throws a [PiholeException] if the domain is empty.\r\n  Future<void> removeFromWhitelist(String domain) async {\r\n    if (domain.length == 0) {\r\n      throw PiholeException(\r\n          message: 'cannot remove empty domain from whitelist');\r\n    }\r\n\r\n    domain = domain.trim();\r\n    await _getSecure({'list': 'white', 'sub': domain},\r\n        responseType: ResponseType.plain);\r\n  }\r\n\r\n  /// Removes the [originalDomain] from the Pihole whitelist,\r\n  /// then adds the [newDomain] to the Pihole whitelist.\r\n  Future<void> editOnWhitelist(String originalDomain, String newDomain) async {\r\n    await removeFromWhitelist(originalDomain);\r\n    await addToWhitelist(newDomain);\r\n  }\r\n\r\n  /// Fetches the exact and wildcard lists of blacklisted domains.\r\n  Future<Blacklist> fetchBlacklist() async {\r\n    Response response = await _get({'list': 'black'});\r\n    if (response.data is String) {\r\n      return Blacklist.fromString(response.data);\r\n    } else if (response.data is List<dynamic>) {\r\n      return Blacklist.fromJson(response.data);\r\n    }\r\n\r\n    throw PiholeException(\r\n        message: 'unexpected data type ${response.data.runtimeType}',\r\n        e: response);\r\n  }\r\n\r\n  /// Adds a new domain or wildcard to the blacklist.\r\n  /// Wildcards are converted to regex Strings, to stay consistent\r\n  /// with the web interface.\r\n  /// Example: wildcard.com => [wildcardPrefix]wildcard.com[wildcardSuffix].\r\n  ///\r\n  /// Throws if:\r\n  /// - the entry is a duplicate;\r\n  /// - the entry is 'not a valid domain (sic)'.\r\n  Future<void> addToBlacklist(BlacklistItem item) async {\r\n    String entry = item.entry;\r\n\r\n    if (item.type == BlacklistType.Wildcard) {\r\n      if (!entry.startsWith(wildcardPrefix)) {\r\n        entry = wildcardPrefix + entry;\r\n      }\r\n\r\n      if (!entry.endsWith(wildcardSuffix)) {\r\n        entry = entry + wildcardSuffix;\r\n      }\r\n    }\r\n\r\n    Response response = await _getSecure({'list': item.list, 'add': entry},\r\n        responseType: ResponseType.plain);\r\n    final dataString = response.data.toString();\r\n    if (dataString.contains('no need to add')) {\r\n      throw PiholeException(\r\n          message: 'Domain already exists on blacklist', e: response.data);\r\n    }\r\n    if (dataString.contains('not a valid domain')) {\r\n      throw PiholeException(\r\n          message: '$entry is not a valid domain', e: response.data);\r\n    }\r\n  }\r\n\r\n  // Removes a domain or wildcard from the blacklist.\r\n  Future<void> removeFromBlacklist(BlacklistItem item) async {\r\n    await _getSecure({'list': item.list, 'sub': item.entry},\r\n        responseType: ResponseType.plain);\r\n  }\r\n\r\n  Future<void> editOnBlacklist(BlacklistItem originalItem,\r\n      BlacklistItem newItem) async {\r\n    await addToBlacklist(newItem);\r\n    await removeFromBlacklist(originalItem);\r\n  }\r\n\r\n  /// Returns a list of recent [Query]s, at most [max].\r\n  Future<List<Query>> fetchQueries({int max = 100}) async {\r\n    Response response =\r\n    await _getSecure({'getAllQueries': max > 0 ? max.toString() : 1});\r\n    if (response.data is Map<String, dynamic>) {\r\n      try {\r\n        List<Query> queries = [];\r\n        (response.data['data'] as List<dynamic>).forEach((entry) {\r\n          queries.add(Query.fromJson(entry));\r\n        });\r\n\r\n        return queries;\r\n      } catch (e) {\r\n        throw PiholeException(message: 'unknown error', e: e);\r\n      }\r\n    }\r\n\r\n    throw PiholeException(message: 'unexpected query response', e: response);\r\n  }\r\n\r\n  Future<List<Query>> fetchQueriesForClient(String client) async {\r\n    Response response =\r\n    await _getSecure({'getAllQueries': '', 'client': client});\r\n    if (response.data is Map<String, dynamic>) {\r\n      try {\r\n        List<Query> queries = [];\r\n        (response.data['data'] as List<dynamic>).forEach((entry) {\r\n          queries.add(Query.fromJson(entry));\r\n        });\r\n\r\n        return queries;\r\n      } catch (e) {\r\n        throw PiholeException(message: 'unknown error', e: e);\r\n      }\r\n    }\r\n\r\n    throw PiholeException(message: 'unexpected query response', e: response);\r\n  }\r\n\r\n  Future<TopSources> fetchTopSources() async {\r\n    Response response = await _getSecure({'getQuerySources': ''});\r\n    if (response.data is String) {\r\n      return TopSources.fromString(response.data);\r\n    } else {\r\n      return TopSources.fromJson(response.data);\r\n    }\r\n  }\r\n\r\n  Future<TopItems> fetchTopItems() async {\r\n    Response response = await _getSecure({'topItems': ''});\r\n    if (response.data is String) {\r\n      return TopItems.fromString(response.data);\r\n    } else {\r\n      return TopItems.fromJson(response.data);\r\n    }\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/service/pihole_client.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/service/pihole_client.dart	(date 1563821092478)
+@@ -1,6 +1,7 @@
+ import 'dart:io';
+ 
+ import 'package:dio/dio.dart';
++import 'package:flutterhole/bloc/storage/local_storage.dart';
+ import 'package:flutterhole/model/blacklist.dart';
+ import 'package:flutterhole/model/query.dart';
+ import 'package:flutterhole/model/status.dart';
+@@ -11,7 +12,6 @@
+ import 'package:meta/meta.dart';
+ 
+ import 'globals.dart';
+-import 'local_storage.dart';
+ import 'pihole_exception.dart';
+ 
+ const String _authParameterKey = 'auth';
+@@ -58,8 +58,10 @@
+   Future<Response> _get(Map<String, dynamic> queryParameters,
+       {ResponseType responseType = ResponseType.json}) async {
+     try {
+-      final active = localStorage.active();
++      final active = localStorage.active;
+       dio.options.baseUrl = 'http://${active.host}:${active.port.toString()}';
++      dio.options.connectTimeout = 1000;
++      dio.options.receiveTimeout = 1000;
+ 
+       if (active.allowSelfSigned) {
+         (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+@@ -102,13 +104,12 @@
+   /// Performs [_get] with the API token set in [queryParameters].
+   Future<Response> _getSecure(Map<String, dynamic> queryParameters,
+       {ResponseType responseType = ResponseType.json}) async {
+-    final active = localStorage.active();
+-    if (active.auth.isEmpty) {
++    if (localStorage.active.auth.isEmpty) {
+       throw PiholeException(message: 'API token is empty');
+     }
+ 
+     final response = await _get(
+-        queryParameters..addAll({_authParameterKey: active.auth}),
++        queryParameters..addAll({_authParameterKey: localStorage.active.auth}),
+         responseType: responseType);
+     return response;
+   }
+Index: lib/service/globals.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:fluro/fluro.dart';\r\nimport 'package:flutter/widgets.dart';\r\nimport 'package:flutterhole/service/memory_tree.dart';\r\nimport 'package:flutterhole/service/pihole_client.dart';\r\nimport 'package:intl/intl.dart';\r\n\r\nimport 'local_storage.dart';\r\n\r\nfinal timestampFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');\r\n\r\n/// Globally accessible class.\r\nclass Globals {\r\n  static bool debug = false;\r\n  static MemoryTree tree;\r\n  static Router router;\r\n  static PiholeClient client;\r\n  static LocalStorage localStorage;\r\n\r\n  static VoidCallback refresh;\r\n\r\n  static Future<dynamic> navigateTo(BuildContext context, String path) =>\r\n      router.navigateTo(context, path, transition: TransitionType.inFromRight);\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/service/globals.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/service/globals.dart	(date 1563821088683)
+@@ -1,11 +1,10 @@
+ import 'package:fluro/fluro.dart';
+ import 'package:flutter/widgets.dart';
++import 'package:flutterhole/bloc/storage/local_storage.dart';
+ import 'package:flutterhole/service/memory_tree.dart';
+ import 'package:flutterhole/service/pihole_client.dart';
+ import 'package:intl/intl.dart';
+ 
+-import 'local_storage.dart';
+-
+ final timestampFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+ 
+ /// Globally accessible class.
+Index: lib/service/routes.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:fluro/fluro.dart';\r\nimport 'package:flutter/material.dart';\r\nimport 'package:flutterhole/model/blacklist.dart';\r\nimport 'package:flutterhole/model/pihole.dart';\r\nimport 'package:flutterhole/service/globals.dart';\r\nimport 'package:flutterhole/widget/layout/scaffold.dart';\r\nimport 'package:flutterhole/widget/screen/about_screen.dart';\r\nimport 'package:flutterhole/widget/screen/blacklist_screen.dart';\r\nimport 'package:flutterhole/widget/screen/client_log_screen.dart';\r\nimport 'package:flutterhole/widget/screen/home_screen.dart';\r\nimport 'package:flutterhole/widget/screen/log_screen.dart';\r\nimport 'package:flutterhole/widget/screen/pihole_screen.dart';\r\nimport 'package:flutterhole/widget/screen/privacy_screen.dart';\r\nimport 'package:flutterhole/widget/screen/query_log_screen.dart';\r\nimport 'package:flutterhole/widget/screen/settings_screen.dart';\r\nimport 'package:flutterhole/widget/screen/whitelist_screen.dart';\r\n\r\n//final FimberLog _logger = FimberLog('Routes');\r\n\r\n/// Provides access to the String version of all routes.\r\n/// The route to [HomeScreen].\r\nconst String homePath = '/';\r\n\r\n/// The route to [QueryLogScreen].\r\nconst String queryPath = '/query';\r\n\r\n/// The abstract route to [QueryLogScreen] with initial search value.\r\nconst String _querySearchPath = '/query/:search';\r\n\r\n/// The concrete route to [QueryLogScreen] with [search] as initial search value.\r\nString querySearchPath(String search) =>\r\n    _querySearchPath.replaceAll(':search', search);\r\n\r\n/// The abstract route to [ClientLogScreen].\r\nconst String _clientLogPath = '/query/:client';\r\n\r\n/// The concrete route to [ClientLogScreen] with [client].\r\nString clientLogPath(String client) =>\r\n    _clientLogPath.replaceAll(':client', client);\r\n\r\n/// The route to [AboutScreen].\r\nconst String aboutPath = '/about';\r\n\r\n/// The route to [LogScreen].\r\nconst String logPath = '/log';\r\n\r\n/// The route to [PrivacyScreen].\r\nconst String privacyPath = '$aboutPath/privacy';\r\n\r\n/// The route to [SettingsScreen].\r\nconst String settingsPath = '/settings';\r\n\r\n/// The abstract route to [PiholeEditScreen].\r\nconst String _piholeEditPath = '/settings/:key';\r\n\r\n/// The concrete route to [PiholeEditScreen] with [pihole].\r\nString piholeEditPath(Pihole pihole) =>\r\n    _piholeEditPath.replaceAll(':key', pihole.localKey);\r\n\r\n/// The route to [WhitelistViewScreen].\r\nconst String whitelistPath = '/whitelist';\r\n\r\n/// The route to [WhitelistAddScreen].\r\nconst String whitelistAddPath = '/whitelist/add';\r\n\r\n/// The abstract route to [WhitelistEditScreen].\r\nconst String _whitelistEditPath = '/whitelist/edit/:domain';\r\n\r\n/// The concrete route to [WhitelistEditScreen] with [domain].\r\nString whitelistEditPath(String domain) =>\r\n    _whitelistEditPath.replaceAll(':domain', domain);\r\n\r\n/// The route to [BlacklistViewScreen].\r\nconst String blacklistPath = '/blacklist';\r\n\r\n/// The route to [BlacklistAddScreen].\r\nconst String blacklistAddPath = '/blacklist/add';\r\n\r\n/// The abstract route to [BlacklistEditScreen].\r\nconst String _blacklistEditPath = '/blacklist/edit/:entry/:listType';\r\n\r\n/// The concrete route to [BlacklistEditScreen] with [item].\r\nString blacklistEditPath(BlacklistItem item) =>\r\n    _blacklistEditPath\r\n        .replaceAll(':entry', item.entry)\r\n        .replaceAll(':listType', item.listKey);\r\n\r\n/// A [Handler] with a [handlerFunc] that takes no parameters and returns [child] on route push.\r\nclass _SimpleHandler extends Handler {\r\n  _SimpleHandler(Widget child) : super(handlerFunc: (_, __) => child);\r\n}\r\n\r\n/// Signature for [Handler.handlerFunc] without [BuildContext].\r\ntypedef ParamsCallBack = Widget Function(Map<String, List<String>> params);\r\n\r\n/// A [Handler] with a [handlerFunc] that takes [params] and returns [ParamsCallBack] on route push.\r\nclass _ParamsHandler extends Handler {\r\n  _ParamsHandler(ParamsCallBack callback)\r\n      : super(\r\n      handlerFunc: (_, Map<String, List<String>> params) =>\r\n          callback(params));\r\n}\r\n\r\n/// Configures all application routes for [router].\r\n///\r\n/// Logs an error if a route is not found.\r\nvoid configureRoutes(Router router) {\r\n  router.notFoundHandler = _ParamsHandler((params) {\r\n    Globals.tree.log('levelhere', 'route not found', ex: params);\r\n    return SimpleScaffold(\r\n      title: 'Oops',\r\n      body: Center(child: Text('Route not found: $params')),\r\n    );\r\n  });\r\n\r\n  router.define(homePath, handler: _SimpleHandler(HomeScreen()));\r\n\r\n  router.define(queryPath, handler: _SimpleHandler(QueryLogScreen()));\r\n\r\n  router.define(_querySearchPath,\r\n      handler: _ParamsHandler((params) =>\r\n          QueryLogScreen(withDrawer: false, search: params['search'][0])));\r\n\r\n  router.define(_clientLogPath,\r\n      handler: _ParamsHandler(\r\n              (params) => ClientLogScreen(client: params['client'][0])));\r\n\r\n  router.define(whitelistPath, handler: _SimpleHandler(WhitelistViewScreen()));\r\n\r\n  router.define(whitelistAddPath,\r\n      handler: _SimpleHandler(WhitelistAddScreen()));\r\n\r\n  router.define(_whitelistEditPath,\r\n      handler: _ParamsHandler(\r\n              (params) => WhitelistEditScreen(original: params['domain'][0])));\r\n\r\n  router.define(blacklistPath, handler: _SimpleHandler(BlacklistViewScreen()));\r\n\r\n  router.define(blacklistAddPath,\r\n      handler: _SimpleHandler(BlacklistAddScreen()));\r\n\r\n  router.define(_blacklistEditPath,\r\n      handler: _ParamsHandler((params) =>\r\n          BlacklistEditScreen(\r\n            original: BlacklistItem(\r\n              entry: params['entry'][0],\r\n              type: blacklistTypeFromString(params['listType'][0]),\r\n            ),\r\n          )));\r\n\r\n  router.define(settingsPath, handler: _SimpleHandler(SettingsScreen()));\r\n\r\n  router.define(_piholeEditPath,\r\n      handler: _ParamsHandler((params) =>\r\n          PiholeEditScreen(\r\n              pihole: Globals.localStorage.cache[params['key'][0]])));\r\n\r\n  router.define(aboutPath, handler: _SimpleHandler(AboutScreen()));\r\n  router.define(logPath, handler: _SimpleHandler(LogScreen()));\r\n\r\n  router.define(privacyPath, handler: _SimpleHandler(PrivacyScreen()));\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/service/routes.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/service/routes.dart	(date 1563724753411)
+@@ -25,14 +25,14 @@
+ const String queryPath = '/query';
+ 
+ /// The abstract route to [QueryLogScreen] with initial search value.
+-const String _querySearchPath = '/query/:search';
++const String _querySearchPath = '/query/search/:search';
+ 
+ /// The concrete route to [QueryLogScreen] with [search] as initial search value.
+ String querySearchPath(String search) =>
+     _querySearchPath.replaceAll(':search', search);
+ 
+ /// The abstract route to [ClientLogScreen].
+-const String _clientLogPath = '/query/:client';
++const String _clientLogPath = '/query/client/:client';
+ 
+ /// The concrete route to [ClientLogScreen] with [client].
+ String clientLogPath(String client) =>
+Index: test/mock.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:flutterhole/model/blacklist.dart';\r\nimport 'package:flutterhole/model/query.dart';\r\nimport 'package:flutterhole/model/status.dart';\r\nimport 'package:flutterhole/model/summary.dart';\r\nimport 'package:flutterhole/model/top_items.dart';\r\nimport 'package:flutterhole/model/top_sources.dart';\r\nimport 'package:flutterhole/model/whitelist.dart';\r\n\r\nfinal mockStatusEnabled = Status(enabled: true);\r\nfinal mockStatusDisabled = Status(enabled: false);\r\n\r\nfinal mockWhitelist = Whitelist(['a.com', 'b.org', 'c.net']);\r\nfinal mockBlacklist = Blacklist(exact: [\r\n  BlacklistItem.exact(entry: 'exact.com'),\r\n  BlacklistItem.exact(entry: 'pi-hole.net'),\r\n], wildcard: [\r\n  BlacklistItem.wildcard(entry: 'wildcard.com'),\r\n  BlacklistItem.regex(entry: 'regex')\r\n]);\r\n\r\nfinal mockSummary = Summary(\r\n    domainsBeingBlocked: 0,\r\n    dnsQueriesToday: 1,\r\n    adsBlockedToday: 2,\r\n    adsPercentageToday: 2.345,\r\n    uniqueDomains: 3,\r\n    queriesForwarded: 4,\r\n    queriesCached: 5,\r\n    clientsEverSeen: 6,\r\n    uniqueClients: 7,\r\n    dnsQueriesAllTypes: 8,\r\n    replyNodata: 9,\r\n    replyNxdomain: 10,\r\n    replyCname: 11,\r\n    replyIp: 12,\r\n    privacyLevel: 13,\r\n    status: 'enabled',\r\n    gravityLastUpdated: GravityLastUpdated(\r\n        fileExists: true,\r\n        absolute: 14,\r\n        relative: Relative(days: '15', hours: '16', minutes: '17')));\r\n\r\nfinal TopSources mockTopSources = TopSources({\r\n  '10.0.1.1': 55,\r\n  '10.0.1.2': 42,\r\n  'windows|10.0.1.3': 33,\r\n  'osx|10.0.1.4': 24,\r\n  'zenwatch3|10.0.1.5': 11,\r\n});\r\n\r\nfinal TopItems mockTopItems = TopItems(\r\n  {\r\n    \"clients1.google.com\": 1005,\r\n    \"0.debian.pool.ntp.org\": 728,\r\n    \"1.debian.pool.ntp.org\": 728,\r\n    \"2.debian.pool.ntp.org\": 728,\r\n    \"3.debian.pool.ntp.org\": 728,\r\n    \"www.google.com\": 222,\r\n    \"semanticlocation-pa.googleapis.com\": 186,\r\n    \"connectivitycheck.gstatic.com\": 179,\r\n    \"play.googleapis.com\": 155,\r\n    \"time.apple.com\": 101\r\n  },\r\n  {\r\n    \"indigo.tvaddons.co.uilenstede4.duwo.lan\": 98,\r\n    \"lw10-10815.local.nl.bol.com\": 32,\r\n    \"wpad.local.nl.bol.com\": 27,\r\n    \"wpad.uilenstede4.duwo.lan\": 24,\r\n    \"ads.google.com\": 18,\r\n    \"_ldap._tcp.papendorp._sites.dc._msdcs.local.nl.bol.com\": 13,\r\n    \"_ldap._tcp.default-first-site-name._sites.dc._msdcs.local.nl.bol.com\": 13,\r\n    \"mobile.pipe.aria.microsoft.com\": 11,\r\n    \"wpad.duwo.lan\": 8,\r\n    \"update.openelec.tv.uilenstede4.duwo.lan\": 8\r\n  },\r\n);\r\n\r\nfinal List<Query> mockQueries = [\r\n  Query(\r\n      time: DateTime(0),\r\n      queryType: QueryType.A,\r\n      entry: 'test.com',\r\n      client: 'localhost',\r\n      queryStatus: QueryStatus.Cached,\r\n      dnsSecStatus: DnsSecStatus.Secure),\r\n  Query(\r\n      time: DateTime(1),\r\n      queryType: QueryType.PTR,\r\n      entry: 'example.org',\r\n      client: 'remotehost',\r\n      queryStatus: QueryStatus.Unknown,\r\n      dnsSecStatus: DnsSecStatus.Bogus),\r\n];\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- test/mock.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ test/mock.dart	(date 1563742038627)
+@@ -1,4 +1,5 @@
+ import 'package:flutterhole/model/blacklist.dart';
++import 'package:flutterhole/model/pihole.dart';
+ import 'package:flutterhole/model/query.dart';
+ import 'package:flutterhole/model/status.dart';
+ import 'package:flutterhole/model/summary.dart';
+@@ -18,6 +19,18 @@
+   BlacklistItem.regex(entry: 'regex')
+ ]);
+ 
++final mockPiholes = [
++  Pihole(),
++  Pihole(
++    title: 'Test',
++    host: 'example.com',
++    apiPath: 'path.php',
++    port: 123,
++    auth: 'api-token',
++    allowSelfSigned: true,
++  )
++];
++
+ final mockSummary = Summary(
+     domainsBeingBlocked: 0,
+     dnsQueriesToday: 1,
+Index: lib/widget/screen/client_log_screen.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:flutter/material.dart';\r\nimport 'package:flutterhole/widget/layout/scaffold.dart';\r\nimport 'package:flutterhole/widget/query/query_log_builder.dart';\r\n\r\nclass ClientLogScreen extends StatelessWidget {\r\n  final String client;\r\n\r\n  const ClientLogScreen({Key key, @required this.client}) : super(key: key);\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return SearchScaffold(\r\n        title: 'Logs for $client',\r\n        withDrawer: false,\r\n        body: QueryLogBuilder(\r\n          client: client,\r\n        ));\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/widget/screen/client_log_screen.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/widget/screen/client_log_screen.dart	(date 1563741780410)
+@@ -12,8 +12,6 @@
+     return SearchScaffold(
+         title: 'Logs for $client',
+         withDrawer: false,
+-        body: QueryLogBuilder(
+-          client: client,
+-        ));
++        body: QueryLogBuilder(client: client));
+   }
+ }
+Index: test/bloc/repository_test.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'dart:async';\r\n\r\nimport 'package:flutterhole/bloc/blacklist/bloc.dart';\r\nimport 'package:flutterhole/bloc/query/bloc.dart';\r\nimport 'package:flutterhole/bloc/status/bloc.dart';\r\nimport 'package:flutterhole/bloc/summary/bloc.dart';\r\nimport 'package:flutterhole/bloc/top_items/bloc.dart';\r\nimport 'package:flutterhole/bloc/top_sources/bloc.dart';\r\nimport 'package:flutterhole/bloc/whitelist/bloc.dart';\r\nimport 'package:flutterhole/model/blacklist.dart';\r\nimport 'package:flutterhole/model/whitelist.dart';\r\nimport 'package:flutterhole/service/pihole_client.dart';\r\nimport 'package:mockito/mockito.dart';\r\nimport 'package:test/test.dart';\r\n\r\nimport '../mock.dart';\r\n\r\nclass MockPiholeClient extends Mock implements PiholeClient {}\r\n\r\nmain() {\r\n  MockPiholeClient client;\r\n  setUp(() {\r\n    client = MockPiholeClient();\r\n  });\r\n\r\n  group('SummaryRepository', () {\r\n    SummaryRepository summaryRepository;\r\n\r\n    setUp(() {\r\n      summaryRepository = SummaryRepository(client);\r\n    });\r\n\r\n    test('getSummary', () {\r\n      when(client.fetchSummary()).thenAnswer((_) => Future.value(mockSummary));\r\n      expect(summaryRepository.getSummary(), completion(mockSummary));\r\n    });\r\n  });\r\n\r\n  group('TopItemsRepository', () {\r\n    TopItemsRepository topItemsRepository;\r\n\r\n    setUp(() {\r\n      topItemsRepository = TopItemsRepository(client);\r\n    });\r\n\r\n    test('getTopItems', () {\r\n      when(client.fetchTopItems())\r\n          .thenAnswer((_) => Future.value(mockTopItems));\r\n      expect(topItemsRepository.getTopItems(), completion(mockTopItems));\r\n    });\r\n  });\r\n\r\n  group('QueryRepository', () {\r\n    QueryRepository queryRepository;\r\n\r\n    setUp(() {\r\n      queryRepository = QueryRepository(client);\r\n    });\r\n\r\n    test('initial cache is empty', () {\r\n      expect(queryRepository.cache, []);\r\n    });\r\n\r\n    test('getQueries', () {\r\n      when(client.fetchQueries()).thenAnswer((_) => Future.value(mockQueries));\r\n\r\n      expect(queryRepository.getQueries(), completion(mockQueries));\r\n    });\r\n\r\n    test('getQueriesForClient', () {\r\n      when(client.fetchQueriesForClient('client'))\r\n          .thenAnswer((_) => Future.value(mockQueries));\r\n      expect(queryRepository.getQueriesForClient('client'),\r\n          completion(mockQueries));\r\n    });\r\n  });\r\n\r\n  group('TopSourcesRepository', () {\r\n    TopSourcesRepository topSourcesRepository;\r\n\r\n    setUp(() {\r\n      topSourcesRepository = TopSourcesRepository(client);\r\n    });\r\n\r\n    test('getTopSources', () {\r\n      when(client.fetchTopSources())\r\n          .thenAnswer((_) => Future.value(mockTopSources));\r\n      expect(topSourcesRepository.getTopSources(), completion(mockTopSources));\r\n    });\r\n  });\r\n\r\n  group('BlacklistRepository', () {\r\n    BlacklistRepository blacklistRepository;\r\n\r\n    setUp(() {\r\n      blacklistRepository =\r\n          BlacklistRepository(client, initialValue: mockBlacklist);\r\n    });\r\n\r\n    test('initial cache is mocked', () {\r\n      expect(blacklistRepository.cache, mockBlacklist);\r\n    });\r\n\r\n    test('getBlacklist', () {\r\n      when(client.fetchBlacklist())\r\n          .thenAnswer((_) => Future.value(mockBlacklist));\r\n\r\n      expect(blacklistRepository.getBlacklist(), completion(mockBlacklist));\r\n    });\r\n\r\n    test('addToBlacklist', () {\r\n      final BlacklistItem item = BlacklistItem.exact(entry: 'test');\r\n      final Blacklist list = Blacklist.withItem(mockBlacklist, item);\r\n\r\n      when(client.addToBlacklist(item)).thenAnswer((_) {\r\n        final completer = Completer<void>()..complete();\r\n        return completer.future;\r\n      });\r\n\r\n      expect(blacklistRepository.addToBlacklist(item), completion(list));\r\n    });\r\n\r\n    test('removeFromBlacklist', () {\r\n      final BlacklistItem original = mockBlacklist.exact.first;\r\n      final Blacklist list = Blacklist.withoutItem(mockBlacklist, original);\r\n\r\n      when(client.removeFromBlacklist(original)).thenAnswer((_) {\r\n        final completer = Completer<void>()..complete();\r\n        return completer.future;\r\n      });\r\n\r\n      assert(original != null);\r\n      expect(\r\n          blacklistRepository.removeFromBlacklist(original), completion(list));\r\n    });\r\n\r\n    test('editOnBlacklist', () {\r\n      final BlacklistItem original = mockBlacklist.exact.first;\r\n      final BlacklistItem update = BlacklistItem.exact(entry: 'test');\r\n      final Blacklist list = Blacklist.withItem(\r\n          Blacklist.withoutItem(mockBlacklist, original), update);\r\n\r\n      when(client.editOnBlacklist(original, update)).thenAnswer((_) {\r\n        final completer = Completer<void>()..complete();\r\n        return completer.future;\r\n      });\r\n\r\n      assert(original != null);\r\n      expect(blacklistRepository.removeFromBlacklist(update), completion(list));\r\n    });\r\n  });\r\n\r\n  group('WhitelistRepository', () {\r\n    WhitelistRepository whitelistRepository;\r\n\r\n    setUp(() {\r\n      whitelistRepository =\r\n          WhitelistRepository(client, initialValue: mockWhitelist);\r\n    });\r\n\r\n    test('initial cache is mocked', () {\r\n      expect(whitelistRepository.cache, mockWhitelist);\r\n    });\r\n\r\n    test('getWhitelist', () {\r\n      when(client.fetchWhitelist())\r\n          .thenAnswer((_) => Future.value(mockWhitelist));\r\n\r\n      expect(whitelistRepository.getWhitelist(), completion(mockWhitelist));\r\n    });\r\n\r\n    test('addToWhitelist', () {\r\n      final String domain = 'test';\r\n      final Whitelist list = Whitelist.withItem(mockWhitelist, domain);\r\n\r\n      when(client.addToWhitelist(domain)).thenAnswer((_) {\r\n        final completer = Completer<void>()..complete();\r\n        return completer.future;\r\n      });\r\n\r\n      expect(whitelistRepository.addToWhitelist(domain), completion(list));\r\n    });\r\n\r\n    test('removeFromWhitelist', () {\r\n      final String domain = mockWhitelist.list.first;\r\n      final Whitelist list = Whitelist.withoutItem(mockWhitelist, domain);\r\n\r\n      when(client.removeFromWhitelist(domain)).thenAnswer((_) {\r\n        final completer = Completer<void>()..complete();\r\n        return completer.future;\r\n      });\r\n\r\n      expect(whitelistRepository.removeFromWhitelist(domain), completion(list));\r\n    });\r\n\r\n    test('editOnWhitelist', () {\r\n      final String original = mockWhitelist.list.first;\r\n      final String update = 'test';\r\n      final Whitelist list = Whitelist.withoutItem(\r\n          Whitelist.withItem(mockWhitelist, update), original);\r\n\r\n      when(client.editOnWhitelist(original, update)).thenAnswer((_) {\r\n        final completer = Completer<void>()..complete();\r\n        return completer.future;\r\n      });\r\n\r\n      assert(original != null);\r\n      expect(whitelistRepository.editOnWhitelist(original, update),\r\n          completion(list));\r\n    });\r\n  });\r\n\r\n  group('StatusRepository', () {\r\n    StatusRepository statusRepository;\r\n\r\n    setUp(() {\r\n      statusRepository = StatusRepository(client);\r\n    });\r\n\r\n    test('initial stopwatch is stopped', () {\r\n      expect(statusRepository.stopwatch.isRunning, isFalse);\r\n    });\r\n\r\n    test('getStatus', () {\r\n      when(client.fetchStatus())\r\n          .thenAnswer((_) => Future.value(mockStatusEnabled));\r\n\r\n      expect(statusRepository.getStatus(), completion(mockStatusEnabled));\r\n    });\r\n\r\n    test('enable', () {\r\n      when(client.enable()).thenAnswer((_) => Future.value(mockStatusEnabled));\r\n\r\n      expect(statusRepository.enable(), completion(mockStatusEnabled));\r\n    });\r\n\r\n    test('disable', () {\r\n      when(client.disable())\r\n          .thenAnswer((_) => Future.value(mockStatusDisabled));\r\n\r\n      expect(statusRepository.disable(), completion(mockStatusDisabled));\r\n    });\r\n\r\n    test('sleep', () async {\r\n      final duration = Duration(seconds: 5);\r\n\r\n      when(client.disable(duration))\r\n          .thenAnswer((_) => Future.value(mockStatusDisabled));\r\n\r\n      final status = await statusRepository.sleep(duration, () {});\r\n\r\n      expect(status, mockStatusDisabled);\r\n      expect(statusRepository.stopwatch.isRunning, isTrue);\r\n      expect(statusRepository.elapsed.inMicroseconds, greaterThan(0));\r\n\r\n      expect(statusRepository.sleep(duration, () {}),\r\n          completion(mockStatusDisabled));\r\n    });\r\n\r\n    test('cancelSleep', () {\r\n      statusRepository.cancelSleep();\r\n      expect(statusRepository.stopwatch.isRunning, isFalse);\r\n      expect(statusRepository.elapsed.inMicroseconds, equals(0));\r\n    });\r\n\r\n    test('cancelSleep while sleeping', () {\r\n      statusRepository.sleep(Duration(seconds: 5), () {});\r\n      statusRepository.cancelSleep();\r\n      expect(statusRepository.stopwatch.isRunning, isFalse);\r\n      expect(statusRepository.elapsed.inMicroseconds, equals(0));\r\n    });\r\n  });\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- test/bloc/repository_test.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ test/bloc/repository_test.dart	(date 1563821088691)
+@@ -23,6 +23,23 @@
+     client = MockPiholeClient();
+   });
+ 
++//  group('StorageRepository', () {
++//    StorageRepository storageRepository;
++////    MockFlutterSecureStorage storage;
++//    FlutterSecureStorage storage;
++//
++//    setUp(() {
++////      storage = MockFlutterSecureStorage();
++//      storage = MockLocalStorage();
++//      storageRepository = StorageRepository(storage);
++//    });
++//
++//    test('getStorage', () {
++////      when(client.fetchStorage()).thenAnswer((_) => Future.value(mockStorage));
++//      expect(storageRepository.getPiholes(), completion(mockPiholes));
++//    });
++//  });
++
+   group('SummaryRepository', () {
+     SummaryRepository summaryRepository;
+ 
+Index: lib/widget/layout/list_tab.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:flutter/material.dart';\r\nimport 'package:persist_theme/data/models/theme_model.dart';\r\nimport 'package:provider/provider.dart';\r\n\r\nclass ListTab extends StatelessWidget {\r\n  final String title;\r\n\r\n  const ListTab(this.title);\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    final ThemeModel _theme = Provider.of<ThemeModel>(context);\r\n    return ListTile(\r\n      title: Text(title,\r\n          style: Theme\r\n              .of(context)\r\n              .textTheme\r\n              .subtitle\r\n              .copyWith(\r\n              color: _theme.accentColor.value == Colors.redAccent.value\r\n                  ? Theme\r\n                  .of(context)\r\n                  .primaryColor\r\n                  : _theme.accentColor)),\r\n    );\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/widget/layout/list_tab.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/widget/layout/list_tab.dart	(date 1563821092009)
+@@ -2,26 +2,25 @@
+ import 'package:persist_theme/data/models/theme_model.dart';
+ import 'package:provider/provider.dart';
+ 
++/// A material design [ListTile] that indicates a sublist.
+ class ListTab extends StatelessWidget {
+-  final String title;
+-
++  /// Creates a material design list tab.
+   const ListTab(this.title);
+ 
++  /// The widget's content.
++  final String title;
++
+   @override
+   Widget build(BuildContext context) {
+-    final ThemeModel _theme = Provider.of<ThemeModel>(context);
+     return ListTile(
+-      title: Text(title,
+-          style: Theme
+-              .of(context)
+-              .textTheme
+-              .subtitle
+-              .copyWith(
+-              color: _theme.accentColor.value == Colors.redAccent.value
+-                  ? Theme
+-                  .of(context)
+-                  .primaryColor
+-                  : _theme.accentColor)),
+-    );
++        title: Text(title,
++            style: Theme
++                .of(context)
++                .textTheme
++                .subtitle
++                .copyWith(
++                color: Provider
++                    .of<ThemeModel>(context)
++                    .accentColor)));
+   }
+ }
+Index: test/local_storage_test.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:fimber/fimber.dart';\r\nimport 'package:flutter/services.dart';\r\nimport 'package:flutterhole/model/pihole.dart';\r\nimport 'package:flutterhole/service/local_storage.dart';\r\nimport \"package:test/test.dart\";\r\n\r\nvoid mockSharedPreferences({List<Pihole> piholes = const []}) async {\r\n  Map<String, dynamic> piholeValues = {};\r\n\r\n  piholes.forEach((pihole) {\r\n    final values = pihole.toJson();\r\n    values.forEach((String key, dynamic value) {\r\n      piholeValues['flutter.$piholePrefix${pihole.localKey}_$key'] = value;\r\n    });\r\n  });\r\n\r\n  MethodChannel('plugins.flutter.io/shared_preferences')\r\n      .setMockMethodCallHandler((MethodCall methodCall) async {\r\n    if (methodCall.method == 'getAll') {\r\n      return piholeValues;\r\n    }\r\n    if (methodCall.method == 'clear') {\r\n      piholeValues.clear();\r\n      return true;\r\n    }\r\n    return null;\r\n  });\r\n}\r\n\r\nvoid main() {\r\n  LocalStorage localStorage;\r\n  Fimber.plantTree(DebugTree());\r\n\r\n  setUp(() async {\r\n    mockSharedPreferences();\r\n    localStorage = await LocalStorage.getInstance();\r\n    LocalStorage.clear();\r\n  });\r\n\r\n  test('initially empty', () async {\r\n    localStorage = await LocalStorage.getInstance();\r\n    expect(localStorage.cache, {});\r\n  });\r\n\r\n  test('clear removes all keys', () async {\r\n    expect(LocalStorage.clear(), completes);\r\n    expectLater(localStorage.cache, isEmpty);\r\n  });\r\n\r\n  group('clear', () {\r\n    test('reset on empty cache results in cache with 1 pihole', () async {\r\n      mockSharedPreferences();\r\n      await localStorage.reset();\r\n\r\n      final pihole = Pihole();\r\n      expect(localStorage.cache, {pihole.localKey: pihole});\r\n    });\r\n\r\n    test('reset on existing cache results in cache with 1 pihole', () async {\r\n      mockSharedPreferences(\r\n          piholes: [Pihole(title: 'one'), Pihole(title: 'two')]);\r\n      await localStorage.reset();\r\n\r\n      final pihole = Pihole();\r\n      expect(localStorage.cache, {pihole.localKey: pihole});\r\n    });\r\n  });\r\n\r\n  group('remove', () {\r\n    test('successful remove results in new map', () async {\r\n      final pihole = Pihole();\r\n      mockSharedPreferences(piholes: [pihole]);\r\n      await localStorage.init();\r\n\r\n      assert(localStorage.cache[pihole.localKey] == pihole);\r\n\r\n      final bool didRemove = await localStorage.remove(pihole);\r\n      expect(didRemove, isTrue);\r\n      expect(localStorage.cache, {Pihole().localKey: Pihole()});\r\n    });\r\n\r\n    test('invalid remove results in false', () async {\r\n      final pihole = Pihole(title: 'staying around');\r\n      mockSharedPreferences(piholes: [pihole]);\r\n      await localStorage.init();\r\n\r\n      assert(localStorage.cache[pihole.localKey] == pihole);\r\n\r\n      final bool didRemove =\r\n          await localStorage.remove(Pihole.copyWith(pihole, title: 'unknown'));\r\n      expect(didRemove, isFalse);\r\n      expect(localStorage.cache, {pihole.localKey: pihole});\r\n    });\r\n  });\r\n\r\n  group('add', () {\r\n    test('successful add returns true', () async {\r\n      final pihole = Pihole();\r\n      await localStorage.init();\r\n      assert(localStorage.cache.length == 0);\r\n\r\n      final bool didAdd = await localStorage.add(pihole);\r\n      expect(didAdd, isTrue);\r\n      expect(localStorage.cache, {pihole.localKey: pihole});\r\n    });\r\n\r\n    test('duplicate add returns false', () async {\r\n      final pihole = Pihole();\r\n      mockSharedPreferences(piholes: [pihole]);\r\n      await localStorage.init();\r\n\r\n      assert(localStorage.cache.length == 1);\r\n\r\n      final bool didAdd = await localStorage.add(pihole);\r\n      expect(didAdd, isFalse);\r\n      expect(localStorage.cache, {pihole.localKey: pihole});\r\n    });\r\n  });\r\n\r\n  group('update', () {\r\n    test('successful update without key change', () async {\r\n      final pihole = Pihole(title: 'updating');\r\n      final update = Pihole.copyWith(pihole, port: 8080);\r\n      mockSharedPreferences(piholes: [pihole]);\r\n      await localStorage.init();\r\n\r\n      assert(localStorage.cache.length == 1);\r\n\r\n      await localStorage.update(pihole, update);\r\n\r\n      expect(localStorage.cache[pihole.localKey], update);\r\n    });\r\n\r\n    test('successful update with key change', () async {\r\n      final pihole = Pihole(title: 'updating');\r\n      final update =\r\n          Pihole.copyWith(pihole, title: 'edited', host: 'edited host');\r\n      mockSharedPreferences(piholes: [pihole]);\r\n      await localStorage.init();\r\n\r\n      assert(localStorage.cache.length == 1);\r\n\r\n      await localStorage.update(pihole, update);\r\n\r\n      expect(localStorage.cache.containsKey(pihole.localKey), isFalse);\r\n      expect(localStorage.cache[update.localKey], update);\r\n      expect(localStorage.cache.length, 1);\r\n    });\r\n\r\n    test('update with conflicting key change throws Exception', () async {\r\n      final pihole = Pihole();\r\n      final update = Pihole(title: 'already present', host: 'edited host');\r\n      mockSharedPreferences(piholes: [pihole, update]);\r\n      await localStorage.init();\r\n\r\n      assert(localStorage.cache.length == 2);\r\n\r\n      try {\r\n        await localStorage.update(pihole, update);\r\n        fail('exception not thrown');\r\n      } catch (e) {\r\n        expect(e, TypeMatcher<Exception>());\r\n      }\r\n    });\r\n  });\r\n\r\n  group('activate', () {\r\n    test('invalid activate throws Exception', () async {\r\n      final pihole = Pihole();\r\n      mockSharedPreferences(piholes: [pihole]);\r\n      await localStorage.init();\r\n\r\n      try {\r\n        await localStorage.activate(Pihole(title: 'unknown'));\r\n        fail('exception not thrown');\r\n      } catch (e) {\r\n        expect(e, isException);\r\n      }\r\n    });\r\n  });\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- test/local_storage_test.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ test/local_storage_test.dart	(date 1563821088672)
+@@ -1,7 +1,7 @@
+ import 'package:fimber/fimber.dart';
+ import 'package:flutter/services.dart';
++import 'package:flutterhole/bloc/storage/local_storage.dart';
+ import 'package:flutterhole/model/pihole.dart';
+-import 'package:flutterhole/service/local_storage.dart';
+ import "package:test/test.dart";
+ 
+ void mockSharedPreferences({List<Pihole> piholes = const []}) async {
+@@ -70,7 +70,7 @@
+     test('successful remove results in new map', () async {
+       final pihole = Pihole();
+       mockSharedPreferences(piholes: [pihole]);
+-      await localStorage.init();
++      await localStorage.refresh();
+ 
+       assert(localStorage.cache[pihole.localKey] == pihole);
+ 
+@@ -82,7 +82,7 @@
+     test('invalid remove results in false', () async {
+       final pihole = Pihole(title: 'staying around');
+       mockSharedPreferences(piholes: [pihole]);
+-      await localStorage.init();
++      await localStorage.refresh();
+ 
+       assert(localStorage.cache[pihole.localKey] == pihole);
+ 
+@@ -96,7 +96,7 @@
+   group('add', () {
+     test('successful add returns true', () async {
+       final pihole = Pihole();
+-      await localStorage.init();
++      await localStorage.refresh();
+       assert(localStorage.cache.length == 0);
+ 
+       final bool didAdd = await localStorage.add(pihole);
+@@ -107,7 +107,7 @@
+     test('duplicate add returns false', () async {
+       final pihole = Pihole();
+       mockSharedPreferences(piholes: [pihole]);
+-      await localStorage.init();
++      await localStorage.refresh();
+ 
+       assert(localStorage.cache.length == 1);
+ 
+@@ -122,7 +122,7 @@
+       final pihole = Pihole(title: 'updating');
+       final update = Pihole.copyWith(pihole, port: 8080);
+       mockSharedPreferences(piholes: [pihole]);
+-      await localStorage.init();
++      await localStorage.refresh();
+ 
+       assert(localStorage.cache.length == 1);
+ 
+@@ -136,7 +136,7 @@
+       final update =
+           Pihole.copyWith(pihole, title: 'edited', host: 'edited host');
+       mockSharedPreferences(piholes: [pihole]);
+-      await localStorage.init();
++      await localStorage.refresh();
+ 
+       assert(localStorage.cache.length == 1);
+ 
+@@ -151,7 +151,7 @@
+       final pihole = Pihole();
+       final update = Pihole(title: 'already present', host: 'edited host');
+       mockSharedPreferences(piholes: [pihole, update]);
+-      await localStorage.init();
++      await localStorage.refresh();
+ 
+       assert(localStorage.cache.length == 2);
+ 
+@@ -168,7 +168,7 @@
+     test('invalid activate throws Exception', () async {
+       final pihole = Pihole();
+       mockSharedPreferences(piholes: [pihole]);
+-      await localStorage.init();
++      await localStorage.refresh();
+ 
+       try {
+         await localStorage.activate(Pihole(title: 'unknown'));
+Index: lib/widget/layout/default_end_drawer.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:flutter/material.dart';\r\nimport 'package:flutterhole/model/pihole.dart';\r\nimport 'package:flutterhole/service/globals.dart';\r\nimport 'package:flutterhole/widget/pihole/pihole_list_builder.dart';\r\nimport 'package:flutterhole/widget/status/status_icon.dart';\r\n\r\nclass DefaultEndDrawer extends StatefulWidget {\r\n  @override\r\n  _DefaultEndDrawerState createState() => _DefaultEndDrawerState();\r\n}\r\n\r\nclass _DefaultEndDrawerState extends State<DefaultEndDrawer> {\r\n  Pihole active;\r\n\r\n  @override\r\n  void initState() {\r\n    super.initState();\r\n    active = Globals.localStorage.active();\r\n  }\r\n\r\n  @override\r\n  Widget build(BuildContext context) {\r\n    return Drawer(\r\n        child: Column(children: [\r\n      UserAccountsDrawerHeader(\r\n        accountName: Row(\r\n          children: <Widget>[\r\n            Flexible(\r\n                child: Text(\r\n              active == null ? 'FlutterHole' : active.title,\r\n              overflow: TextOverflow.fade,\r\n            )),\r\n            StatusIcon(),\r\n          ],\r\n        ),\r\n        accountEmail: null,\r\n        onDetailsPressed: null,\r\n      ),\r\n      Expanded(\r\n        child: PiholeListBuilder(\r\n          editable: false,\r\n        ),\r\n      ),\r\n    ]));\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/widget/layout/default_end_drawer.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/widget/layout/default_end_drawer.dart	(date 1563821092055)
+@@ -1,46 +1,29 @@
+ import 'package:flutter/material.dart';
+-import 'package:flutterhole/model/pihole.dart';
+-import 'package:flutterhole/service/globals.dart';
++import 'package:flutterhole/widget/pihole/pihole_active_text.dart';
+ import 'package:flutterhole/widget/pihole/pihole_list_builder.dart';
+ import 'package:flutterhole/widget/status/status_icon.dart';
+ 
+-class DefaultEndDrawer extends StatefulWidget {
+-  @override
+-  _DefaultEndDrawerState createState() => _DefaultEndDrawerState();
+-}
+-
+-class _DefaultEndDrawerState extends State<DefaultEndDrawer> {
+-  Pihole active;
+-
+-  @override
+-  void initState() {
+-    super.initState();
+-    active = Globals.localStorage.active();
+-  }
+-
++/// A [Drawer] with [PiholeListBuilder].
++class DefaultEndDrawer extends StatelessWidget {
+   @override
+   Widget build(BuildContext context) {
+     return Drawer(
+         child: Column(children: [
+-      UserAccountsDrawerHeader(
+-        accountName: Row(
+-          children: <Widget>[
+-            Flexible(
+-                child: Text(
+-              active == null ? 'FlutterHole' : active.title,
+-              overflow: TextOverflow.fade,
+-            )),
+-            StatusIcon(),
+-          ],
+-        ),
+-        accountEmail: null,
+-        onDetailsPressed: null,
+-      ),
+-      Expanded(
+-        child: PiholeListBuilder(
+-          editable: false,
+-        ),
+-      ),
+-    ]));
++          UserAccountsDrawerHeader(
++            accountName: Row(
++              children: <Widget>[
++                PiholeActiveText(),
++                StatusIcon(),
++              ],
++            ),
++            accountEmail: null,
++            onDetailsPressed: null,
++          ),
++          Expanded(
++            child: PiholeListBuilder(
++              editable: false,
++            ),
++          ),
++        ]));
+   }
+ }
+Index: android/app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    package=\"sterrenburg.github.flutterhole\">\r\n\r\n    <!-- io.flutter.app.FlutterApplication is an android.app.Application that\r\n         calls FlutterMain.startInitialization(this); in its onCreate method.\r\n         In most cases you can leave this as-is, but you if you want to provide\r\n         additional functionality it is fine to subclass or reimplement\r\n         FlutterApplication and put your custom class here. -->\r\n    <application\r\n        android:name=\"io.flutter.app.FlutterApplication\"\r\n        android:label=\"FlutterHole\"\r\n        android:icon=\"@mipmap/launcher_icon\">\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:launchMode=\"singleTop\"\r\n            android:theme=\"@style/LaunchTheme\"\r\n            android:configChanges=\"orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode\"\r\n            android:hardwareAccelerated=\"true\"\r\n            android:windowSoftInputMode=\"adjustResize\">\r\n            <!-- This keeps the window background of the activity showing\r\n                 until Flutter renders its first frame. It can be removed if\r\n                 there is no splash screen (such as the default splash screen\r\n                 defined in @style/LaunchTheme). -->\r\n            <meta-data\r\n                android:name=\"io.flutter.app.android.SplashScreenUntilFirstFrame\"\r\n                android:value=\"true\" />\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\"/>\r\n                <category android:name=\"android.intent.category.LAUNCHER\"/>\r\n            </intent-filter>\r\n        </activity>\r\n    </application>\r\n</manifest>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- android/app/src/main/AndroidManifest.xml	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ android/app/src/main/AndroidManifest.xml	(date 1563821090947)
+@@ -1,21 +1,18 @@
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+     package="sterrenburg.github.flutterhole">
+ 
+-    <!-- io.flutter.app.FlutterApplication is an android.app.Application that
+-         calls FlutterMain.startInitialization(this); in its onCreate method.
+-         In most cases you can leave this as-is, but you if you want to provide
+-         additional functionality it is fine to subclass or reimplement
+-         FlutterApplication and put your custom class here. -->
+     <application
+         android:name="io.flutter.app.FlutterApplication"
++        android:allowBackup="false"
+         android:label="FlutterHole"
++        android:fullBackupContent="false"
+         android:icon="@mipmap/launcher_icon">
+         <activity
+             android:name=".MainActivity"
+-            android:launchMode="singleTop"
+-            android:theme="@style/LaunchTheme"
+             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+             android:hardwareAccelerated="true"
++            android:launchMode="singleTop"
++            android:theme="@style/LaunchTheme"
+             android:windowSoftInputMode="adjustResize">
+             <!-- This keeps the window background of the activity showing
+                  until Flutter renders its first frame. It can be removed if
+@@ -25,8 +22,8 @@
+                 android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
+                 android:value="true" />
+             <intent-filter>
+-                <action android:name="android.intent.action.MAIN"/>
+-                <category android:name="android.intent.category.LAUNCHER"/>
++                <action android:name="android.intent.action.MAIN" />
++                <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+         </activity>
+     </application>
+Index: lib/model/pihole.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import 'package:equatable/equatable.dart';\r\n\r\nconst String titleKey = 'title';\r\nconst String hostKey = 'host';\r\nconst String apiPathKey = 'apipath';\r\nconst String portKey = 'port';\r\nconst String authKey = 'auth';\r\nconst String allowSelfSignedKey = 'allowselfsigned';\r\n\r\nclass Pihole extends Equatable {\r\n  String title;\r\n  String host;\r\n  String apiPath;\r\n  int port;\r\n  String auth;\r\n  bool allowSelfSigned;\r\n\r\n  String get localKey => title.toLowerCase().replaceAll(' ', '_');\r\n\r\n  String get baseUrl => '$host${port == 80 ? '' : ':${port.toString()}'}';\r\n\r\n  String get basePath => '$baseUrl/$apiPath';\r\n\r\n  static String toKey(String str) => str.toLowerCase().replaceAll(' ', '_');\r\n\r\n  Pihole(\r\n      {this.title = 'FlutterHole',\r\n      this.host = 'pi.hole',\r\n      this.apiPath = 'admin/api.php',\r\n      this.port = 80,\r\n      this.auth =\r\n      '3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c',\r\n        this.allowSelfSigned = false})\r\n      : super([title, host, port, auth, allowSelfSigned]);\r\n\r\n  /// Returns a new Pihole with the given parameters, using the [source] as base.\r\n  Pihole.copyWith(Pihole source,\r\n      {String title,\r\n        String host,\r\n        String apiPath,\r\n        int port,\r\n        String auth,\r\n        bool allowSelfSigned}) {\r\n    this.title = title ?? source.title;\r\n    this.host = host ?? source.host;\r\n    this.apiPath = apiPath ?? source.apiPath;\r\n    this.port = port ?? source.port;\r\n    this.auth = auth ?? source.auth;\r\n    this.allowSelfSigned = allowSelfSigned ?? source.allowSelfSigned;\r\n  }\r\n\r\n  Map<String, dynamic> toJson() => {\r\n        titleKey: title,\r\n        hostKey: host,\r\n        apiPathKey: apiPath,\r\n        portKey: port,\r\n        authKey: auth,\r\n    allowSelfSignedKey: allowSelfSigned,\r\n      };\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- lib/model/pihole.dart	(revision 8e8ffe5d88f86549d7d1f6f0977d5e4edcea8264)
++++ lib/model/pihole.dart	(date 1563821092161)
+@@ -1,4 +1,4 @@
+-import 'package:equatable/equatable.dart';
++import 'package:flutterhole/model/serializable.dart';
+ 
+ const String titleKey = 'title';
+ const String hostKey = 'host';
+@@ -7,7 +7,7 @@
+ const String authKey = 'auth';
+ const String allowSelfSignedKey = 'allowselfsigned';
+ 
+-class Pihole extends Equatable {
++class Pihole extends Serializable {
+   String title;
+   String host;
+   String apiPath;
