@@ -1,5 +1,6 @@
-import 'package:flutterhole/bloc/blacklist/bloc.dart';
-import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -18,43 +19,43 @@ main() {
   });
 
   test('has a correct initialState', () {
-    expect(blacklistBloc.initialState, BlacklistStateEmpty());
+    expect(blacklistBloc.initialState, BlocStateEmpty<Blacklist>());
   });
 
   group('FetchBlacklist', () {
     test(
-        'emits [BlacklistStateEmpty, BlacklistStateLoading, BlacklistStateSuccess] when blacklist repository returns Blacklist',
+        'emits [BlocStateEmpty<Blacklist>, BlocStateLoading<Blacklist>, BlocStateSuccess<Blacklist>] when blacklist repository returns Blacklist',
         () {
       final Blacklist blacklist = Blacklist();
 
-      when(blacklistRepository.getBlacklist())
+      when(blacklistRepository.get())
           .thenAnswer((_) => Future.value(blacklist));
 
       expectLater(
           blacklistBloc.state,
           emitsInOrder([
-            BlacklistStateEmpty(),
-            BlacklistStateLoading(),
-            BlacklistStateSuccess(blacklist),
+            BlocStateEmpty<Blacklist>(),
+            BlocStateLoading<Blacklist>(),
+            BlocStateSuccess<Blacklist>(blacklist),
           ]));
 
-      blacklistBloc.dispatch(FetchBlacklist());
+      blacklistBloc.dispatch(Fetch());
     });
 
     test(
-        'emits [BlacklistStateEmpty, BlacklistStateLoading, BlacklistStateError] when blacklist repository throws PiholeException',
+        'emits [BlocStateEmpty<Blacklist>, BlocStateLoading<Blacklist>, BlocStateError<Blacklist>] when blacklist repository throws PiholeException',
         () {
-      when(blacklistRepository.getBlacklist()).thenThrow(PiholeException());
+          when(blacklistRepository.get()).thenThrow(PiholeException());
 
       expectLater(
           blacklistBloc.state,
           emitsInOrder([
-            BlacklistStateEmpty(),
-            BlacklistStateLoading(),
-            BlacklistStateError(e: PiholeException()),
+            BlocStateEmpty<Blacklist>(),
+            BlocStateLoading<Blacklist>(),
+            BlocStateError<Blacklist>(PiholeException()),
           ]));
 
-      blacklistBloc.dispatch(FetchBlacklist());
+          blacklistBloc.dispatch(Fetch());
     });
   });
 
@@ -63,7 +64,7 @@ main() {
       blacklistRepository.cache = Blacklist();
     });
     test(
-        'emits [BlacklistStateEmpty, BlacklistStateLoading, BlacklistStateSuccess] when blacklist repository adds succesfully',
+        'emits [BlocStateEmpty<Blacklist>, BlocStateLoading<Blacklist>, BlocStateSuccess<Blacklist>] when blacklist repository adds succesfully',
         () {
       final BlacklistItem item =
           BlacklistItem(entry: 'new', type: BlacklistType.Exact);
@@ -74,16 +75,16 @@ main() {
       expectLater(
           blacklistBloc.state,
           emitsInOrder([
-            BlacklistStateEmpty(),
-            BlacklistStateLoading(cache: blacklistRepository.cache),
-            BlacklistStateSuccess(blacklist),
+            BlocStateEmpty<Blacklist>(),
+            BlocStateLoading<Blacklist>(),
+            BlocStateSuccess<Blacklist>(blacklist),
           ]));
 
-      blacklistBloc.dispatch(AddToBlacklist(item));
+      blacklistBloc.dispatch(Add(item));
     });
 
     test(
-        'emits [BlacklistStateEmpty, BlacklistStateLoading, BlacklistStateError] when blacklist repository add fails',
+        'emits [BlocStateEmpty<Blacklist>, BlocStateLoading<Blacklist>, BlocStateError<Blacklist>] when blacklist repository add fails',
         () {
       final BlacklistItem item =
           BlacklistItem(entry: 'new', type: BlacklistType.Exact);
@@ -93,18 +94,18 @@ main() {
       expectLater(
           blacklistBloc.state,
           emitsInOrder([
-            BlacklistStateEmpty(),
-            BlacklistStateLoading(cache: blacklistRepository.cache),
-            BlacklistStateError(e: PiholeException()),
+            BlocStateEmpty<Blacklist>(),
+            BlocStateLoading<Blacklist>(),
+            BlocStateError<Blacklist>(PiholeException()),
           ]));
 
-      blacklistBloc.dispatch(AddToBlacklist(item));
+      blacklistBloc.dispatch(Add(item));
     });
   });
 
   group('RemoveFromBlacklist', () {
     test(
-        'emits [BlacklistStateEmpty, BlacklistStateLoading, BlacklistStateSuccess] when blacklist repository removes succesfully',
+        'emits [BlocStateEmpty<Blacklist>, BlocStateLoading<Blacklist>, BlocStateSuccess<Blacklist>] when blacklist repository removes succesfully',
         () {
       final BlacklistItem item =
           BlacklistItem(entry: 'new', type: BlacklistType.Exact);
@@ -115,16 +116,16 @@ main() {
       expectLater(
           blacklistBloc.state,
           emitsInOrder([
-            BlacklistStateEmpty(),
-            BlacklistStateLoading(cache: blacklistRepository.cache),
-            BlacklistStateSuccess(Blacklist()),
+            BlocStateEmpty<Blacklist>(),
+            BlocStateLoading<Blacklist>(),
+            BlocStateSuccess<Blacklist>(Blacklist()),
           ]));
 
-      blacklistBloc.dispatch(RemoveFromBlacklist(item));
+      blacklistBloc.dispatch(Remove(item));
     });
 
     test(
-        'emits [BlacklistStateEmpty, BlacklistStateLoading, BlacklistStateError] when blacklist repository add fails',
+        'emits [BlocStateEmpty<Blacklist>, BlocStateLoading<Blacklist>, BlocStateError<Blacklist>] when blacklist repository add fails',
         () {
       final BlacklistItem item =
           BlacklistItem(entry: 'new', type: BlacklistType.Exact);
@@ -134,12 +135,12 @@ main() {
       expectLater(
           blacklistBloc.state,
           emitsInOrder([
-            BlacklistStateEmpty(),
-            BlacklistStateLoading(),
-            BlacklistStateError(e: PiholeException()),
+            BlocStateEmpty<Blacklist>(),
+            BlocStateLoading<Blacklist>(),
+            BlocStateError<Blacklist>(PiholeException()),
           ]));
 
-      blacklistBloc.dispatch(RemoveFromBlacklist(item));
+      blacklistBloc.dispatch(Remove(item));
     });
   });
 }

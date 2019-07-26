@@ -1,14 +1,16 @@
 import 'dart:async';
 
-import 'package:flutterhole/bloc/blacklist/bloc.dart';
-import 'package:flutterhole/bloc/query/bloc.dart';
-import 'package:flutterhole/bloc/status/bloc.dart';
-import 'package:flutterhole/bloc/summary/bloc.dart';
-import 'package:flutterhole/bloc/top_items/bloc.dart';
-import 'package:flutterhole/bloc/top_sources/bloc.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
-import 'package:flutterhole/model/blacklist.dart';
-import 'package:flutterhole/model/whitelist.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/api/forward_destinations.dart';
+import 'package:flutterhole/bloc/api/query.dart';
+import 'package:flutterhole/bloc/api/query_types.dart';
+import 'package:flutterhole/bloc/api/status.dart';
+import 'package:flutterhole/bloc/api/summary.dart';
+import 'package:flutterhole/bloc/api/top_items.dart';
+import 'package:flutterhole/bloc/api/top_sources.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -30,9 +32,38 @@ main() {
       summaryRepository = SummaryRepository(client);
     });
 
-    test('getSummary', () {
+    test('get', () {
       when(client.fetchSummary()).thenAnswer((_) => Future.value(mockSummary));
-      expect(summaryRepository.getSummary(), completion(mockSummary));
+      expect(summaryRepository.get(), completion(mockSummary));
+    });
+  });
+
+  group('ForwardDestinationsRepository', () {
+    ForwardDestinationsRepository forwardDestinationsRepository;
+
+    setUp(() {
+      forwardDestinationsRepository = ForwardDestinationsRepository(client);
+    });
+
+    test('getForwardDestinations', () {
+      when(client.fetchForwardDestinations())
+          .thenAnswer((_) => Future.value(mockForwardDestinations));
+      expect(forwardDestinationsRepository.get(),
+          completion(mockForwardDestinations));
+    });
+  });
+
+  group('QueryTypesRepository', () {
+    QueryTypesRepository queryTypesRepository;
+
+    setUp(() {
+      queryTypesRepository = QueryTypesRepository(client);
+    });
+
+    test('getQueryTypes', () {
+      when(client.fetchQueryTypes())
+          .thenAnswer((_) => Future.value(mockQueryTypes));
+      expect(queryTypesRepository.get(), completion(mockQueryTypes));
     });
   });
 
@@ -46,7 +77,7 @@ main() {
     test('getTopItems', () {
       when(client.fetchTopItems())
           .thenAnswer((_) => Future.value(mockTopItems));
-      expect(topItemsRepository.getTopItems(), completion(mockTopItems));
+      expect(topItemsRepository.get(), completion(mockTopItems));
     });
   });
 
@@ -57,21 +88,20 @@ main() {
       queryRepository = QueryRepository(client);
     });
 
-    test('initial cache is empty', () {
-      expect(queryRepository.cache, []);
-    });
+//    test('initial cache is empty', () {
+//      expect(queryRepository.cache, []);
+//    });
 
     test('getQueries', () {
       when(client.fetchQueries()).thenAnswer((_) => Future.value(mockQueries));
 
-      expect(queryRepository.getQueries(), completion(mockQueries));
+      expect(queryRepository.get(), completion(mockQueries));
     });
 
     test('getQueriesForClient', () {
       when(client.fetchQueriesForClient('client'))
           .thenAnswer((_) => Future.value(mockQueries));
-      expect(queryRepository.getQueriesForClient('client'),
-          completion(mockQueries));
+      expect(queryRepository.getForClient('client'), completion(mockQueries));
     });
   });
 
@@ -83,9 +113,9 @@ main() {
     });
 
     test('getTopSources', () {
-      when(client.fetchTopSources())
-          .thenAnswer((_) => Future.value(mockTopSources));
-      expect(topSourcesRepository.getTopSources(), completion(mockTopSources));
+      when(client.fetchTopSources()).thenAnswer((_) =>
+          Future.value(mockTopSources));
+      expect(topSourcesRepository.get(), completion(mockTopSources));
     });
   });
 
@@ -105,7 +135,7 @@ main() {
       when(client.fetchBlacklist())
           .thenAnswer((_) => Future.value(mockBlacklist));
 
-      expect(blacklistRepository.getBlacklist(), completion(mockBlacklist));
+      expect(blacklistRepository.get(), completion(mockBlacklist));
     });
 
     test('addToBlacklist', () {
@@ -166,7 +196,7 @@ main() {
       when(client.fetchWhitelist())
           .thenAnswer((_) => Future.value(mockWhitelist));
 
-      expect(whitelistRepository.getWhitelist(), completion(mockWhitelist));
+      expect(whitelistRepository.get(), completion(mockWhitelist));
     });
 
     test('addToWhitelist', () {
@@ -225,7 +255,7 @@ main() {
       when(client.fetchStatus())
           .thenAnswer((_) => Future.value(mockStatusEnabled));
 
-      expect(statusRepository.getStatus(), completion(mockStatusEnabled));
+      expect(statusRepository.get(), completion(mockStatusEnabled));
     });
 
     test('enable', () {

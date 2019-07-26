@@ -1,4 +1,6 @@
-import 'package:flutterhole/bloc/top_items/bloc.dart';
+import 'package:flutterhole/bloc/api/top_items.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/model/api/top_items.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -17,41 +19,41 @@ main() {
   });
 
   test('has a correct initialState', () {
-    expect(topItemsBloc.initialState, TopItemsStateEmpty());
+    expect(topItemsBloc.initialState, BlocStateEmpty<TopItems>());
   });
 
   group('FetchTopItems', () {
     test(
-        'emits [TopItemsStateEmpty, TopItemsStateLoading, TopItemsStateSuccess] when repository returns TopItems',
-        () {
-      when(topItemsRepository.getTopItems())
-          .thenAnswer((_) => Future.value(mockTopItems));
+        'emits [BlocStateEmpty<TopItems>, BlocStateLoading<TopItems>, BlocStateSuccess<TopItems>] when repository returns TopItems',
+            () {
+          when(topItemsRepository.get())
+              .thenAnswer((_) => Future.value(mockTopItems));
 
-      expectLater(
-          topItemsBloc.state,
-          emitsInOrder([
-            TopItemsStateEmpty(),
-            TopItemsStateLoading(),
-            TopItemsStateSuccess(mockTopItems),
-          ]));
+          expectLater(
+              topItemsBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<TopItems>(),
+                BlocStateLoading<TopItems>(),
+                BlocStateSuccess<TopItems>(mockTopItems),
+              ]));
 
-      topItemsBloc.dispatch(FetchTopItems());
-    });
+          topItemsBloc.dispatch(Fetch());
+        });
 
     test(
-        'emits [TopItemsStateEmpty, TopItemsStateLoading, TopItemsStateError] when home repository throws PiholeException',
-        () {
-      when(topItemsRepository.getTopItems()).thenThrow(PiholeException());
+        'emits [BlocStateEmpty<TopItems>, BlocStateLoading<TopItems>, BlocStateError<TopItems>] when home repository throws PiholeException',
+            () {
+          when(topItemsRepository.get()).thenThrow(PiholeException());
 
-      expectLater(
-          topItemsBloc.state,
-          emitsInOrder([
-            TopItemsStateEmpty(),
-            TopItemsStateLoading(),
-            TopItemsStateError(e: PiholeException()),
-          ]));
+          expectLater(
+              topItemsBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<TopItems>(),
+                BlocStateLoading<TopItems>(),
+                BlocStateError<TopItems>(PiholeException()),
+              ]));
 
-      topItemsBloc.dispatch(FetchTopItems());
-    });
+          topItemsBloc.dispatch(Fetch());
+        });
   });
 }

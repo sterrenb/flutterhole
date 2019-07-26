@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutterhole/bloc/blacklist/bloc.dart';
-import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/base/state.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/widget/layout/dialog.dart';
 import 'package:flutterhole/widget/layout/icon_text_button.dart';
 
@@ -44,11 +45,11 @@ class _BlacklistFormState extends State<BlacklistForm> {
     return BlocListener(
       bloc: blacklistBloc,
       listener: (context, state) {
-        if (state is BlacklistStateSuccess) {
+        if (state is BlocStateSuccess<Blacklist>) {
           Scaffold.of(context).showSnackBar(
               SnackBar(content: Text('${widget.initialValue} removed')));
         }
-        if (state is BlacklistStateError) {
+        if (state is BlocStateError<Blacklist>) {
           Scaffold.of(context).showSnackBar(SnackBar(
               content: Row(children: [
             Padding(
@@ -100,7 +101,6 @@ class _BlacklistFormState extends State<BlacklistForm> {
                             .replaceAll('BlacklistType.', '')
                         : "Exact",
                     onChanged: (val) {
-                      print('onchanged $val');
                       setState(() {
                         selectedType = blacklistTypeFromString(val);
                       });
@@ -146,8 +146,7 @@ class _BlacklistFormState extends State<BlacklistForm> {
                                   "Do you want to remove ${widget.initialValue.entry}?"),
                             ),
                             continueText: 'Remove', onConfirm: () {
-                          blacklistBloc.dispatch(
-                              RemoveFromBlacklist(widget.initialValue));
+                          blacklistBloc.dispatch(Remove(widget.initialValue));
                         });
                       },
                     )
@@ -155,7 +154,7 @@ class _BlacklistFormState extends State<BlacklistForm> {
               BlocBuilder(
                 bloc: blacklistBloc,
                 builder: (context, state) {
-                  if (state is BlacklistStateLoading) {
+                  if (state is BlocStateLoading<Blacklist>) {
                     return Center(child: CircularProgressIndicator());
                   }
 

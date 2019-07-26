@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/blacklist/bloc.dart';
-import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/base/event.dart';
+import 'package:flutterhole/bloc/base/state.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
@@ -40,20 +42,22 @@ class _BlacklistBuilderState extends State<BlacklistBuilder> {
     setState(() {
       _cache = Blacklist.withoutItem(_cache, item);
     });
-    blacklistBloc.dispatch(RemoveFromBlacklist(item));
+    blacklistBloc.dispatch(Remove(item));
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text("${item.entry} removed"),
       action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
-            blacklistBloc.dispatch(AddToBlacklist(item));
+            blacklistBloc.dispatch(Add(item));
           }),
     ));
   }
 
   void _edit(BlacklistItem item) async {
-    final String message =
-    await Globals.navigateTo(context, blacklistEditPath(item),);
+    final String message = await Globals.navigateTo(
+      context,
+      blacklistEditPath(item),
+    );
     if (message != null) {
       Scaffold.of(context).showSnackBar(SnackBar(content: Text(message)));
     }
@@ -65,35 +69,36 @@ class _BlacklistBuilderState extends State<BlacklistBuilder> {
     return BlocListener(
         bloc: blacklistBloc,
         listener: (context, state) {
-          if (state is BlacklistStateEmpty) {
-            blacklistBloc.dispatch(FetchBlacklist());
+          if (state is BlocStateEmpty<Blacklist>) {
+            blacklistBloc.dispatch(Fetch());
           }
 
-          if (state is BlacklistStateSuccess || state is BlacklistStateError) {
+          if (state is BlocStateSuccess<Blacklist> ||
+              state is BlocStateError<Blacklist>) {
             _refreshCompleter?.complete();
             _refreshCompleter = Completer();
 
-            if (state is BlacklistStateSuccess) {
+            if (state is BlocStateSuccess<Blacklist>) {
               setState(() {
-                _cache = state.blacklist;
+                _cache = state.data;
               });
             }
           }
         },
         child: RefreshIndicator(
           onRefresh: () {
-            blacklistBloc.dispatch(FetchBlacklist());
+            blacklistBloc.dispatch(Fetch());
             return _refreshCompleter.future;
           },
           child: BlocBuilder(
               bloc: blacklistBloc,
               builder: (context, state) {
-                if (state is BlacklistStateSuccess ||
-                    (state is BlacklistStateLoading &&
+                if (state is BlocStateSuccess<Blacklist> ||
+                    (state is BlocStateLoading<Blacklist> &&
                         _cache != null &&
                         _cache.exact.length + _cache.wildcard.length > 0)) {
-                  if (state is BlacklistStateSuccess) {
-                    _cache = state.blacklist;
+                  if (state is BlocStateSuccess<Blacklist>) {
+                    _cache = state.data;
                   }
 
                   List<Widget> exactTiles = [ListTab('Exact blocking')];
@@ -116,7 +121,7 @@ class _BlacklistBuilderState extends State<BlacklistBuilder> {
                   );
                 }
 
-                if (state is BlacklistStateError) {
+                if (state is BlocStateError<Blacklist>) {
                   return Center(
                     child: ListView(
                       children: <Widget>[

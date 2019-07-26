@@ -1,4 +1,6 @@
-import 'package:flutterhole/bloc/top_sources/bloc.dart';
+import 'package:flutterhole/bloc/api/top_sources.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/model/api/top_sources.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -17,41 +19,41 @@ main() {
   });
 
   test('has a correct initialState', () {
-    expect(topSourcesBloc.initialState, TopSourcesStateEmpty());
+    expect(topSourcesBloc.initialState, BlocStateEmpty<TopSources>());
   });
 
-  group('FetchTopSources', () {
+  group('Fetch', () {
     test(
-        'emits [TopSourcesStateEmpty, TopSourcesStateLoading, TopSourcesStateSuccess] when repository returns TopSources',
+        'emits [BlocStateEmpty<TopSources>, BlocStateLoading<TopSources>, BlocStateSuccess<TopSources>] when repository returns TopSources',
         () {
-      when(topSourcesRepository.getTopSources())
+          when(topSourcesRepository.get())
           .thenAnswer((_) => Future.value(mockTopSources));
 
       expectLater(
           topSourcesBloc.state,
           emitsInOrder([
-            TopSourcesStateEmpty(),
-            TopSourcesStateLoading(),
-            TopSourcesStateSuccess(mockTopSources),
+            BlocStateEmpty<TopSources>(),
+            BlocStateLoading<TopSources>(),
+            BlocStateSuccess<TopSources>(mockTopSources),
           ]));
 
-      topSourcesBloc.dispatch(FetchTopSources());
+          topSourcesBloc.dispatch(Fetch());
     });
 
     test(
-        'emits [TopSourcesStateEmpty, TopSourcesStateLoading, TopSourcesStateError] when home repository throws PiholeException',
+        'emits [BlocStateEmpty<TopSources>, BlocStateLoading<TopSources>, BlocStateError<TopSources>] when home repository throws PiholeException',
         () {
-      when(topSourcesRepository.getTopSources()).thenThrow(PiholeException());
+          when(topSourcesRepository.get()).thenThrow(PiholeException());
 
       expectLater(
           topSourcesBloc.state,
           emitsInOrder([
-            TopSourcesStateEmpty(),
-            TopSourcesStateLoading(),
-            TopSourcesStateError(e: PiholeException()),
+            BlocStateEmpty<TopSources>(),
+            BlocStateLoading<TopSources>(),
+            BlocStateError<TopSources>(PiholeException()),
           ]));
 
-      topSourcesBloc.dispatch(FetchTopSources());
+          topSourcesBloc.dispatch(Fetch());
     });
   });
 }

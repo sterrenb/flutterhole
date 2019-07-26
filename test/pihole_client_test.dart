@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/status.dart';
 import 'package:flutterhole/model/pihole.dart';
-import 'package:flutterhole/model/status.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/local_storage.dart';
 import 'package:flutterhole/service/memory_tree.dart';
@@ -186,16 +186,16 @@ void main() {
     });
   });
 
-  group('fetchSummary', () {
-    test('returns Summary on successful response', () async {
-      dio.httpClientAdapter = MockAdapter.json(mockSummary.toJson());
-      expect(client.fetchSummary(), completion(mockSummary));
+  group('fetchTopItems', () {
+    test('returns TopItems on successful response', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockTopItems.toJson());
+      expect(client.fetchTopItems(), completion(mockTopItems));
     });
 
     test('throws PiholeException on plaintext response', () async {
       dio.httpClientAdapter = MockAdapter.string('<!-- hello -->');
       try {
-        await client.fetchSummary();
+        await client.fetchTopItems();
         fail('exception not thrown');
       } on PiholeException catch (e) {
         expect(e.message.contains('unexpected plaintext response'), isTrue);
@@ -373,6 +373,13 @@ void main() {
       test('returns Versions on successful fetch', () async {
         dio.httpClientAdapter = MockAdapter.json(mockVersions.toJson());
         expect(client.fetchVersions(), completion(mockVersions));
+      });
+    });
+
+    group('fetchQueriesOverTime', () {
+      test('returns QueriesOverTime on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(mockQueriesOverTime.toJson());
+        expect(client.fetchQueriesOverTime(), completion(mockQueriesOverTime));
       });
     });
   });

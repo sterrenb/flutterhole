@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 class PercentageBox extends StatelessWidget {
   final double width;
   final double fraction;
+  final Color color;
 
-  const PercentageBox({Key key, @required this.width, @required this.fraction})
+  const PercentageBox({Key key,
+    @required this.width,
+    @required this.fraction,
+    this.color = Colors.green})
       : super(key: key);
 
   @override
@@ -12,7 +16,7 @@ class PercentageBox extends StatelessWidget {
     return Stack(
       alignment: AlignmentDirectional.centerStart,
       children: <Widget>[
-        ColoredBox(width: fraction * width, color: Colors.green),
+        ColoredBox(width: fraction * width, color: color),
         ColoredBox(width: width, color: Theme.of(context).dividerColor),
       ],
     );

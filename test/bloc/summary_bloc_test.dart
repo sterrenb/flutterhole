@@ -1,8 +1,12 @@
-import 'package:flutterhole/bloc/summary/bloc.dart';
-import 'package:flutterhole/model/summary.dart';
+import 'package:flutterhole/bloc/api/summary.dart';
+import 'package:flutterhole/bloc/base/event.dart';
+import 'package:flutterhole/bloc/base/state.dart';
+import 'package:flutterhole/model/api/summary.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
+
+import '../mock.dart';
 
 class MockSummaryRepository extends Mock implements SummaryRepository {}
 
@@ -16,47 +20,41 @@ main() {
   });
 
   test('has a correct initialState', () {
-    expect(summaryBloc.initialState, SummaryStateEmpty());
+    expect(summaryBloc.initialState, BlocStateEmpty<Summary>());
   });
 
-  group('FetchSummary', () {
+  group('Fetch', () {
     test(
-        'emits [SummaryStateEmpty, SummaryStateLoading, SummaryStateSuccess] when repository returns Summary',
-        () {
-      final Summary summary = Summary(
-        domainsBeingBlocked: 1,
-        dnsQueriesToday: 2,
-        adsPercentageToday: 1.23,
-      );
+        'emits [GenericStateEmpty<Summary>, GenericStateLoading<Summary>, GenericStateSuccess<Summary>] when repository returns Summary',
+            () {
+          when(summaryRepository.get())
+              .thenAnswer((_) => Future.value(mockSummary));
 
-      when(summaryRepository.getSummary())
-          .thenAnswer((_) => Future.value(summary));
+          expectLater(
+              summaryBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<Summary>(),
+                BlocStateLoading<Summary>(),
+                BlocStateSuccess<Summary>(mockSummary),
+              ]));
 
-      expectLater(
-          summaryBloc.state,
-          emitsInOrder([
-            SummaryStateEmpty(),
-            SummaryStateLoading(),
-            SummaryStateSuccess(summary),
-          ]));
-
-      summaryBloc.dispatch(FetchSummary());
-    });
+          summaryBloc.dispatch(Fetch());
+        });
 
     test(
-        'emits [SummaryStateEmpty, SummaryStateLoading, SummaryStateError] when home repository throws PiholeException',
-        () {
-      when(summaryRepository.getSummary()).thenThrow(PiholeException());
+        'emits [GenericStateEmpty<Summary>, GenericStateLoading<Summary>, GenericStateError<Summary>] when home repository throws PiholeException',
+            () {
+          when(summaryRepository.get()).thenThrow(PiholeException());
 
-      expectLater(
-          summaryBloc.state,
-          emitsInOrder([
-            SummaryStateEmpty(),
-            SummaryStateLoading(),
-            SummaryStateError(e: PiholeException()),
-          ]));
+          expectLater(
+              summaryBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<Summary>(),
+                BlocStateLoading<Summary>(),
+                BlocStateError<Summary>(PiholeException()),
+              ]));
 
-      summaryBloc.dispatch(FetchSummary());
-    });
+          summaryBloc.dispatch(Fetch());
+        });
   });
 }

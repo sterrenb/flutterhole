@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/status/bloc.dart';
+import 'package:flutterhole/bloc/api/status.dart';
+import 'package:flutterhole/bloc/base/event.dart';
+import 'package:flutterhole/bloc/base/state.dart';
+import 'package:flutterhole/model/api/status.dart';
 
 class ToggleButton extends StatelessWidget {
   const ToggleButton({
@@ -13,9 +16,9 @@ class ToggleButton extends StatelessWidget {
 
     return BlocListener(
       bloc: statusBloc,
-      listener: (context, state) {
-        if (state is StatusStateEmpty) {
-          statusBloc.dispatch(FetchStatus());
+      listener: (BuildContext context, BlocState state) {
+        if (state is BlocStateEmpty<Status>) {
+          statusBloc.dispatch(Fetch());
         }
       },
       child: BlocBuilder(
@@ -29,8 +32,8 @@ class ToggleButton extends StatelessWidget {
               icon: Icon(Icons.play_arrow),
             );
           }
-          if (state is StatusStateSuccess) {
-            if (state.status.enabled) {
+          if (state is BlocStateSuccess<Status>) {
+            if (state.data.enabled) {
               return IconButton(
                 onPressed: () {
                   statusBloc.dispatch(DisableStatus());
@@ -48,7 +51,7 @@ class ToggleButton extends StatelessWidget {
               );
             }
           }
-          if (state is StatusStateLoading) {
+          if (state is BlocStateLoading<Status>) {
             return Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -62,10 +65,10 @@ class ToggleButton extends StatelessWidget {
               ),
             );
           }
-          if (state is StatusStateError) {
+          if (state is BlocStateError<Status>) {
             return IconButton(
               onPressed: () {
-                statusBloc.dispatch(FetchStatus());
+                statusBloc.dispatch(Fetch());
               },
               icon: Icon(Icons.error),
               tooltip: 'Get Pi-hole status',
@@ -74,7 +77,7 @@ class ToggleButton extends StatelessWidget {
 
           return IconButton(
             onPressed: () {
-              statusBloc.dispatch(FetchStatus());
+              statusBloc.dispatch(Fetch());
             },
             icon: Icon(Icons.refresh),
             tooltip: 'Check Pi-hole status',

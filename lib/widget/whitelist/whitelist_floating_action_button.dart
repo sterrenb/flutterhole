@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
@@ -21,13 +23,15 @@ class _WhitelistFloatingActionButtonState
     return BlocBuilder(
       bloc: whitelistBloc,
       builder: (context, state) {
-        if (state is WhitelistStateSuccess) {
+        if (state is BlocStateSuccess<Whitelist>) {
           return FloatingActionButton(
               tooltip: 'Add to whitelist',
               backgroundColor: _theme.accentColor,
               onPressed: () async {
-                final domain =
-                await Globals.navigateTo(context, whitelistAddPath,);
+                final domain = await Globals.navigateTo(
+                  context,
+                  whitelistAddPath,
+                );
                 if (domain != null)
                   Scaffold.of(context).showSnackBar(
                       SnackBar(content: Text('Added $domain to whitelist')));

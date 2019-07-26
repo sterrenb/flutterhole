@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/widget/whitelist/whitelist_form.dart';
 
 class WhitelistEditForm extends StatefulWidget {
@@ -24,7 +26,7 @@ class _WhitelistEditFormState extends State<WhitelistEditForm> {
     return BlocListener(
       bloc: whitelistBloc,
       listener: (context, state) {
-        if (state is WhitelistStateSuccess) {
+        if (state is BlocStateSuccess<Whitelist>) {
           if (_update == null) {
             Navigator.of(context).pop('Removed ${widget.original}');
           } else {
@@ -38,8 +40,7 @@ class _WhitelistEditFormState extends State<WhitelistEditForm> {
         onVoidSubmitted: () {
           _fbKey.currentState.save();
           if (widget.original != _update) {
-            whitelistBloc.dispatch(
-                EditOnWhitelist(widget.original, _update));
+            whitelistBloc.dispatch(Edit(widget.original, _update));
           }
         },
       ),

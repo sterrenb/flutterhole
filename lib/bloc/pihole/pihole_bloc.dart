@@ -72,7 +72,6 @@ class PiholeBloc extends Bloc<PiholeEvent, PiholeState> {
     try {
       await repository.activate(pihole);
       final active = repository.active();
-      print('bloc: active: ${active.title}');
       yield PiholeStateSuccess(all: repository.getPiholes(), active: active);
     } catch (e) {
       yield PiholeStateError(e);

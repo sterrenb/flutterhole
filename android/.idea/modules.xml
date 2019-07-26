@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/android.iml" filepath="$PROJECT_DIR$/android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/flutter_picker-1.0.13/android/flutter_picker.iml" filepath="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/flutter_picker-1.0.13/android/flutter_picker.iml" />
+      <module fileurl="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/keyboard_visibility-0.5.6/android/keyboard_visibility.iml" filepath="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/keyboard_visibility-0.5.6/android/keyboard_visibility.iml" />
+      <module fileurl="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/launch_review-2.0.0/android/launch_review.iml" filepath="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/launch_review-2.0.0/android/launch_review.iml" />
+      <module fileurl="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/package_info-0.4.0+6/android/package_info.iml" filepath="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/package_info-0.4.0+6/android/package_info.iml" />
+      <module fileurl="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/path_provider-1.2.0/android/path_provider.iml" filepath="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/path_provider-1.2.0/android/path_provider.iml" />
+      <module fileurl="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/qrcode_reader-0.4.4/android/qrcode_reader.iml" filepath="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/qrcode_reader-0.4.4/android/qrcode_reader.iml" />
+      <module fileurl="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/shared_preferences-0.5.3+4/android/shared_preferences.iml" filepath="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/shared_preferences-0.5.3+4/android/shared_preferences.iml" />
+      <module fileurl="file://$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/url_launcher-5.1.0/android/url_launcher.iml" filepath="$USER_HOME$/AppData/Roaming/Pub/Cache/hosted/pub.dartlang.org/url_launcher-5.1.0/android/url_launcher.iml" />
+    </modules>
+  </component>
+</project>

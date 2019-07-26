@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/widget/layout/dialog.dart';
 import 'package:flutterhole/widget/layout/icon_text_button.dart';
 
@@ -32,11 +34,11 @@ class _WhitelistFormState extends State<WhitelistForm> {
     return BlocListener(
       bloc: whitelistBloc,
       listener: (context, state) {
-        if (state is WhitelistStateSuccess) {
+        if (state is BlocStateSuccess<Whitelist>) {
           Scaffold.of(context).showSnackBar(
               SnackBar(content: Text('${widget.initialValue} removed')));
         }
-        if (state is WhitelistStateError) {
+        if (state is BlocStateError<Whitelist>) {
           Scaffold.of(context).showSnackBar(SnackBar(
               content: Row(children: [
             Padding(
@@ -104,7 +106,7 @@ class _WhitelistFormState extends State<WhitelistForm> {
                             ),
                             continueText: 'Remove', onConfirm: () {
                           whitelistBloc.dispatch(
-                              RemoveFromWhitelist(widget.initialValue));
+                              Remove(widget.initialValue));
                         });
                       },
                     )
@@ -112,7 +114,7 @@ class _WhitelistFormState extends State<WhitelistForm> {
               BlocBuilder(
                 bloc: whitelistBloc,
                 builder: (context, state) {
-                  if (state is WhitelistStateLoading) {
+                  if (state is BlocStateLoading<Whitelist>) {
                     return Center(child: CircularProgressIndicator());
                   }
 

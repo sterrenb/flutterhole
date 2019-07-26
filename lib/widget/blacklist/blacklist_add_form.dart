@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutterhole/bloc/blacklist/bloc.dart';
-import 'package:flutterhole/model/blacklist.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/base/state.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/widget/blacklist/blacklist_form.dart';
 
 class BlacklistAddForm extends StatefulWidget {
@@ -43,7 +44,7 @@ class _BlacklistAddFormState extends State<BlacklistAddForm> {
     return BlocListener(
       bloc: blacklistBloc,
       listener: (context, state) {
-        if (state is BlacklistStateSuccess) {
+        if (state is BlocStateSuccess<Blacklist>) {
           Navigator.of(context).pop(_item);
         }
       },
@@ -51,7 +52,7 @@ class _BlacklistAddFormState extends State<BlacklistAddForm> {
         fbKey: _fbKey,
         onVoidSubmitted: () {
           _fbKey.currentState.save();
-          blacklistBloc.dispatch(AddToBlacklist(_item));
+          blacklistBloc.dispatch(Add(_item));
         },
       ),
     );

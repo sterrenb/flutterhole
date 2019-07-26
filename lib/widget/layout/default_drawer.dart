@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/blacklist/bloc.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/api/query.dart';
+import 'package:flutterhole/bloc/api/query_types.dart';
+import 'package:flutterhole/bloc/api/summary.dart';
+import 'package:flutterhole/bloc/api/top_sources.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
+import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
-import 'package:flutterhole/bloc/query/bloc.dart';
-import 'package:flutterhole/bloc/summary/bloc.dart';
-import 'package:flutterhole/bloc/top_sources/bloc.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
-import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
+import 'package:flutterhole/widget/layout/title_row.dart';
 import 'package:flutterhole/widget/pihole/pihole_list_builder.dart';
 import 'package:flutterhole/widget/status/sleep_button.dart';
-import 'package:flutterhole/widget/status/status_icon.dart';
 
 class DefaultDrawer extends StatefulWidget {
   final bool allowConfigSelection;
@@ -28,14 +29,6 @@ class DefaultDrawer extends StatefulWidget {
 class _DefaultDrawerState extends State<DefaultDrawer> {
   bool _showDetails = false;
 
-  Pihole active;
-
-  @override
-  void initState() {
-    super.initState();
-    active = Globals.localStorage.active();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -43,16 +36,7 @@ class _DefaultDrawerState extends State<DefaultDrawer> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Row(
-              children: <Widget>[
-                Flexible(
-                    child: Text(
-                  active == null ? 'FlutterHole' : active.title,
-                      overflow: TextOverflow.fade,
-                    )),
-                StatusIcon(),
-              ],
-            ),
+            accountName: TitleRow(),
             accountEmail: null,
             onDetailsPressed: widget.allowConfigSelection
                 ? () {
@@ -82,9 +66,9 @@ class _DefaultDrawerMenu extends StatelessWidget {
           title: Text('Dashboard'),
           leading: Icon(Icons.home),
           onTap: () {
-            BlocProvider.of<SummaryBloc>(context).dispatch(FetchSummary());
-            BlocProvider.of<TopSourcesBloc>(context)
-                .dispatch(FetchTopSources());
+            BlocProvider.of<SummaryBloc>(context).dispatch(Fetch());
+            BlocProvider.of<TopSourcesBloc>(context).dispatch(Fetch());
+            BlocProvider.of<QueryTypesBloc>(context).dispatch(Fetch());
             Globals.navigateTo(context, homePath);
           },
         ),
@@ -92,7 +76,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
           title: Text('Whitelist'),
           leading: Icon(Icons.check_circle),
           onTap: () {
-            BlocProvider.of<WhitelistBloc>(context).dispatch(FetchWhitelist());
+            BlocProvider.of<WhitelistBloc>(context).dispatch(Fetch());
             Globals.navigateTo(context, whitelistPath);
           },
         ),
@@ -100,7 +84,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
           title: Text('Blacklist'),
           leading: Icon(Icons.cancel),
           onTap: () {
-            BlocProvider.of<BlacklistBloc>(context).dispatch(FetchBlacklist());
+            BlocProvider.of<BlacklistBloc>(context).dispatch(Fetch());
             Globals.navigateTo(context, blacklistPath);
           },
         ),
@@ -109,8 +93,8 @@ class _DefaultDrawerMenu extends StatelessWidget {
           title: Text('Query Log'),
           leading: Icon(Icons.filter_list),
           onTap: () {
-            BlocProvider.of<QueryBloc>(context).dispatch(FetchQueries());
-            BlocProvider.of<BlacklistBloc>(context).dispatch(FetchBlacklist());
+            BlocProvider.of<QueryBloc>(context).dispatch(Fetch());
+            BlocProvider.of<BlacklistBloc>(context).dispatch(Fetch());
             Globals.navigateTo(context, queryPath);
           },
         ),

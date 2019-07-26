@@ -15,7 +15,7 @@ class QueryLogScreen extends StatelessWidget {
       initialValue: search,
       withDrawer: withDrawer,
       title: 'Query Log',
-      body: QueryLogBuilder(),
+      body: QueryLogBuilder(searchString: search),
     );
   }
 }

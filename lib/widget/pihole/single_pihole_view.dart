@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutterhole/bloc/api/versions.dart';
+import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
+import 'package:flutterhole/model/api/versions.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/browser.dart';
 import 'package:flutterhole/widget/layout/icon_text_button.dart';
@@ -47,6 +50,15 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     authController.text = widget.original.auth;
   }
 
+  void _onChange(BuildContext context, Pihole update) {
+    if (_formKey.currentState.validate()) {
+      setState(() {
+        pihole = update;
+        BlocProvider.of<VersionsBloc>(context).dispatch(FetchForPihole(update));
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final piholeBloc = BlocProvider.of<PiholeBloc>(context);
@@ -55,7 +67,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
       bloc: piholeBloc,
       listener: (context, state) {
         if (state is PiholeStateSuccess) {
-          print('successful listener');
           _pop(context);
         }
         if (state is PiholeStateError) {
@@ -69,23 +80,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Card(
-                child: Column(
-                  children: <Widget>[
-                    BlocBuilder(
-                      bloc: piholeBloc,
-                      builder: (context, state) {
-                        if (state is PiholeStateSuccess) {
-                          return ListTile(
-                            title: Text('active: ${state.active.title}'),
-                          );
-                        }
-                        return CircularProgressIndicator();
-                      },
-                    )
-                  ],
-                ),
-              ),
               TextField(
                 controller: titleController,
                 autofocus: pihole.title.isEmpty,
@@ -100,12 +94,13 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                 decoration: InputDecoration(
                     labelText: 'Host', prefixIcon: Icon(Icons.home)),
                 onChanged: (v) {
-                  if (v.length > 0 && pihole.title.length > 0) {
-                    final update = Pihole.copyWith(pihole, host: v);
-                    setState(() {
-                      pihole = update;
-                    });
-                  }
+                  _onChange(context, Pihole.copyWith(pihole, host: v));
+//                  if (v.length > 0 && pihole.title.length > 0) {
+//                    final update = Pihole.copyWith(pihole, host: v);
+//                    setState(() {
+//                      pihole = update;
+//                    });
+//                  }
                 },
               ),
               TextField(
@@ -114,12 +109,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                 decoration: InputDecoration(
                     labelText: 'API path', prefixIcon: Icon(Icons.code)),
                 onChanged: (v) {
-                  if (v.length > 0 && pihole.title.length > 0) {
-                    final update = Pihole.copyWith(pihole, apiPath: v);
-                    setState(() {
-                      pihole = update;
-                    });
-                  }
+                  _onChange(context, Pihole.copyWith(pihole, apiPath: v));
                 },
               ),
               TextField(
@@ -132,12 +122,14 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                 decoration: InputDecoration(
                     labelText: 'Port', prefixIcon: Icon(Icons.adjust)),
                 onChanged: (v) {
-                  if (v.length > 0 && pihole.title.length > 0) {
-                    final update = Pihole.copyWith(pihole, port: int.parse(v));
-                    setState(() {
-                      pihole = update;
-                    });
-                  }
+                  _onChange(
+                      context, Pihole.copyWith(pihole, port: int.parse(v)));
+//                  if (v.length > 0 && pihole.title.length > 0) {
+//                    final update = Pihole.copyWith(pihole, port: int.parse(v));
+//                    setState(() {
+//                      pihole = update;
+//                    });
+//                  }
                 },
               ),
               Row(
@@ -151,12 +143,13 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                           labelText: 'API token',
                           prefixIcon: Icon(Icons.vpn_key)),
                       onChanged: (v) {
-                        if (v.length > 0 && pihole.title.length > 0) {
-                          final update = Pihole.copyWith(pihole, auth: v);
-                          setState(() {
-                            pihole = update;
-                          });
-                        }
+                        _onChange(context, Pihole.copyWith(pihole, auth: v));
+//                        if (v.length > 0 && pihole.title.length > 0) {
+//                          final update = Pihole.copyWith(pihole, auth: v);
+//                          setState(() {
+//                            pihole = update;
+//                          });
+//                        }
                       },
                     ),
                   ),
@@ -222,10 +215,12 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                 label: Text('Allow self-signed certificates'),
                 attribute: 'attribute',
                 onChanged: (v) {
-                  final update = Pihole.copyWith(pihole, allowSelfSigned: v);
-                  setState(() {
-                    pihole = update;
-                  });
+                  _onChange(
+                      context, Pihole.copyWith(pihole, allowSelfSigned: v));
+//                  final update = Pihole.copyWith(pihole, allowSelfSigned: v);
+//                  setState(() {
+//                    pihole = update;
+//                  });
                 },
               ),
               Padding(
@@ -238,13 +233,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                       .caption,
                 ),
               ),
-//              ExpansionTile(
-//                title: Text('Advanced'),
-//                children: <Widget>[
-//                  Text('hi'),
-//                  Text('hi'),
-//                ],
-//              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Row(
@@ -261,7 +249,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                             port: int.parse(portController.text),
                             auth: authController.text,
                           );
-                          print('save: $update');
                           piholeBloc
                               .dispatch(UpdatePihole(widget.original, update));
                           setState(() {
@@ -284,6 +271,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                   ],
                 ),
               ),
+              _HealthCheck(),
             ],
           ),
         ),
@@ -297,5 +285,93 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     } else {
       Navigator.of(context).pop('Added ${pihole.title}');
     }
+  }
+}
+
+class _HealthCheck extends StatelessWidget {
+  const _HealthCheck({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder(
+        bloc: BlocProvider.of<VersionsBloc>(context),
+        builder: (context, state) {
+          List<Widget> items = [];
+
+          if (state is BlocStateSuccess<Versions>) {
+            final versions = state.data;
+            items.addAll([
+              _ListTile(
+                title: versions.coreCurrent,
+                subtitle: 'Pi-hole Version',
+                latest: versions?.coreLatest,
+              ),
+              _ListTile(
+                title: versions.webCurrent,
+                subtitle: 'Web Interface Version',
+                latest: versions?.webLatest,
+              ),
+              _ListTile(
+                  title: versions.ftlCurrent,
+                  subtitle: 'FTL Version',
+                  latest: versions?.coreLatest),
+            ]);
+          }
+
+          if (state is BlocStateError<Versions>) {
+            items.add(ListTile(
+              leading: Icon(Icons.error),
+              title: Text(state.e.message),
+            ));
+          }
+
+          if (state is BlocStateLoading<Versions>) {
+            items.add(Center(
+              child: CircularProgressIndicator(),
+            ));
+          }
+
+          return Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  'Health check',
+                ),
+              ),
+              ...items
+            ],
+          );
+        });
+  }
+}
+
+class _ListTile extends StatelessWidget {
+  const _ListTile({
+    Key key,
+    this.title,
+    @required this.subtitle,
+    this.latest = '',
+  })
+      : _subtitle =
+  '$subtitle${(latest != null && latest.length > 0)
+      ? ' (update available: $latest)'
+      : ''}',
+        super(key: key);
+
+  final String title;
+  final String subtitle;
+  final String latest;
+
+  final String _subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(Icons.check),
+      title: Text(title),
+      subtitle: Text(_subtitle),
+    );
   }
 }

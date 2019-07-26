@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/widget/whitelist/whitelist_form.dart';
 
 class WhitelistAddForm extends StatefulWidget {
@@ -20,7 +22,7 @@ class _WhitelistAddFormState extends State<WhitelistAddForm> {
     return BlocListener(
       bloc: whitelistBloc,
       listener: (context, state) {
-        if (state is WhitelistStateSuccess) {
+        if (state is BlocStateSuccess<Whitelist>) {
           Navigator.of(context).pop(_domain);
         }
       },
@@ -28,7 +30,7 @@ class _WhitelistAddFormState extends State<WhitelistAddForm> {
         fbKey: _fbKey,
         onVoidSubmitted: () {
           _fbKey.currentState.save();
-          whitelistBloc.dispatch(AddToWhitelist(_domain));
+          whitelistBloc.dispatch(Add(_domain));
         },
       ),
     );

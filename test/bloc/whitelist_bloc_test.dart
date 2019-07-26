@@ -1,5 +1,6 @@
-import 'package:flutterhole/bloc/whitelist/bloc.dart';
-import 'package:flutterhole/model/whitelist.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -18,52 +19,52 @@ main() {
   });
 
   test('has a correct initialState', () {
-    expect(whitelistBloc.initialState, WhitelistStateEmpty());
+    expect(whitelistBloc.initialState, BlocStateEmpty<Whitelist>());
   });
 
-  group('FetchWhitelist', () {
+  group('Fetch', () {
     test(
-        'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateSuccess] when whitelist repository returns Whitelist',
+        'emits [BlocStateEmpty<Whitelist>, BlocStateLoading<Whitelist>, BlocStateSuccess<Whitelist>] when whitelist repository returns Whitelist',
         () {
       final Whitelist whitelist = Whitelist();
 
-      when(whitelistRepository.getWhitelist())
+      when(whitelistRepository.get())
           .thenAnswer((_) => Future.value(whitelist));
 
       expectLater(
           whitelistBloc.state,
           emitsInOrder([
-            WhitelistStateEmpty(),
-            WhitelistStateLoading(),
-            WhitelistStateSuccess(whitelist),
+            BlocStateEmpty<Whitelist>(),
+            BlocStateLoading<Whitelist>(),
+            BlocStateSuccess<Whitelist>(whitelist),
           ]));
 
-      whitelistBloc.dispatch(FetchWhitelist());
+      whitelistBloc.dispatch(Fetch());
     });
 
     test(
-        'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateError] when whitelist repository throws PiholeException',
+        'emits [BlocStateEmpty<Whitelist>, BlocStateLoading<Whitelist>, BlocStateError<Whitelist>] when whitelist repository throws PiholeException',
         () {
-      when(whitelistRepository.getWhitelist()).thenThrow(PiholeException());
+          when(whitelistRepository.get()).thenThrow(PiholeException());
 
       expectLater(
           whitelistBloc.state,
           emitsInOrder([
-            WhitelistStateEmpty(),
-            WhitelistStateLoading(),
-            WhitelistStateError(e: PiholeException()),
+            BlocStateEmpty<Whitelist>(),
+            BlocStateLoading<Whitelist>(),
+            BlocStateError<Whitelist>(PiholeException()),
           ]));
 
-      whitelistBloc.dispatch(FetchWhitelist());
+          whitelistBloc.dispatch(Fetch());
     });
   });
 
-  group('AddToWhitelist', () {
+  group('Add', () {
     setUp(() {
       whitelistRepository.cache = Whitelist(['new']);
     });
     test(
-        'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateSuccess] when whitelist repository adds succesfully',
+        'emits [BlocStateEmpty<Whitelist>, BlocStateLoading<Whitelist>, BlocStateSuccess<Whitelist>] when whitelist repository adds succesfully',
         () {
           final Whitelist whitelist = Whitelist(['new']);
       when(whitelistRepository.addToWhitelist('new'))
@@ -72,16 +73,16 @@ main() {
       expectLater(
           whitelistBloc.state,
           emitsInOrder([
-            WhitelistStateEmpty(),
-            WhitelistStateLoading(cache: whitelistRepository.cache),
-            WhitelistStateSuccess(whitelist),
+            BlocStateEmpty<Whitelist>(),
+            BlocStateLoading<Whitelist>(),
+            BlocStateSuccess<Whitelist>(whitelist),
           ]));
 
-      whitelistBloc.dispatch(AddToWhitelist('new'));
+          whitelistBloc.dispatch(Add('new'));
     });
 
     test(
-        'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateError] when whitelist repository add fails',
+        'emits [BlocStateEmpty<Whitelist>, BlocStateLoading<Whitelist>, BlocStateError<Whitelist>] when whitelist repository add fails',
         () {
       when(whitelistRepository.addToWhitelist('new'))
           .thenThrow(PiholeException());
@@ -89,18 +90,18 @@ main() {
       expectLater(
           whitelistBloc.state,
           emitsInOrder([
-            WhitelistStateEmpty(),
-            WhitelistStateLoading(cache: whitelistRepository.cache),
-            WhitelistStateError(e: PiholeException()),
+            BlocStateEmpty<Whitelist>(),
+            BlocStateLoading<Whitelist>(),
+            BlocStateError<Whitelist>(PiholeException()),
           ]));
 
-      whitelistBloc.dispatch(AddToWhitelist('new'));
+      whitelistBloc.dispatch(Add('new'));
     });
   });
 
-  group('RemoveFromWhitelist', () {
+  group('Remove', () {
     test(
-        'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateSuccess] when whitelist repository removes succesfully',
+        'emits [BlocStateEmpty<Whitelist>, BlocStateLoading<Whitelist>, BlocStateSuccess<Whitelist>] when whitelist repository removes succesfully',
         () {
       whitelistRepository.cache = Whitelist();
       when(whitelistRepository.removeFromWhitelist('remove'))
@@ -109,16 +110,16 @@ main() {
       expectLater(
           whitelistBloc.state,
           emitsInOrder([
-            WhitelistStateEmpty(),
-            WhitelistStateLoading(cache: whitelistRepository.cache),
-            WhitelistStateSuccess(Whitelist()),
+            BlocStateEmpty<Whitelist>(),
+            BlocStateLoading<Whitelist>(),
+            BlocStateSuccess<Whitelist>(Whitelist()),
           ]));
 
-      whitelistBloc.dispatch(RemoveFromWhitelist('remove'));
+      whitelistBloc.dispatch(Remove('remove'));
     });
 
     test(
-        'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateError] when whitelist repository add fails',
+        'emits [BlocStateEmpty<Whitelist>, BlocStateLoading<Whitelist>, BlocStateError<Whitelist>] when whitelist repository add fails',
         () {
       when(whitelistRepository.removeFromWhitelist('new'))
           .thenThrow(PiholeException());
@@ -126,21 +127,21 @@ main() {
       expectLater(
           whitelistBloc.state,
           emitsInOrder([
-            WhitelistStateEmpty(),
-            WhitelistStateLoading(),
-            WhitelistStateError(e: PiholeException()),
+            BlocStateEmpty<Whitelist>(),
+            BlocStateLoading<Whitelist>(),
+            BlocStateError<Whitelist>(PiholeException()),
           ]));
 
-      whitelistBloc.dispatch(RemoveFromWhitelist('new'));
+      whitelistBloc.dispatch(Remove('new'));
     });
   });
 
-  group('EditOnWhitelist', () {
+  group('Edit', () {
     setUp(() {
       whitelistRepository.cache = Whitelist(['old']);
     });
     test(
-        'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateSuccess] when whitelist repository edits succesfully',
+        'emits [BlocStateEmpty<Whitelist>, BlocStateLoading<Whitelist>, BlocStateSuccess<Whitelist>] when whitelist repository edits succesfully',
             () {
           final Whitelist whitelistNew = Whitelist(['new']);
           when(whitelistRepository.editOnWhitelist('old', 'new'))
@@ -149,16 +150,16 @@ main() {
           expectLater(
               whitelistBloc.state,
               emitsInOrder([
-                WhitelistStateEmpty(),
-                WhitelistStateLoading(cache: whitelistRepository.cache),
-                WhitelistStateSuccess(whitelistNew),
+                BlocStateEmpty<Whitelist>(),
+                BlocStateLoading<Whitelist>(),
+                BlocStateSuccess<Whitelist>(whitelistNew),
               ]));
 
-          whitelistBloc.dispatch(EditOnWhitelist('old', 'new'));
+          whitelistBloc.dispatch(Edit('old', 'new'));
         });
 
     test(
-        'emits [WhitelistStateEmpty, WhitelistStateLoading, WhitelistStateError] when whitelist repository edit fails',
+        'emits [BlocStateEmpty<Whitelist>, BlocStateLoading<Whitelist>, BlocStateError<Whitelist>] when whitelist repository edit fails',
             () {
           when(whitelistRepository.editOnWhitelist('old', 'new'))
               .thenThrow(PiholeException());
@@ -166,12 +167,12 @@ main() {
           expectLater(
               whitelistBloc.state,
               emitsInOrder([
-                WhitelistStateEmpty(),
-                WhitelistStateLoading(cache: whitelistRepository.cache),
-                WhitelistStateError(e: PiholeException()),
+                BlocStateEmpty<Whitelist>(),
+                BlocStateLoading<Whitelist>(),
+                BlocStateError<Whitelist>(PiholeException()),
               ]));
 
-          whitelistBloc.dispatch(EditOnWhitelist('old', 'new'));
+          whitelistBloc.dispatch(Edit('old', 'new'));
         });
   });
 }

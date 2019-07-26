@@ -2,8 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/summary/bloc.dart';
-import 'package:flutterhole/model/summary.dart';
+import 'package:flutterhole/bloc/api/forward_destinations.dart';
+import 'package:flutterhole/bloc/api/queries_over_time.dart';
+import 'package:flutterhole/bloc/api/query_types.dart';
+import 'package:flutterhole/bloc/api/summary.dart';
+import 'package:flutterhole/bloc/base/event.dart';
+import 'package:flutterhole/bloc/base/state.dart';
+import 'package:flutterhole/model/api/summary.dart';
+import 'package:flutterhole/widget/home/chart/forward_destinations_chart_builder.dart';
+import 'package:flutterhole/widget/home/chart/query_types_chart_builder.dart';
+import 'package:flutterhole/widget/home/queries_over_time_card.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 import 'package:provider/provider.dart';
@@ -28,96 +36,110 @@ class _SummaryBuilderState extends State<SummaryBuilder> {
   Widget build(BuildContext context) {
     final _theme = Provider.of<ThemeModel>(context);
     final SummaryBloc summaryBloc = BlocProvider.of<SummaryBloc>(context);
-    return BlocListener(
-      bloc: summaryBloc,
-      listener: (context, state) {
-        if (state is SummaryStateEmpty) {
-          summaryBloc.dispatch(FetchSummary());
-        }
+    final ForwardDestinationsBloc forwardDestinationsBloc =
+    BlocProvider.of<ForwardDestinationsBloc>(context);
+    final QueryTypesBloc queryTypesBloc =
+    BlocProvider.of<QueryTypesBloc>(context);
+    final QueriesOverTimeBloc queriesOverTimeBloc =
+    BlocProvider.of<QueriesOverTimeBloc>(context);
 
-        if (state is SummaryStateSuccess || state is SummaryStateError) {
-          _refreshCompleter?.complete();
-          _refreshCompleter = Completer();
-
-          if (state is SummaryStateSuccess) {
-            setState(() {
-              _cache = state.summary;
-            });
+    return Container(
+      color: Theme
+          .of(context)
+          .dividerColor,
+      child: BlocListener(
+        bloc: summaryBloc,
+        listener: (context, state) {
+          if (state is BlocStateEmpty) {
+            summaryBloc.dispatch(Fetch());
+            forwardDestinationsBloc.dispatch(Fetch());
+            queryTypesBloc.dispatch(Fetch());
+            queriesOverTimeBloc.dispatch(Fetch());
           }
-        }
-      },
-      child: Stack(
-        children: [
-          BlocBuilder(
-              bloc: summaryBloc,
-              builder: (BuildContext context, SummaryState state) {
-                if (state is SummaryStateSuccess ||
-                    state is SummaryStateLoading && _cache != null) {
-                  if (state is SummaryStateSuccess) {
-                    _cache = state.summary;
-                  }
 
-                  final int tint = _theme.darkMode ? 700 : 500;
+          if (state is BlocStateSuccess || state is BlocStateError) {
+            _refreshCompleter?.complete();
+            _refreshCompleter = Completer();
 
-                  final List<Widget> summaryTiles = [
-                    SummaryTile(
-                      backgroundColor: Colors.green[tint],
-                      title: 'Total Queries (${_cache.uniqueClients} clients)',
-                      subtitle: numWithCommas(_cache.dnsQueriesToday),
-                    ),
-                    SummaryTile(
-                      backgroundColor: Colors.blue[tint],
-                      title: 'Queries Blocked',
-                      subtitle: numWithCommas(_cache.adsBlockedToday),
-                    ),
-                    SummaryTile(
-                      backgroundColor: Colors.orange[tint],
-                      title: 'Percent Blocked',
-                      subtitle:
-                      '${_cache.adsPercentageToday.toStringAsFixed(1)}%',
-                    ),
-                    SummaryTile(
-                      backgroundColor: Colors.red[tint],
-                      title: 'Domains on Blocklist',
-                      subtitle: numWithCommas(_cache.domainsBeingBlocked),
-                    ),
-                  ];
-
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: summaryTiles
-                        .map((tile) => Expanded(child: tile))
-                        .toList(),
-                  );
-                }
-
-                if (state is SummaryStateError) {
-                  return ErrorMessage(errorMessage: state.e.message);
-                }
-
-                return Center(child: CircularProgressIndicator());
-              }),
-          RefreshIndicator(
+            if (state is BlocStateSuccess) {
+              setState(() {
+                _cache = state.data;
+              });
+            }
+          }
+        },
+        child: RefreshIndicator(
             onRefresh: () {
-              summaryBloc.dispatch(FetchSummary());
+              summaryBloc.dispatch(Fetch());
               return _refreshCompleter.future;
             },
-            child: ListView(
-              children: [],
-            ),
-          ),
-        ],
+            child: Scrollbar(
+              child: SingleChildScrollView(
+                child: BlocBuilder(
+                    bloc: summaryBloc,
+                    builder: (BuildContext context, BlocState state) {
+                      if (state is BlocStateSuccess ||
+                          state is BlocStateLoading && _cache != null) {
+                        if (state is BlocStateSuccess) {
+                          _cache = state.data;
+                        }
+
+                        final int tint = _theme.darkMode ? 700 : 500;
+
+                        final List<Widget> summaryTiles = [
+                          SumTile(
+                            backgroundColor: Colors.green[tint],
+                            title:
+                            'Total Queries (${_cache.uniqueClients} clients)',
+                            subtitle: numWithCommas(_cache.dnsQueriesToday),
+                          ),
+                          SumTile(
+                            backgroundColor: Colors.lightBlue[tint],
+                            title: 'Queries Blocked',
+                            subtitle: numWithCommas(_cache.adsBlockedToday),
+                          ),
+                          SumTile(
+                            backgroundColor: Colors.orange[tint],
+                            title: 'Percent Blocked',
+                            subtitle:
+                            '${_cache.adsPercentageToday.toStringAsFixed(1)}%',
+                          ),
+                          SumTile(
+                            backgroundColor: Colors.red[tint],
+                            title: 'Domains on Blocklist',
+                            subtitle: numWithCommas(_cache.domainsBeingBlocked),
+                          ),
+                        ];
+
+                        return Column(
+                          children: [
+                            ...summaryTiles,
+                            QueriesOverTimeCard(),
+                            QueryTypesChartBuilder(),
+                            ForwardDestinationsChartBuilder(),
+                          ],
+                        );
+                      }
+
+                      if (state is BlocStateError) {
+                        return ErrorMessage(errorMessage: state.e.message);
+                      }
+
+                      return Center(child: CircularProgressIndicator());
+                    }),
+              ),
+            )),
       ),
     );
   }
 }
 
-class SummaryTile extends StatelessWidget {
+class SumTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final Color backgroundColor;
 
-  const SummaryTile({
+  const SumTile({
     Key key,
     @required this.title,
     this.subtitle = '',

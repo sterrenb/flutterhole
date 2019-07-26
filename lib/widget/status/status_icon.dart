@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/status/bloc.dart';
+import 'package:flutterhole/bloc/api/status.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/model/api/status.dart';
 import 'package:flutterhole/widget/status/circular_percentage_indicator.dart';
 
 class StatusIcon extends StatefulWidget {
@@ -14,16 +16,16 @@ class _StatusIconState extends State<StatusIcon> {
     final StatusBloc statusBloc = BlocProvider.of<StatusBloc>(context);
     return BlocBuilder(
       bloc: statusBloc,
-      builder: (context, state) {
+      builder: (BuildContext context, BlocState state) {
         Color color = Colors.grey;
 
-        if (state is StatusStateSuccess) {
+        if (state is BlocStateSuccess<Status>) {
           color = Colors.green;
-          if (state.status.disabled) {
+          if (state.data.disabled) {
             color = Colors.orange;
           }
         }
-        if (state is StatusStateError) {
+        if (state is BlocStateError<Status>) {
           color = Colors.red;
         }
         if (state is StatusStateSleeping) {

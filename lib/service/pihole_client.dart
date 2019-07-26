@@ -1,14 +1,17 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutterhole/model/blacklist.dart';
-import 'package:flutterhole/model/query.dart';
-import 'package:flutterhole/model/status.dart';
-import 'package:flutterhole/model/summary.dart';
-import 'package:flutterhole/model/top_items.dart';
-import 'package:flutterhole/model/top_sources.dart';
-import 'package:flutterhole/model/versions.dart';
-import 'package:flutterhole/model/whitelist.dart';
+import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/forward_destinations.dart';
+import 'package:flutterhole/model/api/queries_over_time.dart';
+import 'package:flutterhole/model/api/query.dart';
+import 'package:flutterhole/model/api/status.dart';
+import 'package:flutterhole/model/api/summary.dart';
+import 'package:flutterhole/model/api/top_items.dart';
+import 'package:flutterhole/model/api/top_sources.dart';
+import 'package:flutterhole/model/api/versions.dart';
+import 'package:flutterhole/model/api/whitelist.dart';
+import 'package:flutterhole/model/pihole.dart';
 import 'package:meta/meta.dart';
 
 import 'globals.dart';
@@ -45,7 +48,10 @@ class PiholeClient {
         _log(message, tag: 'request');
         return options;
       }, onResponse: (Response response) {
-        _log(response.data.toString(), tag: 'response');
+        _log(response.data
+            .toString()
+            .length
+            .toString(), tag: 'response');
         return response;
       }, onError: (DioError error) {
         _log(error.message, tag: 'error');
@@ -67,12 +73,12 @@ class PiholeClient {
   /// _get({'list': 'white', 'add': true});
   /// ```
   Future<Response> _get(Map<String, dynamic> queryParameters,
-      {ResponseType responseType = ResponseType.json}) async {
+      {ResponseType responseType = ResponseType.json, Pihole pihole}) async {
     try {
-      final active = localStorage.active();
-      dio.options.baseUrl = 'http://${active.host}:${active.port.toString()}';
+      pihole = pihole ?? localStorage.active();
+      dio.options.baseUrl = 'http://${pihole.host}:${pihole.port.toString()}';
 
-      if (active.allowSelfSigned) {
+      if (pihole.allowSelfSigned) {
         (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
             (HttpClient client) {
           client.badCertificateCallback =
@@ -81,7 +87,7 @@ class PiholeClient {
         };
       }
 
-      final Response response = await dio.get('/${active.apiPath}',
+      final Response response = await dio.get('/${pihole.apiPath}',
           queryParameters: queryParameters,
           options: Options(responseType: responseType),
           cancelToken: token);
@@ -113,17 +119,16 @@ class PiholeClient {
 
   /// Performs [_get] with the API token set in [queryParameters].
   Future<Response> _getSecure(Map<String, dynamic> queryParameters,
-      {ResponseType responseType = ResponseType.json}) async {
-    final active = localStorage.active();
-    print('using auth for ${active.toString()}');
-    print('auth: ${active.auth}');
-    if (active.auth.isEmpty) {
+      {ResponseType responseType = ResponseType.json, Pihole pihole}) async {
+    pihole = pihole ?? localStorage.active();
+    if (pihole.auth.isEmpty) {
       throw PiholeException(message: 'API token is empty');
     }
 
     final response = await _get(
-        queryParameters..addAll({_authParameterKey: active.auth}),
-        responseType: responseType);
+        queryParameters..addAll({_authParameterKey: pihole.auth}),
+        responseType: responseType,
+        pihole: pihole);
     return response;
   }
 
@@ -176,9 +181,7 @@ class PiholeClient {
 
   /// Fetches home information from the Pi-hole.
   Future<Summary> fetchSummary() async {
-    print('fetchSummary');
     Response response = await _get({'summaryRaw': ''});
-    print('fetchSummary response');
     if (response.data is String) {
       return Summary.fromString(response.data);
     } else {
@@ -308,7 +311,7 @@ class PiholeClient {
   }
 
   /// Returns a list of recent [Query]s, at most [max].
-  Future<List<Query>> fetchQueries({int max = 100}) async {
+  Future<List<Query>> fetchQueries({int max = 1000}) async {
     Response response =
     await _getSecure({'getAllQueries': max > 0 ? max.toString() : 1});
     if (response.data is Map<String, dynamic>) {
@@ -346,6 +349,25 @@ class PiholeClient {
     throw PiholeException(message: 'unexpected query response', e: response);
   }
 
+  Future<List<Query>> fetchQueriesForQueryType(QueryType type) async {
+    Response response = await _getSecure(
+        {'getAllQueries': '', 'querytype': QueryType.values.indexOf(type) + 1});
+    if (response.data is Map<String, dynamic>) {
+      try {
+        List<Query> queries = [];
+        (response.data['data'] as List<dynamic>).forEach((entry) {
+          queries.add(Query.fromJson(entry));
+        });
+
+        return queries;
+      } catch (e) {
+        throw PiholeException(message: 'unknown error', e: e);
+      }
+    }
+
+    throw PiholeException(message: 'unexpected query response', e: response);
+  }
+
   Future<TopSources> fetchTopSources() async {
     Response response = await _getSecure({'getQuerySources': ''});
     if (response.data is String) {
@@ -364,12 +386,39 @@ class PiholeClient {
     }
   }
 
-  Future<Versions> fetchVersions() async {
-    Response response = await _getSecure({'versions': ''});
+  Future<Versions> fetchVersions([Pihole pihole]) async {
+    Response response = await _get({'versions': ''}, pihole: pihole);
     if (response.data is String) {
       return Versions.fromString(response.data);
     } else {
       return Versions.fromJson(response.data);
+    }
+  }
+
+  Future<QueryTypes> fetchQueryTypes() async {
+    Response response = await _getSecure({'getQueryTypes': ''});
+    if (response.data is String) {
+      return QueryTypes.fromString(response.data);
+    } else {
+      return QueryTypes.fromJson(response.data);
+    }
+  }
+
+  Future<ForwardDestinations> fetchForwardDestinations() async {
+    Response response = await _getSecure({'getForwardDestinations': ''});
+    if (response.data is String) {
+      return ForwardDestinations.fromString(response.data);
+    } else {
+      return ForwardDestinations.fromJson(response.data);
+    }
+  }
+
+  Future<QueriesOverTime> fetchQueriesOverTime() async {
+    Response response = await _get({'overTimeData10mins': ''});
+    if (response.data is String) {
+      return QueriesOverTime.fromString(response.data);
+    } else {
+      return QueriesOverTime.fromJson(response.data);
     }
   }
 }

@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-import 'package:flutterhole/bloc/status/bloc.dart';
-import 'package:flutterhole/model/status.dart';
+import 'package:flutterhole/bloc/api/status.dart';
+import 'package:flutterhole/bloc/base/bloc.dart';
+import 'package:flutterhole/model/api/status.dart';
 
 /// A list of [SleepButton], [SleepButtonPermanent], and [SleepButtonCustom].
 class SleepButtons extends StatefulWidget {
@@ -56,7 +57,7 @@ class SleepButtonsState extends State<SleepButtons> {
       listener: (context, state) {},
       child: BlocBuilder(
         bloc: statusBloc,
-        builder: (BuildContext context, StatusState state) {
+        builder: (BuildContext context, BlocState state) {
           if (state is StatusStateSleeping) {
             return ListTile(
                 title: Text(
@@ -69,9 +70,10 @@ class SleepButtonsState extends State<SleepButtons> {
                   statusBloc.dispatch(EnableStatus());
                 });
           }
-          if (state is StatusStateSuccess || state is StatusStateLoading) {
-            if (state is StatusStateSuccess) {
-              _cache = state.status;
+          if (state is BlocStateSuccess<Status> ||
+              state is BlocStateLoading<Status>) {
+            if (state is BlocStateSuccess<Status>) {
+              _cache = state.data;
             }
 
             if (_cache != null && _cache.enabled) {
