@@ -55,7 +55,6 @@ final TopSources mockTopSources = TopSources({
   '10.0.1.2': 42,
   'windows|10.0.1.3': 33,
   'osx|10.0.1.4': 24,
-  'zenwatch3|10.0.1.5': 11,
 });
 
 final Versions mockVersions = Versions(

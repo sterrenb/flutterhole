@@ -35,8 +35,6 @@ class TopSources extends Serializable {
   factory TopSources.fromString(String str) =>
       TopSources.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
-
   factory TopSources.fromJson(Map<String, dynamic> json) => TopSources(
         Map.from(json["top_sources"])
             .map((k, v) => MapEntry<String, int>(k, v)),

@@ -5,8 +5,8 @@ import 'dart:convert';
 import 'package:equatable/equatable.dart';
 import 'package:flutterhole/model/serializable.dart';
 
-DateTime epochToDateTime(List json) =>
-    DateTime.fromMillisecondsSinceEpoch(int.parse(json[0] + '000'));
+DateTime epochToDateTime(String source) =>
+    DateTime.fromMillisecondsSinceEpoch(int.parse(source + '000'));
 
 enum QueryType {
   A,
@@ -76,7 +76,7 @@ class Query extends Equatable {
 
   factory Query.fromJson(List<dynamic> json) =>
       Query(
-        time: epochToDateTime(json),
+        time: epochToDateTime(json[0]),
         queryType: stringToQueryType(json[1]),
         entry: json[2],
         client: json[3],
