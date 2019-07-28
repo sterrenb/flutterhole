@@ -103,7 +103,7 @@ final ForwardDestinations mockForwardDestinations = ForwardDestinations({
 
 final List<Query> mockQueries = [
   Query(
-      time: DateTime(0),
+      time: DateTime.fromMillisecondsSinceEpoch(1563995000000),
       queryType: QueryType.A,
       entry: 'test.com',
       client: 'localhost',
@@ -115,7 +115,7 @@ final List<Query> mockQueries = [
       entry: 'example.org',
       client: 'remotehost',
       queryStatus: QueryStatus.Unknown,
-      dnsSecStatus: DnsSecStatus.Bogus),
+      dnsSecStatus: DnsSecStatus.Abandoned),
 ];
 
 final mockQueriesOverTime = QueriesOverTime(adsOverTime: {

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -308,11 +309,12 @@ class PiholeClient {
 
   /// Returns a list of recent [Query]s, at most [max].
   Future<List<Query>> fetchQueries({int max = 1000}) async {
+    List<Query> queries = [];
+
     Response response =
     await _getSecure({'getAllQueries': max > 0 ? max.toString() : 1});
     if (response.data is Map<String, dynamic>) {
       try {
-        List<Query> queries = [];
         (response.data['data'] as List<dynamic>).forEach((entry) {
           queries.add(Query.fromJson(entry));
         });
@@ -321,9 +323,14 @@ class PiholeClient {
       } catch (e) {
         throw PiholeException(message: 'unknown error', e: e);
       }
-    }
+    } else {
+      final data = json.decode(response.data);
+      (data as List<dynamic>).forEach((entry) {
+        queries.add(Query.fromJson(entry));
+      });
 
-    throw PiholeException(message: 'unexpected query response', e: response);
+      return queries;
+    }
   }
 
   Future<List<Query>> fetchQueriesForClient(String client) async {

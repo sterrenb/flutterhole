@@ -13,7 +13,7 @@ import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import "package:test/test.dart";
 
-import 'mock.dart';
+import '../mock.dart';
 
 class MockLocalStorage extends Mock implements LocalStorage {}
 
@@ -384,6 +384,21 @@ void main() {
       test('returns Versions on successful fetch', () async {
         dio.httpClientAdapter = MockAdapter.json(mockVersions.toJson());
         expect(client.fetchVersions(), completion(mockVersions));
+      });
+    });
+
+    group('fetchQueries', () {
+      test('returns Queries on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(
+            mockQueries.map((query) => query.toJson()).toList());
+        expect(client.fetchQueries(), completion(mockQueries));
+      });
+    });
+
+    group('fetchQueryTypes', () {
+      test('returns QueryTypes on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(mockQueryTypes.toJson());
+        expect(client.fetchQueryTypes(), completion(mockQueryTypes));
       });
     });
 
