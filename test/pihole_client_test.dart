@@ -24,39 +24,34 @@ class MockAdapter extends HttpClientAdapter {
 
   MockAdapter([this.handlers = const []]);
 
-  factory MockAdapter.string(String str) =>
-      MockAdapter([
-            (_) {
+  factory MockAdapter.string(String str) => MockAdapter([
+        (_) {
           return ResponseBody.fromString(str, 200);
         }
       ]);
 
-  factory MockAdapter.emptyString() =>
-      MockAdapter([
-            (_) {
+  factory MockAdapter.emptyString() => MockAdapter([
+        (_) {
           return ResponseBody.fromString('', 200);
         }
       ]);
 
   factory MockAdapter.notAuthorized() => MockAdapter.string('Not authorized!');
 
-  factory MockAdapter.json(dynamic data) =>
-      MockAdapter([
-            (_) {
+  factory MockAdapter.json(dynamic data) => MockAdapter([
+        (_) {
           return ResponseBody.fromString(json.encode(data), 200);
         }
       ]);
 
-  factory MockAdapter.throwsError({dynamic e}) =>
-      MockAdapter([
-            (_) {
+  factory MockAdapter.throwsError({dynamic e}) => MockAdapter([
+        (_) {
           throw e ?? DioError();
         }
       ]);
 
-  factory MockAdapter.emptyList() =>
-      MockAdapter([
-            (_) {
+  factory MockAdapter.emptyList() => MockAdapter([
+        (_) {
           return ResponseBody.fromString('[]', 200);
         }
       ]);
@@ -103,6 +98,13 @@ void main() {
 
   test('constructor', () {
     expect(client.dio.interceptors.isNotEmpty, isTrue);
+  });
+
+  group('fetchSummary', () {
+    test('returns on successful summary fetch', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockSummary.toJson());
+      expect(client.fetchSummary(), completion(mockSummary));
+    });
   });
 
   group('fetchStatus', () {
@@ -343,15 +345,15 @@ void main() {
 
     group('removeFromWhitelist', () {
       test('throws PiholeException on unauthorized removeFromWhitelist',
-              () async {
-            dio.httpClientAdapter = MockAdapter.notAuthorized();
-            try {
-              await client.removeFromWhitelist('new.com');
-              fail('exception not thrown');
-            } on PiholeException catch (e) {
-              expect(e.message, 'not authorized');
-            }
-          });
+          () async {
+        dio.httpClientAdapter = MockAdapter.notAuthorized();
+        try {
+          await client.removeFromWhitelist('new.com');
+          fail('exception not thrown');
+        } on PiholeException catch (e) {
+          expect(e.message, 'not authorized');
+        }
+      });
     });
 
     group('editOnWhitelist', () {

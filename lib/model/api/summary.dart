@@ -62,8 +62,7 @@ class Summary extends Serializable {
 
   factory Summary.fromString(String str) => Summary.fromJson(json.decode(str));
 
-  factory Summary.fromJson(Map<String, dynamic> json) =>
-      Summary(
+  factory Summary.fromJson(Map<String, dynamic> json) => Summary(
         domainsBeingBlocked: json["domains_being_blocked"],
         dnsQueriesToday: json["dns_queries_today"],
         adsBlockedToday: json["ads_blocked_today"],
@@ -81,12 +80,11 @@ class Summary extends Serializable {
         privacyLevel: json["privacy_level"],
         status: json["status"],
         gravityLastUpdated:
-        GravityLastUpdated.fromJson(json["gravity_last_updated"]),
+            GravityLastUpdated.fromJson(json["gravity_last_updated"]),
       );
 
   @override
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         "domains_being_blocked": domainsBeingBlocked,
         "dns_queries_today": dnsQueriesToday,
         "ads_blocked_today": adsBlockedToday,
@@ -129,8 +127,7 @@ class GravityLastUpdated extends Serializable {
         relative: Relative.fromJson(json["relative"]),
       );
 
-  Map<String, dynamic> _toMap() =>
-      {
+  Map<String, dynamic> _toMap() => {
         "file_exists": fileExists,
         "absolute": absolute,
         "relative": relative._toMap(),
@@ -155,15 +152,13 @@ class Relative extends Serializable {
           minutes,
         ]);
 
-  factory Relative.fromJson(Map<String, dynamic> json) =>
-      new Relative(
+  factory Relative.fromJson(Map<String, dynamic> json) => new Relative(
         days: json["days"],
         hours: json["hours"],
         minutes: json["minutes"],
       );
 
-  Map<String, dynamic> _toMap() =>
-      {
+  Map<String, dynamic> _toMap() => {
         "days": days,
         "hours": hours,
         "minutes": minutes,
