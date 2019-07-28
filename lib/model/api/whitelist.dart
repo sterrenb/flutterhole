@@ -4,7 +4,6 @@ import 'package:flutterhole/model/serializable.dart';
 
 /// The API model for http://pi.hole/admin/api.php?list=white.
 class Whitelist extends Serializable {
-  /// The list of whitelisted domains.
   final List<String> list;
 
   Whitelist([this.list = const []]) : super([list]);

@@ -48,8 +48,6 @@ class Versions extends Serializable {
   factory Versions.fromString(String str) =>
       Versions.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
-
   factory Versions.fromJson(Map<String, dynamic> json) => new Versions(
         coreUpdate: json["core_update"],
         webUpdate: json["web_update"],
