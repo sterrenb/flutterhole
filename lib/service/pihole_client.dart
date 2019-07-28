@@ -281,7 +281,7 @@ class PiholeClient {
       }
     }
 
-    Response response = await _getSecure({'list': item.list, 'add': entry},
+    Response response = await _getSecure({'list': item.addList, 'add': entry},
         responseType: ResponseType.plain);
     final dataString = response.data.toString();
     if (dataString.contains('no need to add')) {
@@ -296,7 +296,7 @@ class PiholeClient {
 
   // Removes a domain or wildcard from the blacklist.
   Future<void> removeFromBlacklist(BlacklistItem item) async {
-    await _getSecure({'list': item.list, 'sub': item.entry},
+    await _getSecure({'list': item.addList, 'sub': item.entry},
         responseType: ResponseType.plain);
   }
 

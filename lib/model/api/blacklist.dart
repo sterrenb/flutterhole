@@ -25,19 +25,16 @@ class BlacklistItem extends Serializable {
   final String entry;
   final BlacklistType type;
 
-  String get list => type == BlacklistType.Exact ? 'black' : 'regex';
+  /// The string representation of which list to add to in the Pihole API.
+  String get addList => type == BlacklistType.Exact ? 'black' : 'regex';
 
+  /// The internal key used for discriminating items.
   String get listKey {
-    switch (this.type) {
-      case BlacklistType.Exact:
-        return _exact;
-      case BlacklistType.Wildcard:
-        return _wildcard;
-      case BlacklistType.Regex:
-        return _regex;
-      default:
-        throw Exception('unknown BlacklistType ${this.type}');
-    }
+    if (type == BlacklistType.Exact) return _exact;
+    if (type == BlacklistType.Wildcard) return _wildcard;
+    if (type == BlacklistType.Regex) return _regex;
+
+    throw Exception('unknown BlacklistType $type');
   }
 
   BlacklistItem({@required this.entry, @required this.type})
@@ -82,17 +79,11 @@ class Blacklist extends Serializable {
             : original.wildcard;
 
   Blacklist.withoutItem(Blacklist original, BlacklistItem item)
-      : this.exact = item.type == BlacklistType.Exact
-      ? List.from([
-    ...original.exact,
-    ...[item]
-  ])
+      : this.exact = (item.type == BlacklistType.Exact)
+      ? List.from([...original.exact]..remove(item))
       : original.exact,
-        this.wildcard = item.type != BlacklistType.Exact
-            ? List.from([
-          ...original.wildcard,
-          ...[item]
-        ])
+        this.wildcard = (item.type != BlacklistType.Exact)
+            ? List.from([...original.wildcard]..remove(item))
             : original.wildcard;
 
   factory Blacklist.fromString(String str) =>
@@ -147,8 +138,4 @@ class Blacklist extends Serializable {
         'exact': exact,
         'wildcard': wildcard,
       };
-//  String toJson() => json.encode(List<dynamic>.from([
-//        exact.map((item) => item.toJson()).toList(),
-//        wildcard.map((item) => item.toJson()).toList()
-//      ]));
 }

@@ -24,8 +24,8 @@ final mockBlacklist = Blacklist(exact: [
   BlacklistItem.exact(entry: 'exact.com'),
   BlacklistItem.exact(entry: 'pi-hole.net'),
 ], wildcard: [
-  BlacklistItem.wildcard(entry: 'wildcard.com'),
-  BlacklistItem.regex(entry: 'regex')
+  BlacklistItem.wildcard(entry: '${wildcardPrefix}wildcard.com$wildcardSuffix'),
+  BlacklistItem.regex(entry: 'regex'),
 ]);
 
 final mockSummary = Summary(
