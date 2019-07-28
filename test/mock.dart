@@ -83,29 +83,15 @@ final QueryTypes mockQueryTypes = QueryTypes({
 });
 
 final TopItems mockTopItems = TopItems(
-  {
-    "clients1.google.com": 1005,
-    "0.debian.pool.ntp.org": 728,
-    "1.debian.pool.ntp.org": 728,
-    "2.debian.pool.ntp.org": 728,
-    "3.debian.pool.ntp.org": 728,
-    "www.google.com": 222,
-    "semanticlocation-pa.googleapis.com": 186,
-    "connectivitycheck.gstatic.com": 179,
-    "play.googleapis.com": 155,
-    "time.apple.com": 101
+  topQueries: {
+    "a.com": 1,
+    "b.org": 2,
+    "c.net": 3,
   },
-  {
-    "indigo.tvaddons.co.uilenstede4.duwo.lan": 98,
-    "lw10-10815.local.nl.bol.com": 32,
-    "wpad.local.nl.bol.com": 27,
-    "wpad.uilenstede4.duwo.lan": 24,
-    "ads.google.com": 18,
-    "_ldap._tcp.papendorp._sites.dc._msdcs.local.nl.bol.com": 13,
-    "_ldap._tcp.default-first-site-name._sites.dc._msdcs.local.nl.bol.com": 13,
-    "mobile.pipe.aria.millisoft.com": 11,
-    "wpad.duwo.lan": 8,
-    "update.openelec.tv.uilenstede4.duwo.lan": 8
+  topAds: {
+    "ad1.com": 1,
+    "ad2.org": 2,
+    "ad3.net": 3,
   },
 );
 

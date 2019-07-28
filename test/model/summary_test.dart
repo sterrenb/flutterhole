@@ -7,7 +7,7 @@ void main() {
   Summary summary;
   setUp(() {});
 
-  test('constructor initially empty', () {
+  test('constructor', () {
     summary = Summary();
 
     expect(summary.domainsBeingBlocked, isNull);
