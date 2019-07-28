@@ -25,7 +25,7 @@ main() {
 
   group('Fetch', () {
     test(
-        'emits [GenericStateEmpty<Summary>, GenericStateLoading<Summary>, GenericStateSuccess<Summary>] when repository returns Summary',
+        'emits [BlocStateEmpty<Summary>, BlocStateLoading<Summary>, BlocStateSuccess<Summary>] when repository returns Summary',
             () {
           when(summaryRepository.get())
               .thenAnswer((_) => Future.value(mockSummary));
@@ -42,7 +42,7 @@ main() {
         });
 
     test(
-        'emits [GenericStateEmpty<Summary>, GenericStateLoading<Summary>, GenericStateError<Summary>] when home repository throws PiholeException',
+        'emits [BlocStateEmpty<Summary>, BlocStateLoading<Summary>, BlocStateError<Summary>] when home repository throws PiholeException',
             () {
           when(summaryRepository.get()).thenThrow(PiholeException());
 

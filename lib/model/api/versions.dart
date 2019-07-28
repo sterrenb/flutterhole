@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutterhole/model/serializable.dart';
-import 'package:meta/meta.dart';
 
 class Versions extends Serializable {
   final bool coreUpdate;
@@ -18,18 +17,18 @@ class Versions extends Serializable {
   final String ftlBranch;
 
   Versions({
-    @required this.coreUpdate,
-    @required this.webUpdate,
-    @required this.ftlUpdate,
-    @required this.coreCurrent,
-    @required this.webCurrent,
-    @required this.ftlCurrent,
-    @required this.coreLatest,
-    @required this.webLatest,
-    @required this.ftlLatest,
-    @required this.coreBranch,
-    @required this.webBranch,
-    @required this.ftlBranch,
+    this.coreUpdate,
+    this.webUpdate,
+    this.ftlUpdate,
+    this.coreCurrent,
+    this.webCurrent,
+    this.ftlCurrent,
+    this.coreLatest,
+    this.webLatest,
+    this.ftlLatest,
+    this.coreBranch,
+    this.webBranch,
+    this.ftlBranch,
   }) : super([
           coreUpdate,
           webUpdate,

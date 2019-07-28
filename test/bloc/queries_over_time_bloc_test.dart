@@ -26,7 +26,7 @@ main() {
 
   group('Fetch', () {
     test(
-        'emits [GenericStateEmpty<QueriesOverTime>, GenericStateLoading<QueriesOverTime>, GenericStateSuccess<QueriesOverTime>] when repository returns QueriesOverTime',
+        'emits [BlocStateEmpty<QueriesOverTime>, BlocStateLoading<QueriesOverTime>, BlocStateSuccess<QueriesOverTime>] when repository returns QueriesOverTime',
         () {
       when(queriesOverTimeRepository.get())
           .thenAnswer((_) => Future.value(mockQueriesOverTime));
@@ -43,7 +43,7 @@ main() {
     });
 
     test(
-        'emits [GenericStateEmpty<QueriesOverTime>, GenericStateLoading<QueriesOverTime>, GenericStateError<QueriesOverTime>] when home repository throws PiholeException',
+        'emits [BlocStateEmpty<QueriesOverTime>, BlocStateLoading<QueriesOverTime>, BlocStateError<QueriesOverTime>] when home repository throws PiholeException',
         () {
       when(queriesOverTimeRepository.get()).thenThrow(PiholeException());
 

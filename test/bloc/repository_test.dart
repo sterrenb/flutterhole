@@ -8,6 +8,7 @@ import 'package:flutterhole/bloc/api/status.dart';
 import 'package:flutterhole/bloc/api/summary.dart';
 import 'package:flutterhole/bloc/api/top_items.dart';
 import 'package:flutterhole/bloc/api/top_sources.dart';
+import 'package:flutterhole/bloc/api/versions.dart';
 import 'package:flutterhole/bloc/api/whitelist.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/model/api/whitelist.dart';
@@ -35,6 +36,20 @@ main() {
     test('get', () {
       when(client.fetchSummary()).thenAnswer((_) => Future.value(mockSummary));
       expect(summaryRepository.get(), completion(mockSummary));
+    });
+  });
+
+  group('VersionsRepository', () {
+    VersionsRepository versionsRepository;
+
+    setUp(() {
+      versionsRepository = VersionsRepository(client);
+    });
+
+    test('get', () {
+      when(client.fetchVersions())
+          .thenAnswer((_) => Future.value(mockVersions));
+      expect(versionsRepository.get(), completion(mockVersions));
     });
   });
 
@@ -88,10 +103,6 @@ main() {
       queryRepository = QueryRepository(client);
     });
 
-//    test('initial cache is empty', () {
-//      expect(queryRepository.cache, []);
-//    });
-
     test('getQueries', () {
       when(client.fetchQueries()).thenAnswer((_) => Future.value(mockQueries));
 
@@ -113,8 +124,8 @@ main() {
     });
 
     test('getTopSources', () {
-      when(client.fetchTopSources()).thenAnswer((_) =>
-          Future.value(mockTopSources));
+      when(client.fetchTopSources())
+          .thenAnswer((_) => Future.value(mockTopSources));
       expect(topSourcesRepository.get(), completion(mockTopSources));
     });
   });
@@ -127,8 +138,14 @@ main() {
           BlacklistRepository(client, initialValue: mockBlacklist);
     });
 
-    test('initial cache is mocked', () {
-      expect(blacklistRepository.cache, mockBlacklist);
+    group('constructor', () {
+      test('initially default', () {
+        blacklistRepository = BlacklistRepository(client);
+        expect(blacklistRepository.cache, Blacklist());
+      });
+      test('initial test cache is mocked', () {
+        expect(blacklistRepository.cache, mockBlacklist);
+      });
     });
 
     test('getBlacklist', () {
@@ -160,8 +177,7 @@ main() {
       });
 
       assert(original != null);
-      expect(
-          blacklistRepository.remove(original), completion(list));
+      expect(blacklistRepository.remove(original), completion(list));
     });
 
     test('editOnBlacklist', () {
@@ -176,7 +192,7 @@ main() {
       });
 
       assert(original != null);
-      expect(blacklistRepository.remove(update), completion(list));
+      expect(blacklistRepository.edit(original, update), completion(list));
     });
   });
 

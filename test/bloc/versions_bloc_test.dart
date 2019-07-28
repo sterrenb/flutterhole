@@ -77,5 +77,21 @@ main() {
 
           versionsBloc.dispatch(FetchForPihole(pihole));
         });
+
+    test(
+        'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateError<Versions>] when home repository throws PiholeException',
+            () {
+          when(versionsRepository.get()).thenThrow(PiholeException());
+
+          expectLater(
+              versionsBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<Versions>(),
+                BlocStateLoading<Versions>(),
+                BlocStateError<Versions>(PiholeException()),
+              ]));
+
+          versionsBloc.dispatch(Fetch());
+        });
   });
 }

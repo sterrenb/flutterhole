@@ -25,7 +25,7 @@ main() {
 
   group('FetchGeneric', () {
     test(
-        'emits [GenericStateEmpty, GenericStateLoading, GenericStateSuccess] when repository returns value',
+        'emits [BlocStateEmpty, BlocStateLoading, BlocStateSuccess] when repository returns value',
         () {
       when(intRepository.get()).thenAnswer((_) => Future.value(5));
 
@@ -41,7 +41,7 @@ main() {
     });
 
     test(
-        'emits [GenericStateEmpty, GenericStateLoading, GenericStateError] when home repository throws PiholeException',
+        'emits [BlocStateEmpty, BlocStateLoading, BlocStateError] when home repository throws PiholeException',
         () {
       when(intRepository.get()).thenThrow(PiholeException());
 
