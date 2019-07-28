@@ -36,6 +36,28 @@ void main() {
         mockSummary);
   });
 
+  test('toJson', () {
+    expect(mockSummary.toJson(), {
+      "domains_being_blocked": mockSummary.domainsBeingBlocked,
+      "dns_queries_today": mockSummary.dnsQueriesToday,
+      "ads_blocked_today": mockSummary.adsBlockedToday,
+      "ads_percentage_today": mockSummary.adsPercentageToday,
+      "unique_domains": mockSummary.uniqueDomains,
+      "queries_forwarded": mockSummary.queriesForwarded,
+      "queries_cached": mockSummary.queriesCached,
+      "clients_ever_seen": mockSummary.clientsEverSeen,
+      "unique_clients": mockSummary.uniqueClients,
+      "dns_queries_all_types": mockSummary.dnsQueriesAllTypes,
+      "reply_NODATA": mockSummary.replyNodata,
+      "reply_NXDOMAIN": mockSummary.replyNxdomain,
+      "reply_CNAME": mockSummary.replyCname,
+      "reply_IP": mockSummary.replyIp,
+      "privacy_level": mockSummary.privacyLevel,
+      "status": mockSummary.status,
+      "gravity_last_updated": mockSummary.gravityLastUpdated.toJson()
+    });
+  });
+
   test('fromJson', () {
     expect(
         Summary.fromJson({
@@ -55,15 +77,7 @@ void main() {
           "reply_IP": mockSummary.replyIp,
           "privacy_level": mockSummary.privacyLevel,
           "status": mockSummary.status,
-          "gravity_last_updated": {
-            "file_exists": mockSummary.gravityLastUpdated.fileExists,
-            "absolute": mockSummary.gravityLastUpdated.absolute,
-            "relative": {
-              "days": mockSummary.gravityLastUpdated..relative.days,
-              "hours": mockSummary.gravityLastUpdated..relative.hours,
-              "minutes": mockSummary.gravityLastUpdated..relative.minutes,
-            },
-          }, // ._toMap()
+          "gravity_last_updated": mockSummary.gravityLastUpdated.toJson()
         }),
         mockSummary);
   });

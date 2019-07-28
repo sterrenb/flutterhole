@@ -9,6 +9,7 @@ import 'package:flutterhole/bloc/api/summary.dart';
 import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/model/api/summary.dart';
+import 'package:flutterhole/service/convert.dart';
 import 'package:flutterhole/widget/home/chart/forward_destinations_chart_builder.dart';
 import 'package:flutterhole/widget/home/chart/query_types_chart_builder.dart';
 import 'package:flutterhole/widget/home/queries_over_time_card.dart';
