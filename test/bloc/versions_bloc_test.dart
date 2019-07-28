@@ -2,6 +2,7 @@ import 'package:flutterhole/bloc/api/versions.dart';
 import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/model/api/versions.dart';
+import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -56,5 +57,25 @@ main() {
 
           versionsBloc.dispatch(Fetch());
     });
+  });
+
+  group('FetchForPihole', () {
+    test(
+        'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateSuccess<Versions>] when repository returns Versions for pihole',
+            () {
+          final pihole = Pihole();
+          when(versionsRepository.get(pihole))
+              .thenAnswer((_) => Future.value(mockVersions));
+
+          expectLater(
+              versionsBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<Versions>(),
+                BlocStateLoading<Versions>(),
+                BlocStateSuccess<Versions>(mockVersions),
+              ]));
+
+          versionsBloc.dispatch(FetchForPihole(pihole));
+        });
   });
 }

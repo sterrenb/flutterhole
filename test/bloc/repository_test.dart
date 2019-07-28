@@ -147,7 +147,7 @@ main() {
         return completer.future;
       });
 
-      expect(blacklistRepository.addToBlacklist(item), completion(list));
+      expect(blacklistRepository.add(item), completion(list));
     });
 
     test('removeFromBlacklist', () {
@@ -161,7 +161,7 @@ main() {
 
       assert(original != null);
       expect(
-          blacklistRepository.removeFromBlacklist(original), completion(list));
+          blacklistRepository.remove(original), completion(list));
     });
 
     test('editOnBlacklist', () {
@@ -176,7 +176,7 @@ main() {
       });
 
       assert(original != null);
-      expect(blacklistRepository.removeFromBlacklist(update), completion(list));
+      expect(blacklistRepository.remove(update), completion(list));
     });
   });
 
