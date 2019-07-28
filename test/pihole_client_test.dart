@@ -107,6 +107,15 @@ void main() {
     });
   });
 
+  group('fetchForwardDestinations', () {
+    test('returns on successful forwardDestinations fetch', () async {
+      dio.httpClientAdapter =
+          MockAdapter.json(mockForwardDestinations.toJson());
+      expect(client.fetchForwardDestinations(),
+          completion(mockForwardDestinations));
+    });
+  });
+
   group('fetchStatus', () {
     test('returns Status on successful response', () async {
       dio.httpClientAdapter = MockAdapter.json(mockStatusEnabled.toJson());

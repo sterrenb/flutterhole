@@ -24,7 +24,6 @@ void main() {
       ]
     ];
     str =
-//        '{"wildcard":[{"entry":"' r'(^|.)' 'wildcard.com\$","type":"wildcard"},{"entry":"regex","type":"regex"}]}';
         '{"exact":[{"entry":"exact.com","type":"exact"},{"entry":"pi-hole.net","type":"exact"}],"wildcard":[{"entry":"'
         r'(^|\\.)'
         'wildcard.com\$","type":"wildcard"},{"entry":"regex","type":"regex"}]}';

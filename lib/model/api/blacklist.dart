@@ -57,6 +57,7 @@ class BlacklistItem extends Serializable {
       };
 }
 
+/// The API model for http://pi.hole/admin/api.php?list=black.
 class Blacklist extends Serializable {
   final List<BlacklistItem> exact;
   final List<BlacklistItem> wildcard;

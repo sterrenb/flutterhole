@@ -13,6 +13,7 @@ class ForwardDestinationItem extends Equatable {
       {@required this.ipString, this.title = '', this.percent = 0});
 }
 
+/// The API model for http://pi.hole/admin/api.php?getForwardDestinations.
 class ForwardDestinations extends Serializable {
   final Map<String, double> values;
 
@@ -36,8 +37,6 @@ class ForwardDestinations extends Serializable {
   factory ForwardDestinations.fromString(String str) =>
       ForwardDestinations.fromJson(json.decode(str));
 
-//  String toRawJson() => json.encode(toJson());
-
   factory ForwardDestinations.fromJson(Map<String, dynamic> json) =>
       ForwardDestinations(
         Map.from(json["forward_destinations"]).map((k, v) {
@@ -49,7 +48,7 @@ class ForwardDestinations extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        "top_sources":
+    "forward_destinations":
             Map.from(values).map((k, v) => MapEntry<String, dynamic>(k, v)),
       };
 }
