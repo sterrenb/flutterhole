@@ -15,7 +15,7 @@ class Pihole extends Equatable {
   String auth;
   bool allowSelfSigned;
 
-  String get localKey => title.toLowerCase().replaceAll(' ', '_');
+  String get localKey => Pihole.toKey(this.title);
 
   String get baseUrl => '$host${port == 80 ? '' : ':${port.toString()}'}';
 
@@ -33,20 +33,21 @@ class Pihole extends Equatable {
       : super([title, host, port, auth, allowSelfSigned]);
 
   /// Returns a new Pihole with the given parameters, using the [source] as base.
-  Pihole.copyWith(Pihole source,
+  factory Pihole.copyWith(Pihole source,
       {String title,
         String host,
         String apiPath,
         int port,
         String auth,
-        bool allowSelfSigned}) {
-    this.title = title ?? source.title;
-    this.host = host ?? source.host;
-    this.apiPath = apiPath ?? source.apiPath;
-    this.port = port ?? source.port;
-    this.auth = auth ?? source.auth;
-    this.allowSelfSigned = allowSelfSigned ?? source.allowSelfSigned;
-  }
+        bool allowSelfSigned}) =>
+      Pihole(
+        title: title ?? source.title,
+        host: host ?? source.host,
+        apiPath: apiPath ?? source.apiPath,
+        port: port ?? source.port,
+        auth: auth ?? source.auth,
+        allowSelfSigned: allowSelfSigned ?? source.allowSelfSigned,
+      );
 
   Map<String, dynamic> toJson() => {
         titleKey: title,

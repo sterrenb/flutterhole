@@ -3,7 +3,7 @@ import 'package:flutterhole/widget/home/chart/queries_over_time_chart_builder.da
 import 'package:flutterhole/widget/layout/scaffold.dart';
 
 class GraphScreen extends StatelessWidget {
-  final ScrollController _scrollController = new ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
