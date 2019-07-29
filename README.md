@@ -15,12 +15,12 @@ FlutterHole is a free third party Android application for interacting with your 
       alt="Get it on Google Play"    
       height="80">](https://play.google.com/store/apps/details?id=sterrenburg.github.flutterhole)    
  ## Features ##
- - **Quick enable/disable:** Toggle your Pi-hole from your home screen with a single tap.
- - **Multiple configurations:** Easily switch between every Pi-hole that you have access to.
- - **Manage your blacklist & whitelist:** Add or remove domains, wildcards and regular expressions from your lists.
- - **Summary overview:** View top clients and the top used domains.
- - **Query log:** View recent queries and add them to your blacklist or whitelist.
- - **Custom themes:** Because we can.
+- **Quick enable/disable:** Toggle your Pi-hole from your home screen with a single tap.
+- **Multiple configurations:** Easily switch between every Pi-hole that you have access to.
+- **Manage your blacklist & whitelist:** Add or remove domains, wildcards and regular expressions from your lists.
+- **Summary overview:** View top clients and the top used domains.
+- **Query log:** View recent queries and add them to your blacklist or whitelist.
+- **Custom themes:** Because we can.
 
 ## Development ##
 FlutterHole is developed using [Android Studio](https://developer.android.com/studio), which offers a complete, integrated IDE experience for Flutter.
