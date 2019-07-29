@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final status = statusFromJson(jsonString);
-
 import 'dart:convert';
 
 import 'package:flutterhole/model/serializable.dart';
@@ -23,9 +19,6 @@ class Status extends Serializable {
       );
 
   factory Status.fromString(String str) => Status.fromJson(json.decode(str));
-
-//  @override
-//  String toString() => 'enabled: $enabled';
 
   @override
   Map<String, dynamic> toJson() => {

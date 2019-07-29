@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/query.dart';
 import 'package:flutterhole/model/api/status.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
@@ -13,50 +14,43 @@ import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import "package:test/test.dart";
 
-import 'mock.dart';
-
-class MockLocalStorage extends Mock implements LocalStorage {}
+import '../mock.dart';
 
 typedef MockAdapterHandler = ResponseBody Function(RequestOptions options);
 
-class MockAdapter extends HttpClientAdapter {
+class MockAdapter extends DefaultHttpClientAdapter {
   List<MockAdapterHandler> handlers;
 
   MockAdapter([this.handlers = const []]);
 
-  factory MockAdapter.string(String str) =>
-      MockAdapter([
-            (_) {
+  factory MockAdapter.string(String str) => MockAdapter([
+        (_) {
           return ResponseBody.fromString(str, 200);
         }
       ]);
 
-  factory MockAdapter.emptyString() =>
-      MockAdapter([
-            (_) {
+  factory MockAdapter.emptyString() => MockAdapter([
+        (_) {
           return ResponseBody.fromString('', 200);
         }
       ]);
 
   factory MockAdapter.notAuthorized() => MockAdapter.string('Not authorized!');
 
-  factory MockAdapter.json(dynamic data) =>
-      MockAdapter([
-            (_) {
+  factory MockAdapter.json(dynamic data) => MockAdapter([
+        (_) {
           return ResponseBody.fromString(json.encode(data), 200);
         }
       ]);
 
-  factory MockAdapter.throwsError({dynamic e}) =>
-      MockAdapter([
-            (_) {
+  factory MockAdapter.throwsError({dynamic e}) => MockAdapter([
+        (_) {
           throw e ?? DioError();
         }
       ]);
 
-  factory MockAdapter.emptyList() =>
-      MockAdapter([
-            (_) {
+  factory MockAdapter.emptyList() => MockAdapter([
+        (_) {
           return ResponseBody.fromString('[]', 200);
         }
       ]);
@@ -105,6 +99,51 @@ void main() {
     expect(client.dio.interceptors.isNotEmpty, isTrue);
   });
 
+  test('cancel', () {
+    final initialToken = client.token;
+    expect(initialToken, isNotNull);
+    client.cancel();
+    expect(client.token == initialToken, isFalse);
+  });
+
+  group('fetchSummary', () {
+    test('returns on successful summary fetch', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockSummary.toJson());
+      expect(client.fetchSummary(), completion(mockSummary));
+    });
+
+    test('self signed', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockSummary.toJson());
+      when(localStorage.active())
+          .thenReturn(Pihole.copyWith(pihole, allowSelfSigned: true));
+      try {
+        await client.fetchSummary();
+        fail('exception not thrown');
+      } catch (_) {}
+    });
+  });
+
+  group('proxy', () {
+    setUp(() {
+      pihole = Pihole.copyWith(
+        pihole,
+        proxy: Proxy(
+          host: 'proxy.com',
+          port: 8080,
+        ),
+      );
+    });
+  });
+
+  group('fetchForwardDestinations', () {
+    test('returns on successful forwardDestinations fetch', () async {
+      dio.httpClientAdapter =
+          MockAdapter.json(mockForwardDestinations.toJson());
+      expect(client.fetchForwardDestinations(),
+          completion(mockForwardDestinations));
+    });
+  });
+
   group('fetchStatus', () {
     test('returns Status on successful response', () async {
       dio.httpClientAdapter = MockAdapter.json(mockStatusEnabled.toJson());
@@ -149,7 +188,8 @@ void main() {
     });
 
     test('throws PiholeException when API token is empty', () async {
-      pihole.auth = '';
+      when(localStorage.active()).thenReturn(Pihole.copyWith(pihole, auth: ''));
+      dio.httpClientAdapter = MockAdapter.json(mockStatusEnabled.toJson());
       try {
         await client.enable();
         fail('exception not thrown');
@@ -342,6 +382,16 @@ void main() {
     });
 
     group('removeFromWhitelist', () {
+      test('throws PiholeException on empty removeFromWhitelist', () async {
+        dio.httpClientAdapter = MockAdapter.notAuthorized();
+        try {
+          await client.removeFromWhitelist('');
+          fail('exception not thrown');
+        } on PiholeException catch (e) {
+          expect(e.message, 'cannot remove empty domain from whitelist');
+        }
+      });
+
       test('throws PiholeException on unauthorized removeFromWhitelist',
               () async {
             dio.httpClientAdapter = MockAdapter.notAuthorized();
@@ -373,6 +423,38 @@ void main() {
       test('returns Versions on successful fetch', () async {
         dio.httpClientAdapter = MockAdapter.json(mockVersions.toJson());
         expect(client.fetchVersions(), completion(mockVersions));
+      });
+    });
+
+    group('fetchQueries', () {
+      test('returns Queries on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(
+            mockQueries.map((query) => query.toJson()).toList());
+        expect(client.fetchQueries(), completion(mockQueries));
+      });
+    });
+
+    group('fetchQueriesForClient', () {
+      test('returns Queries on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(
+            mockQueries.map((query) => query.toJson()).toList());
+        expect(client.fetchQueriesForClient('client'), completion(mockQueries));
+      });
+    });
+
+    group('fetchQueriesForQueryType', () {
+      test('returns Queries on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(
+            mockQueries.map((query) => query.toJson()).toList());
+        expect(client.fetchQueriesForQueryType(QueryType.A),
+            completion(mockQueries));
+      });
+    });
+
+    group('fetchQueryTypes', () {
+      test('returns QueryTypes on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(mockQueryTypes.toJson());
+        expect(client.fetchQueryTypes(), completion(mockQueryTypes));
       });
     });
 

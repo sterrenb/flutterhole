@@ -1,25 +1,26 @@
 import 'dart:convert';
 
 import 'package:flutterhole/model/serializable.dart';
+import 'package:meta/meta.dart';
 
+/// The API model for http://pi.hole/admin/api.php?topItems.
 class TopItems extends Serializable {
   final Map<String, int> topQueries;
   final Map<String, int> topAds;
 
-  TopItems(
-    this.topQueries,
-    this.topAds,
-  ) : super([topQueries, topAds]);
+  TopItems({
+    @required this.topQueries,
+    @required this.topAds,
+  }) : super([topQueries, topAds]);
 
   factory TopItems.fromString(String str) =>
       TopItems.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
-
-  factory TopItems.fromJson(Map<String, dynamic> json) => new TopItems(
-        Map.from(json["top_queries"])
+  factory TopItems.fromJson(Map<String, dynamic> json) =>
+      TopItems(
+        topQueries: Map.from(json["top_queries"])
             .map((k, v) => new MapEntry<String, int>(k, v)),
-        Map.from(json["top_ads"])
+        topAds: Map.from(json["top_ads"])
             .map((k, v) => new MapEntry<String, int>(k, v)),
       );
 

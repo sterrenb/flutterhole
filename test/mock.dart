@@ -9,12 +9,18 @@ import 'package:flutterhole/model/api/top_sources.dart';
 import 'package:flutterhole/model/api/versions.dart';
 import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/local_storage.dart';
+import 'package:mockito/mockito.dart';
 
 final mockPiholes = [
   Pihole(),
-  Pihole(title: 'second', host: 'example.com'),
-  Pihole(title: 'third', host: 'pi-hole.net'),
+  Pihole(title: 'second', host: '2.com'),
+  Pihole(title: 'third', host: '3.net'),
 ];
+
+class MockLocalStorage extends Mock implements LocalStorage {
+  Map<String, Pihole> cache = {};
+}
 
 final mockStatusEnabled = Status(enabled: true);
 final mockStatusDisabled = Status(enabled: false);
@@ -24,8 +30,8 @@ final mockBlacklist = Blacklist(exact: [
   BlacklistItem.exact(entry: 'exact.com'),
   BlacklistItem.exact(entry: 'pi-hole.net'),
 ], wildcard: [
-  BlacklistItem.wildcard(entry: 'wildcard.com'),
-  BlacklistItem.regex(entry: 'regex')
+  BlacklistItem.wildcard(entry: '${wildcardPrefix}wildcard.com$wildcardSuffix'),
+  BlacklistItem.regex(entry: 'regex'),
 ]);
 
 final mockSummary = Summary(
@@ -55,7 +61,6 @@ final TopSources mockTopSources = TopSources({
   '10.0.1.2': 42,
   'windows|10.0.1.3': 33,
   'osx|10.0.1.4': 24,
-  'zenwatch3|10.0.1.5': 11,
 });
 
 final Versions mockVersions = Versions(
@@ -83,29 +88,15 @@ final QueryTypes mockQueryTypes = QueryTypes({
 });
 
 final TopItems mockTopItems = TopItems(
-  {
-    "clients1.google.com": 1005,
-    "0.debian.pool.ntp.org": 728,
-    "1.debian.pool.ntp.org": 728,
-    "2.debian.pool.ntp.org": 728,
-    "3.debian.pool.ntp.org": 728,
-    "www.google.com": 222,
-    "semanticlocation-pa.googleapis.com": 186,
-    "connectivitycheck.gstatic.com": 179,
-    "play.googleapis.com": 155,
-    "time.apple.com": 101
+  topQueries: {
+    "a.com": 1,
+    "b.org": 2,
+    "c.net": 3,
   },
-  {
-    "indigo.tvaddons.co.uilenstede4.duwo.lan": 98,
-    "lw10-10815.local.nl.bol.com": 32,
-    "wpad.local.nl.bol.com": 27,
-    "wpad.uilenstede4.duwo.lan": 24,
-    "ads.google.com": 18,
-    "_ldap._tcp.papendorp._sites.dc._msdcs.local.nl.bol.com": 13,
-    "_ldap._tcp.default-first-site-name._sites.dc._msdcs.local.nl.bol.com": 13,
-    "mobile.pipe.aria.millisoft.com": 11,
-    "wpad.duwo.lan": 8,
-    "update.openelec.tv.uilenstede4.duwo.lan": 8
+  topAds: {
+    "ad1.com": 1,
+    "ad2.org": 2,
+    "ad3.net": 3,
   },
 );
 
@@ -118,7 +109,7 @@ final ForwardDestinations mockForwardDestinations = ForwardDestinations({
 
 final List<Query> mockQueries = [
   Query(
-      time: DateTime(0),
+      time: DateTime.fromMillisecondsSinceEpoch(1563995000000),
       queryType: QueryType.A,
       entry: 'test.com',
       client: 'localhost',
@@ -130,7 +121,7 @@ final List<Query> mockQueries = [
       entry: 'example.org',
       client: 'remotehost',
       queryStatus: QueryStatus.Unknown,
-      dnsSecStatus: DnsSecStatus.Bogus),
+      dnsSecStatus: DnsSecStatus.Abandoned),
 ];
 
 final mockQueriesOverTime = QueriesOverTime(adsOverTime: {

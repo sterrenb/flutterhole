@@ -2,11 +2,8 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
-import 'package:intl/intl.dart';
 
 import 'local_storage.dart';
-
-final timestampFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 /// Globally accessible class.
 class Globals {

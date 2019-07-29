@@ -10,52 +10,13 @@ import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/model/api/query.dart';
 import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/service/browser.dart';
-import 'package:flutterhole/service/globals.dart';
+import 'package:flutterhole/service/convert.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 import 'package:flutterhole/widget/layout/search_options.dart';
 import 'package:provider/provider.dart';
 
-String dnsSecStatusToString(DnsSecStatus dnsSecStatus) {
-  return dnsSecStatus == DnsSecStatus.Empty
-      ? 'no DNSSEC'
-      : dnsSecStatus.toString().replaceAll('DnsSecStatus.', '');
-}
 
-String queryTypeToString(QueryType type) {
-  return type == QueryType.UNKN
-      ? 'Unknown'
-      : type.toString().replaceAll('QueryType.', '');
-}
-
-String queryStatusToString(QueryStatus status) {
-  switch (status) {
-    case QueryStatus.BlockedWithGravity:
-      return 'Blocked (gravity)';
-    case QueryStatus.Forwarded:
-      return 'OK (forwarded)';
-    case QueryStatus.Cached:
-      return 'OK (cached)';
-    case QueryStatus.BlockedWithRegexWildcard:
-      return 'Blocked (regex/wildcard)';
-    case QueryStatus.BlockedWithBlacklist:
-      return 'Blocked (blacklist)';
-    case QueryStatus.BlockedWithExternalIP:
-      return 'Blocked (external, IP)';
-      break;
-    case QueryStatus.BlockedWithExternalNull:
-      return 'Blocked (external, NULL)';
-      break;
-    case QueryStatus.BlockedWithExternalNXRA:
-      return 'Blocked (external, NXRA)';
-      break;
-    case QueryStatus.Unknown:
-      return 'Unknown';
-      break;
-    default:
-      return 'Empty';
-  }
-}
 
 enum FilterType {
   Client,
@@ -108,12 +69,6 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
     super.initState();
     _refreshCompleter = Completer();
     _queryCache = [];
-
-//    fetchEvent = Fetch();
-//
-//    if (widget.client != null) {
-//      fetchEvent = FetchForClient(widget.client);
-//    }
   }
 
   @override

@@ -2,11 +2,8 @@
 
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutterhole/model/serializable.dart';
-
-DateTime epochToDateTime(List json) =>
-    DateTime.fromMillisecondsSinceEpoch(int.parse(json[0] + '000'));
+import 'package:flutterhole/service/convert.dart';
 
 enum QueryType {
   A,
@@ -17,16 +14,6 @@ enum QueryType {
   PTR,
   TXT,
   UNKN,
-}
-
-QueryType stringToQueryType(String json) {
-  for (QueryType type in QueryType.values) {
-    if (type.toString().contains(json
-        .split(' ')
-        .first)) return type;
-  }
-
-  return QueryType.values.last;
 }
 
 enum QueryStatus {
@@ -50,7 +37,7 @@ enum DnsSecStatus {
   Empty,
 }
 
-class Query extends Equatable {
+class Query extends Serializable {
   final DateTime time;
   final QueryType queryType;
   final String entry;
@@ -76,7 +63,7 @@ class Query extends Equatable {
 
   factory Query.fromJson(List<dynamic> json) =>
       Query(
-        time: epochToDateTime(json),
+        time: epochToDateTime(json[0]),
         queryType: stringToQueryType(json[1]),
         entry: json[2],
         client: json[3],
@@ -103,6 +90,18 @@ class Query extends Equatable {
 
     return QueryStatus.values[index - 1];
   }
+
+  @override
+  List<dynamic> toJson() {
+    return [
+      (time.millisecondsSinceEpoch ~/ 1000).toString(),
+      queryTypeToString(queryType),
+      entry,
+      client,
+      queryStatusToJson(queryStatus),
+      dnsSecStatusToJson(dnsSecStatus),
+    ];
+  }
 }
 
 class QueryTypes extends Serializable {
@@ -114,8 +113,6 @@ class QueryTypes extends Serializable {
 
   factory QueryTypes.fromString(String str) =>
       QueryTypes.fromJson(json.decode(str));
-
-//  String toRawJson() => json.encode(toJson());
 
   factory QueryTypes.fromJson(Map<String, dynamic> json) =>
       QueryTypes(

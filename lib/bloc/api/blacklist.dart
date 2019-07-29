@@ -28,11 +28,9 @@ class BlacklistBloc extends BaseBloc<Blacklist> {
 
   BlacklistBloc(this.blacklistRepository) : super(blacklistRepository);
 
-//  BlacklistBloc(BlacklistRepository blacklistRepository) : super(repository);
-
   Stream<BlocState> _add(BlacklistItem item) async* {
     try {
-      final blacklist = await blacklistRepository.addToBlacklist(item);
+      final blacklist = await blacklistRepository.add(item);
       yield BlocStateSuccess<Blacklist>(blacklist);
     } on PiholeException catch (e) {
       yield BlocStateError<Blacklist>(e);
@@ -41,7 +39,7 @@ class BlacklistBloc extends BaseBloc<Blacklist> {
 
   Stream<BlocState> _remove(BlacklistItem item) async* {
     try {
-      final blacklist = await blacklistRepository.removeFromBlacklist(item);
+      final blacklist = await blacklistRepository.remove(item);
       yield BlocStateSuccess<Blacklist>(blacklist);
     } on PiholeException catch (e) {
       yield BlocStateError<Blacklist>(e);
@@ -51,7 +49,7 @@ class BlacklistBloc extends BaseBloc<Blacklist> {
   Stream<BlocState> _edit(BlacklistItem original, BlacklistItem update) async* {
     try {
       final blacklist =
-          await blacklistRepository.editOnBlacklist(original, update);
+      await blacklistRepository.edit(original, update);
       yield BlocStateSuccess<Blacklist>(blacklist);
     } on PiholeException catch (e) {
       yield BlocStateError<Blacklist>(e);
@@ -84,19 +82,19 @@ class BlacklistRepository extends BaseRepository<Blacklist> {
     return client.fetchBlacklist();
   }
 
-  Future<Blacklist> addToBlacklist(BlacklistItem item) async {
+  Future<Blacklist> add(BlacklistItem item) async {
     await client.addToBlacklist(item);
     _cache = Blacklist.withItem(_cache, item);
     return _cache;
   }
 
-  Future<Blacklist> removeFromBlacklist(BlacklistItem item) async {
+  Future<Blacklist> remove(BlacklistItem item) async {
     await client.removeFromBlacklist(item);
     _cache = Blacklist.withoutItem(_cache, item);
     return _cache;
   }
 
-  Future<Blacklist> editOnBlacklist(
+  Future<Blacklist> edit(
       BlacklistItem original, BlacklistItem update) async {
     await client.removeFromBlacklist(original);
     await client.addToBlacklist(update);

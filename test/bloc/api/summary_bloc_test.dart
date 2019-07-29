@@ -6,55 +6,55 @@ import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import '../mock.dart';
+import '../../mock.dart';
 
 class MockSummaryRepository extends Mock implements SummaryRepository {}
 
 main() {
-  MockSummaryRepository sumRepository;
-  SummaryBloc sumBloc;
+  MockSummaryRepository summaryRepository;
+  SummaryBloc summaryBloc;
 
   setUp(() {
-    sumRepository = MockSummaryRepository();
-    sumBloc = SummaryBloc(sumRepository);
+    summaryRepository = MockSummaryRepository();
+    summaryBloc = SummaryBloc(summaryRepository);
   });
 
   test('has a correct initialState', () {
-    expect(sumBloc.initialState, BlocStateEmpty<Summary>());
+    expect(summaryBloc.initialState, BlocStateEmpty<Summary>());
   });
 
-  group('FetchSum', () {
+  group('Fetch', () {
     test(
-        'emits [SumStateEmpty, SumStateLoading, SumStateSuccess] when repository returns Sum',
+        'emits [BlocStateEmpty<Summary>, BlocStateLoading<Summary>, BlocStateSuccess<Summary>] when repository returns Summary',
             () {
-          when(sumRepository.get()).thenAnswer((_) =>
-              Future.value(mockSummary));
+          when(summaryRepository.get())
+              .thenAnswer((_) => Future.value(mockSummary));
 
           expectLater(
-              sumBloc.state,
+              summaryBloc.state,
               emitsInOrder([
                 BlocStateEmpty<Summary>(),
                 BlocStateLoading<Summary>(),
                 BlocStateSuccess<Summary>(mockSummary),
               ]));
 
-          sumBloc.dispatch(Fetch());
+          summaryBloc.dispatch(Fetch());
         });
 
     test(
-        'emits [SumStateEmpty, SumStateLoading, SumStateError] when home repository throws PiholeException',
+        'emits [BlocStateEmpty<Summary>, BlocStateLoading<Summary>, BlocStateError<Summary>] when home repository throws PiholeException',
             () {
-          when(sumRepository.get()).thenThrow(PiholeException());
+          when(summaryRepository.get()).thenThrow(PiholeException());
 
           expectLater(
-              sumBloc.state,
+              summaryBloc.state,
               emitsInOrder([
                 BlocStateEmpty<Summary>(),
                 BlocStateLoading<Summary>(),
                 BlocStateError<Summary>(PiholeException()),
               ]));
 
-          sumBloc.dispatch(Fetch());
+          summaryBloc.dispatch(Fetch());
         });
   });
 }

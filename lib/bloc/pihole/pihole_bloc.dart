@@ -18,6 +18,7 @@ class PiholeBloc extends Bloc<PiholeEvent, PiholeState> {
     PiholeEvent event,
   ) async* {
 //    await Future.delayed(Duration(seconds: 2));
+    yield PiholeStateLoading();
     if (event is FetchPiholes) yield* _fetch();
     if (event is ResetPiholes) yield* _reset();
     if (event is AddPihole) yield* _add(event.pihole);

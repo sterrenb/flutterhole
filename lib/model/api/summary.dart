@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutterhole/model/serializable.dart';
 
-/// The Api model for http://pi.hole/admin/api.php?summary.
+/// The API model for http://pi.hole/admin/api.php?summary.
 class Summary extends Serializable {
   final int domainsBeingBlocked;
   final int dnsQueriesToday;
@@ -62,8 +62,7 @@ class Summary extends Serializable {
 
   factory Summary.fromString(String str) => Summary.fromJson(json.decode(str));
 
-  factory Summary.fromJson(Map<String, dynamic> json) =>
-      Summary(
+  factory Summary.fromJson(Map<String, dynamic> json) => Summary(
         domainsBeingBlocked: json["domains_being_blocked"],
         dnsQueriesToday: json["dns_queries_today"],
         adsBlockedToday: json["ads_blocked_today"],
@@ -81,12 +80,11 @@ class Summary extends Serializable {
         privacyLevel: json["privacy_level"],
         status: json["status"],
         gravityLastUpdated:
-        GravityLastUpdated.fromJson(json["gravity_last_updated"]),
+            GravityLastUpdated.fromJson(json["gravity_last_updated"]),
       );
 
   @override
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         "domains_being_blocked": domainsBeingBlocked,
         "dns_queries_today": dnsQueriesToday,
         "ads_blocked_today": adsBlockedToday,
@@ -103,7 +101,7 @@ class Summary extends Serializable {
         "reply_IP": replyIp,
         "privacy_level": privacyLevel,
         "status": status,
-        "gravity_last_updated": gravityLastUpdated._toMap(),
+    "gravity_last_updated": gravityLastUpdated.toJson(),
       };
 }
 
@@ -129,15 +127,13 @@ class GravityLastUpdated extends Serializable {
         relative: Relative.fromJson(json["relative"]),
       );
 
-  Map<String, dynamic> _toMap() =>
+  @override
+  Map<String, dynamic> toJson() =>
       {
         "file_exists": fileExists,
         "absolute": absolute,
-        "relative": relative._toMap(),
+        "relative": relative.toJson(),
       };
-
-  @override
-  String toJson() => json.encode(_toMap());
 }
 
 class Relative extends Serializable {
@@ -155,26 +151,17 @@ class Relative extends Serializable {
           minutes,
         ]);
 
-  factory Relative.fromJson(Map<String, dynamic> json) =>
-      new Relative(
+  factory Relative.fromJson(Map<String, dynamic> json) => new Relative(
         days: json["days"],
         hours: json["hours"],
         minutes: json["minutes"],
       );
 
-  Map<String, dynamic> _toMap() =>
+  @override
+  Map<String, dynamic> toJson() =>
       {
         "days": days,
         "hours": hours,
         "minutes": minutes,
       };
-
-  @override
-  String toJson() => json.encode(_toMap());
-}
-
-String numWithCommas(num i) {
-  final RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
-  final Function matchFunc = (Match match) => '${match[1]},';
-  return i.toString().replaceAllMapped(reg, matchFunc);
 }
