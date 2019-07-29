@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/query.dart';
 import 'package:flutterhole/model/api/status.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
@@ -14,8 +15,6 @@ import 'package:mockito/mockito.dart';
 import "package:test/test.dart";
 
 import '../mock.dart';
-
-class MockLocalStorage extends Mock implements LocalStorage {}
 
 typedef MockAdapterHandler = ResponseBody Function(RequestOptions options);
 
@@ -100,10 +99,27 @@ void main() {
     expect(client.dio.interceptors.isNotEmpty, isTrue);
   });
 
+  test('cancel', () {
+    final initialToken = client.token;
+    expect(initialToken, isNotNull);
+    client.cancel();
+    expect(client.token == initialToken, isFalse);
+  });
+
   group('fetchSummary', () {
     test('returns on successful summary fetch', () async {
       dio.httpClientAdapter = MockAdapter.json(mockSummary.toJson());
       expect(client.fetchSummary(), completion(mockSummary));
+    });
+
+    test('self signed', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockSummary.toJson());
+      when(localStorage.active())
+          .thenReturn(Pihole.copyWith(pihole, allowSelfSigned: true));
+      try {
+        await client.fetchSummary();
+        fail('exception not thrown');
+      } catch (_) {}
     });
   });
 
@@ -160,7 +176,8 @@ void main() {
     });
 
     test('throws PiholeException when API token is empty', () async {
-      pihole.auth = '';
+      when(localStorage.active()).thenReturn(Pihole.copyWith(pihole, auth: ''));
+      dio.httpClientAdapter = MockAdapter.json(mockStatusEnabled.toJson());
       try {
         await client.enable();
         fail('exception not thrown');
@@ -353,16 +370,26 @@ void main() {
     });
 
     group('removeFromWhitelist', () {
-      test('throws PiholeException on unauthorized removeFromWhitelist',
-          () async {
+      test('throws PiholeException on empty removeFromWhitelist', () async {
         dio.httpClientAdapter = MockAdapter.notAuthorized();
         try {
-          await client.removeFromWhitelist('new.com');
+          await client.removeFromWhitelist('');
           fail('exception not thrown');
         } on PiholeException catch (e) {
-          expect(e.message, 'not authorized');
+          expect(e.message, 'cannot remove empty domain from whitelist');
         }
       });
+
+      test('throws PiholeException on unauthorized removeFromWhitelist',
+              () async {
+            dio.httpClientAdapter = MockAdapter.notAuthorized();
+            try {
+              await client.removeFromWhitelist('new.com');
+              fail('exception not thrown');
+            } on PiholeException catch (e) {
+              expect(e.message, 'not authorized');
+            }
+          });
     });
 
     group('editOnWhitelist', () {
@@ -392,6 +419,23 @@ void main() {
         dio.httpClientAdapter = MockAdapter.json(
             mockQueries.map((query) => query.toJson()).toList());
         expect(client.fetchQueries(), completion(mockQueries));
+      });
+    });
+
+    group('fetchQueriesForClient', () {
+      test('returns Queries on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(
+            mockQueries.map((query) => query.toJson()).toList());
+        expect(client.fetchQueriesForClient('client'), completion(mockQueries));
+      });
+    });
+
+    group('fetchQueriesForQueryType', () {
+      test('returns Queries on successful fetch', () async {
+        dio.httpClientAdapter = MockAdapter.json(
+            mockQueries.map((query) => query.toJson()).toList());
+        expect(client.fetchQueriesForQueryType(QueryType.A),
+            completion(mockQueries));
       });
     });
 

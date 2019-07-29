@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/api/forward_destinations.dart';
+import 'package:flutterhole/bloc/api/queries_over_time.dart';
 import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/api/query_types.dart';
 import 'package:flutterhole/bloc/api/status.dart';
@@ -10,8 +11,10 @@ import 'package:flutterhole/bloc/api/top_items.dart';
 import 'package:flutterhole/bloc/api/top_sources.dart';
 import 'package:flutterhole/bloc/api/versions.dart';
 import 'package:flutterhole/bloc/api/whitelist.dart';
+import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/model/api/whitelist.dart';
+import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -113,6 +116,20 @@ main() {
       when(client.fetchQueriesForClient('client'))
           .thenAnswer((_) => Future.value(mockQueries));
       expect(queryRepository.getForClient('client'), completion(mockQueries));
+    });
+  });
+
+  group('QueriesOverTimeRepository', () {
+    QueriesOverTimeRepository queriesOverTimeRepository;
+
+    setUp(() {
+      queriesOverTimeRepository = QueriesOverTimeRepository(client);
+    });
+
+    test('getQueriesOverTime', () {
+      when(client.fetchQueriesOverTime())
+          .thenAnswer((_) => Future.value(mockQueriesOverTime));
+      expect(queriesOverTimeRepository.get(), completion(mockQueriesOverTime));
     });
   });
 
@@ -314,6 +331,65 @@ main() {
       statusRepository.cancelSleep();
       expect(statusRepository.stopwatch.isRunning, isFalse);
       expect(statusRepository.elapsed.inMicroseconds, equals(0));
+    });
+  });
+
+  group('PiholeRepository', () {
+    MockLocalStorage localStorage;
+    PiholeRepository piholeRepository;
+
+    setUp(() {
+      localStorage = MockLocalStorage();
+      piholeRepository = PiholeRepository(localStorage);
+    });
+
+    test('refresh', () {
+      when(localStorage.reset()).thenAnswer((_) => Future.value());
+      expect(piholeRepository.refresh(), completes);
+    });
+
+    test('getPiholes', () {
+      final map = mockPiholes.asMap().map((int index, pihole) =>
+          MapEntry<String, Pihole>(index.toString(), pihole));
+      localStorage.cache = map;
+
+      expect(piholeRepository.getPiholes(), map.values);
+    });
+
+    test('active', () {
+      when(localStorage.active()).thenReturn(mockPiholes.first);
+      expect(piholeRepository.active(), mockPiholes.first);
+    });
+
+    test('add', () {
+      final pihole = Pihole(title: 'add');
+      when(localStorage.add(pihole)).thenAnswer((_) => Future.value(true));
+      expect(piholeRepository.add(pihole), completion(isTrue));
+    });
+
+    test('remove', () {
+      final pihole = mockPiholes.first;
+      when(localStorage.remove(pihole)).thenAnswer((_) => Future.value(true));
+      expect(piholeRepository.remove(pihole), completion(isTrue));
+    });
+
+    test('activate', () {
+      final pihole = mockPiholes.first;
+      when(localStorage.activate(pihole)).thenAnswer((_) => Future.value(true));
+      expect(piholeRepository.activate(pihole), completes);
+    });
+
+    test('update', () {
+      final original = mockPiholes.first;
+      final update = Pihole(title: 'update');
+      when(localStorage.update(original, update))
+          .thenAnswer((_) => Future.value(true));
+      expect(piholeRepository.update(original, update), completes);
+    });
+
+    test('reset', () {
+      when(localStorage.reset()).thenAnswer((_) => Future.value(true));
+      expect(piholeRepository.reset(), completes);
     });
   });
 }

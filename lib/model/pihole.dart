@@ -8,12 +8,12 @@ const String authKey = 'auth';
 const String allowSelfSignedKey = 'allowselfsigned';
 
 class Pihole extends Equatable {
-  String title;
-  String host;
-  String apiPath;
-  int port;
-  String auth;
-  bool allowSelfSigned;
+  final String title;
+  final String host;
+  final String apiPath;
+  final int port;
+  final String auth;
+  final bool allowSelfSigned;
 
   String get localKey => Pihole.toKey(this.title);
 

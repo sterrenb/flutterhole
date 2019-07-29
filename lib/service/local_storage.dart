@@ -19,24 +19,12 @@ class LocalStorage {
 
   Map<String, Pihole> get cache => _cache;
 
-  Pihole active() {
-    if (_active != null) {
-      return _active;
-    }
-    final String key = _preferences.getString(_piholeActiveKey);
-    _active = _cache[key];
-    if (_active == null) {
-      logger.w('cannot find active Pihole $key');
-    }
-    return _active;
-  }
-
-  final logger = FimberLog('LocalStorage');
-
   static Future<LocalStorage> getInstance() async {
     if (_preferences == null) {
       _preferences = await SharedPreferences.getInstance();
       await _preferences.reload();
+      await _preferences.clear();
+      print('yay clean');
     }
 
     if (_instance == null) {
@@ -46,6 +34,24 @@ class LocalStorage {
 
     return _instance;
   }
+
+  Pihole active() {
+    if (_active != null) {
+      return _active;
+    }
+    final String key = _preferences.getString(_piholeActiveKey);
+    _active = _cache[key];
+    if (_active == null) {
+      logger.w('cannot find active Pihole $key');
+      logger.i('falling back to default debug configuration');
+      // TODO debug
+      _active = Pihole();
+      _cache[_active.localKey] = _active;
+    }
+    return _active;
+  }
+
+  final logger = FimberLog('LocalStorage');
 
   Future<void> init() async {
     _cache = {};
@@ -182,12 +188,6 @@ class LocalStorage {
     }
     if (value is int) {
       return _preferences.setInt('$prefix$key', value);
-    }
-    if (value is double) {
-      return _preferences.setDouble('$prefix$key', value);
-    }
-    if (value is List<String>) {
-      return _preferences.setStringList('$prefix$key', value);
     }
 
     throw Exception('unsupported value type ${value.runtimeType}');

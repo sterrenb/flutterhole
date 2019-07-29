@@ -9,12 +9,18 @@ import 'package:flutterhole/model/api/top_sources.dart';
 import 'package:flutterhole/model/api/versions.dart';
 import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/local_storage.dart';
+import 'package:mockito/mockito.dart';
 
 final mockPiholes = [
   Pihole(),
-  Pihole(title: 'second', host: 'example.com'),
-  Pihole(title: 'third', host: 'pi-hole.net'),
+  Pihole(title: 'second', host: '2.com'),
+  Pihole(title: 'third', host: '3.net'),
 ];
+
+class MockLocalStorage extends Mock implements LocalStorage {
+  Map<String, Pihole> cache = {};
+}
 
 final mockStatusEnabled = Status(enabled: true);
 final mockStatusDisabled = Status(enabled: false);

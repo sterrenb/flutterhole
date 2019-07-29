@@ -252,13 +252,9 @@ class PiholeClient {
     Response response = await _get({'list': 'black'});
     if (response.data is String) {
       return Blacklist.fromString(response.data);
-    } else if (response.data is List<dynamic>) {
+    } else {
       return Blacklist.fromJson(response.data);
     }
-
-    throw PiholeException(
-        message: 'unexpected data type ${response.data.runtimeType}',
-        e: response);
   }
 
   /// Adds a new domain or wildcard to the blacklist.
@@ -309,66 +305,54 @@ class PiholeClient {
 
   /// Returns a list of recent [Query]s, at most [max].
   Future<List<Query>> fetchQueries({int max = 1000}) async {
-    List<Query> queries = [];
-
     Response response =
     await _getSecure({'getAllQueries': max > 0 ? max.toString() : 1});
+    return _responseToQueries(response);
+  }
+
+  List<Query> _stringToQueries(Response response) {
+    List<Query> queries = [];
+
+    final data = json.decode(response.data);
+    (data as List<dynamic>).forEach((entry) {
+      queries.add(Query.fromJson(entry));
+    });
+
+    return queries;
+  }
+
+//  List<Query> _responseToQueries(Response response) {
+  List<Query> _listToQueries(List<dynamic> data) {
+    List<Query> queries = [];
+    data.forEach((entry) {
+      queries.add(Query.fromJson(entry));
+    });
+
+    return queries;
+  }
+
+  List<Query> _responseToQueries(Response response) {
     if (response.data is Map<String, dynamic>) {
       try {
-        (response.data['data'] as List<dynamic>).forEach((entry) {
-          queries.add(Query.fromJson(entry));
-        });
-
-        return queries;
+        return _listToQueries(response.data['data']);
       } catch (e) {
         throw PiholeException(message: 'unknown error', e: e);
       }
     } else {
-      final data = json.decode(response.data);
-      (data as List<dynamic>).forEach((entry) {
-        queries.add(Query.fromJson(entry));
-      });
-
-      return queries;
+      return _stringToQueries(response);
     }
   }
 
   Future<List<Query>> fetchQueriesForClient(String client) async {
     Response response =
     await _getSecure({'getAllQueries': '', 'client': client});
-    if (response.data is Map<String, dynamic>) {
-      try {
-        List<Query> queries = [];
-        (response.data['data'] as List<dynamic>).forEach((entry) {
-          queries.add(Query.fromJson(entry));
-        });
-
-        return queries;
-      } catch (e) {
-        throw PiholeException(message: 'unknown error', e: e);
-      }
-    }
-
-    throw PiholeException(message: 'unexpected query response', e: response);
+    return _responseToQueries(response);
   }
 
   Future<List<Query>> fetchQueriesForQueryType(QueryType type) async {
     Response response = await _getSecure(
         {'getAllQueries': '', 'querytype': QueryType.values.indexOf(type) + 1});
-    if (response.data is Map<String, dynamic>) {
-      try {
-        List<Query> queries = [];
-        (response.data['data'] as List<dynamic>).forEach((entry) {
-          queries.add(Query.fromJson(entry));
-        });
-
-        return queries;
-      } catch (e) {
-        throw PiholeException(message: 'unknown error', e: e);
-      }
-    }
-
-    throw PiholeException(message: 'unexpected query response', e: response);
+    return _responseToQueries(response);
   }
 
   Future<TopSources> fetchTopSources() async {

@@ -1,4 +1,7 @@
 import 'package:flutterhole/model/api/query.dart';
+import 'package:intl/intl.dart';
+
+final timestampFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
 
 /// Returns a String representation with a coma every 3 digits
 String numWithCommas(num i) {
