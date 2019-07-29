@@ -11,7 +11,6 @@ import 'package:flutterhole/model/api/query.dart';
 import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/service/browser.dart';
 import 'package:flutterhole/service/convert.dart';
-import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 import 'package:flutterhole/widget/layout/search_options.dart';
@@ -70,12 +69,6 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
     super.initState();
     _refreshCompleter = Completer();
     _queryCache = [];
-
-//    fetchEvent = Fetch();
-//
-//    if (widget.client != null) {
-//      fetchEvent = FetchForClient(widget.client);
-//    }
   }
 
   @override

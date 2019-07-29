@@ -18,7 +18,7 @@ import '../mock.dart';
 
 typedef MockAdapterHandler = ResponseBody Function(RequestOptions options);
 
-class MockAdapter extends HttpClientAdapter {
+class MockAdapter extends DefaultHttpClientAdapter {
   List<MockAdapterHandler> handlers;
 
   MockAdapter([this.handlers = const []]);
@@ -120,6 +120,18 @@ void main() {
         await client.fetchSummary();
         fail('exception not thrown');
       } catch (_) {}
+    });
+  });
+
+  group('proxy', () {
+    setUp(() {
+      pihole = Pihole.copyWith(
+        pihole,
+        proxy: Proxy(
+          host: 'proxy.com',
+          port: 8080,
+        ),
+      );
     });
   });
 

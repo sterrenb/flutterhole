@@ -18,6 +18,9 @@ class PiholeEditForm extends StatefulWidget {
 
   const PiholeEditForm({Key key, @required this.original}) : super(key: key);
 
+  static _PiholeEditFormState of(BuildContext context) =>
+      context.ancestorStateOfType(const TypeMatcher<_PiholeEditFormState>());
+
   @override
   _PiholeEditFormState createState() => _PiholeEditFormState();
 }
@@ -47,6 +50,16 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     _resetControllers();
   }
 
+  void save(BuildContext context) {
+    final piholeBloc = BlocProvider.of<PiholeBloc>(context);
+    print('wee save');
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      Fimber.i('saving: ${pihole.toJson()}');
+      piholeBloc.dispatch(UpdatePihole(widget.original, pihole));
+    }
+  }
+
   Future _resetControllers() async {
     titleController.text = widget.original.title;
     hostController.text = widget.original.host;
@@ -55,7 +68,9 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     authController.text = widget.original.auth;
 
     proxyHostController.text = widget.original.proxy.host;
-    proxyPortController.text = widget.original.proxy.port.toString();
+    proxyPortController.text = widget.original.proxy.port == null
+        ? ''
+        : widget.original.proxy.port.toString();
     proxyUsernameController.text = widget.original.proxy.username;
     proxyPasswordController.text = widget.original.proxy.password;
   }
@@ -86,236 +101,225 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
       },
       child: Form(
         key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              ListTab('Proxy (experimental)'),
-              TextField(
-                controller: proxyHostController,
-                keyboardType: TextInputType.url,
-                decoration: InputDecoration(
-                    labelText: 'Host', prefixIcon: Icon(Icons.home)),
-                onChanged: (v) {
-                  _onChange(
-                      context,
-                      Pihole.copyWith(pihole,
-                          proxy: Proxy.copyWith(pihole.proxy, host: v)));
-                },
-              ),
-              TextField(
-                controller: proxyPortController,
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  WhitelistingTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
-                ],
-                decoration: InputDecoration(
-                    labelText: 'Port', prefixIcon: Icon(Icons.adjust)),
-                onChanged: (v) {
-                  _onChange(
-                      context,
-                      Pihole.copyWith(pihole,
-                          proxy: Proxy.copyWith(pihole.proxy,
-                              port: int.parse(v))));
-                },
-              ),
-              TextField(
-                controller: proxyUsernameController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                    labelText: 'Username', prefixIcon: Icon(Icons.account_box)),
-                onChanged: (v) {
-                  _onChange(
-                      context,
-                      Pihole.copyWith(pihole,
-                          proxy: Proxy.copyWith(pihole.proxy, username: v)));
-                },
-              ),
-              TextField(
-                controller: proxyPasswordController,
-                keyboardType: TextInputType.text,
-                obscureText: true,
-                decoration: InputDecoration(
-                    labelText: 'Password', prefixIcon: Icon(Icons.lock)),
-                onChanged: (v) {
-                  _onChange(
-                      context,
-                      Pihole.copyWith(pihole,
-                          proxy: Proxy.copyWith(pihole.proxy, password: v)));
-                },
-              ),
-              ListTab('Pihole'),
-              TextField(
-                controller: titleController,
-                autofocus: pihole.title.isEmpty,
-                decoration: InputDecoration(
-                  labelText: 'Configuration name',
-                  prefixIcon: Icon(Icons.info_outline),
+        child: Scrollbar(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                ListTab('Pihole'),
+                TextField(
+                  controller: titleController,
+                  autofocus: pihole.title.isEmpty,
+                  decoration: InputDecoration(
+                    labelText: 'Configuration name',
+                    prefixIcon: Icon(Icons.info_outline),
+                  ),
                 ),
-              ),
-              TextField(
-                controller: hostController,
-                keyboardType: TextInputType.url,
-                decoration: InputDecoration(
-                    labelText: 'Host', prefixIcon: Icon(Icons.home)),
-                onChanged: (v) {
-                  _onChange(context, Pihole.copyWith(pihole, host: v));
-                },
-              ),
-              TextField(
-                controller: apiPathController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                    labelText: 'API path', prefixIcon: Icon(Icons.code)),
-                onChanged: (v) {
-                  _onChange(context, Pihole.copyWith(pihole, apiPath: v));
-                },
-              ),
-              TextField(
-                controller: portController,
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  WhitelistingTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
-                ],
-                decoration: InputDecoration(
-                    labelText: 'Port', prefixIcon: Icon(Icons.adjust)),
-                onChanged: (v) {
-                  _onChange(
-                      context, Pihole.copyWith(pihole, port: int.parse(v)));
-                },
-              ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: authController,
-                      keyboardType: TextInputType.url,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          labelText: 'API token',
-                          prefixIcon: Icon(Icons.vpn_key)),
-                      onChanged: (v) {
-                        _onChange(context, Pihole.copyWith(pihole, auth: v));
-                      },
-                    ),
-                  ),
-                  IconTextButton(
-                    title: 'Scan QR code',
-                    icon: Icons.camera_alt,
-                    onPressed: () async {
-                      try {
-                        String qr = await QRCodeReader()
-                            .setAutoFocusIntervalInMs(200)
-                            .scan();
-                        authController.text = qr;
-                      } catch (e) {
-                        Fimber.w('cannot scan QR code', ex: e);
-                      }
-                    },
-                  ),
-                ],
-              ),
-              Tooltip(
-                message: 'Open in browser',
-                child: InkWell(
-                  onTap: () {
-                    launchURL(apiTokenUrl);
+                TextField(
+                  controller: hostController,
+                  keyboardType: TextInputType.url,
+                  decoration: InputDecoration(
+                      labelText: 'Host', prefixIcon: Icon(Icons.home)),
+                  onChanged: (v) {
+                    _onChange(context, Pihole.copyWith(pihole, host: v));
                   },
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: RichText(
-                      text: TextSpan(
-                          style: Theme
-                              .of(context)
-                              .textTheme
-                              .caption,
-                          text:
-                          'The API token can be found on the admin home at Settings > API / Web interface (example: ',
-                          children: [
-                            TextSpan(
-                                style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .caption
-                                    .copyWith(color: Colors.blueAccent),
-                                text: apiTokenUrl,
-                                children: [
-                                  TextSpan(
-                                      style:
-                                      Theme
-                                          .of(context)
-                                          .textTheme
-                                          .caption,
-                                      text: ').')
-                                ]),
-                          ]),
-                    ),
-                  ),
                 ),
-              ),
-              ListTab('Advanced'),
-              FormBuilderSwitch(
-                initialValue: widget.original.allowSelfSigned,
-                decoration: InputDecoration(prefixIcon: Icon(Icons.lock_open)),
-                label: Text('Allow self-signed certificates'),
-                attribute: 'attribute',
-                onChanged: (v) {
-                  _onChange(
-                      context, Pihole.copyWith(pihole, allowSelfSigned: v));
-                },
-              ),
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  'Trust certificates, even when the TLS handshake fails.',
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .caption,
+                TextField(
+                  controller: apiPathController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                      labelText: 'API path', prefixIcon: Icon(Icons.code)),
+                  onChanged: (v) {
+                    _onChange(context, Pihole.copyWith(pihole, apiPath: v));
+                  },
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Row(
+                TextField(
+                  controller: portController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    WhitelistingTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(6),
+                  ],
+                  decoration: InputDecoration(
+                      labelText: 'Port', prefixIcon: Icon(Icons.adjust)),
+                  onChanged: (v) {
+                    _onChange(
+                        context, Pihole.copyWith(pihole, port: int.parse(v)));
+                  },
+                ),
+                Row(
                   children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        controller: authController,
+                        keyboardType: TextInputType.url,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            labelText: 'API token',
+                            prefixIcon: Icon(Icons.vpn_key)),
+                        onChanged: (v) {
+                          _onChange(context, Pihole.copyWith(pihole, auth: v));
+                        },
+                      ),
+                    ),
                     IconTextButton(
+                      title: 'Scan QR code',
+                      icon: Icons.camera_alt,
                       onPressed: () async {
-                        final String v = titleController.text;
-                        if (v.length > 0 && _formKey.currentState.validate()) {
-                          _formKey.currentState.save();
-//                          final update = Pihole.copyWith(
-//                            pihole,
-//                            title: titleController.text,
-//                            host: hostController.text,
-//                            port: int.parse(portController.text),
-//                            auth: authController.text,
-//                          );
-                          piholeBloc
-                              .dispatch(UpdatePihole(widget.original, pihole));
-//                          setState(() {
-//                            pihole = update;
-//                          });
+                        try {
+                          String qr = await QRCodeReader()
+                              .setAutoFocusIntervalInMs(200)
+                              .scan();
+                          authController.text = qr;
+                        } catch (e) {
+                          Fimber.w('cannot scan QR code', ex: e);
                         }
                       },
-                      title: 'Save',
-                      icon: Icons.save,
-                      color: Colors.green,
                     ),
-                    IconTextButton(
-                      onPressed: () async {
-                        await _resetControllers();
-                      },
-                      title: 'Reset',
-                      icon: Icons.delete_forever,
-                      color: Colors.red,
-                    )
                   ],
                 ),
-              ),
-              _HealthCheck(),
-            ],
+                Tooltip(
+                  message: 'Open in browser',
+                  child: InkWell(
+                    onTap: () {
+                      launchURL(apiTokenUrl);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: RichText(
+                        text: TextSpan(
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .caption,
+                            text:
+                            'The API token can be found on the admin home at Settings > API / Web interface (example: ',
+                            children: [
+                              TextSpan(
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .caption
+                                      .copyWith(color: Colors.blueAccent),
+                                  text: apiTokenUrl,
+                                  children: [
+                                    TextSpan(
+                                        style:
+                                        Theme
+                                            .of(context)
+                                            .textTheme
+                                            .caption,
+                                        text: ').')
+                                  ]),
+                            ]),
+                      ),
+                    ),
+                  ),
+                ),
+                _HealthCheck(),
+                ListTab('Advanced'),
+                FormBuilderSwitch(
+                  initialValue: widget.original.allowSelfSigned,
+                  decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock_open)),
+                  label: Text('Allow self-signed certificates'),
+                  attribute: 'attribute',
+                  onChanged: (v) {
+                    _onChange(
+                        context, Pihole.copyWith(pihole, allowSelfSigned: v));
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Trust certificates, even when the TLS handshake fails.',
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .caption,
+                  ),
+                ),
+                ListTab('Proxy (experimental)'),
+                TextField(
+                  controller: proxyHostController,
+                  keyboardType: TextInputType.url,
+                  decoration: InputDecoration(
+                      labelText: 'Host', prefixIcon: Icon(Icons.home)),
+                  onChanged: (v) {
+                    _onChange(
+                        context,
+                        Pihole.copyWith(pihole,
+                            proxy: Proxy.copyWith(pihole.proxy, host: v)));
+                  },
+                ),
+                TextField(
+                  controller: proxyPortController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    WhitelistingTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(6),
+                  ],
+                  decoration: InputDecoration(
+                      labelText: 'Port', prefixIcon: Icon(Icons.adjust)),
+                  onChanged: (v) {
+                    _onChange(
+                        context,
+                        Pihole.copyWith(pihole,
+                            proxy: Proxy.copyWith(pihole.proxy,
+                                port: int.parse(v))));
+                  },
+                ),
+                TextField(
+                  controller: proxyUsernameController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                      labelText: 'Username',
+                      prefixIcon: Icon(Icons.account_box)),
+                  onChanged: (v) {
+                    _onChange(
+                        context,
+                        Pihole.copyWith(pihole,
+                            proxy: Proxy.copyWith(pihole.proxy, username: v)));
+                  },
+                ),
+                TextField(
+                  controller: proxyPasswordController,
+                  keyboardType: TextInputType.text,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      labelText: 'Password', prefixIcon: Icon(Icons.lock)),
+                  onChanged: (v) {
+                    _onChange(
+                        context,
+                        Pihole.copyWith(pihole,
+                            proxy: Proxy.copyWith(pihole.proxy, password: v)));
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: <Widget>[
+                      IconTextButton(
+                        onPressed: () async {
+                          save(context);
+                        },
+                        title: 'Save',
+                        icon: Icons.save,
+                        color: Colors.green,
+                      ),
+                      IconTextButton(
+                        onPressed: () async {
+                          await _resetControllers();
+                        },
+                        title: 'Reset',
+                        icon: Icons.delete_forever,
+                        color: Colors.red,
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -342,48 +346,41 @@ class _HealthCheck extends StatelessWidget {
         bloc: BlocProvider.of<VersionsBloc>(context),
         builder: (context, state) {
           List<Widget> items = [];
-
+          Versions versions;
           if (state is BlocStateSuccess<Versions>) {
-            final versions = state.data;
+            versions = state.data;
+          }
+
+          if (state is BlocStateError<Versions>) {
+            items = [
+              ListTile(
+                leading: Icon(Icons.error),
+                title: Text(state.e.message),
+              )
+            ];
+          } else {
             items.addAll([
               _ListTile(
-                title: versions.coreCurrent,
+                title: versions?.coreCurrent ?? 'Loading...',
                 subtitle: 'Pi-hole Version',
                 latest: versions?.coreLatest,
               ),
               _ListTile(
-                title: versions.webCurrent,
+                title: versions?.webCurrent ?? 'Loading...',
                 subtitle: 'Web Interface Version',
                 latest: versions?.webLatest,
               ),
               _ListTile(
-                  title: versions.ftlCurrent,
+                  title: versions?.ftlCurrent ?? 'Loading...',
                   subtitle: 'FTL Version',
-                  latest: versions?.coreLatest),
+                  latest: versions?.coreLatest ?? 'Loading...'),
             ]);
-          }
-
-          if (state is BlocStateError<Versions>) {
-            items.add(ListTile(
-              leading: Icon(Icons.error),
-              title: Text(state.e.message),
-            ));
-          }
-
-          if (state is BlocStateLoading<Versions>) {
-            items.add(Center(
-              child: CircularProgressIndicator(),
-            ));
           }
 
           return Column(
             children: <Widget>[
-              ListTile(
-                title: Text(
-                  'Health check',
-                ),
-              ),
-              ...items
+              ListTab('Health check'),
+              ...items,
             ],
           );
         });
@@ -398,7 +395,7 @@ class _ListTile extends StatelessWidget {
     this.latest = '',
   })
       : _subtitle =
-  '$subtitle${(latest != null && latest.length > 0)
+  '$subtitle${(title != 'Loading...' && latest != null && latest.length > 0)
       ? ' (update available: $latest)'
       : ''}',
         super(key: key);

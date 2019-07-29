@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutterhole/model/serializable.dart';
 
@@ -17,9 +19,21 @@ class Proxy extends Equatable {
   final String username;
   final String password;
 
-  bool get isNotEmpty =>
-      (host.isNotEmpty && port != null) ||
-          (username.isNotEmpty && password.isNotEmpty);
+  String get directConnection {
+    if (host.isEmpty || port != null) {
+      return '';
+    } else {
+      return '$host:$port';
+    }
+  }
+
+  String get basicAuth {
+    if (username.isEmpty || password.isEmpty) {
+      return '';
+    } else {
+      return base64Encode(utf8.encode('$username:$password'));
+    }
+  }
 
   Proxy({
     this.host = '',
@@ -64,14 +78,13 @@ class Pihole extends Serializable {
 
   static String toKey(String str) => str.toLowerCase().replaceAll(' ', '_');
 
-  Pihole(
-      {this.title = 'FlutterHole',
-      this.host = 'pi.hole',
-      this.apiPath = 'admin/api.php',
-      this.port = 80,
-        this.auth = '',
-        this.allowSelfSigned = false,
-        Proxy proxy})
+  Pihole({this.title = 'FlutterHole',
+    this.host = 'pi.hole',
+    this.apiPath = 'admin/api.php',
+    this.port = 80,
+    this.auth = '',
+    this.allowSelfSigned = false,
+    Proxy proxy})
       : this.proxy = proxy ?? Proxy(),
         super([
         title,
