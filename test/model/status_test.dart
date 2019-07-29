@@ -9,7 +9,6 @@ void main() {
   String str;
   setUp(() {
     map = {"status": "enabled"};
-    print(map.toString());
     str = '{"status": "enabled"}';
   });
 

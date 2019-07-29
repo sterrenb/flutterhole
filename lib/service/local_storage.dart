@@ -24,7 +24,6 @@ class LocalStorage {
       _preferences = await SharedPreferences.getInstance();
       await _preferences.reload();
       await _preferences.clear();
-      print('yay clean');
     }
 
     if (_instance == null) {

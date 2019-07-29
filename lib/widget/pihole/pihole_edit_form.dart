@@ -33,6 +33,11 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
   TextEditingController portController = TextEditingController();
   TextEditingController authController = TextEditingController();
 
+  TextEditingController proxyHostController = TextEditingController();
+  TextEditingController proxyPortController = TextEditingController();
+  TextEditingController proxyUsernameController = TextEditingController();
+  TextEditingController proxyPasswordController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +53,11 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     apiPathController.text = widget.original.apiPath;
     portController.text = widget.original.port.toString();
     authController.text = widget.original.auth;
+
+    proxyHostController.text = widget.original.proxy.host;
+    proxyPortController.text = widget.original.proxy.port.toString();
+    proxyUsernameController.text = widget.original.proxy.username;
+    proxyPasswordController.text = widget.original.proxy.password;
   }
 
   void _onChange(BuildContext context, Pihole update) {
@@ -80,6 +90,62 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              ListTab('Proxy (experimental)'),
+              TextField(
+                controller: proxyHostController,
+                keyboardType: TextInputType.url,
+                decoration: InputDecoration(
+                    labelText: 'Host', prefixIcon: Icon(Icons.home)),
+                onChanged: (v) {
+                  _onChange(
+                      context,
+                      Pihole.copyWith(pihole,
+                          proxy: Proxy.copyWith(pihole.proxy, host: v)));
+                },
+              ),
+              TextField(
+                controller: proxyPortController,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  WhitelistingTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6),
+                ],
+                decoration: InputDecoration(
+                    labelText: 'Port', prefixIcon: Icon(Icons.adjust)),
+                onChanged: (v) {
+                  _onChange(
+                      context,
+                      Pihole.copyWith(pihole,
+                          proxy: Proxy.copyWith(pihole.proxy,
+                              port: int.parse(v))));
+                },
+              ),
+              TextField(
+                controller: proxyUsernameController,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                    labelText: 'Username', prefixIcon: Icon(Icons.account_box)),
+                onChanged: (v) {
+                  _onChange(
+                      context,
+                      Pihole.copyWith(pihole,
+                          proxy: Proxy.copyWith(pihole.proxy, username: v)));
+                },
+              ),
+              TextField(
+                controller: proxyPasswordController,
+                keyboardType: TextInputType.text,
+                obscureText: true,
+                decoration: InputDecoration(
+                    labelText: 'Password', prefixIcon: Icon(Icons.lock)),
+                onChanged: (v) {
+                  _onChange(
+                      context,
+                      Pihole.copyWith(pihole,
+                          proxy: Proxy.copyWith(pihole.proxy, password: v)));
+                },
+              ),
+              ListTab('Pihole'),
               TextField(
                 controller: titleController,
                 autofocus: pihole.title.isEmpty,
@@ -95,12 +161,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     labelText: 'Host', prefixIcon: Icon(Icons.home)),
                 onChanged: (v) {
                   _onChange(context, Pihole.copyWith(pihole, host: v));
-//                  if (v.length > 0 && pihole.title.length > 0) {
-//                    final update = Pihole.copyWith(pihole, host: v);
-//                    setState(() {
-//                      pihole = update;
-//                    });
-//                  }
                 },
               ),
               TextField(
@@ -124,12 +184,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                 onChanged: (v) {
                   _onChange(
                       context, Pihole.copyWith(pihole, port: int.parse(v)));
-//                  if (v.length > 0 && pihole.title.length > 0) {
-//                    final update = Pihole.copyWith(pihole, port: int.parse(v));
-//                    setState(() {
-//                      pihole = update;
-//                    });
-//                  }
                 },
               ),
               Row(
@@ -144,12 +198,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                           prefixIcon: Icon(Icons.vpn_key)),
                       onChanged: (v) {
                         _onChange(context, Pihole.copyWith(pihole, auth: v));
-//                        if (v.length > 0 && pihole.title.length > 0) {
-//                          final update = Pihole.copyWith(pihole, auth: v);
-//                          setState(() {
-//                            pihole = update;
-//                          });
-//                        }
                       },
                     ),
                   ),
@@ -203,7 +251,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                                       text: ').')
                                 ]),
                           ]),
-//                  'The API token can be found on the admin dashboard at Settings > API / Web interface (example: ${pihole.baseUrl}/admin/settings.php?tab=api).',
                     ),
                   ),
                 ),
@@ -217,10 +264,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                 onChanged: (v) {
                   _onChange(
                       context, Pihole.copyWith(pihole, allowSelfSigned: v));
-//                  final update = Pihole.copyWith(pihole, allowSelfSigned: v);
-//                  setState(() {
-//                    pihole = update;
-//                  });
                 },
               ),
               Padding(
@@ -242,18 +285,18 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                         final String v = titleController.text;
                         if (v.length > 0 && _formKey.currentState.validate()) {
                           _formKey.currentState.save();
-                          final update = Pihole.copyWith(
-                            pihole,
-                            title: titleController.text,
-                            host: hostController.text,
-                            port: int.parse(portController.text),
-                            auth: authController.text,
-                          );
+//                          final update = Pihole.copyWith(
+//                            pihole,
+//                            title: titleController.text,
+//                            host: hostController.text,
+//                            port: int.parse(portController.text),
+//                            auth: authController.text,
+//                          );
                           piholeBloc
-                              .dispatch(UpdatePihole(widget.original, update));
-                          setState(() {
-                            pihole = update;
-                          });
+                              .dispatch(UpdatePihole(widget.original, pihole));
+//                          setState(() {
+//                            pihole = update;
+//                          });
                         }
                       },
                       title: 'Save',

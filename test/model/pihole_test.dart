@@ -31,6 +31,10 @@ main() {
       'port': 80,
       'auth': '',
       'allowselfsigned': false,
+      'proxy_host': '',
+      'proxy_port': null,
+      'proxy_username': '',
+      'proxy_password': '',
     });
   });
 

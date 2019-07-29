@@ -79,14 +79,26 @@ class PiholeClient {
       pihole = pihole ?? localStorage.active();
       dio.options.baseUrl = 'http://${pihole.host}:${pihole.port.toString()}';
 
-      if (pihole.allowSelfSigned) {
-        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-            (HttpClient client) {
+      if (pihole.allowSelfSigned) {}
+
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        if (pihole.allowSelfSigned) {
           client.badCertificateCallback =
               (X509Certificate cert, String host, int port) => true;
-          return client;
-        };
-      }
+        }
+
+        if (pihole.proxy.isNotEmpty) {
+          if (pihole.proxy.host.isNotEmpty && pihole.proxy.port != null) {
+            print('using proxy: ${pihole.proxy.host}:${pihole.proxy.port}');
+            client.findProxy = (uri) {
+              return "PROXY ${pihole.proxy.host}:${pihole.proxy.port}";
+            };
+          }
+        }
+
+        return client;
+      };
 
       final Response response = await dio.get('/${pihole.apiPath}',
           queryParameters: queryParameters,
