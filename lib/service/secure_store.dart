@@ -31,25 +31,28 @@ class SecureStore {
   Future<void> _updateActive() async {
     final String activeTitle = await _storage.read(key: activePrefix);
 
-    if (activeTitle != null) {
+    if (activeTitle != null && piholes.isNotEmpty) {
       if (piholes.containsKey(activeTitle)) {
-        _active = piholes[activeTitle];
+        return activate(piholes[activeTitle]);
       } else {
         Globals.tree.log('SecureStore',
             'active not found in cache, activating first pihole (out of ${piholes.length} piholes)');
-        await activate(piholes.values.first);
+        return activate(piholes.values.first);
       }
     } else {
-      Globals.tree.log('SecureStore',
-          'no active found, activating first pihole (out of ${piholes.length} piholes)');
-      await activate(piholes.values.first);
+      Globals.tree.log('SecureStore', 'no configurations found, using default');
+      return activate(Pihole());
     }
   }
 
   Future<void> activate(Pihole pihole) async {
-    assert(piholes.containsValue(pihole));
+    if (!piholes.containsValue(pihole)) {
+      Globals.tree
+          .log('SecureStore', 'using uncached configuration `${pihole.title}`');
+    }
 
     await _storage.write(key: activePrefix, value: pihole.title);
+    piholes[pihole.title] = pihole;
     _active = pihole;
   }
 

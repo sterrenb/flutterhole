@@ -12,20 +12,12 @@ import 'package:flutterhole/widget/pihole/pihole_button_row.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 import 'package:provider/provider.dart';
 
-class PiholeListBuilder extends StatefulWidget {
+class PiholeListBuilder extends StatelessWidget {
   final bool editable;
 
   const PiholeListBuilder({Key key, this.editable = true}) : super(key: key);
 
-  @override
-  _PiholeListBuilderState createState() => _PiholeListBuilderState();
-}
-
-class _PiholeListBuilderState extends State<PiholeListBuilder> {
-  List<Pihole> _all;
-  Pihole _active;
-
-  void _edit(Pihole pihole) async {
+  void _edit(BuildContext context, Pihole pihole) async {
     BlocProvider.of<VersionsBloc>(context).dispatch(FetchForPihole(pihole));
     final String message = await Globals.navigateTo(
       context,
@@ -49,69 +41,64 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
       bloc: piholeBloc,
       builder: (context, state) {
         if (state is PiholeStateSuccess) {
-          _all = state.all;
-          _active = state.active;
-
           List<Widget> items = [];
 
-          if (_all != null) {
-            _all.forEach((pihole) {
-              Widget tile;
-              final bool isActive = (pihole.title == _active.title);
-              if (widget.editable) {
-                tile = Dismissible(
-                  key: Key(pihole.title),
-                  onDismissed: (direction) async {
-                    setState(() {
-                      _all.remove(pihole);
-                    });
-                    piholeBloc.dispatch(RemovePihole(pihole));
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text('Removing ${pihole.title}'),
-                      action: SnackBarAction(
-                          label: 'Undo',
-                          onPressed: () async {
-                            piholeBloc.dispatch(AddPihole(pihole));
-                          }),
-                    ));
-                  },
-                  background: DismissibleBackground(),
-                  secondaryBackground:
-                  DismissibleBackground(alignment: Alignment.centerRight),
-                  child: PiholeTile(
-                    pihole: pihole,
-                    active: isActive,
-                    onTap: () => _edit(pihole),
-                    onLongPress: () => _activate(pihole, context),
-                  ),
-                );
-              } else {
-                tile = PiholeTile(
+          state.all.forEach((pihole) {
+            Widget tile;
+            final bool isActive = (pihole == state.active);
+            if (editable) {
+              tile = Dismissible(
+                key: Key(pihole.title),
+                onDismissed: (direction) async {
+//                    setState(() {
+//                      _all.remove(pihole);
+//                    });
+                  piholeBloc.dispatch(RemovePihole(pihole));
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text('Removing ${pihole.title}'),
+                    action: SnackBarAction(
+                        label: 'Undo',
+                        onPressed: () async {
+                          piholeBloc.dispatch(AddPihole(pihole));
+                        }),
+                  ));
+                },
+                background: DismissibleBackground(),
+                secondaryBackground:
+                DismissibleBackground(alignment: Alignment.centerRight),
+                child: PiholeTile(
                   pihole: pihole,
                   active: isActive,
-                  onTap: () async {
-                    await _activate(pihole, context);
-                    Navigator.of(context).pop();
-                  },
-                  onLongPress: () => _edit(pihole),
-                );
-              }
+                  onTap: () => _edit(context, pihole),
+                  onLongPress: () => _activate(pihole, context),
+                ),
+              );
+            } else {
+              tile = PiholeTile(
+                pihole: pihole,
+                active: isActive,
+                onTap: () async {
+                  await _activate(pihole, context);
+                  Navigator.of(context).pop();
+                },
+                onLongPress: () => _edit(context, pihole),
+              );
+            }
 
-              items.add(tile);
-            });
-          }
+            items.add(tile);
+          });
 
           return Column(
             children: <Widget>[
-              widget.editable ? Container() : ListTab('Select configuration'),
-              widget.editable ? Container() : Divider(),
+              editable ? Container() : ListTab('Select configuration'),
+              editable ? Container() : Divider(),
               ...items,
               Divider(),
-              widget.editable
+              editable
                   ? PiholeButtonRow(
-                onStateChange: () {
-                  setState(() {});
-                },
+//                      onStateChange: () {
+//                        setState(() {});
+//                      },
               )
                   : Container(),
             ],
@@ -123,9 +110,9 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
             children: <Widget>[
               ErrorMessage(errorMessage: state.e.toString()),
               PiholeButtonRow(
-                onStateChange: () {
-                  setState(() {});
-                },
+//                onStateChange: () {
+//                  setState(() {});
+//                },
               )
             ],
           );
@@ -143,12 +130,11 @@ class PiholeTile extends StatelessWidget {
   final GestureTapCallback onTap;
   final GestureLongPressCallback onLongPress;
 
-  const PiholeTile(
-      {Key key,
-      @required this.pihole,
-        this.active = false,
-        this.onTap,
-        this.onLongPress})
+  const PiholeTile({Key key,
+    @required this.pihole,
+    this.active = false,
+    this.onTap,
+    this.onLongPress})
       : super(key: key);
 
   @override
