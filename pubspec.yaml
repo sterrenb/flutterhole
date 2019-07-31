@@ -25,7 +25,6 @@ dependencies:
   flutter_bloc: ^0.19.1
   fimber: ^0.3.0
   fluro: ^1.5.0
-  shared_preferences: ^0.5.3+1
   url_launcher: ^5.0.3
   launch_review: ^2.0.0
   package_info: ^0.4.0+4
@@ -37,6 +36,7 @@ dependencies:
   sticky_headers: ^0.1.8
   provider: ^3.0.0+1
   fl_chart: ^0.1.5
+  flutter_secure_storage: ^3.2.1+1
 
 dev_dependencies:
   flutter_test:

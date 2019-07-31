@@ -29,8 +29,9 @@ class PiholeBloc extends Bloc<PiholeEvent, PiholeState> {
 
   Stream<PiholeState> _fetch() async* {
     yield PiholeStateLoading();
+    await repository.reload();
+    print('bloc fetch active: ${repository.active()}');
     try {
-      await repository.refresh();
       yield PiholeStateSuccess(
           all: repository.getPiholes(), active: repository.active());
     } catch (e) {
@@ -72,8 +73,8 @@ class PiholeBloc extends Bloc<PiholeEvent, PiholeState> {
   Stream<PiholeState> _activate(Pihole pihole) async* {
     try {
       await repository.activate(pihole);
-      final active = repository.active();
-      yield PiholeStateSuccess(all: repository.getPiholes(), active: active);
+      yield PiholeStateSuccess(
+          all: repository.getPiholes(), active: repository.active());
     } catch (e) {
       yield PiholeStateError(e);
     }

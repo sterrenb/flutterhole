@@ -8,8 +8,8 @@ const String hostKey = 'host';
 const String apiPathKey = 'apipath';
 const String portKey = 'port';
 const String authKey = 'auth';
-const String allowSelfSignedKey = 'allowselfsigned';
-const String proxyKey = 'proxy';
+const String allowSelfSignedKey = 'allowSelfSigned';
+const String proxyKey = 'proxy_';
 const String usernameKey = 'username';
 const String passwordKey = 'password';
 
@@ -37,7 +37,7 @@ class Proxy extends Equatable {
 
   Proxy({
     this.host = '',
-    this.port,
+    this.port = 8080,
     this.username = '',
     this.password = '',
   }) : super([
@@ -76,7 +76,8 @@ class Pihole extends Serializable {
 
   String get basePath => '$baseUrl/$apiPath';
 
-  static String toKey(String str) => str.toLowerCase().replaceAll(' ', '_');
+//  static String toKey(String str) => str.toLowerCase().replaceAll(' ', '_');
+  static String toKey(String str) => str;
 
   Pihole({this.title = 'FlutterHole',
     this.host = 'pi.hole',
@@ -116,16 +117,17 @@ class Pihole extends Serializable {
       );
 
   @override
-  Map<String, dynamic> toJson() => {
-    titleKey: title,
-    hostKey: host,
-    apiPathKey: apiPath,
-    portKey: port,
-    authKey: auth,
-    allowSelfSignedKey: allowSelfSigned,
-    '${proxyKey}_$hostKey': proxy.host,
-    '${proxyKey}_$portKey': proxy.port,
-    '${proxyKey}_$usernameKey': proxy.username,
-    '${proxyKey}_$passwordKey': proxy.password,
-  };
+  Map<String, String> toJson() =>
+      {
+        titleKey: title,
+        hostKey: host,
+        apiPathKey: apiPath,
+        portKey: port.toString(),
+        authKey: auth,
+        allowSelfSignedKey: allowSelfSigned.toString(),
+        '$proxyKey$hostKey': proxy.host,
+        '$proxyKey$portKey': proxy.port.toString(),
+        '$proxyKey$usernameKey': proxy.username,
+        '$proxyKey$passwordKey': proxy.password,
+      };
 }

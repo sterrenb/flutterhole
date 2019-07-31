@@ -100,6 +100,10 @@ class ForwardDestinationsChartBuilder extends StatelessWidget {
           );
         }
         if (state is BlocStateError<ForwardDestinations>) {
+          if (state.e.message == 'API token is empty') {
+            return Container();
+          }
+
           return ErrorMessage(errorMessage: state.e.message);
         }
         return Center(child: CircularProgressIndicator());

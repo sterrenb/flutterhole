@@ -1,43 +1,43 @@
 import 'package:flutterhole/model/pihole.dart';
-import 'package:flutterhole/service/local_storage.dart';
+import 'package:flutterhole/service/secure_store.dart';
 
 class PiholeRepository {
-  final LocalStorage localStorage;
+//  final LocalStorage localStorage;
+  final SecureStore secureStore;
 
-  PiholeRepository(this.localStorage);
+  PiholeRepository(this.secureStore);
 
-  Future<void> refresh() async {
-    await localStorage.init();
-    if (localStorage.cache.isEmpty) {
-      await localStorage.reset();
-    }
+  Pihole active() {
+    return secureStore.active;
+  }
+
+  Future<void> reload() async {
+    await secureStore.reload();
   }
 
   List<Pihole> getPiholes() {
-    return localStorage.cache.values.toList();
+    return secureStore.piholes.values.toList();
   }
 
-  Pihole active() {
-    return localStorage.active();
+  Future<void> add(Pihole pihole) async {
+    return secureStore.add(pihole);
   }
 
-  Future<bool> add(Pihole pihole) async {
-    return localStorage.add(pihole);
-  }
-
-  Future<bool> remove(Pihole pihole) async {
-    return localStorage.remove(pihole);
+  Future<void> remove(Pihole pihole) async {
+    return secureStore.remove(pihole);
   }
 
   Future<void> activate(Pihole pihole) async {
-    await localStorage.activate(pihole);
+    await secureStore.activate(pihole);
   }
 
   Future<void> update(Pihole original, Pihole update) async {
-    await localStorage.update(original, update);
+    await secureStore.update(original, update);
   }
 
   Future<void> reset() async {
-    await localStorage.reset();
+    await secureStore.deleteAll();
+    await secureStore.add(Pihole());
+    await secureStore.reload();
   }
 }

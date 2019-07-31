@@ -13,10 +13,10 @@ import 'package:flutterhole/model/api/top_sources.dart';
 import 'package:flutterhole/model/api/versions.dart';
 import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/secure_store.dart';
 import 'package:meta/meta.dart';
 
 import 'globals.dart';
-import 'local_storage.dart';
 import 'pihole_exception.dart';
 
 const String _authParameterKey = 'auth';
@@ -24,7 +24,7 @@ const String _logKey = 'client';
 
 class PiholeClient {
   final Dio dio;
-  final LocalStorage localStorage;
+  final SecureStore secureStore;
 
   CancelToken token;
 
@@ -33,7 +33,7 @@ class PiholeClient {
   }
 
   PiholeClient({@required this.dio,
-    @required this.localStorage,
+    @required this.secureStore,
     bool logQueries = true}) {
     token = CancelToken();
 
@@ -76,7 +76,7 @@ class PiholeClient {
   Future<Response> _get(Map<String, dynamic> queryParameters,
       {ResponseType responseType = ResponseType.json, Pihole pihole}) async {
     try {
-      pihole = pihole ?? localStorage.active();
+      pihole = pihole ?? secureStore.active;
       dio.options.baseUrl = 'http://${pihole.host}:${pihole.port.toString()}';
 
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -133,7 +133,7 @@ class PiholeClient {
   /// Performs [_get] with the API token set in [queryParameters].
   Future<Response> _getSecure(Map<String, dynamic> queryParameters,
       {ResponseType responseType = ResponseType.json, Pihole pihole}) async {
-    pihole = pihole ?? localStorage.active();
+    pihole = pihole ?? secureStore.active;
     if (pihole.auth.isEmpty) {
       throw PiholeException(message: 'API token is empty');
     }

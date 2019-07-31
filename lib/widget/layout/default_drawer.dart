@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/api/queries_over_time.dart';
 import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/api/query_types.dart';
+import 'package:flutterhole/bloc/api/status.dart';
 import 'package:flutterhole/bloc/api/summary.dart';
 import 'package:flutterhole/bloc/api/top_sources.dart';
 import 'package:flutterhole/bloc/api/whitelist.dart';
@@ -67,8 +69,10 @@ class _DefaultDrawerMenu extends StatelessWidget {
           leading: Icon(Icons.home),
           onTap: () {
             BlocProvider.of<SummaryBloc>(context).dispatch(Fetch());
+            BlocProvider.of<StatusBloc>(context).dispatch(Fetch());
             BlocProvider.of<TopSourcesBloc>(context).dispatch(Fetch());
             BlocProvider.of<QueryTypesBloc>(context).dispatch(Fetch());
+            BlocProvider.of<QueriesOverTimeBloc>(context).dispatch(Fetch());
             Globals.navigateTo(context, homePath);
           },
         ),

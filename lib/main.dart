@@ -17,10 +17,10 @@ import 'package:flutterhole/bloc/api/whitelist.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
 import 'package:flutterhole/service/globals.dart';
-import 'package:flutterhole/service/local_storage.dart';
 import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/routes.dart';
+import 'package:flutterhole/service/secure_store.dart';
 import 'package:flutterhole/widget/app.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 
@@ -32,14 +32,15 @@ void main() async {
   Fimber.plantTree(MemoryTree());
 
   Globals.router = Router();
-  Globals.localStorage = await LocalStorage.getInstance();
+//  Globals.localStorage = await LocalStorage.getInstance();
+  Globals.secureStore = SecureStore();
 
   configureRoutes(Globals.router);
 
-  Globals.client = PiholeClient(dio: Dio(), localStorage: Globals.localStorage);
+  Globals.client = PiholeClient(dio: Dio(), secureStore: Globals.secureStore);
 
   final PiholeBloc piholeBloc =
-  PiholeBloc(PiholeRepository(Globals.localStorage));
+  PiholeBloc(PiholeRepository(Globals.secureStore));
 
   piholeBloc.dispatch(FetchPiholes());
 
@@ -99,13 +100,9 @@ void main() async {
     Fimber.i('Running in debug mode');
   } else {
     Fimber.i('Running in release mode');
-    if (Globals.localStorage.cache.isEmpty) {
-      await Globals.localStorage.reset();
-      Globals.tree.log('main', 'No configurations found, using default');
-    }
   }
 
-  await Globals.localStorage.init();
+  await Globals.secureStore.reload();
 
   runApp(App(
     themeModel: ThemeModel(),

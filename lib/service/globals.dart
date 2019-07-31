@@ -2,8 +2,8 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
+import 'package:flutterhole/service/secure_store.dart';
 
-import 'local_storage.dart';
 
 /// Globally accessible class.
 class Globals {
@@ -11,7 +11,9 @@ class Globals {
   static MemoryTree tree;
   static Router router;
   static PiholeClient client;
-  static LocalStorage localStorage;
+
+//  static LocalStorage localStorage;
+  static SecureStore secureStore;
 
   static VoidCallback refreshAllBlocs;
 

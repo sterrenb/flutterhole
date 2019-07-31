@@ -28,20 +28,20 @@ main() {
       'title': 'FlutterHole',
       'host': 'pi.hole',
       'apipath': 'admin/api.php',
-      'port': 80,
+      'port': '80',
       'auth': '',
-      'allowselfsigned': false,
+      'allowSelfSigned': 'false',
       'proxy_host': '',
-      'proxy_port': null,
+      'proxy_port': '8080',
       'proxy_username': '',
       'proxy_password': '',
     });
   });
 
   test('getters', () {
-    expect(pihole.localKey, 'flutterhole');
+    expect(pihole.localKey, 'FlutterHole');
     expect(pihole.baseUrl, 'pi.hole');
     expect(pihole.basePath, 'pi.hole/admin/api.php');
-    expect(Pihole.toKey(pihole.title), 'flutterhole');
+    expect(Pihole.toKey(pihole.title), 'FlutterHole');
   });
 }

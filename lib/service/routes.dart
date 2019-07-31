@@ -166,9 +166,12 @@ void configureRoutes(Router router) {
   router.define(settingsPath, handler: _SimpleHandler(SettingsScreen()));
 
   router.define(_piholeEditPath,
-      handler: _ParamsHandler((params) =>
-          PiholeEditScreen(
-              pihole: Globals.localStorage.cache[params['key'][0]])));
+      handler: _ParamsHandler((params) {
+        print('piholeedit params: $params');
+        print(Globals.secureStore.piholes.values);
+        return PiholeEditScreen(
+            pihole: Globals.secureStore.piholes[params['key'][0]]);
+      }));
 
   router.define(aboutPath, handler: _SimpleHandler(AboutScreen()));
 

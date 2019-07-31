@@ -90,6 +90,10 @@ class QueryTypesChartBuilder extends StatelessWidget {
           );
         }
         if (state is BlocStateError<QueryTypes>) {
+          if (state.e.message == 'API token is empty') {
+            return Container();
+          }
+
           return Card(
               child: ListTile(
                 leading: Icon(Icons.warning),

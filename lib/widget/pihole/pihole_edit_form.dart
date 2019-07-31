@@ -56,7 +56,8 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       Fimber.i('saving: ${pihole.toJson()}');
-      piholeBloc.dispatch(UpdatePihole(widget.original, pihole));
+      piholeBloc.dispatch(UpdatePihole(
+          widget.original, Pihole.copyWith(pihole, auth: authController.text)));
     }
   }
 
@@ -76,12 +77,11 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
   }
 
   void _onChange(BuildContext context, Pihole update) {
-    if (_formKey.currentState.validate()) {
-      setState(() {
-        pihole = update;
-        BlocProvider.of<VersionsBloc>(context).dispatch(FetchForPihole(update));
-      });
-    }
+    setState(() {
+      print('current title: ${update.title} (${pihole.title}');
+      pihole = update;
+      BlocProvider.of<VersionsBloc>(context).dispatch(FetchForPihole(update));
+    });
   }
 
   @override
@@ -114,6 +114,9 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     labelText: 'Configuration name',
                     prefixIcon: Icon(Icons.info_outline),
                   ),
+                  onChanged: (v) {
+                    _onChange(context, Pihole.copyWith(pihole, title: v));
+                  },
                 ),
                 TextField(
                   controller: hostController,
@@ -220,8 +223,8 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                 ListTab('Advanced'),
                 FormBuilderSwitch(
                   initialValue: widget.original.allowSelfSigned,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.lock_open)),
+                  decoration:
+                  InputDecoration(prefixIcon: Icon(Icons.lock_open)),
                   label: Text('Allow self-signed certificates'),
                   attribute: 'attribute',
                   onChanged: (v) {

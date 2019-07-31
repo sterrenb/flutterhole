@@ -25,7 +25,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
   List<Pihole> _all;
   Pihole _active;
 
-  void _onTap(Pihole pihole) async {
+  void _edit(Pihole pihole) async {
     BlocProvider.of<VersionsBloc>(context).dispatch(FetchForPihole(pihole));
     final String message = await Globals.navigateTo(
       context,
@@ -81,7 +81,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
                   child: PiholeTile(
                     pihole: pihole,
                     active: isActive,
-                    onTap: () => _onTap(pihole),
+                    onTap: () => _edit(pihole),
                     onLongPress: () => _activate(pihole, context),
                   ),
                 );
@@ -93,6 +93,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
                     await _activate(pihole, context);
                     Navigator.of(context).pop();
                   },
+                  onLongPress: () => _edit(pihole),
                 );
               }
 
