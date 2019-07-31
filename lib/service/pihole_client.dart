@@ -46,6 +46,7 @@ class PiholeClient {
               options.uri.queryParameters[_authParameterKey], 'HIDDEN');
         }
 
+        message = '$message --- scheme: ${options.uri.scheme}';
         _log(message, tag: 'request');
         return options;
       }, onResponse: (Response response) {
@@ -77,7 +78,7 @@ class PiholeClient {
       {ResponseType responseType = ResponseType.json, Pihole pihole}) async {
     try {
       pihole = pihole ?? secureStore.active;
-      dio.options.baseUrl = 'http://${pihole.host}:${pihole.port.toString()}';
+      dio.options.baseUrl = pihole.baseUrl;
 
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {

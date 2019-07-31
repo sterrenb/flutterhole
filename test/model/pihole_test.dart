@@ -14,6 +14,7 @@ main() {
     expect(pihole.apiPath, 'admin/api.php');
     expect(pihole.port, 80);
     expect(pihole.auth, isEmpty);
+    expect(pihole.useSSL, isFalse);
     expect(pihole.allowSelfSigned, isFalse);
   });
 
@@ -30,6 +31,7 @@ main() {
       'apipath': 'admin/api.php',
       'port': '80',
       'auth': '',
+      'useSSL': 'false',
       'allowSelfSigned': 'false',
       'proxy_host': '',
       'proxy_port': '8080',
@@ -40,8 +42,7 @@ main() {
 
   test('getters', () {
     expect(pihole.localKey, 'FlutterHole');
-    expect(pihole.baseUrl, 'pi.hole');
-    expect(pihole.basePath, 'pi.hole/admin/api.php');
+    expect(pihole.baseUrl, 'http://pi.hole');
     expect(Pihole.toKey(pihole.title), 'FlutterHole');
   });
 }

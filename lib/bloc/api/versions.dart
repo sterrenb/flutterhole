@@ -7,14 +7,19 @@ import 'package:flutterhole/service/pihole_exception.dart';
 
 class FetchForPihole extends BlocEvent {
   final Pihole pihole;
+  final bool cancelOldRequests;
 
-  FetchForPihole(this.pihole) : super([pihole]);
+  FetchForPihole(this.pihole, {this.cancelOldRequests = false})
+      : super([pihole]);
 }
 
 class VersionsBloc extends BaseBloc<Versions> {
   VersionsBloc(BaseRepository<Versions> repository) : super(repository);
 
-  Stream<BlocState> _fetchForPihole(Pihole pihole) async* {
+  Stream<BlocState> _fetchForPihole(Pihole pihole,
+      {bool cancelOldRequests = false}) async* {
+    if (cancelOldRequests) repository.client.cancel();
+
     try {
       final data = await (repository as VersionsRepository).get(pihole);
       yield BlocStateSuccess<Versions>(data);

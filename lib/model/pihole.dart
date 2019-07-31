@@ -8,6 +8,7 @@ const String hostKey = 'host';
 const String apiPathKey = 'apipath';
 const String portKey = 'port';
 const String authKey = 'auth';
+const String useSSLKey = 'useSSL';
 const String allowSelfSignedKey = 'allowSelfSigned';
 const String proxyKey = 'proxy_';
 const String usernameKey = 'username';
@@ -67,14 +68,15 @@ class Pihole extends Serializable {
   final String apiPath;
   final int port;
   final String auth;
+  final bool useSSL;
   final bool allowSelfSigned;
   final Proxy proxy;
 
   String get localKey => Pihole.toKey(this.title);
 
-  String get baseUrl => '$host${port == 80 ? '' : ':${port.toString()}'}';
-
-  String get basePath => '$baseUrl/$apiPath';
+  String get baseUrl =>
+      '${(port == 443 || useSSL) ? 'https' : 'http'}://$host${((port == 80 &&
+          !useSSL) || (port == 443 && useSSL)) ? '' : ':${port.toString()}'}';
 
 //  static String toKey(String str) => str.toLowerCase().replaceAll(' ', '_');
   static String toKey(String str) => str;
@@ -84,6 +86,7 @@ class Pihole extends Serializable {
     this.apiPath = 'admin/api.php',
     this.port = 80,
     this.auth = '',
+    this.useSSL = false,
     this.allowSelfSigned = false,
     Proxy proxy})
       : this.proxy = proxy ?? Proxy(),
@@ -92,6 +95,7 @@ class Pihole extends Serializable {
         host,
         port,
         auth,
+        useSSL,
         allowSelfSigned,
         proxy ?? Proxy(),
       ]);
@@ -103,6 +107,7 @@ class Pihole extends Serializable {
     String apiPath,
     int port,
     String auth,
+    bool useSSL,
     bool allowSelfSigned,
     Proxy proxy,
   }) =>
@@ -112,6 +117,7 @@ class Pihole extends Serializable {
         apiPath: apiPath ?? source.apiPath,
         port: port ?? source.port,
         auth: auth ?? source.auth,
+        useSSL: useSSL ?? source.useSSL,
         allowSelfSigned: allowSelfSigned ?? source.allowSelfSigned,
         proxy: proxy ?? source.proxy,
       );
@@ -124,6 +130,7 @@ class Pihole extends Serializable {
         apiPathKey: apiPath,
         portKey: port.toString(),
         authKey: auth,
+        useSSLKey: useSSL.toString(),
         allowSelfSignedKey: allowSelfSigned.toString(),
         '$proxyKey$hostKey': proxy.host,
         '$proxyKey$portKey': proxy.port.toString(),

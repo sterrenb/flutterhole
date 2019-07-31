@@ -167,8 +167,6 @@ void configureRoutes(Router router) {
 
   router.define(_piholeEditPath,
       handler: _ParamsHandler((params) {
-        print('piholeedit params: $params');
-        print(Globals.secureStore.piholes.values);
         return PiholeEditScreen(
             pihole: Globals.secureStore.piholes[params['key'][0]]);
       }));

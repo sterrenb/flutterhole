@@ -25,7 +25,7 @@ class StatusAppBar extends StatelessWidget implements PreferredSizeWidget {
                   title,
                   overflow: TextOverflow.fade,
                 )),
-            StatusIcon(),
+            ActiveStatusIcon(),
           ],
         ),
         actions: [

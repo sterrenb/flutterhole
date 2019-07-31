@@ -27,7 +27,7 @@ class TitleRow extends StatelessWidget {
             );
           },
         )),
-        StatusIcon(),
+        ActiveStatusIcon(),
       ],
     );
   }

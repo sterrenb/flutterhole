@@ -12,7 +12,6 @@ class SecureStore {
   Pihole _active;
 
   Pihole get active {
-    Globals.tree.log('SecureStore', 'securestore active: $_active');
     return _active;
   }
 
@@ -85,6 +84,7 @@ class SecureStore {
       final String titleString = await get('${title}_$titleKey');
       final String hostString = await get('${title}_$hostKey');
       final String portString = await get('${title}_$portKey');
+      final String useSSLString = await get('${title}_$useSSLKey');
       final String allowSelfSignedString =
           await get('${title}_$allowSelfSignedKey');
       final String authString = await get('${title}_$authKey');
@@ -102,6 +102,8 @@ class SecureStore {
         port: portString == null ? 80 : int.parse(portString),
         apiPath: apiPathString,
         auth: authString,
+        useSSL:
+        useSSLString == null ? false : useSSLString.toLowerCase() == 'true',
         allowSelfSigned: allowSelfSignedString == null
             ? false
             : allowSelfSignedString.toLowerCase() == 'true',
