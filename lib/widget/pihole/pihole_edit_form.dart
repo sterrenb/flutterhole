@@ -79,8 +79,8 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
   }
 
   void _onChange(BuildContext context, Pihole update) {
-    BlocProvider.of<VersionsBloc>(context).dispatch(
-        FetchForPihole(update, cancelOldRequests: true));
+    BlocProvider.of<VersionsBloc>(context)
+        .dispatch(FetchForPihole(update, cancelOldRequests: true));
     setState(() {
       pihole = update;
     });
@@ -178,6 +178,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                         child: TextField(
                           controller: authController,
                           keyboardType: TextInputType.url,
+                          enableInteractiveSelection: true,
                           obscureText: true,
                           decoration: InputDecoration(
                               labelText: 'API token',
@@ -330,6 +331,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                   TextField(
                     controller: proxyPasswordController,
                     keyboardType: TextInputType.text,
+                    enableInteractiveSelection: true,
                     obscureText: true,
                     decoration: InputDecoration(
                         labelText: 'Password', prefixIcon: Icon(Icons.lock)),
@@ -414,8 +416,7 @@ class _HealthCheck extends StatelessWidget {
                 trailing: Icon(Icons.keyboard_arrow_right),
                 title: Text('Pi-hole community support'),
                 subtitle: Text('discourse.pi-hole.net'),
-                onTap: () =>
-                    launchURL('https://discourse.pi-hole.net/'),
+                onTap: () => launchURL('https://discourse.pi-hole.net/'),
               ),
             ];
           } else {
