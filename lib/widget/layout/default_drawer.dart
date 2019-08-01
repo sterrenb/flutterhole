@@ -1,15 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterhole/bloc/api/blacklist.dart';
-import 'package:flutterhole/bloc/api/queries_over_time.dart';
-import 'package:flutterhole/bloc/api/query.dart';
-import 'package:flutterhole/bloc/api/query_types.dart';
-import 'package:flutterhole/bloc/api/status.dart';
-import 'package:flutterhole/bloc/api/summary.dart';
-import 'package:flutterhole/bloc/api/top_sources.dart';
-import 'package:flutterhole/bloc/api/whitelist.dart';
-import 'package:flutterhole/bloc/base/event.dart';
-import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/layout/title_row.dart';
@@ -68,11 +57,6 @@ class _DefaultDrawerMenu extends StatelessWidget {
           title: Text('Dashboard'),
           leading: Icon(Icons.home),
           onTap: () {
-            BlocProvider.of<SummaryBloc>(context).dispatch(Fetch());
-            BlocProvider.of<StatusBloc>(context).dispatch(Fetch());
-            BlocProvider.of<TopSourcesBloc>(context).dispatch(Fetch());
-            BlocProvider.of<QueryTypesBloc>(context).dispatch(Fetch());
-            BlocProvider.of<QueriesOverTimeBloc>(context).dispatch(Fetch());
             Globals.navigateTo(context, homePath);
           },
         ),
@@ -80,16 +64,14 @@ class _DefaultDrawerMenu extends StatelessWidget {
           title: Text('Whitelist'),
           leading: Icon(Icons.check_circle),
           onTap: () {
-            BlocProvider.of<WhitelistBloc>(context).dispatch(Fetch());
-            Globals.navigateTo(context, whitelistPath);
+            Globals.navigateTo(context, whitelistViewPath);
           },
         ),
         ListTile(
           title: Text('Blacklist'),
           leading: Icon(Icons.cancel),
           onTap: () {
-            BlocProvider.of<BlacklistBloc>(context).dispatch(Fetch());
-            Globals.navigateTo(context, blacklistPath);
+            Globals.navigateTo(context, blacklistViewPath);
           },
         ),
         SleepButtons(),
@@ -97,9 +79,7 @@ class _DefaultDrawerMenu extends StatelessWidget {
           title: Text('Query Log'),
           leading: Icon(Icons.filter_list),
           onTap: () {
-            BlocProvider.of<QueryBloc>(context).dispatch(Fetch());
-            BlocProvider.of<BlacklistBloc>(context).dispatch(Fetch());
-            Globals.navigateTo(context, queryPath);
+            Globals.navigateTo(context, queryViewPath);
           },
         ),
         Divider(),
@@ -107,7 +87,6 @@ class _DefaultDrawerMenu extends StatelessWidget {
             title: Text('Settings'),
             leading: Icon(Icons.settings),
             onTap: () {
-              BlocProvider.of<PiholeBloc>(context).dispatch(FetchPiholes());
               Globals.navigateTo(context, settingsPath);
             }),
         ListTile(

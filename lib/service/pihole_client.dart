@@ -46,14 +46,13 @@ class PiholeClient {
               options.uri.queryParameters[_authParameterKey], 'HIDDEN');
         }
 
-        message = '$message --- scheme: ${options.uri.scheme}';
         _log(message, tag: 'request');
         return options;
       }, onResponse: (Response response) {
-        _log(response.data
-            .toString()
-            .length
-            .toString(), tag: 'response');
+//        _log(response.data
+//            .toString()
+//            .length
+//            .toString(), tag: 'response');
         return response;
       }, onError: (DioError error) {
         _log(error.message, tag: 'error');

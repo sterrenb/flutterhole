@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/blacklist.dart';
@@ -14,9 +12,8 @@ import 'package:flutterhole/service/convert.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 import 'package:flutterhole/widget/layout/search_options.dart';
+import 'package:flutterhole/widget/refreshable.dart';
 import 'package:provider/provider.dart';
-
-
 
 enum FilterType {
   Client,
@@ -53,8 +50,6 @@ class QueryLogBuilder extends StatefulWidget {
 }
 
 class _QueryLogBuilderState extends State<QueryLogBuilder> {
-  Completer _refreshCompleter;
-
   List<Query> _queryCache;
 
   Whitelist _whitelistCache;
@@ -67,7 +62,6 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
   @override
   void initState() {
     super.initState();
-    _refreshCompleter = Completer();
     _queryCache = [];
   }
 
@@ -82,20 +76,10 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
         BlocListener(
             bloc: queryBloc,
             listener: (context, state) {
-              if (state is BlocStateEmpty<List<Query>>) {
-                queryBloc.dispatch(fetchEvent);
-              }
-
-              if (state is BlocStateSuccess<List<Query>> ||
-                  state is BlocStateError<List<Query>>) {
-                _refreshCompleter?.complete();
-                _refreshCompleter = Completer();
-
-                if (state is BlocStateSuccess<List<Query>>) {
-                  setState(() {
-                    _queryCache = state.data;
-                  });
-                }
+              if (state is BlocStateSuccess<List<Query>>) {
+                setState(() {
+                  _queryCache = state.data;
+                });
               }
             }),
         BlocListener(
@@ -119,155 +103,155 @@ class _QueryLogBuilderState extends State<QueryLogBuilder> {
           },
         ),
       ],
-      child: RefreshIndicator(
-        onRefresh: () {
+      child: Refreshable(
+        onRefresh: (context) {
           queryBloc.dispatch(fetchEvent);
           whitelistBloc.dispatch(Fetch());
           blacklistBloc.dispatch(Fetch());
-          return _refreshCompleter.future;
         },
+        bloc: queryBloc,
         child: BlocBuilder(
-            bloc: queryBloc,
-            builder: (BuildContext context, BlocState state) {
-              if (state is BlocStateSuccess<List<Query>> ||
-                  state is BlocStateLoading<List<Query>> &&
-                      _queryCache != null &&
-                      _queryCache.length > 0) {
-                if (state is BlocStateSuccess<List<Query>>) {
-                  _queryCache = state.data;
-                }
+          bloc: queryBloc,
+          builder: (BuildContext context, BlocState state) {
+            if (state is BlocStateSuccess<List<Query>> ||
+                state is BlocStateLoading<List<Query>> &&
+                    _queryCache != null &&
+                    _queryCache.length > 0) {
+              if (state is BlocStateSuccess<List<Query>>) {
+                _queryCache = state.data;
+              }
 
-                List<Query> filteredItems = [];
+              List<Query> filteredItems = [];
 
-                final SearchOptions search =
-                Provider.of<SearchOptions>(context);
-                final String str = search.str.trim();
-                if (str.isNotEmpty) {
-                  _queryCache.forEach((query) {
-                    if (query.entry.contains(str)) {
-                      filteredItems.add(query);
-                    }
-                  });
-
-                  if (filteredItems.isEmpty) {
-                    return Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: Center(child: Text('No queries found.')),
-                        ),
-                      ],
-                    );
+              final SearchOptions search = Provider.of<SearchOptions>(context);
+              final String str = search.str.trim();
+              if (str.isNotEmpty) {
+                _queryCache.forEach((query) {
+                  if (query.entry.contains(str)) {
+                    filteredItems.add(query);
                   }
+                });
+
+                if (filteredItems.isEmpty) {
+                  return Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Center(child: Text('No queries found.')),
+                      ),
+                    ],
+                  );
                 }
-
-                final items =
-                filteredItems.isNotEmpty ? filteredItems : _queryCache;
-
-                return Scrollbar(
-                  child: ListView.separated(
-                    itemCount: items.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final Query query = items[index];
-
-                      final bool isOnWhitelist = _whitelistCache != null &&
-                          _whitelistCache.list.contains(query.entry);
-                      final bool isOnBlacklist = _blacklistCache != null &&
-                          _blacklistCache.exact.contains(
-                              BlacklistItem.exact(entry: query.entry));
-
-                      final actions = <Widget>[
-                        IconButton(
-                            icon: Icon(Icons.open_in_browser),
-                            tooltip:
-                            'Open in browser ${Uri.parse(query.entry)
-                                .toString()}',
-                            onPressed: () {
-                              launchURL(query.entry);
-                            }),
-                        isOnWhitelist
-                            ? IconButton(
-                          icon: Icon(Icons.delete),
-                          tooltip: 'Remove from whitelist',
-                          onPressed: () {
-                            whitelistBloc
-                                .dispatch(White.Remove(query.entry));
-                            showSnackBar(
-                                context,
-                                Text(
-                                    'Removing ${query.entry} from whitelist'));
-                          },
-                        )
-                            : isOnBlacklist
-                            ? null
-                            : IconButton(
-                          icon: Icon(
-                            Icons.check_circle,
-                            color: Theme
-                                .of(context)
-                                .iconTheme
-                                .color,
-                          ),
-                          tooltip: 'Add to whitelist',
-                          onPressed: () {
-                            whitelistBloc
-                                .dispatch(White.Add(query.entry));
-                            showSnackBar(
-                                context,
-                                Text(
-                                    'Adding ${query.entry} to whitelist'));
-                          },
-                        ),
-                        isOnBlacklist
-                            ? IconButton(
-                          icon: Icon(Icons.delete),
-                          tooltip: 'Remove from blacklist',
-                          onPressed: () {
-                            blacklistBloc.dispatch(Remove(
-                                BlacklistItem.exact(entry: query.entry)));
-                            showSnackBar(
-                                context,
-                                Text(
-                                    'Removing ${query.entry} from blacklist'));
-                          },
-                        )
-                            : isOnWhitelist
-                            ? null
-                            : IconButton(
-                          icon: Icon(
-                            Icons.cancel,
-                          ),
-                          tooltip: 'Add to blacklist',
-                          onPressed: () {
-                            blacklistBloc.dispatch(Add(
-                                BlacklistItem.exact(
-                                    entry: query.entry)));
-                            showSnackBar(
-                                context,
-                                Text(
-                                    'Adding ${query.entry} to blacklist'));
-                          },
-                        ),
-                      ];
-
-                      return QueryExpansionTile(
-                        query: query,
-                        actions: actions,
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return Divider(height: 1);
-                    },
-                  ),
-                );
               }
 
-              if (state is BlocStateError<List<Query>>) {
-                return ErrorMessage(errorMessage: state.e.message);
-              }
+              final items =
+              filteredItems.isNotEmpty ? filteredItems : _queryCache;
 
-              return Center(child: CircularProgressIndicator());
-            }),
+              return Scrollbar(
+                child: ListView.separated(
+                  itemCount: items.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final Query query = items[index];
+
+                    final bool isOnWhitelist = _whitelistCache != null &&
+                        _whitelistCache.list.contains(query.entry);
+                    final bool isOnBlacklist = _blacklistCache != null &&
+                        _blacklistCache.exact
+                            .contains(BlacklistItem.exact(entry: query.entry));
+
+                    final actions = <Widget>[
+                      IconButton(
+                          icon: Icon(Icons.open_in_browser),
+                          tooltip:
+                          'Open in browser ${Uri.parse(query.entry)
+                              .toString()}',
+                          onPressed: () {
+                            launchURL(query.entry);
+                          }),
+                      isOnWhitelist
+                          ? IconButton(
+                        icon: Icon(Icons.delete),
+                        tooltip: 'Remove from whitelist',
+                        onPressed: () {
+                          whitelistBloc
+                              .dispatch(White.Remove(query.entry));
+                          showSnackBar(
+                              context,
+                              Text(
+                                  'Removing ${query.entry} from whitelist'));
+                        },
+                      )
+                          : isOnBlacklist
+                          ? null
+                          : IconButton(
+                        icon: Icon(
+                          Icons.check_circle,
+                          color: Theme
+                              .of(context)
+                              .iconTheme
+                              .color,
+                        ),
+                        tooltip: 'Add to whitelist',
+                        onPressed: () {
+                          whitelistBloc
+                              .dispatch(White.Add(query.entry));
+                          showSnackBar(
+                              context,
+                              Text(
+                                  'Adding ${query.entry} to whitelist'));
+                        },
+                      ),
+                      isOnBlacklist
+                          ? IconButton(
+                        icon: Icon(Icons.delete),
+                        tooltip: 'Remove from blacklist',
+                        onPressed: () {
+                          blacklistBloc.dispatch(Remove(
+                              BlacklistItem.exact(entry: query.entry)));
+                          showSnackBar(
+                              context,
+                              Text(
+                                  'Removing ${query.entry} from blacklist'));
+                        },
+                      )
+                          : isOnWhitelist
+                          ? null
+                          : IconButton(
+                        icon: Icon(
+                          Icons.cancel,
+                        ),
+                        tooltip: 'Add to blacklist',
+                        onPressed: () {
+                          blacklistBloc.dispatch(Add(
+                              BlacklistItem.exact(
+                                  entry: query.entry)));
+                          showSnackBar(
+                              context,
+                              Text(
+                                  'Adding ${query.entry} to blacklist'));
+                        },
+                      ),
+                    ];
+
+                    return QueryExpansionTile(
+                      query: query,
+                      actions: actions,
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider(height: 1);
+                  },
+                ),
+              );
+            }
+
+            if (state is BlocStateError<List<Query>>) {
+              return ErrorMessage(errorMessage: state.e.message);
+            }
+
+            return Center(child: CircularProgressIndicator());
+          },
+        ),
       ),
     );
   }

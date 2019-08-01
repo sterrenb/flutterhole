@@ -22,7 +22,7 @@ import 'package:flutterhole/widget/screen/whitelist_screen.dart';
 const String homePath = '/';
 
 /// The route to [QueryLogScreen].
-const String queryPath = '/query';
+const String queryViewPath = '/query';
 
 /// The abstract route to [QueryLogScreen] with initial search value.
 const String _querySearchPath = '/query/search/:search';
@@ -68,7 +68,7 @@ String piholeEditPath(Pihole pihole) =>
     _piholeEditPath.replaceAll(':key', pihole.localKey);
 
 /// The route to [WhitelistViewScreen].
-const String whitelistPath = '/whitelist';
+const String whitelistViewPath = '/whitelist/view';
 
 /// The route to [WhitelistAddScreen].
 const String whitelistAddPath = '/whitelist/add';
@@ -81,7 +81,7 @@ String whitelistEditPath(String domain) =>
     _whitelistEditPath.replaceAll(':domain', domain);
 
 /// The route to [BlacklistViewScreen].
-const String blacklistPath = '/blacklist';
+const String blacklistViewPath = '/blacklist';
 
 /// The route to [BlacklistAddScreen].
 const String blacklistAddPath = '/blacklist/add';
@@ -125,7 +125,7 @@ void configureRoutes(Router router) {
 
   router.define(homePath, handler: _SimpleHandler(HomeScreen()));
 
-  router.define(queryPath, handler: _SimpleHandler(QueryLogScreen()));
+  router.define(queryViewPath, handler: _SimpleHandler(QueryLogScreen()));
 
   router.define(_querySearchPath,
       handler: _ParamsHandler((params) =>
@@ -140,7 +140,8 @@ void configureRoutes(Router router) {
               (params) =>
               QueryTypeLogScreen(queryType: params['queryType'][0])));
 
-  router.define(whitelistPath, handler: _SimpleHandler(WhitelistViewScreen()));
+  router.define(
+      whitelistViewPath, handler: _SimpleHandler(WhitelistViewScreen()));
 
   router.define(whitelistAddPath,
       handler: _SimpleHandler(WhitelistAddScreen()));
@@ -149,7 +150,8 @@ void configureRoutes(Router router) {
       handler: _ParamsHandler(
               (params) => WhitelistEditScreen(original: params['domain'][0])));
 
-  router.define(blacklistPath, handler: _SimpleHandler(BlacklistViewScreen()));
+  router.define(
+      blacklistViewPath, handler: _SimpleHandler(BlacklistViewScreen()));
 
   router.define(blacklistAddPath,
       handler: _SimpleHandler(BlacklistAddScreen()));

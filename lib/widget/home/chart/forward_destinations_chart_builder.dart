@@ -6,7 +6,6 @@ import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/api/forward_destinations.dart';
 import 'package:flutterhole/widget/home/chart/indicator.dart';
 import 'package:flutterhole/widget/home/chart/pi_chart.dart';
-import 'package:flutterhole/widget/layout/error_message.dart';
 
 class ForwardDestinationsChartBuilder extends StatelessWidget {
   static final _colors = [
@@ -104,7 +103,11 @@ class ForwardDestinationsChartBuilder extends StatelessWidget {
             return Container();
           }
 
-          return ErrorMessage(errorMessage: state.e.message);
+          return Card(
+              child: ListTile(
+                leading: Icon(Icons.warning),
+                title: Text('Cannot load forward domains: ${state.e.message}'),
+              ));
         }
         return Center(child: CircularProgressIndicator());
       },

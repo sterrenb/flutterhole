@@ -18,7 +18,6 @@ class TitleRow extends StatelessWidget {
           builder: (context, state) {
             String text = 'FlutterHole';
             if (state is PiholeStateSuccess) {
-              print('active in blocbuilder: ${state.active}');
               text = state.active.title;
             }
             return Text(
