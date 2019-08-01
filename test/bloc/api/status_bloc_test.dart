@@ -5,6 +5,8 @@ import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
+import '../../mock.dart';
+
 class MockStatusRepository extends Mock implements StatusRepository {
   Stopwatch stopwatch;
 }
@@ -132,22 +134,56 @@ main() {
 
   group('SleepStatus', () {
     test(
+        'emits [BlocStateEmpty<Status>, BlocStateLoading<Status>, StatusStateSleeping] on successful sleep',
+            () async {
+          final Duration duration = Duration(milliseconds: 1);
+          statusRepository.stopwatch = Stopwatch();
+
+          when(statusRepository.sleep(duration, any))
+              .thenAnswer((_) => Future.value(mockStatusDisabled));
+
+          statusBloc.dispatch(SleepStatus(duration));
+
+          expectLater(
+              statusBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<Status>(),
+                BlocStateLoading<Status>(),
+                StatusStateSleeping(duration, statusRepository.stopwatch),
+              ]));
+        });
+
+    test(
         'emits [BlocStateEmpty<Status>, BlocStateLoading<Status>, BlocStateError<Status>] when status repository throws PiholeException',
-        () {
-      final Duration duration = Duration(seconds: 5);
+            () {
+          final Duration duration = Duration(seconds: 1);
 
-      when(statusRepository.sleep(duration, () {}))
-          .thenThrow(PiholeException());
+          when(statusRepository.sleep(duration, any)).thenThrow(
+              PiholeException());
 
-      expectLater(
-          statusBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<Status>(),
-            BlocStateLoading<Status>(),
-            BlocStateError<Status>(PiholeException()),
-          ]));
+          expectLater(
+              statusBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<Status>(),
+                BlocStateLoading<Status>(),
+                BlocStateError<Status>(PiholeException()),
+              ]));
 
-      statusBloc.dispatch(SleepStatus(duration));
-    });
+          statusBloc.dispatch(SleepStatus(duration));
+        });
+
+    test(
+        'emits [BlocStateEmpty<Status>, BlocStateLoading<Status>, BlocStateSuccess<Status>] on successful wake',
+            () {
+          expectLater(
+              statusBloc.state,
+              emitsInOrder([
+                BlocStateEmpty<Status>(),
+                BlocStateLoading<Status>(),
+                BlocStateSuccess<Status>(mockStatusEnabled),
+              ]));
+
+          statusBloc.dispatch(WakeStatus());
+        });
   });
 }

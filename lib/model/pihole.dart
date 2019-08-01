@@ -20,8 +20,9 @@ class Proxy extends Equatable {
   final String username;
   final String password;
 
+  /// The string used by Dio when proxy is enabled.
   String get directConnection {
-    if (host.isEmpty || port != null) {
+    if (host.isEmpty || port == null) {
       return '';
     } else {
       return '$host:$port';

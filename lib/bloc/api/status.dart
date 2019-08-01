@@ -62,11 +62,7 @@ class StatusBloc extends BaseBloc<Status> {
     yield BlocStateLoading<Status>();
     try {
       await repository.sleep(duration, () => this.dispatch(WakeStatus()));
-      if (repository.stopwatch == null) {
-        yield BlocStateError<Status>(PiholeException());
-      } else {
-        yield StatusStateSleeping(duration, repository.stopwatch);
-      }
+      yield StatusStateSleeping(duration, repository.stopwatch);
     } on PiholeException catch (e) {
       yield BlocStateError<Status>(e);
     }

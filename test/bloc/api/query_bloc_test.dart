@@ -10,87 +10,153 @@ import '../../mock.dart';
 class MockQueryRepository extends Mock implements QueryRepository {}
 
 main() {
-  MockQueryRepository queryRepository;
-  QueryBloc queryBloc;
+  group('bloc', () {
+    MockQueryRepository queryRepository;
+    QueryBloc queryBloc;
 
-  setUp(() {
-    queryRepository = MockQueryRepository();
-    queryBloc = QueryBloc(queryRepository);
-  });
-
-  test('has a correct initialState', () {
-    expect(queryBloc.initialState, BlocStateEmpty<List<Query>>());
-  });
-
-  group('FetchQuery', () {
-    test(
-        'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateSuccess<List<Query>>] when repository returns Query',
-        () {
-      when(queryRepository.get()).thenAnswer((_) => Future.value(mockQueries));
-
-      expectLater(
-          queryBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<List<Query>>(),
-            BlocStateLoading<List<Query>>(),
-            BlocStateSuccess<List<Query>>(mockQueries),
-          ]));
-
-      queryBloc.dispatch(Fetch());
+    setUp(() {
+      queryRepository = MockQueryRepository();
+      queryBloc = QueryBloc(queryRepository);
     });
 
-    test(
-        'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateError<List<Query>>] when home repository throws PiholeException',
-        () {
-      when(queryRepository.get()).thenThrow(PiholeException());
+    test('has a correct initialState', () {
+      expect(queryBloc.initialState, BlocStateEmpty<List<Query>>());
+    });
 
-      expectLater(
-          queryBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<List<Query>>(),
-            BlocStateLoading<List<Query>>(),
-            BlocStateError<List<Query>>(PiholeException()),
-          ]));
+    group('FetchQuery', () {
+      test(
+          'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateSuccess<List<Query>>] when repository returns Query',
+              () {
+            when(queryRepository.get())
+                .thenAnswer((_) => Future.value(mockQueries));
 
-      queryBloc..dispatch(Fetch());
+            expectLater(
+                queryBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<List<Query>>(),
+                  BlocStateLoading<List<Query>>(),
+                  BlocStateSuccess<List<Query>>(mockQueries),
+                ]));
+
+            queryBloc.dispatch(Fetch());
+          });
+
+      test(
+          'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateError<List<Query>>] when home repository throws PiholeException',
+              () {
+            when(queryRepository.get()).thenThrow(PiholeException());
+
+            expectLater(
+                queryBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<List<Query>>(),
+                  BlocStateLoading<List<Query>>(),
+                  BlocStateError<List<Query>>(PiholeException()),
+                ]));
+
+            queryBloc..dispatch(Fetch());
+          });
+    });
+
+    group('FetchQueryForClient', () {
+      test(
+          'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateSuccess<List<Query>>] when repository returns Query',
+              () {
+            when(queryRepository.getForClient('client'))
+                .thenAnswer((_) => Future.value(mockQueries));
+
+            expectLater(
+                queryBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<List<Query>>(),
+                  BlocStateLoading<List<Query>>(),
+                  BlocStateSuccess<List<Query>>(mockQueries),
+                ]));
+
+            queryBloc.dispatch(FetchForClient('client'));
+          });
+
+      test(
+          'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateError<List<Query>>] when home repository throws PiholeException',
+              () {
+            when(queryRepository.getForClient('client'))
+                .thenThrow(PiholeException());
+
+            expectLater(
+                queryBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<List<Query>>(),
+                  BlocStateLoading<List<Query>>(),
+                  BlocStateError<List<Query>>(PiholeException()),
+                ]));
+
+            queryBloc..dispatch(FetchForClient('client'));
+          });
+    });
+
+    group('FetchQueryForQueryType', () {
+      test(
+          'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateSuccess<List<Query>>] when repository returns Query',
+              () {
+            when(queryRepository.getForQueryType(QueryType.A))
+                .thenAnswer((_) => Future.value(mockQueries));
+
+            expectLater(
+                queryBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<List<Query>>(),
+                  BlocStateLoading<List<Query>>(),
+                  BlocStateSuccess<List<Query>>(mockQueries),
+                ]));
+
+            queryBloc.dispatch(FetchForQueryType(QueryType.A));
+          });
+
+      test(
+          'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateError<List<Query>>] when home repository throws PiholeException',
+              () {
+            when(queryRepository.getForQueryType(QueryType.A))
+                .thenThrow(PiholeException());
+
+            expectLater(
+                queryBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<List<Query>>(),
+                  BlocStateLoading<List<Query>>(),
+                  BlocStateError<List<Query>>(PiholeException()),
+                ]));
+
+            queryBloc..dispatch(FetchForQueryType(QueryType.A));
+          });
     });
   });
 
-  group('FetchQueryForClient', () {
-    test(
-        'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateSuccess<List<Query>>] when repository returns Query',
-        () {
-      when(queryRepository.getForClient('client'))
+  group('repository', () {
+    QueryRepository queryRepository;
+    MockPiholeClient client;
+
+    setUp(() {
+      client = MockPiholeClient();
+      queryRepository = QueryRepository(client);
+    });
+
+    test('get', () {
+      when(client.fetchQueries()).thenAnswer((_) => Future.value(mockQueries));
+
+      expect(queryRepository.get(), completion(mockQueries));
+    });
+
+    test('getForClient', () {
+      when(client.fetchQueriesForClient('client'))
           .thenAnswer((_) => Future.value(mockQueries));
-
-      expectLater(
-          queryBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<List<Query>>(),
-            BlocStateLoading<List<Query>>(),
-            BlocStateSuccess<List<Query>>(mockQueries),
-          ]));
-
-      queryBloc.dispatch(FetchForClient('client'));
+      expect(queryRepository.getForClient('client'), completion(mockQueries));
     });
-  });
 
-  group('FetchQueryForQueryType', () {
-    test(
-        'emits [BlocStateEmpty<List<Query>>, BlocStateLoading<List<Query>>, BlocStateSuccess<List<Query>>] when repository returns Query',
-        () {
-      when(queryRepository.getForQueryType(QueryType.A))
+    test('getForQueryType', () {
+      when(client.fetchQueriesForQueryType(QueryType.A))
           .thenAnswer((_) => Future.value(mockQueries));
-
-      expectLater(
-          queryBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<List<Query>>(),
-            BlocStateLoading<List<Query>>(),
-            BlocStateSuccess<List<Query>>(mockQueries),
-          ]));
-
-      queryBloc.dispatch(FetchForQueryType(QueryType.A));
+      expect(queryRepository.getForQueryType(QueryType.A),
+          completion(mockQueries));
     });
   });
 }
