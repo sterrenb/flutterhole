@@ -5,7 +5,7 @@ class PiholeException extends Equatable implements Exception {
   final dynamic e;
 
   String get message {
-    String message = _message;
+    String message = _message ?? '';
     if (e != null) {
       message += e.toString();
     }

@@ -30,7 +30,6 @@ class PiholeBloc extends Bloc<PiholeEvent, PiholeState> {
   Stream<PiholeState> _fetch() async* {
     yield PiholeStateLoading();
     await repository.reload();
-    print('bloc fetch active: ${repository.active()}');
     try {
       yield PiholeStateSuccess(
           all: repository.getPiholes(), active: repository.active());

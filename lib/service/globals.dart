@@ -84,8 +84,7 @@ class Globals {
   }
 
   static Future<dynamic> navigateTo(BuildContext context, String path) {
-    print('navigateTo: $path');
-
+    client.cancel();
     if (path == homePath) fetchForHome(context);
     if (path == whitelistViewPath) fetchForWhitelistView(context);
     if (path == blacklistViewPath) fetchForBlacklistView(context);

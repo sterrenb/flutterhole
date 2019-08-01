@@ -54,7 +54,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
 
   void save(BuildContext context) {
     final piholeBloc = BlocProvider.of<PiholeBloc>(context);
-    print('wee save');
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       Fimber.i('saving: ${pihole.toJson()}');
@@ -404,6 +403,30 @@ class _HealthCheck extends StatelessWidget {
             items = [
               ListTile(
                 leading: Icon(Icons.error),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text(state.e.message
+                            .split(' ')
+                            .first),
+                        content: SingleChildScrollView(
+                          child: Text(state.e.toString()),
+                        ),
+                        actions: [
+                          FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Clipboard.setData(
+                                    ClipboardData(text: state.e.toString()));
+                              },
+                              child: Text('Copy to clipboard')),
+                        ],
+                      );
+                    },
+                  );
+                },
                 title: Text(
                   state.e.message,
                   overflow: TextOverflow.ellipsis,
