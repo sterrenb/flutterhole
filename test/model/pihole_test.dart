@@ -41,6 +41,26 @@ main() {
       });
     });
 
+    test('toObscuredJson', () {
+      pihole = Pihole(
+          auth: 'auth',
+          proxy: Proxy(
+              host: 'host', port: 8080, username: 'user', password: 'pass'));
+      expect(pihole.toObscuredJson(), {
+        'title': 'FlutterHole',
+        'host': 'pi.hole',
+        'apipath': 'admin/api.php',
+        'port': '80',
+        'auth': obscured,
+        'useSSL': 'false',
+        'allowSelfSigned': 'false',
+        'proxy_host': 'host',
+        'proxy_port': '8080',
+        'proxy_username': obscured,
+        'proxy_password': obscured,
+      });
+    });
+
     test('getters', () {
       expect(pihole.localKey, 'FlutterHole');
       expect(pihole.baseUrl, 'http://pi.hole');
@@ -72,8 +92,8 @@ main() {
       expect(copied1,
           Proxy(host: 'new', port: 123, username: 'user', password: 'pass'));
 
-      final Proxy copied2 = Proxy.copyWith(
-          proxy, username: 'hi', password: 'bye');
+      final Proxy copied2 =
+      Proxy.copyWith(proxy, username: 'hi', password: 'bye');
       expect(copied2,
           Proxy(host: 'host', port: 8080, username: 'hi', password: 'bye'));
     });

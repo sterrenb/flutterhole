@@ -121,14 +121,28 @@ void main() {
   });
 
   group('proxy', () {
-    setUp(() {
-      pihole = Pihole.copyWith(
-        pihole,
-        proxy: Proxy(
-          host: 'proxy.com',
-          port: 8080,
-        ),
-      );
+    test('direct connection', () {
+      secureStore.active = Pihole(
+          host: 'proxy',
+          proxy: Proxy(
+            host: 'proxy.com',
+            port: 8080,
+          ));
+      dio.httpClientAdapter = MockAdapter.json(mockSummary.toJson());
+
+      expect(client.fetchSummary(), completion(mockSummary));
+    });
+
+    test('basic auth', () {
+      secureStore.active = Pihole(
+          host: 'basic',
+          proxy: Proxy(
+            username: 'user',
+            password: 'pass',
+          ));
+      dio.httpClientAdapter = MockAdapter.json(mockSummary.toJson());
+
+      expect(client.fetchSummary(), completion(mockSummary));
     });
   });
 

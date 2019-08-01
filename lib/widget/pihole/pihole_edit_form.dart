@@ -56,7 +56,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     final piholeBloc = BlocProvider.of<PiholeBloc>(context);
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      Globals.tree.log('TODO', 'saving: ${pihole.toJson()}');
+      Globals.tree.log('Form', '${pihole.toObscuredJson()}', tag: 'save');
       piholeBloc.dispatch(UpdatePihole(
           widget.original, Pihole.copyWith(pihole, auth: authController.text)));
     }

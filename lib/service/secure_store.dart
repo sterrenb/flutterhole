@@ -126,8 +126,6 @@ class SecureStore {
     final map = pihole.toJson();
 
     await Future.forEach(map.keys, (key) async {
-      Globals.tree
-          .log('SecureStore', 'delete $piholePrefix${pihole.title}_$key');
       try {
         return _storage.delete(key: '$piholePrefix${pihole.title}_$key');
       } catch (e) {
@@ -143,9 +141,6 @@ class SecureStore {
 
     await Future.forEach(map.keys, (key) async {
       final String value = map[key];
-      Globals.tree
-          .log('SecureStore', 'add $piholePrefix${pihole.title}_$key: $value');
-
       try {
         return _storage.write(
             key: '$piholePrefix${pihole.title}_$key', value: value);

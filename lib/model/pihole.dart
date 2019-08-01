@@ -14,6 +14,8 @@ const String proxyKey = 'proxy_';
 const String usernameKey = 'username';
 const String passwordKey = 'password';
 
+const String obscured = '<hidden>';
+
 class Proxy extends Equatable {
   final String host;
   final int port;
@@ -138,4 +140,12 @@ class Pihole extends Serializable {
         '$proxyKey$usernameKey': proxy.username,
         '$proxyKey$passwordKey': proxy.password,
       };
+
+  Map<String, String> toObscuredJson() {
+    Map<String, String> map = toJson();
+    map.update(authKey, (str) => str.isEmpty ? '' : obscured);
+    map.update('$proxyKey$usernameKey', (str) => str.isEmpty ? '' : obscured);
+    map.update('$proxyKey$passwordKey', (str) => str.isEmpty ? '' : obscured);
+    return map;
+  }
 }

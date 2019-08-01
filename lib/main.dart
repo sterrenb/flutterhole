@@ -97,7 +97,7 @@ void main() async {
   }());
 
   if (Globals.debug) {
-    BlocSupervisor.delegate = SimpleBlocDelegate();
+    if (false) BlocSupervisor.delegate = SimpleBlocDelegate();
     Globals.tree.log('main', 'Running in debug mode');
   } else {
     Globals.tree.log('main', 'Running in release mode');
