@@ -50,11 +50,11 @@ void main() {
   test('withItem', () {
     final exactItem = BlacklistItem.exact(entry: 'new');
     final exactList = Blacklist.withItem(mockBlacklist, exactItem);
-    expect(exactList.exact, mockBlacklist.exact..add(exactItem));
+    expect(exactList.exact.contains(exactItem), isTrue);
 
     final wildcardItem = BlacklistItem.wildcard(entry: 'new');
     final wildcardList = Blacklist.withItem(mockBlacklist, wildcardItem);
-    expect(wildcardList.wildcard, mockBlacklist.wildcard..add(wildcardItem));
+    expect(wildcardList.wildcard.contains(wildcardItem), isTrue);
   });
 
   test('withoutItem', () {

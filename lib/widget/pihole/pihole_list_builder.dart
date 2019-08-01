@@ -12,10 +12,18 @@ import 'package:flutterhole/widget/pihole/pihole_button_row.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 import 'package:provider/provider.dart';
 
-class PiholeListBuilder extends StatelessWidget {
+class PiholeListBuilder extends StatefulWidget {
   final bool editable;
 
   const PiholeListBuilder({Key key, this.editable = true}) : super(key: key);
+
+  @override
+  _PiholeListBuilderState createState() => _PiholeListBuilderState();
+}
+
+class _PiholeListBuilderState extends State<PiholeListBuilder> {
+  List<Pihole> _cacheAll = [];
+  Pihole _cacheActive;
 
   void _edit(BuildContext context, Pihole pihole) async {
     BlocProvider.of<VersionsBloc>(context).dispatch(FetchForPihole(pihole));
@@ -37,89 +45,117 @@ class PiholeListBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final piholeBloc = BlocProvider.of<PiholeBloc>(context);
-    return BlocBuilder(
+    return BlocListener(
       bloc: piholeBloc,
-      builder: (context, state) {
+      listener: (context, state) {
         if (state is PiholeStateSuccess) {
-          List<Widget> items = [];
+          setState(() {
+            _cacheAll = state.all;
+            _cacheActive = state.active;
+          });
+        }
+      },
+      child: BlocBuilder(
+        bloc: piholeBloc,
+        builder: (context, state) {
+          if (state is PiholeStateSuccess &&
+              (_cacheAll == null || _cacheActive == null)) {
+            print('no cache, setting during build');
+            _cacheAll = state.all;
+            _cacheActive = state.active;
+          }
+          if (state is PiholeStateSuccess ||
+              state is PiholeStateLoading && _cacheAll.isNotEmpty) {
+            List<Widget> items = [];
 
-          state.all.forEach((pihole) {
-            Widget tile;
-            final bool isActive = (pihole == state.active);
-            if (editable) {
-              tile = Dismissible(
-                key: Key(pihole.title),
-                onDismissed: (direction) async {
-//                    setState(() {
-//                      _all.remove(pihole);
-//                    });
-                  piholeBloc.dispatch(RemovePihole(pihole));
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Text('Removing ${pihole.title}'),
-                    action: SnackBarAction(
-                        label: 'Undo',
-                        onPressed: () async {
-                          piholeBloc.dispatch(AddPihole(pihole));
-                        }),
-                  ));
-                },
-                background: DismissibleBackground(),
-                secondaryBackground:
-                DismissibleBackground(alignment: Alignment.centerRight),
-                child: PiholeTile(
+            print('all: $_cacheAll');
+            print('active: $_cacheActive');
+
+            _cacheAll.forEach((pihole) {
+              Widget tile;
+              final bool isActive = (pihole == _cacheActive);
+              if (widget.editable) {
+                tile = Dismissible(
+                  key: Key(pihole.title),
+                  onDismissed: (direction) async {
+                    final List<Pihole> original = _cacheAll;
+                    setState(() {
+                      _cacheAll.remove(pihole);
+                    });
+                    piholeBloc.dispatch(RemovePihole(pihole));
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text('Removing ${pihole.title}'),
+                      action: SnackBarAction(
+                          label: 'Undo',
+                          onPressed: () async {
+                            setState(() {
+                              _cacheAll = original;
+                            });
+                            piholeBloc.dispatch(AddPihole(pihole));
+                          }),
+                    ));
+                  },
+                  background: DismissibleBackground(),
+                  secondaryBackground:
+                  DismissibleBackground(alignment: Alignment.centerRight),
+                  child: PiholeTile(
+                    pihole: pihole,
+                    active: isActive,
+                    onTap: () => _edit(context, pihole),
+                    onLongPress: () => _activate(pihole, context),
+                  ),
+                );
+              } else {
+                tile = PiholeTile(
                   pihole: pihole,
                   active: isActive,
-                  onTap: () => _edit(context, pihole),
-                  onLongPress: () => _activate(pihole, context),
+                  onTap: () async {
+                    await _activate(pihole, context);
+                    Navigator.of(context).pop();
+                  },
+                  onLongPress: () => _edit(context, pihole),
+                );
+              }
+
+              items.add(tile);
+            });
+
+            if (items.isEmpty)
+              items.add(Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'No configurations found.',
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .caption,
                 ),
-              );
-            } else {
-              tile = PiholeTile(
-                pihole: pihole,
-                active: isActive,
-                onTap: () async {
-                  await _activate(pihole, context);
-                  Navigator.of(context).pop();
-                },
-                onLongPress: () => _edit(context, pihole),
-              );
-            }
+              ));
 
-            items.add(tile);
-          });
-
-          return Column(
-            children: <Widget>[
-              editable ? Container() : ListTab('Select configuration'),
-              editable ? Container() : Divider(),
-              ...items,
-              Divider(),
-              editable
-                  ? PiholeButtonRow(
+            return Column(
+              children: <Widget>[
+                widget.editable ? Container() : ListTab('Select configuration'),
+                widget.editable ? Container() : Divider(),
+                ...items,
+                Divider(),
+                widget.editable
+                    ? PiholeButtonRow(
 //                      onStateChange: () {
 //                        setState(() {});
 //                      },
-              )
-                  : Container(),
-            ],
-          );
-        }
+                )
+                    : Container(),
+              ],
+            );
+          }
 
-        if (state is PiholeStateError) {
-          return Column(
-            children: <Widget>[
-              ErrorMessage(errorMessage: state.e.toString()),
-              PiholeButtonRow(
-//                onStateChange: () {
-//                  setState(() {});
-//                },
-              )
-            ],
-          );
-        }
+          if (state is PiholeStateError) {
+            return ErrorMessage(errorMessage: state.e.toString());
+          }
 
-        return Center(child: CircularProgressIndicator());
-      },
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
     );
   }
 }

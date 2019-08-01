@@ -54,12 +54,7 @@ class QueriesOverTimeChartBuilder extends StatelessWidget {
         if (state is BlocStateError<QueriesOverTime>) {
           return ErrorMessage(errorMessage: state.e.message);
         }
-        return Center(
-            child: Column(children: <Widget>[
-          CircularProgressIndicator(),
-          Text(state.toString()),
-          Text(state.runtimeType.toString()),
-        ]));
+        return Center(child: CircularProgressIndicator());
       },
     );
   }

@@ -1,4 +1,3 @@
-import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +8,7 @@ import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/model/api/versions.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/browser.dart';
+import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/icon_text_button.dart';
 import 'package:flutterhole/widget/layout/list_tab.dart';
 import 'package:flutterhole/widget/status/status_icon.dart';
@@ -56,7 +56,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     final piholeBloc = BlocProvider.of<PiholeBloc>(context);
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      Fimber.i('saving: ${pihole.toJson()}');
+      Globals.tree.log('TODO', 'saving: ${pihole.toJson()}');
       piholeBloc.dispatch(UpdatePihole(
           widget.original, Pihole.copyWith(pihole, auth: authController.text)));
     }
@@ -198,7 +198,9 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                                 .scan();
                             authController.text = qr;
                           } catch (e) {
-                            Fimber.w('cannot scan QR code', ex: e);
+                            Globals.tree.log(
+                                'AuthController', 'cannot scan QR code',
+                                ex: e);
                           }
                         },
                       ),

@@ -1,3 +1,4 @@
+import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
@@ -14,6 +15,7 @@ import 'package:flutterhole/bloc/api/top_sources.dart';
 import 'package:flutterhole/bloc/api/versions.dart';
 import 'package:flutterhole/bloc/api/whitelist.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
+import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
@@ -30,8 +32,9 @@ void main() async {
   Fimber.plantTree(MemoryTree());
 
   Globals.router = Router();
-//  Globals.localStorage = await LocalStorage.getInstance();
   Globals.secureStore = SecureStore();
+
+  await Globals.secureStore.reload();
 
   configureRoutes(Globals.router);
 
@@ -94,13 +97,11 @@ void main() async {
   }());
 
   if (Globals.debug) {
-//    BlocSupervisor.delegate = SimpleBlocDelegate();
-    Fimber.i('Running in debug mode');
+    BlocSupervisor.delegate = SimpleBlocDelegate();
+    Globals.tree.log('main', 'Running in debug mode');
   } else {
-    Fimber.i('Running in release mode');
+    Globals.tree.log('main', 'Running in release mode');
   }
-
-  await Globals.secureStore.reload();
 
   runApp(App(
     themeModel: ThemeModel(),

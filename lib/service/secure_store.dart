@@ -117,6 +117,9 @@ class SecureStore {
     });
 
     await _updateActive();
+
+    print('SecureStore: reload: $piholes');
+    print('active: $active');
   }
 
   Future<void> remove(Pihole pihole) async {
@@ -132,7 +135,7 @@ class SecureStore {
       }
     });
 
-    piholes.remove(pihole);
+    piholes.remove(pihole.title);
   }
 
   Future<void> add(Pihole pihole) async {

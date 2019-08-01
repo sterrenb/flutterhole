@@ -17,7 +17,6 @@ class PiholeBloc extends Bloc<PiholeEvent, PiholeState> {
   Stream<PiholeState> mapEventToState(
     PiholeEvent event,
   ) async* {
-//    await Future.delayed(Duration(seconds: 2));
     yield PiholeStateLoading();
     if (event is FetchPiholes) yield* _fetch();
     if (event is ResetPiholes) yield* _reset();
@@ -29,7 +28,6 @@ class PiholeBloc extends Bloc<PiholeEvent, PiholeState> {
 
   Stream<PiholeState> _fetch() async* {
     yield PiholeStateLoading();
-    await repository.reload();
     try {
       yield PiholeStateSuccess(
           all: repository.getPiholes(), active: repository.active());
@@ -62,6 +60,10 @@ class PiholeBloc extends Bloc<PiholeEvent, PiholeState> {
   Stream<PiholeState> _remove(Pihole pihole) async* {
     try {
       await repository.remove(pihole);
+      if (pihole == repository.active())
+        await repository.activate(repository
+            .getPiholes()
+            .last);
       yield PiholeStateSuccess(
           all: repository.getPiholes(), active: repository.active());
     } catch (e) {

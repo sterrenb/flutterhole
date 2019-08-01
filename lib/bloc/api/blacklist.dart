@@ -48,8 +48,7 @@ class BlacklistBloc extends BaseBloc<Blacklist> {
 
   Stream<BlocState> _edit(BlacklistItem original, BlacklistItem update) async* {
     try {
-      final blacklist =
-      await blacklistRepository.edit(original, update);
+      final blacklist = await blacklistRepository.edit(original, update);
       yield BlocStateSuccess<Blacklist>(blacklist);
     } on PiholeException catch (e) {
       yield BlocStateError<Blacklist>(e);
@@ -79,7 +78,8 @@ class BlacklistRepository extends BaseRepository<Blacklist> {
 
   @override
   Future<Blacklist> get() async {
-    return client.fetchBlacklist();
+    _cache = await client.fetchBlacklist();
+    return _cache;
   }
 
   Future<Blacklist> add(BlacklistItem item) async {
@@ -94,8 +94,7 @@ class BlacklistRepository extends BaseRepository<Blacklist> {
     return _cache;
   }
 
-  Future<Blacklist> edit(
-      BlacklistItem original, BlacklistItem update) async {
+  Future<Blacklist> edit(BlacklistItem original, BlacklistItem update) async {
     await client.removeFromBlacklist(original);
     await client.addToBlacklist(update);
     _cache = Blacklist.withoutItem(_cache, original);

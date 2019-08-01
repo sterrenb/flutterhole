@@ -70,21 +70,27 @@ class Blacklist extends Serializable {
       ? List.from([
     ...original.exact,
     ...[item]
-  ])
+  ]
+    ..sort((a, b) => a.entry.compareTo(b.entry)))
       : original.exact,
         this.wildcard = item.type != BlacklistType.Exact
             ? List.from([
           ...original.wildcard,
           ...[item]
-        ])
+        ]
+          ..sort((a, b) => a.entry.compareTo(b.entry)))
             : original.wildcard;
 
   Blacklist.withoutItem(Blacklist original, BlacklistItem item)
       : this.exact = (item.type == BlacklistType.Exact)
-      ? List.from([...original.exact]..remove(item))
+      ? List.from([...original.exact]
+    ..remove(item)
+    ..sort((a, b) => a.entry.compareTo(b.entry)))
       : original.exact,
         this.wildcard = (item.type != BlacklistType.Exact)
-            ? List.from([...original.wildcard]..remove(item))
+            ? List.from([...original.wildcard]
+          ..remove(item)
+          ..sort((a, b) => a.entry.compareTo(b.entry)))
             : original.wildcard;
 
   factory Blacklist.fromString(String str) =>

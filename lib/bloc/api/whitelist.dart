@@ -24,13 +24,13 @@ class Edit extends BlocEvent {
 }
 
 class WhitelistBloc extends BaseBloc<Whitelist> {
-  final WhitelistRepository blacklistRepository;
+  final WhitelistRepository whitelistRepository;
 
-  WhitelistBloc(this.blacklistRepository) : super(blacklistRepository);
+  WhitelistBloc(this.whitelistRepository) : super(whitelistRepository);
 
   Stream<BlocState> _add(String item) async* {
     try {
-      final blacklist = await blacklistRepository.addToWhitelist(item);
+      final blacklist = await whitelistRepository.addToWhitelist(item);
       yield BlocStateSuccess<Whitelist>(blacklist);
     } on PiholeException catch (e) {
       yield BlocStateError<Whitelist>(e);
@@ -39,7 +39,7 @@ class WhitelistBloc extends BaseBloc<Whitelist> {
 
   Stream<BlocState> _remove(String item) async* {
     try {
-      final blacklist = await blacklistRepository.removeFromWhitelist(item);
+      final blacklist = await whitelistRepository.removeFromWhitelist(item);
       yield BlocStateSuccess<Whitelist>(blacklist);
     } on PiholeException catch (e) {
       yield BlocStateError<Whitelist>(e);
@@ -49,7 +49,7 @@ class WhitelistBloc extends BaseBloc<Whitelist> {
   Stream<BlocState> _edit(String original, String update) async* {
     try {
       final blacklist =
-          await blacklistRepository.editOnWhitelist(original, update);
+      await whitelistRepository.editOnWhitelist(original, update);
       yield BlocStateSuccess<Whitelist>(blacklist);
     } on PiholeException catch (e) {
       yield BlocStateError<Whitelist>(e);
@@ -79,7 +79,8 @@ class WhitelistRepository extends BaseRepository<Whitelist> {
 
   @override
   Future<Whitelist> get() async {
-    return client.fetchWhitelist();
+    _cache = await client.fetchWhitelist();
+    return _cache;
   }
 
   Future<Whitelist> addToWhitelist(String item) async {

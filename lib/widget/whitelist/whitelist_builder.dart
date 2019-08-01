@@ -15,12 +15,12 @@ class WhitelistBuilder extends StatefulWidget {
 }
 
 class _WhitelistBuilderState extends State<WhitelistBuilder> {
-  List<String> _cache;
+  Whitelist _cache;
 
   void _removeDomain(String domain, WhitelistBloc whitelistBloc,
       BuildContext context) {
     setState(() {
-      _cache.remove(domain);
+      _cache = Whitelist.withoutItem(_cache, domain);
     });
     whitelistBloc.dispatch(Remove(domain));
     Scaffold.of(context).showSnackBar(SnackBar(
@@ -28,6 +28,10 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
       action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
+            setState(() {
+              Globals.client.cancel();
+              _cache = Whitelist.withItem(_cache, domain);
+            });
             whitelistBloc.dispatch(Add(domain));
           }),
     ));
@@ -42,7 +46,7 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
         listener: (context, state) {
           if (state is BlocStateSuccess<Whitelist>) {
             setState(() {
-              _cache = state.data.list;
+              _cache = state.data;
             });
           }
         },
@@ -57,15 +61,12 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
                   if (state is BlocStateSuccess<Whitelist> ||
                       (state is BlocStateLoading<Whitelist> &&
                           _cache != null &&
-                          _cache.isNotEmpty)) {
-                    if (state is BlocStateSuccess<Whitelist>) {
-                      _cache = state.data.list;
-                    }
+                          _cache.list.isNotEmpty)) {
                     return Scrollbar(
                       child: ListView(
                         children: ListTile.divideTiles(
                             context: context,
-                            tiles: _cache.map((String domain) {
+                            tiles: _cache.list.map((String domain) {
                               return RemovableTile(
                                 title: domain,
                                 onTap: () async {

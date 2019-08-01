@@ -1,5 +1,6 @@
-import 'package:fimber/fimber.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'globals.dart';
 
 /// Launches the [url] in the default browser.
 ///
@@ -15,7 +16,7 @@ Future<bool> launchURL(String url) async {
       return true;
     }
   } catch (e) {
-    Fimber.w('cannot launch url' + ': ' + parsedUrl, ex: e);
+    Globals.tree.log('Brower', 'cannot launch url' + ': ' + parsedUrl, ex: e);
   }
 
   return false;

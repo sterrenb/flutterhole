@@ -8,18 +8,18 @@ class Whitelist extends Serializable {
 
   Whitelist([this.list = const []]) : super([list]);
 
-  factory Whitelist.withItem(Whitelist whitelist, String domain) {
-    final List<String> list = List.from([
-      ...whitelist.list,
+  factory Whitelist.withItem(Whitelist source, String domain) {
+    List<String> list = List.from([
+      ...source.list,
       ...[domain]
     ]);
-    return Whitelist(list);
+    return Whitelist(list..sort());
   }
 
-  factory Whitelist.withoutItem(Whitelist whitelist, String domain) {
-    final List<String> list = whitelist.list.toList()
+  factory Whitelist.withoutItem(Whitelist source, String domain) {
+    List<String> list = source.list.toList()
       ..remove(domain);
-    return Whitelist(list);
+    return Whitelist(list..sort());
   }
 
   factory Whitelist.fromString(String str) =>

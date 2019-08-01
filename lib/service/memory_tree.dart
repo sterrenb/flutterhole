@@ -14,7 +14,7 @@ class MemoryTree extends DebugTree {
 
   @override
   void printLog(String logLine, {String level}) {
-    logs.add(LogEntry(logLine));
+    logs.insert(0, LogEntry(logLine));
     super.printLog(logLine, level: level);
   }
 }

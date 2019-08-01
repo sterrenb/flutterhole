@@ -38,7 +38,11 @@ class _BlacklistBuilderState extends State<BlacklistBuilder> {
       action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
-            blacklistBloc.dispatch(Add(item));
+            setState(() {
+              Globals.client.cancel();
+              _cache = Blacklist.withItem(_cache, item);
+              blacklistBloc.dispatch(Add(item));
+            });
           }),
     ));
   }

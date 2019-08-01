@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:fimber/fimber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 
@@ -12,7 +12,7 @@ class PrivacyScreen extends StatelessWidget {
           'https://raw.githubusercontent.com/sterrenburg/flutterhole/master/PRIVACY.md');
       return response.data.toString();
     } catch (e) {
-      Fimber.e(e.toString());
+      Globals.tree.log('PrivacyScreen', e.toString());
       rethrow;
     }
   }

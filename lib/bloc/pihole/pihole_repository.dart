@@ -2,20 +2,17 @@ import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/secure_store.dart';
 
 class PiholeRepository {
-//  final LocalStorage localStorage;
   final SecureStore secureStore;
 
   PiholeRepository(this.secureStore);
 
   Pihole active() {
+    assert(secureStore.active != null);
     return secureStore.active;
   }
 
-  Future<void> reload() async {
-    await secureStore.reload();
-  }
-
   List<Pihole> getPiholes() {
+//    assert(secureStore.piholes.isNotEmpty);
     return secureStore.piholes.values.toList();
   }
 
