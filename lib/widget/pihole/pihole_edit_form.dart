@@ -89,6 +89,8 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
   Widget build(BuildContext context) {
     final piholeBloc = BlocProvider.of<PiholeBloc>(context);
     final String apiTokenUrl = '${pihole.baseUrl}/admin/settings.php?tab=api';
+    final String apiTokenString =
+        '${pihole.baseUrlObscured}/admin/settings.php?tab=api';
     return BlocListener(
       bloc: piholeBloc,
       listener: (context, state) {
@@ -127,7 +129,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
               content: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  ListTab('Pihole'),
+                  ListTab('Pihole Configuration'),
                   TextField(
                     controller: titleController,
                     autofocus: pihole.title.isEmpty,
@@ -229,7 +231,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                                         .textTheme
                                         .caption
                                         .copyWith(color: Colors.blueAccent),
-                                    text: apiTokenUrl,
+                                    text: apiTokenString,
                                     children: [
                                       TextSpan(
                                           style: Theme
@@ -243,26 +245,16 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                       ),
                     ),
                   ),
-                  ListTab('Advanced'),
+                  ListTab('SSL Settings'),
                   FormBuilderSwitch(
                     initialValue: widget.original.useSSL,
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.filter_tilt_shift)),
-                    label: Text('Always use SSL'),
+                    label: Text('use SSL'),
                     attribute: 'useSSL',
                     onChanged: (v) {
                       _onChange(context, Pihole.copyWith(pihole, useSSL: v));
                     },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'Always use SSL, regardless of port.',
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .caption,
-                    ),
                   ),
                   FormBuilderSwitch(
                     initialValue: widget.original.allowSelfSigned,
@@ -285,36 +277,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                           .caption,
                     ),
                   ),
-                  ListTab('Proxy (experimental)'),
-                  TextField(
-                    controller: proxyHostController,
-                    keyboardType: TextInputType.url,
-                    decoration: InputDecoration(
-                        labelText: 'Host', prefixIcon: Icon(Icons.home)),
-                    onChanged: (v) {
-                      _onChange(
-                          context,
-                          Pihole.copyWith(pihole,
-                              proxy: Proxy.copyWith(pihole.proxy, host: v)));
-                    },
-                  ),
-                  TextField(
-                    controller: proxyPortController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      WhitelistingTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(6),
-                    ],
-                    decoration: InputDecoration(
-                        labelText: 'Port', prefixIcon: Icon(Icons.adjust)),
-                    onChanged: (v) {
-                      _onChange(
-                          context,
-                          Pihole.copyWith(pihole,
-                              proxy: Proxy.copyWith(pihole.proxy,
-                                  port: int.parse(v))));
-                    },
-                  ),
+                  ListTab('Basic Authentication'),
                   TextField(
                     controller: proxyUsernameController,
                     keyboardType: TextInputType.text,
@@ -342,6 +305,36 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                           Pihole.copyWith(pihole,
                               proxy:
                               Proxy.copyWith(pihole.proxy, password: v)));
+                    },
+                  ),
+                  ListTab('Proxy Settings'),
+                  TextField(
+                    controller: proxyHostController,
+                    keyboardType: TextInputType.url,
+                    decoration: InputDecoration(
+                        labelText: 'Host', prefixIcon: Icon(Icons.home)),
+                    onChanged: (v) {
+                      _onChange(
+                          context,
+                          Pihole.copyWith(pihole,
+                              proxy: Proxy.copyWith(pihole.proxy, host: v)));
+                    },
+                  ),
+                  TextField(
+                    controller: proxyPortController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(6),
+                    ],
+                    decoration: InputDecoration(
+                        labelText: 'Port', prefixIcon: Icon(Icons.adjust)),
+                    onChanged: (v) {
+                      _onChange(
+                          context,
+                          Pihole.copyWith(pihole,
+                              proxy: Proxy.copyWith(pihole.proxy,
+                                  port: int.parse(v))));
                     },
                   ),
                   Padding(

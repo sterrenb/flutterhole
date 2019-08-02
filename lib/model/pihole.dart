@@ -74,23 +74,28 @@ class Pihole extends Serializable {
   final bool allowSelfSigned;
   final Proxy proxy;
 
-  String get localKey => Pihole.toKey(this.title);
-
   String get baseUrl {
-    final String scheme = port == 443 || useSSL ? 'https' : 'http';
-    final String portString = (port == 80 && !useSSL) || (port == 80 && !useSSL)
+    final String scheme = (port == 443 || useSSL) ? 'https' : 'http';
+    final String portString = (port == 80 && !useSSL) || (port == 443 && useSSL)
         ? ''
-        : ':"${port.toString()}';
+        : ':${port.toString()}';
+
+    final String basicAuthString =
+    proxy.basicAuth.isNotEmpty ? '${proxy.basicAuth}@' : '';
+    final String hostString =
+    proxy.directConnection.isNotEmpty ? '@${proxy.directConnection}' : host;
 
     if (proxy.basicAuth.isNotEmpty && proxy.directConnection.isNotEmpty) {
-      return '$scheme://${proxy.basicAuth}@${proxy.directConnection}';
+      return '$scheme://${proxy.basicAuth}${proxy.directConnection}';
     }
 
-    return '$scheme://$host$portString';
+    return '$scheme://$basicAuthString$hostString$portString';
   }
 
-//  static String toKey(String str) => str.toLowerCase().replaceAll(' ', '_');
-  static String toKey(String str) => str;
+  String get baseUrlObscured {
+    if (proxy.basicAuth.isEmpty) return baseUrl;
+    return baseUrl.replaceFirst(proxy.basicAuth, obscured);
+  }
 
   Pihole({this.title = 'FlutterHole',
     this.host = 'pi.hole',
