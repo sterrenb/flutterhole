@@ -327,9 +327,11 @@ main() {
       expect(piholeRepository.update(original, update), completes);
     });
 
-//    test('reset', () {
-//      when(secureStore.reset()).thenAnswer((_) => Future.value(true));
-//      expect(piholeRepository.reset(), completes);
-//    });
+    test('reset', () {
+      when(secureStore.deleteAll()).thenAnswer((_) => Future.value(true));
+      when(secureStore.add(any)).thenAnswer((_) => Future.value(true));
+      when(secureStore.reload()).thenAnswer((_) => Future.value(true));
+      expect(piholeRepository.reset(), completes);
+    });
   });
 }

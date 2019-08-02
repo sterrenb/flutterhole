@@ -60,7 +60,7 @@ class QueryTypesChartBuilder extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 2.0),
                 child: Text(title)),
             Text(
-              '${percent.toString()}%',
+              '${percent.toStringAsFixed(1)}%',
               style: Theme.of(context).textTheme.caption,
             )
           ],

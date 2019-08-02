@@ -4,6 +4,7 @@ import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/api/queries_over_time.dart';
@@ -32,7 +33,7 @@ void main() async {
   Fimber.plantTree(MemoryTree());
 
   Globals.router = Router();
-  Globals.secureStore = SecureStore();
+  Globals.secureStore = SecureStore(FlutterSecureStorage());
 
   await Globals.secureStore.reload();
 

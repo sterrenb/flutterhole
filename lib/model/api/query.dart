@@ -5,6 +5,15 @@ import 'dart:convert';
 import 'package:flutterhole/model/serializable.dart';
 import 'package:flutterhole/service/convert.dart';
 
+List<Query> queriesFromJson(List<dynamic> data) {
+  List<Query> queries = [];
+  data.forEach((entry) {
+    queries.add(Query.fromJson(entry));
+  });
+
+  return queries;
+}
+
 enum QueryType {
   A,
   AAAA,

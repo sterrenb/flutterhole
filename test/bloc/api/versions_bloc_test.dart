@@ -78,9 +78,29 @@ main() {
           });
 
       test(
+          'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateSuccess<Versions>] when repository returns Versions for pihole with cancelOldRequests = true',
+              () {
+            final pihole = Pihole();
+            when(versionsRepository.get(pihole))
+                .thenAnswer((_) => Future.value(mockVersions));
+
+            expectLater(
+                versionsBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<Versions>(),
+                  BlocStateLoading<Versions>(),
+                  BlocStateSuccess<Versions>(mockVersions),
+                ]));
+
+            versionsBloc.dispatch(
+                FetchForPihole(pihole, cancelOldRequests: true));
+          });
+
+      test(
           'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateError<Versions>] when home repository throws PiholeException',
               () {
-            when(versionsRepository.get()).thenThrow(PiholeException());
+            final pihole = Pihole();
+            when(versionsRepository.get(pihole)).thenThrow(PiholeException());
 
             expectLater(
                 versionsBloc.state,
@@ -90,7 +110,7 @@ main() {
                   BlocStateError<Versions>(PiholeException()),
                 ]));
 
-            versionsBloc.dispatch(Fetch());
+            versionsBloc.dispatch(FetchForPihole(pihole));
           });
     });
   });
