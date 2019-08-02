@@ -17,7 +17,7 @@ class DefaultScaffold extends StatelessWidget {
 
   const DefaultScaffold({
     Key key,
-    @required this.title,
+    this.title,
     @required this.body,
     this.floatingActionButton,
     this.actions = const [],
@@ -141,7 +141,7 @@ class TabScaffold extends StatefulWidget {
 
   const TabScaffold({
     Key key,
-    @required this.title,
+    this.title,
     @required this.children,
     @required this.items,
     this.floatingActionButton,

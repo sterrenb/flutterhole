@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TabScaffold(
-      title: 'Dashboard',
+//      title: 'Dashboard',
       children: <Widget>[
         SummaryBuilder(),
 //        SummaryBuilder(),

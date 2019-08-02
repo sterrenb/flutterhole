@@ -12,86 +12,104 @@ import '../../mock.dart';
 class MockVersionsRepository extends Mock implements VersionsRepository {}
 
 main() {
-  MockVersionsRepository versionsRepository;
-  VersionsBloc versionsBloc;
+  group('bloc', () {
+    MockVersionsRepository versionsRepository;
+    VersionsBloc versionsBloc;
 
-  setUp(() {
-    versionsRepository = MockVersionsRepository();
-    versionsBloc = VersionsBloc(versionsRepository);
+    setUp(() {
+      versionsRepository = MockVersionsRepository();
+      versionsBloc = VersionsBloc(versionsRepository);
+    });
+
+    test('has a correct initialState', () {
+      expect(versionsBloc.initialState, BlocStateEmpty<Versions>());
+    });
+
+    group('FetchVersions', () {
+      test(
+          'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateSuccess<Versions>] when repository returns Versions',
+              () {
+            when(versionsRepository.get())
+                .thenAnswer((_) => Future.value(mockVersions));
+
+            expectLater(
+                versionsBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<Versions>(),
+                  BlocStateLoading<Versions>(),
+                  BlocStateSuccess<Versions>(mockVersions),
+                ]));
+
+            versionsBloc.dispatch(Fetch());
+          });
+
+      test(
+          'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateError<Versions>] when home repository throws PiholeException',
+              () {
+            when(versionsRepository.get()).thenThrow(PiholeException());
+
+            expectLater(
+                versionsBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<Versions>(),
+                  BlocStateLoading<Versions>(),
+                  BlocStateError<Versions>(PiholeException()),
+                ]));
+
+            versionsBloc.dispatch(Fetch());
+          });
+    });
+
+    group('FetchForPihole', () {
+      test(
+          'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateSuccess<Versions>] when repository returns Versions for pihole',
+              () {
+            final pihole = Pihole();
+            when(versionsRepository.get(pihole))
+                .thenAnswer((_) => Future.value(mockVersions));
+
+            expectLater(
+                versionsBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<Versions>(),
+                  BlocStateLoading<Versions>(),
+                  BlocStateSuccess<Versions>(mockVersions),
+                ]));
+
+            versionsBloc.dispatch(FetchForPihole(pihole));
+          });
+
+      test(
+          'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateError<Versions>] when home repository throws PiholeException',
+              () {
+            when(versionsRepository.get()).thenThrow(PiholeException());
+
+            expectLater(
+                versionsBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<Versions>(),
+                  BlocStateLoading<Versions>(),
+                  BlocStateError<Versions>(PiholeException()),
+                ]));
+
+            versionsBloc.dispatch(Fetch());
+          });
+    });
   });
 
-  test('has a correct initialState', () {
-    expect(versionsBloc.initialState, BlocStateEmpty<Versions>());
-  });
+  group('repository', () {
+    MockPiholeClient client;
+    VersionsRepository versionsRepository;
 
-  group('FetchVersions', () {
-    test(
-        'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateSuccess<Versions>] when repository returns Versions',
-        () {
-          when(versionsRepository.get())
+    setUp(() {
+      client = MockPiholeClient();
+      versionsRepository = VersionsRepository(client);
+    });
+
+    test('get', () {
+      when(client.fetchVersions())
           .thenAnswer((_) => Future.value(mockVersions));
-
-      expectLater(
-          versionsBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<Versions>(),
-            BlocStateLoading<Versions>(),
-            BlocStateSuccess<Versions>(mockVersions),
-          ]));
-
-          versionsBloc.dispatch(Fetch());
+      expect(versionsRepository.get(), completion(mockVersions));
     });
-
-    test(
-        'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateError<Versions>] when home repository throws PiholeException',
-        () {
-          when(versionsRepository.get()).thenThrow(PiholeException());
-
-      expectLater(
-          versionsBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<Versions>(),
-            BlocStateLoading<Versions>(),
-            BlocStateError<Versions>(PiholeException()),
-          ]));
-
-          versionsBloc.dispatch(Fetch());
-    });
-  });
-
-  group('FetchForPihole', () {
-    test(
-        'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateSuccess<Versions>] when repository returns Versions for pihole',
-            () {
-          final pihole = Pihole();
-          when(versionsRepository.get(pihole))
-              .thenAnswer((_) => Future.value(mockVersions));
-
-          expectLater(
-              versionsBloc.state,
-              emitsInOrder([
-                BlocStateEmpty<Versions>(),
-                BlocStateLoading<Versions>(),
-                BlocStateSuccess<Versions>(mockVersions),
-              ]));
-
-          versionsBloc.dispatch(FetchForPihole(pihole));
-        });
-
-    test(
-        'emits [BlocStateEmpty<Versions>, BlocStateLoading<Versions>, BlocStateError<Versions>] when home repository throws PiholeException',
-            () {
-          when(versionsRepository.get()).thenThrow(PiholeException());
-
-          expectLater(
-              versionsBloc.state,
-              emitsInOrder([
-                BlocStateEmpty<Versions>(),
-                BlocStateLoading<Versions>(),
-                BlocStateError<Versions>(PiholeException()),
-              ]));
-
-          versionsBloc.dispatch(Fetch());
-        });
   });
 }

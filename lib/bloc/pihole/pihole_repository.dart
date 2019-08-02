@@ -12,7 +12,6 @@ class PiholeRepository {
   }
 
   List<Pihole> getPiholes() {
-//    assert(secureStore.piholes.isNotEmpty);
     return secureStore.piholes.values.toList();
   }
 

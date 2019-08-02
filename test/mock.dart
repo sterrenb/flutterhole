@@ -9,6 +9,8 @@ import 'package:flutterhole/model/api/top_sources.dart';
 import 'package:flutterhole/model/api/versions.dart';
 import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/pihole_client.dart';
+import 'package:flutterhole/service/secure_store.dart';
 import 'package:mockito/mockito.dart';
 
 final mockPiholes = [
@@ -17,8 +19,14 @@ final mockPiholes = [
   Pihole(title: 'third', host: '3.net'),
 ];
 
-class MockLocalStorage extends Mock /* implements LocalStorage*/ {
-  Map<String, Pihole> cache = {};
+class MockPiholeClient extends Mock implements PiholeClient {}
+
+class MockSecureStore extends Mock implements SecureStore {
+  @override
+  Pihole active;
+
+  @override
+  Map<String, Pihole> piholes;
 }
 
 final mockStatusEnabled = Status(enabled: true);

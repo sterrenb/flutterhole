@@ -60,4 +60,21 @@ main() {
           forwardDestinationsBloc.dispatch(Fetch());
         });
   });
+
+  group('repository', () {
+    MockPiholeClient client;
+    ForwardDestinationsRepository forwardDestinationsRepository;
+
+    setUp(() {
+      client = MockPiholeClient();
+      forwardDestinationsRepository = ForwardDestinationsRepository(client);
+    });
+
+    test('getForwardDestinations', () {
+      when(client.fetchForwardDestinations())
+          .thenAnswer((_) => Future.value(mockForwardDestinations));
+      expect(forwardDestinationsRepository.get(),
+          completion(mockForwardDestinations));
+    });
+  });
 }

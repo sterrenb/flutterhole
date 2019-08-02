@@ -43,7 +43,7 @@ class PiholeClient {
         String message = options.uri.toString();
         if (options.queryParameters.containsKey(_authParameterKey)) {
           message = message.replaceAll(
-              options.uri.queryParameters[_authParameterKey], 'HIDDEN');
+              options.uri.queryParameters[_authParameterKey], obscured);
         }
 
         _log(message, tag: 'request');
@@ -79,22 +79,25 @@ class PiholeClient {
       pihole = pihole ?? secureStore.active;
       dio.options.baseUrl = pihole.baseUrl;
 
+      if (pihole.proxy.basicAuth.isNotEmpty) {
+        // Disable basic auth headers, and instead provide
+        // credentials in the HTTP request.
+//        dio.options.headers['Proxy-Authorization'] =
+//        'Basic ${pihole.proxy.basicAuth}';
+
+        dio.options.baseUrl = '${pihole.baseUrl}';
+      }
+
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         if (pihole.allowSelfSigned) {
           client.badCertificateCallback =
               (X509Certificate cert, String host, int port) => true;
         }
-
         if (pihole.proxy.directConnection.isNotEmpty) {
           client.findProxy = (uri) {
             return "PROXY ${pihole.proxy.directConnection}";
           };
-        }
-
-        if (pihole.proxy.basicAuth.isNotEmpty) {
-          dio.options.headers['Proxy-Authorization'] =
-          'Basic ${pihole.proxy.basicAuth}';
         }
 
         return client;

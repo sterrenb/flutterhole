@@ -8,7 +8,7 @@ class DefaultEndDrawer extends StatelessWidget {
     return Drawer(
         child: Column(children: [
       UserAccountsDrawerHeader(
-        accountName: TitleRow(),
+        accountName: TitleIconRow(),
         accountEmail: null,
         onDetailsPressed: null,
       ),

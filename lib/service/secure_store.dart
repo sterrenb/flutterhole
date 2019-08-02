@@ -126,8 +126,6 @@ class SecureStore {
     final map = pihole.toJson();
 
     await Future.forEach(map.keys, (key) async {
-      Globals.tree
-          .log('SecureStore', 'delete $piholePrefix${pihole.title}_$key');
       try {
         return _storage.delete(key: '$piholePrefix${pihole.title}_$key');
       } catch (e) {
@@ -138,14 +136,17 @@ class SecureStore {
     piholes.remove(pihole.title);
   }
 
-  Future<void> add(Pihole pihole) async {
+  Future<void> add(Pihole pihole, {bool allowOverride = false}) async {
+    if (allowOverride && piholes.containsValue(pihole)) {
+      throw Exception(
+          '${pihole
+              .title} already present - if this was intended, set `allowOverride = true`');
+    }
+
     final map = pihole.toJson();
 
     await Future.forEach(map.keys, (key) async {
       final String value = map[key];
-      Globals.tree
-          .log('SecureStore', 'add $piholePrefix${pihole.title}_$key: $value');
-
       try {
         return _storage.write(
             key: '$piholePrefix${pihole.title}_$key', value: value);
@@ -161,6 +162,10 @@ class SecureStore {
     if (update == original) return;
 
     final bool originalIsActive = (original == active);
+
+    if (original.title != update.title && piholes.containsKey(update.title)) {
+      throw Exception('${update.title} already present');
+    }
 
     await remove(original);
     await add(update);

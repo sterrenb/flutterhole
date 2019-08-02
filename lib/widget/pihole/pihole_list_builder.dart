@@ -68,9 +68,6 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
               state is PiholeStateLoading && _cacheAll.isNotEmpty) {
             List<Widget> items = [];
 
-            print('all: $_cacheAll');
-            print('active: $_cacheActive');
-
             _cacheAll.forEach((pihole) {
               Widget tile;
               final bool isActive = (pihole == _cacheActive);

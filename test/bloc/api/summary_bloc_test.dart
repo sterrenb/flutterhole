@@ -57,4 +57,19 @@ main() {
           summaryBloc.dispatch(Fetch());
         });
   });
+
+  group('repository', () {
+    MockPiholeClient client;
+    SummaryRepository summaryRepository;
+
+    setUp(() {
+      client = MockPiholeClient();
+      summaryRepository = SummaryRepository(client);
+    });
+
+    test('get', () {
+      when(client.fetchSummary()).thenAnswer((_) => Future.value(mockSummary));
+      expect(summaryRepository.get(), completion(mockSummary));
+    });
+  });
 }

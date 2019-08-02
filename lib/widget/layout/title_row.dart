@@ -3,9 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/widget/status/status_icon.dart';
 
-class TitleRow extends StatelessWidget {
-  const TitleRow({
+class TitleIconRow extends StatelessWidget {
+  final String title;
+
+  const TitleIconRow({
     Key key,
+    this.title,
   }) : super(key: key);
 
   @override
@@ -21,7 +24,7 @@ class TitleRow extends StatelessWidget {
               text = state.active.title;
             }
             return Text(
-              text,
+              title ?? text,
               overflow: TextOverflow.fade,
             );
           },
