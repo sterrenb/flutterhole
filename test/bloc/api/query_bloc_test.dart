@@ -1,4 +1,5 @@
 import 'package:flutterhole/bloc/api/query.dart';
+import 'package:flutterhole/bloc/api/query_types.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/api/query.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
@@ -157,6 +158,22 @@ main() {
           .thenAnswer((_) => Future.value(mockQueries));
       expect(queryRepository.getForQueryType(QueryType.A),
           completion(mockQueries));
+    });
+  });
+
+  group('repository', () {
+    MockPiholeClient client;
+    QueryTypesRepository queryTypesRepository;
+
+    setUp(() {
+      client = MockPiholeClient();
+      queryTypesRepository = QueryTypesRepository(client);
+    });
+
+    test('getQueryTypes', () {
+      when(client.fetchQueryTypes())
+          .thenAnswer((_) => Future.value(mockQueryTypes));
+      expect(queryTypesRepository.get(), completion(mockQueryTypes));
     });
   });
 }

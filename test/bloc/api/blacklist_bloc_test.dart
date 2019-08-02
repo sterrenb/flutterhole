@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
+
+import '../../mock.dart';
 
 class MockBlacklistRepository extends Mock implements BlacklistRepository {
   @override
@@ -188,6 +192,73 @@ main() {
   });
 
   group('repository', () {
+    MockPiholeClient client;
+    BlacklistRepository blacklistRepository;
 
+    setUp(() {
+      client = MockPiholeClient();
+      blacklistRepository =
+          BlacklistRepository(client, initialValue: mockBlacklist);
+    });
+
+    group('constructor', () {
+      test('initially default', () {
+        blacklistRepository = BlacklistRepository(client);
+        expect(blacklistRepository.cache, Blacklist());
+      });
+      test('initial test cache is mocked', () {
+        expect(blacklistRepository.cache, mockBlacklist);
+      });
+    });
+
+    test('getBlacklist', () {
+      when(client.fetchBlacklist())
+          .thenAnswer((_) => Future.value(mockBlacklist));
+
+      expect(blacklistRepository.get(), completion(mockBlacklist));
+    });
+
+    test('addToBlacklist', () {
+      final BlacklistItem item = BlacklistItem.exact(entry: 'test');
+      final Blacklist list = Blacklist.withItem(mockBlacklist, item);
+
+      when(client.addToBlacklist(item)).thenAnswer((_) {
+        final completer = Completer<void>()
+          ..complete();
+        return completer.future;
+      });
+
+      expect(blacklistRepository.add(item), completion(list));
+    });
+
+    test('removeFromBlacklist', () {
+      final BlacklistItem original = mockBlacklist.exact.first;
+      final Blacklist list = Blacklist.withoutItem(mockBlacklist, original);
+
+      when(client.removeFromBlacklist(original)).thenAnswer((_) {
+        final completer = Completer<void>()
+          ..complete();
+        return completer.future;
+      });
+
+      assert(original != null);
+      expect(blacklistRepository.remove(original), completion(list));
+    });
+
+    test('editOnBlacklist', () {
+      final BlacklistItem original = mockBlacklist.exact.first;
+      final BlacklistItem update = BlacklistItem.exact(entry: 'test');
+      final Blacklist list = Blacklist.withItem(
+          Blacklist.withoutItem(mockBlacklist, original), update);
+
+      when(client.editOnBlacklist(original, update)).thenAnswer((_) {
+        final completer = Completer<void>()
+          ..complete();
+        return completer.future;
+      });
+
+      assert(original != null);
+      expect(blacklistRepository.edit(original, update), completion(list));
+    });
   });
 }

@@ -12,50 +12,69 @@ class MockQueriesOverTimeRepository extends Mock
     implements QueriesOverTimeRepository {}
 
 main() {
-  MockQueriesOverTimeRepository queriesOverTimeRepository;
-  QueriesOverTimeBloc queriesOverTimeBloc;
+  group('bloc', () {
+    MockQueriesOverTimeRepository queriesOverTimeRepository;
+    QueriesOverTimeBloc queriesOverTimeBloc;
 
-  setUp(() {
-    queriesOverTimeRepository = MockQueriesOverTimeRepository();
-    queriesOverTimeBloc = QueriesOverTimeBloc(queriesOverTimeRepository);
-  });
-
-  test('has a correct initialState', () {
-    expect(queriesOverTimeBloc.initialState, BlocStateEmpty<QueriesOverTime>());
-  });
-
-  group('Fetch', () {
-    test(
-        'emits [BlocStateEmpty<QueriesOverTime>, BlocStateLoading<QueriesOverTime>, BlocStateSuccess<QueriesOverTime>] when repository returns QueriesOverTime',
-        () {
-      when(queriesOverTimeRepository.get())
-          .thenAnswer((_) => Future.value(mockQueriesOverTime));
-
-      expectLater(
-          queriesOverTimeBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<QueriesOverTime>(),
-            BlocStateLoading<QueriesOverTime>(),
-            BlocStateSuccess<QueriesOverTime>(mockQueriesOverTime),
-          ]));
-
-      queriesOverTimeBloc.dispatch(Fetch());
+    setUp(() {
+      queriesOverTimeRepository = MockQueriesOverTimeRepository();
+      queriesOverTimeBloc = QueriesOverTimeBloc(queriesOverTimeRepository);
     });
 
-    test(
-        'emits [BlocStateEmpty<QueriesOverTime>, BlocStateLoading<QueriesOverTime>, BlocStateError<QueriesOverTime>] when home repository throws PiholeException',
-        () {
-      when(queriesOverTimeRepository.get()).thenThrow(PiholeException());
+    test('has a correct initialState', () {
+      expect(
+          queriesOverTimeBloc.initialState, BlocStateEmpty<QueriesOverTime>());
+    });
 
-      expectLater(
-          queriesOverTimeBloc.state,
-          emitsInOrder([
-            BlocStateEmpty<QueriesOverTime>(),
-            BlocStateLoading<QueriesOverTime>(),
-            BlocStateError<QueriesOverTime>(PiholeException()),
-          ]));
+    group('Fetch', () {
+      test(
+          'emits [BlocStateEmpty<QueriesOverTime>, BlocStateLoading<QueriesOverTime>, BlocStateSuccess<QueriesOverTime>] when repository returns QueriesOverTime',
+              () {
+            when(queriesOverTimeRepository.get())
+                .thenAnswer((_) => Future.value(mockQueriesOverTime));
 
-      queriesOverTimeBloc.dispatch(Fetch());
+            expectLater(
+                queriesOverTimeBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<QueriesOverTime>(),
+                  BlocStateLoading<QueriesOverTime>(),
+                  BlocStateSuccess<QueriesOverTime>(mockQueriesOverTime),
+                ]));
+
+            queriesOverTimeBloc.dispatch(Fetch());
+          });
+
+      test(
+          'emits [BlocStateEmpty<QueriesOverTime>, BlocStateLoading<QueriesOverTime>, BlocStateError<QueriesOverTime>] when home repository throws PiholeException',
+              () {
+            when(queriesOverTimeRepository.get()).thenThrow(PiholeException());
+
+            expectLater(
+                queriesOverTimeBloc.state,
+                emitsInOrder([
+                  BlocStateEmpty<QueriesOverTime>(),
+                  BlocStateLoading<QueriesOverTime>(),
+                  BlocStateError<QueriesOverTime>(PiholeException()),
+                ]));
+
+            queriesOverTimeBloc.dispatch(Fetch());
+          });
+    });
+  });
+
+  group('repository', () {
+    MockPiholeClient client;
+    QueriesOverTimeRepository queriesOverTimeRepository;
+
+    setUp(() {
+      client = MockPiholeClient();
+      queriesOverTimeRepository = QueriesOverTimeRepository(client);
+    });
+
+    test('getQueriesOverTime', () {
+      when(client.fetchQueriesOverTime())
+          .thenAnswer((_) => Future.value(mockQueriesOverTime));
+      expect(queriesOverTimeRepository.get(), completion(mockQueriesOverTime));
     });
   });
 }

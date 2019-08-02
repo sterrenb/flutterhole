@@ -56,4 +56,20 @@ main() {
           topSourcesBloc.dispatch(Fetch());
     });
   });
+
+  group('repository', () {
+    MockPiholeClient client;
+    TopSourcesRepository topSourcesRepository;
+
+    setUp(() {
+      client = MockPiholeClient();
+      topSourcesRepository = TopSourcesRepository(client);
+    });
+
+    test('getTopSources', () {
+      when(client.fetchTopSources())
+          .thenAnswer((_) => Future.value(mockTopSources));
+      expect(topSourcesRepository.get(), completion(mockTopSources));
+    });
+  });
 }

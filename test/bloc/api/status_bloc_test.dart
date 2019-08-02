@@ -186,4 +186,67 @@ main() {
           statusBloc.dispatch(WakeStatus());
         });
   });
+
+  group('repository', () {
+    MockPiholeClient client;
+    StatusRepository statusRepository;
+
+    setUp(() {
+      client = MockPiholeClient();
+      statusRepository = StatusRepository(client);
+    });
+
+    test('initial stopwatch is stopped', () {
+      expect(statusRepository.stopwatch.isRunning, isFalse);
+    });
+
+    test('getStatus', () {
+      when(client.fetchStatus())
+          .thenAnswer((_) => Future.value(mockStatusEnabled));
+
+      expect(statusRepository.get(), completion(mockStatusEnabled));
+    });
+
+    test('enable', () {
+      when(client.enable()).thenAnswer((_) => Future.value(mockStatusEnabled));
+
+      expect(statusRepository.enable(), completion(mockStatusEnabled));
+    });
+
+    test('disable', () {
+      when(client.disable())
+          .thenAnswer((_) => Future.value(mockStatusDisabled));
+
+      expect(statusRepository.disable(), completion(mockStatusDisabled));
+    });
+
+    test('sleep', () async {
+      final duration = Duration(seconds: 5);
+
+      when(client.disable(duration))
+          .thenAnswer((_) => Future.value(mockStatusDisabled));
+
+      final status = await statusRepository.sleep(duration, () {});
+
+      expect(status, mockStatusDisabled);
+      expect(statusRepository.stopwatch.isRunning, isTrue);
+      expect(statusRepository.elapsed.inMicroseconds, greaterThan(0));
+
+      expect(statusRepository.sleep(duration, () {}),
+          completion(mockStatusDisabled));
+    });
+
+    test('cancelSleep', () {
+      statusRepository.cancelSleep();
+      expect(statusRepository.stopwatch.isRunning, isFalse);
+      expect(statusRepository.elapsed.inMicroseconds, equals(0));
+    });
+
+    test('cancelSleep while sleeping', () {
+      statusRepository.sleep(Duration(seconds: 5), () {});
+      statusRepository.cancelSleep();
+      expect(statusRepository.stopwatch.isRunning, isFalse);
+      expect(statusRepository.elapsed.inMicroseconds, equals(0));
+    });
+  });
 }
