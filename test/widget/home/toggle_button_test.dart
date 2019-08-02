@@ -8,8 +8,8 @@ import 'package:flutterhole/model/api/status.dart';
 import 'package:flutterhole/widget/status/toggle_button.dart';
 import 'package:mockito/mockito.dart';
 
+import '../../mock.dart';
 import '../mock.dart';
-import 'mock.dart';
 
 void main() {
   ToggleButton toggleButton;

@@ -71,3 +71,15 @@ String queryStatusToString(QueryStatus status) {
       return 'Empty';
   }
 }
+
+String durationToTimeString(Duration duration) {
+  return duration.inHours.toString() +
+      ':' +
+      (duration.inMinutes % Duration.minutesPerHour)
+          .toString()
+          .padLeft(2, '0') +
+      ':' +
+      (duration.inSeconds % Duration.secondsPerMinute)
+          .toString()
+          .padLeft(2, '0');
+}
