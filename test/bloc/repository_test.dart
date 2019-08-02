@@ -10,10 +10,8 @@ import 'package:flutterhole/bloc/api/top_items.dart';
 import 'package:flutterhole/bloc/api/top_sources.dart';
 import 'package:flutterhole/bloc/api/versions.dart';
 import 'package:flutterhole/bloc/api/whitelist.dart';
-import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/model/api/whitelist.dart';
-import 'package:flutterhole/model/pihole.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
@@ -308,60 +306,5 @@ main() {
       expect(statusRepository.stopwatch.isRunning, isFalse);
       expect(statusRepository.elapsed.inMicroseconds, equals(0));
     });
-  });
-
-  group('PiholeRepository', () {
-    MockSecureStore secureStore;
-    PiholeRepository piholeRepository;
-
-    setUp(() {
-      secureStore = MockSecureStore();
-      piholeRepository = PiholeRepository(secureStore);
-    });
-
-    test('getPiholes', () {
-      final map = mockPiholes
-          .asMap()
-          .map((_, pihole) => MapEntry<String, Pihole>(pihole.title, pihole));
-      secureStore.piholes = map;
-
-      expect(piholeRepository.getPiholes(), map.values);
-    });
-
-    test('active', () {
-      secureStore.active = mockPiholes.first;
-      expect(piholeRepository.active(), mockPiholes.first);
-    });
-
-    test('add', () {
-      final pihole = Pihole(title: 'add');
-      when(secureStore.add(pihole)).thenAnswer((_) => Future.value(true));
-      expect(piholeRepository.add(pihole), completion(isTrue));
-    });
-
-    test('remove', () {
-      final pihole = mockPiholes.first;
-      when(secureStore.remove(pihole)).thenAnswer((_) => Future.value(true));
-      expect(piholeRepository.remove(pihole), completion(isTrue));
-    });
-
-    test('activate', () {
-      final pihole = mockPiholes.first;
-      when(secureStore.activate(pihole)).thenAnswer((_) => Future.value(true));
-      expect(piholeRepository.activate(pihole), completes);
-    });
-
-    test('update', () {
-      final original = mockPiholes.first;
-      final update = Pihole(title: 'update');
-      when(secureStore.update(original, update))
-          .thenAnswer((_) => Future.value(true));
-      expect(piholeRepository.update(original, update), completes);
-    });
-
-//    test('reset', () {
-//      when(secureStore.reset()).thenAnswer((_) => Future.value(true));
-//      expect(piholeRepository.reset(), completes);
-//    });
   });
 }
