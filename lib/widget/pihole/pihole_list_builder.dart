@@ -60,7 +60,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
         builder: (context, state) {
           if (state is PiholeStateSuccess &&
               (_cacheAll == null || _cacheActive == null)) {
-            print('no cache, setting during build');
+            // TODO obtain initial state, not during build
             _cacheAll = state.all;
             _cacheActive = state.active;
           }

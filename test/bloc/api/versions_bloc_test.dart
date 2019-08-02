@@ -9,8 +9,6 @@ import 'package:test/test.dart';
 
 import '../../mock.dart';
 
-class MockVersionsRepository extends Mock implements VersionsRepository {}
-
 main() {
   group('bloc', () {
     MockVersionsRepository versionsRepository;

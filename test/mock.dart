@@ -1,3 +1,4 @@
+import 'package:flutterhole/bloc/api/versions.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/model/api/forward_destinations.dart';
 import 'package:flutterhole/model/api/queries_over_time.dart';
@@ -20,6 +21,8 @@ final mockPiholes = [
 ];
 
 class MockPiholeClient extends Mock implements PiholeClient {}
+
+class MockVersionsRepository extends Mock implements VersionsRepository {}
 
 class MockSecureStore extends Mock implements SecureStore {
   @override
