@@ -80,8 +80,12 @@ class PiholeClient {
       dio.options.baseUrl = pihole.baseUrl;
 
       if (pihole.proxy.basicAuth.isNotEmpty) {
-        dio.options.headers['Proxy-Authorization'] =
-        'Basic ${pihole.proxy.basicAuth}';
+        // Disable basic auth headers, and instead provide
+        // credentials in the HTTP request.
+//        dio.options.headers['Proxy-Authorization'] =
+//        'Basic ${pihole.proxy.basicAuth}';
+
+        dio.options.baseUrl = '${pihole.baseUrl}';
       }
 
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =

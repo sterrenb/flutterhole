@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutterhole/model/serializable.dart';
 
@@ -35,7 +33,8 @@ class Proxy extends Equatable {
     if (username.isEmpty || password.isEmpty) {
       return '';
     } else {
-      return base64Encode(utf8.encode('$username:$password'));
+//      return base64Encode(utf8.encode('$username:$password'));
+      return '$username:$password';
     }
   }
 
@@ -77,9 +76,18 @@ class Pihole extends Serializable {
 
   String get localKey => Pihole.toKey(this.title);
 
-  String get baseUrl =>
-      '${(port == 443 || useSSL) ? 'https' : 'http'}://$host${((port == 80 &&
-          !useSSL) || (port == 443 && useSSL)) ? '' : ':${port.toString()}'}';
+  String get baseUrl {
+    final String scheme = port == 443 || useSSL ? 'https' : 'http';
+    final String portString = (port == 80 && !useSSL) || (port == 80 && !useSSL)
+        ? ''
+        : ':"${port.toString()}';
+
+    if (proxy.basicAuth.isNotEmpty && proxy.directConnection.isNotEmpty) {
+      return '$scheme://${proxy.basicAuth}@${proxy.directConnection}';
+    }
+
+    return '$scheme://$host$portString';
+  }
 
 //  static String toKey(String str) => str.toLowerCase().replaceAll(' ', '_');
   static String toKey(String str) => str;

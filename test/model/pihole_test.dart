@@ -100,7 +100,10 @@ main() {
 
     test('getters', () {
       expect(proxy.directConnection, 'host:8080');
-      expect(proxy.basicAuth, 'dXNlcjpwYXNz');
+      expect(proxy.basicAuth, 'user:pass');
+//      expect(proxy.basicAuth, 'dXNlcjpwYXNz');
+
+      expect(Pihole(proxy: proxy).baseUrl, 'http://user:pass@host:8080');
     });
   });
 }

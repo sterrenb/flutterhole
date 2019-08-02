@@ -27,7 +27,7 @@ class _DefaultDrawerState extends State<DefaultDrawer> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: TitleRow(),
+            accountName: TitleIconRow(),
             accountEmail: null,
             onDetailsPressed: widget.allowConfigSelection
                 ? () {
