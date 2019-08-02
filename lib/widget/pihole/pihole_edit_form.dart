@@ -110,7 +110,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
               header: Container(
                 color: Theme
                     .of(context)
-                    .primaryColor,
+                    .secondaryHeaderColor,
                 alignment: Alignment.centerLeft,
                 child: ExpansionTile(
                   title: Row(

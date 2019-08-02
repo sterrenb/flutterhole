@@ -6,13 +6,6 @@ import 'package:flutterhole/widget/layout/icon_text_button.dart';
 import 'package:flutterhole/widget/screen/pihole_screen.dart';
 
 class PiholeButtonRow extends StatelessWidget {
-//  final VoidCallback onStateChange;
-
-//  const PiholeButtonRow({
-//    Key key,
-//    @required this.onStateChange,
-//  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -40,7 +33,6 @@ class PiholeButtonRow extends StatelessWidget {
                 ),
                 continueText: 'Remove all', onConfirm: () async {
               BlocProvider.of<PiholeBloc>(context).dispatch(ResetPiholes());
-//              onStateChange();
               Scaffold.of(context).showSnackBar(SnackBar(
                   content: Text('Resetting to default configuration')));
             });

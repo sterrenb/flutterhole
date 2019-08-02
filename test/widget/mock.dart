@@ -43,7 +43,11 @@ class MockMaterialApp extends StatelessWidget {
   final MockPiholeBloc piholeBloc = MockPiholeBloc();
   final MockVersionsBloc versionsBloc = MockVersionsBloc();
 
-  MockMaterialApp({Key key, this.child, this.appbar}) : super(key: key);
+  MockMaterialApp({
+    Key key,
+    this.child,
+    this.appbar,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -14,7 +14,6 @@ void main() {
   });
 
   testWidgets('StatusAppBar has default title', (WidgetTester tester) async {
-    materialApp = MockMaterialApp(appbar: StatusAppBar());
     when(materialApp.piholeBloc.currentState).thenAnswer(
         (_) => PiholeStateSuccess(all: mockPiholes, active: mockPiholes.first));
     await tester.pumpWidget(materialApp);
