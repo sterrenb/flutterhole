@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
@@ -12,18 +11,16 @@ import 'package:mockito/mockito.dart';
 import '../../mock.dart';
 import '../mock_material_app.dart';
 
-class MockRouter extends Mock implements Router {}
-
 void main() {
   MockMaterialApp materialApp;
 
   setUpAll(() {
+    BlocSupervisor.delegate = SimpleBlocDelegate();
     Globals.client = MockPiholeClient();
     Globals.router = MockRouter();
   });
 
   setUp(() {
-    BlocSupervisor.delegate = SimpleBlocDelegate();
     materialApp = MockMaterialApp(child: PiholeListBuilder());
   });
 

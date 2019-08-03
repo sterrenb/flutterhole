@@ -249,7 +249,8 @@ main() {
                       active: update),
                 ]));
 
-            piholeBloc.dispatch(UpdatePihole(original, update));
+            piholeBloc.dispatch(
+                UpdatePihole(original: original, update: update));
           });
 
       test(
@@ -266,7 +267,8 @@ main() {
                   PiholeStateError(PiholeException()),
                 ]));
 
-            piholeBloc.dispatch(UpdatePihole(original, update));
+            piholeBloc.dispatch(
+                UpdatePihole(original: original, update: update));
           });
     });
   });

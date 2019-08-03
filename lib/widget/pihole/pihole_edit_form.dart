@@ -3,14 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutterhole/bloc/api/versions.dart';
-import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/bloc/pihole/bloc.dart';
-import 'package:flutterhole/model/api/versions.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/browser.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/layout/icon_text_button.dart';
 import 'package:flutterhole/widget/layout/list_tab.dart';
+import 'package:flutterhole/widget/pihole/health_checker.dart';
 import 'package:flutterhole/widget/status/status_icon.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
 import 'package:sticky_headers/sticky_headers.dart';
@@ -19,9 +18,6 @@ class PiholeEditForm extends StatefulWidget {
   final Pihole original;
 
   const PiholeEditForm({Key key, @required this.original}) : super(key: key);
-
-  static _PiholeEditFormState of(BuildContext context) =>
-      context.ancestorStateOfType(const TypeMatcher<_PiholeEditFormState>());
 
   @override
   _PiholeEditFormState createState() => _PiholeEditFormState();
@@ -46,9 +42,6 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      pihole = widget.original;
-    });
     _resetControllers();
   }
 
@@ -57,12 +50,16 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       Globals.tree.log('Form', '${pihole.toObscuredJson()}', tag: 'save');
-      piholeBloc.dispatch(UpdatePihole(
-          widget.original, Pihole.copyWith(pihole, auth: authController.text)));
+      piholeBloc
+          .dispatch(UpdatePihole(original: widget.original, update: pihole));
     }
   }
 
-  Future _resetControllers() async {
+  Future<void> _resetControllers() async {
+    setState(() {
+      pihole = widget.original;
+    });
+
     titleController.text = widget.original.title;
     hostController.text = widget.original.host;
     apiPathController.text = widget.original.apiPath;
@@ -95,7 +92,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
       bloc: piholeBloc,
       listener: (context, state) {
         if (state is PiholeStateSuccess) {
-          _pop(context);
+          _popSuccess(context);
         }
         if (state is PiholeStateError) {
           Scaffold.of(context)
@@ -122,7 +119,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
 //                  backgroundColor: Theme.of(context).secondaryHeaderColor,
 //                  initiallyExpanded: true,
                   children: <Widget>[
-                    _HealthCheck(),
+                    HealthChecker(),
                   ],
                 ),
               ),
@@ -131,6 +128,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                 children: <Widget>[
                   ListTab('Pihole Configuration'),
                   TextField(
+                    key: Key('titleController'),
                     controller: titleController,
                     autofocus: pihole.title.isEmpty,
                     decoration: InputDecoration(
@@ -142,6 +140,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     },
                   ),
                   TextField(
+                    key: Key('hostController'),
                     controller: hostController,
                     keyboardType: TextInputType.url,
                     decoration: InputDecoration(
@@ -151,6 +150,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     },
                   ),
                   TextField(
+                    key: Key('apiPathController'),
                     controller: apiPathController,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -160,6 +160,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     },
                   ),
                   TextField(
+                    key: Key('portController'),
                     controller: portController,
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
@@ -177,6 +178,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     children: <Widget>[
                       Expanded(
                         child: TextField(
+                          key: Key('authController'),
                           controller: authController,
                           keyboardType: TextInputType.url,
                           enableInteractiveSelection: true,
@@ -199,6 +201,8 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                                 .setAutoFocusIntervalInMs(200)
                                 .scan();
                             authController.text = qr;
+                            _onChange(
+                                context, Pihole.copyWith(pihole, auth: qr));
                           } catch (e) {
                             Globals.tree.log(
                                 'AuthController', 'cannot scan QR code',
@@ -246,26 +250,32 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     ),
                   ),
                   ListTab('SSL Settings'),
-                  FormBuilderSwitch(
-                    initialValue: widget.original.useSSL,
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.filter_tilt_shift)),
-                    label: Text('use SSL'),
-                    attribute: 'useSSL',
-                    onChanged: (v) {
-                      _onChange(context, Pihole.copyWith(pihole, useSSL: v));
-                    },
+                  Container(
+                    key: Key('useSSLController'),
+                    child: FormBuilderSwitch(
+                      initialValue: widget.original.useSSL,
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.filter_tilt_shift)),
+                      label: Text('use SSL'),
+                      attribute: 'useSSL',
+                      onChanged: (v) {
+                        _onChange(context, Pihole.copyWith(pihole, useSSL: v));
+                      },
+                    ),
                   ),
-                  FormBuilderSwitch(
-                    initialValue: widget.original.allowSelfSigned,
-                    decoration:
-                    InputDecoration(prefixIcon: Icon(Icons.lock_open)),
-                    label: Text('Allow self-signed certificates'),
-                    attribute: 'allowSelfSigned',
-                    onChanged: (v) {
-                      _onChange(
-                          context, Pihole.copyWith(pihole, allowSelfSigned: v));
-                    },
+                  Container(
+                    key: Key('allowSelfSignedController'),
+                    child: FormBuilderSwitch(
+                      initialValue: widget.original.allowSelfSigned,
+                      decoration:
+                      InputDecoration(prefixIcon: Icon(Icons.lock_open)),
+                      label: Text('Allow self-signed certificates'),
+                      attribute: 'allowSelfSigned',
+                      onChanged: (v) {
+                        _onChange(context,
+                            Pihole.copyWith(pihole, allowSelfSigned: v));
+                      },
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
@@ -279,6 +289,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                   ),
                   ListTab('Basic Authentication'),
                   TextField(
+                    key: Key('proxyUsernameController'),
                     controller: proxyUsernameController,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -293,6 +304,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     },
                   ),
                   TextField(
+                    key: Key('proxyPasswordController'),
                     controller: proxyPasswordController,
                     keyboardType: TextInputType.text,
                     enableInteractiveSelection: true,
@@ -309,6 +321,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                   ),
                   ListTab('Proxy Settings'),
                   TextField(
+                    key: Key('proxyHostController'),
                     controller: proxyHostController,
                     keyboardType: TextInputType.url,
                     decoration: InputDecoration(
@@ -321,6 +334,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                     },
                   ),
                   TextField(
+                    key: Key('proxyPortController'),
                     controller: proxyPortController,
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
@@ -352,6 +366,7 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
                         IconTextButton(
                           onPressed: () async {
                             await _resetControllers();
+                            _onChange(context, widget.original);
                           },
                           title: 'Reset',
                           icon: Icons.delete_forever,
@@ -369,125 +384,11 @@ class _PiholeEditFormState extends State<PiholeEditForm> {
     );
   }
 
-  void _pop(BuildContext context) {
+  void _popSuccess(BuildContext context) {
     if (widget.original != null) {
       Navigator.of(context).pop('Edited ${pihole.title}');
     } else {
       Navigator.of(context).pop('Added ${pihole.title}');
     }
-  }
-}
-
-class _HealthCheck extends StatelessWidget {
-  const _HealthCheck({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder(
-        bloc: BlocProvider.of<VersionsBloc>(context),
-        builder: (context, state) {
-          List<Widget> items = [];
-          Versions versions;
-          if (state is BlocStateSuccess<Versions>) {
-            versions = state.data;
-          }
-
-          if (state is BlocStateError<Versions>) {
-            items = [
-              ListTile(
-                leading: Icon(Icons.error),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text(state.e.message
-                            .split(' ')
-                            .first),
-                        content: SingleChildScrollView(
-                          child: Text(state.e.toString()),
-                        ),
-                        actions: [
-                          FlatButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                Clipboard.setData(
-                                    ClipboardData(text: state.e.toString()));
-                              },
-                              child: Text('Copy to clipboard')),
-                        ],
-                      );
-                    },
-                  );
-                },
-                title: Text(
-                  state.e.message,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Container(),
-              ),
-              ListTile(title: Container(), subtitle: Container()),
-              ListTile(
-                leading: Icon(Icons.web),
-                trailing: Icon(Icons.keyboard_arrow_right),
-                title: Text('Pi-hole community support'),
-                subtitle: Text('discourse.pi-hole.net'),
-                onTap: () => launchURL('https://discourse.pi-hole.net/'),
-              ),
-            ];
-          } else {
-            items.addAll([
-              _ListTile(
-                title: versions?.coreCurrent ?? 'Loading...',
-                subtitle: 'Pi-hole Version',
-                latest: versions?.coreLatest,
-              ),
-              _ListTile(
-                title: versions?.webCurrent ?? 'Loading...',
-                subtitle: 'Web Interface Version',
-                latest: versions?.webLatest,
-              ),
-              _ListTile(
-                  title: versions?.ftlCurrent ?? 'Loading...',
-                  subtitle: 'FTL Version',
-                  latest: versions?.coreLatest ?? 'Loading...'),
-            ]);
-          }
-
-          return Column(
-            children: items,
-          );
-        });
-  }
-}
-
-class _ListTile extends StatelessWidget {
-  const _ListTile({
-    Key key,
-    this.title,
-    @required this.subtitle,
-    this.latest = '',
-  })
-      : _subtitle =
-  '$subtitle${(title != 'Loading...' && latest != null && latest.length > 0)
-      ? ' (update available: $latest)'
-      : ''}',
-        super(key: key);
-
-  final String title;
-  final String subtitle;
-  final String latest;
-
-  final String _subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.check),
-      title: Text(title),
-      subtitle: Text(_subtitle),
-    );
   }
 }
