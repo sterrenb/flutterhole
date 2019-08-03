@@ -65,7 +65,7 @@ const String _piholeEditPath = '/settings/:key';
 
 /// The concrete route to [PiholeEditScreen] with [pihole].
 String piholeEditPath(Pihole pihole) =>
-    _piholeEditPath.replaceAll(':key', pihole.localKey);
+    _piholeEditPath.replaceAll(':key', pihole.title);
 
 /// The route to [WhitelistViewScreen].
 const String whitelistViewPath = '/whitelist/view';
@@ -140,8 +140,8 @@ void configureRoutes(Router router) {
               (params) =>
               QueryTypeLogScreen(queryType: params['queryType'][0])));
 
-  router.define(
-      whitelistViewPath, handler: _SimpleHandler(WhitelistViewScreen()));
+  router.define(whitelistViewPath,
+      handler: _SimpleHandler(WhitelistViewScreen()));
 
   router.define(whitelistAddPath,
       handler: _SimpleHandler(WhitelistAddScreen()));
@@ -150,8 +150,8 @@ void configureRoutes(Router router) {
       handler: _ParamsHandler(
               (params) => WhitelistEditScreen(original: params['domain'][0])));
 
-  router.define(
-      blacklistViewPath, handler: _SimpleHandler(BlacklistViewScreen()));
+  router.define(blacklistViewPath,
+      handler: _SimpleHandler(BlacklistViewScreen()));
 
   router.define(blacklistAddPath,
       handler: _SimpleHandler(BlacklistAddScreen()));
@@ -167,11 +167,10 @@ void configureRoutes(Router router) {
 
   router.define(settingsPath, handler: _SimpleHandler(SettingsScreen()));
 
-  router.define(_piholeEditPath,
-      handler: _ParamsHandler((params) {
-        return PiholeEditScreen(
-            pihole: Globals.secureStore.piholes[params['key'][0]]);
-      }));
+  router.define(_piholeEditPath, handler: _ParamsHandler((params) {
+    return PiholeEditScreen(
+        pihole: Globals.secureStore.piholes[params['key'][0]]);
+  }));
 
   router.define(aboutPath, handler: _SimpleHandler(AboutScreen()));
 

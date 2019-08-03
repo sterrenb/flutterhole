@@ -33,5 +33,8 @@ class UpdatePihole extends PiholeEvent {
   final Pihole original;
   final Pihole update;
 
-  UpdatePihole(this.original, this.update) : super([original, update]);
+  UpdatePihole({
+    @required this.original,
+    @required this.update,
+  }) : super([original, update]);
 }

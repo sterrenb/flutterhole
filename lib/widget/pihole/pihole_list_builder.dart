@@ -60,7 +60,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
         builder: (context, state) {
           if (state is PiholeStateSuccess &&
               (_cacheAll == null || _cacheActive == null)) {
-            print('no cache, setting during build');
+            // TODO obtain initial state, not during build
             _cacheAll = state.all;
             _cacheActive = state.active;
           }
@@ -71,7 +71,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
             _cacheAll.forEach((pihole) {
               Widget tile;
               final bool isActive = (pihole == _cacheActive);
-              if (widget.editable) {
+              if (widget.editable && _cacheAll.length > 1) {
                 tile = Dismissible(
                   key: Key(pihole.title),
                   onDismissed: (direction) async {
@@ -97,7 +97,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
                   DismissibleBackground(alignment: Alignment.centerRight),
                   child: PiholeTile(
                     pihole: pihole,
-                    active: isActive,
+                    isActive: isActive,
                     onTap: () => _edit(context, pihole),
                     onLongPress: () => _activate(pihole, context),
                   ),
@@ -105,7 +105,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
               } else {
                 tile = PiholeTile(
                   pihole: pihole,
-                  active: isActive,
+                  isActive: isActive,
                   onTap: () async {
                     await _activate(pihole, context);
                     Navigator.of(context).pop();
@@ -135,13 +135,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
                 widget.editable ? Container() : Divider(),
                 ...items,
                 Divider(),
-                widget.editable
-                    ? PiholeButtonRow(
-//                      onStateChange: () {
-//                        setState(() {});
-//                      },
-                )
-                    : Container(),
+                widget.editable ? PiholeButtonRow() : Container(),
               ],
             );
           }
@@ -159,13 +153,13 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
 
 class PiholeTile extends StatelessWidget {
   final Pihole pihole;
-  final bool active;
+  final bool isActive;
   final GestureTapCallback onTap;
   final GestureLongPressCallback onLongPress;
 
   const PiholeTile({Key key,
     @required this.pihole,
-    this.active = false,
+    this.isActive = false,
     this.onTap,
     this.onLongPress})
       : super(key: key);
@@ -178,8 +172,12 @@ class PiholeTile extends StatelessWidget {
       title: Text(pihole.title),
       subtitle: Text(pihole.baseUrl),
       trailing: Icon(Icons.keyboard_arrow_right),
-      leading: Icon(Icons.check,
-          color: active ? _theme.accentColor : Colors.black.withOpacity(0.0)),
+      leading: isActive
+          ? Icon(Icons.check, color: _theme.accentColor)
+          : Icon(
+        Icons.remove,
+        color: Colors.black.withOpacity(0.0),
+      ),
       onTap: onTap,
       onLongPress: onLongPress,
     );

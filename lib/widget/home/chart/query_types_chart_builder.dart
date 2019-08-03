@@ -5,7 +5,7 @@ import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/api/query_types.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/api/query.dart';
-import 'package:flutterhole/service/convert.dart';
+import 'package:flutterhole/service/converter.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/home/chart/indicator.dart';
@@ -60,7 +60,7 @@ class QueryTypesChartBuilder extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 2.0),
                 child: Text(title)),
             Text(
-              '${percent.toString()}%',
+              '${percent.toStringAsFixed(1)}%',
               style: Theme.of(context).textTheme.caption,
             )
           ],

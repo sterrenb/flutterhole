@@ -62,9 +62,7 @@ main() {
     });
 
     test('getters', () {
-      expect(pihole.localKey, 'FlutterHole');
       expect(pihole.baseUrl, 'http://pi.hole');
-      expect(Pihole.toKey(pihole.title), 'FlutterHole');
     });
   });
 
@@ -101,9 +99,26 @@ main() {
     test('getters', () {
       expect(proxy.directConnection, 'host:8080');
       expect(proxy.basicAuth, 'user:pass');
-//      expect(proxy.basicAuth, 'dXNlcjpwYXNz');
+    });
 
-      expect(Pihole(proxy: proxy).baseUrl, 'http://user:pass@host:8080');
+    test('baseUrl', () {
+      expect(Pihole(port: 80).baseUrl, 'http://pi.hole');
+      expect(Pihole(port: 123).baseUrl, 'http://pi.hole:123');
+      expect(Pihole(port: 443, useSSL: true).baseUrl, 'https://pi.hole');
+      expect(Pihole(port: 123, useSSL: true).baseUrl, 'https://pi.hole:123');
+      expect(Pihole(port: 80, useSSL: true).baseUrl, 'https://pi.hole:80');
+      expect(Pihole(proxy: Proxy(username: 'user', password: 'pass')).baseUrl,
+          'http://user:pass@pi.hole');
+      expect(Pihole(proxy: Proxy(username: 'user', password: 'pass'))
+          .baseUrlObscured,
+          'http://<hidden>@pi.hole');
+      expect(
+          Pihole(
+              port: 321,
+              useSSL: true,
+              proxy: Proxy(username: 'a', password: 'b'))
+              .baseUrl,
+          'https://a:b@pi.hole:321');
     });
   });
 }

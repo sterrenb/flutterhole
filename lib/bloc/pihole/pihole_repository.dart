@@ -1,4 +1,5 @@
 import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/secure_store.dart';
 
 class PiholeRepository {
@@ -25,6 +26,7 @@ class PiholeRepository {
 
   Future<void> activate(Pihole pihole) async {
     await secureStore.activate(pihole);
+    Globals.fetchForAll();
   }
 
   Future<void> update(Pihole original, Pihole update) async {

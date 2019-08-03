@@ -3,7 +3,7 @@ import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/layout/title_row.dart';
 import 'package:flutterhole/widget/pihole/pihole_list_builder.dart';
-import 'package:flutterhole/widget/status/sleep_button.dart';
+import 'package:flutterhole/widget/status/sleep_buttons.dart';
 
 class DefaultDrawer extends StatefulWidget {
   final bool allowConfigSelection;

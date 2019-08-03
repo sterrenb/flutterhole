@@ -6,6 +6,7 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutterhole/bloc/api/status.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/api/status.dart';
+import 'package:flutterhole/service/converter.dart';
 
 /// A list of [SleepButton], [SleepButtonPermanent], and [SleepButtonCustom].
 class SleepButtons extends StatefulWidget {
@@ -21,6 +22,7 @@ class SleepButtonsState extends State<SleepButtons> {
 
   Status _cache;
 
+  /// The timer that triggers a build every second.
   Timer _timer;
 
   @override
@@ -34,92 +36,87 @@ class SleepButtonsState extends State<SleepButtons> {
   @override
   void dispose() {
     super.dispose();
-    _timer.cancel();
-  }
-
-  String _durationToString(Duration duration) {
-    return duration.inHours.toString() +
-        ':' +
-        (duration.inMinutes % Duration.minutesPerHour)
-            .toString()
-            .padLeft(2, '0') +
-        ':' +
-        (duration.inSeconds % Duration.secondsPerMinute)
-            .toString()
-            .padLeft(2, '0');
+    _timer?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
     final StatusBloc statusBloc = BlocProvider.of<StatusBloc>(context);
-    return BlocListener(
+    return BlocBuilder(
       bloc: statusBloc,
-      listener: (context, state) {},
-      child: BlocBuilder(
-        bloc: statusBloc,
-        builder: (BuildContext context, BlocState state) {
-          if (state is StatusStateSleeping) {
+      builder: (BuildContext context, BlocState state) {
+        if (state is StatusStateSleeping) {
+          return ListTile(
+              title: Text(
+                  'Wake (${durationToTimeString(state.durationRemaining)})'),
+              leading: Icon(Icons.timer_off),
+              onTap: () {
+                statusBloc.dispatch(EnableStatus());
+              });
+        }
+        if (state is BlocStateSuccess<Status> ||
+            state is BlocStateLoading<Status>) {
+          if (state is BlocStateSuccess<Status>) {
+            _cache = state.data;
+          }
+
+          if (_cache != null && _cache.enabled) {
+            return ExpansionTile(
+              title: Text('Disable',
+                  style:
+                  TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
+              leading: Icon(
+                Icons.pause,
+              ),
+              initiallyExpanded: isExpanded,
+              onExpansionChanged: (bool value) => isExpanded = value,
+              backgroundColor: Theme
+                  .of(context)
+                  .dividerColor,
+              children: <Widget>[
+                SleepButtonPermanent(),
+                SleepButton(
+                  duration: Duration(seconds: 10),
+                  onDispatch: _shrink,
+                ),
+                SleepButton(
+                  duration: Duration(seconds: 30),
+                  onDispatch: _shrink,
+                ),
+                SleepButton(
+                  duration: Duration(minutes: 5),
+                  onDispatch: _shrink,
+                ),
+                SleepButtonCustom(),
+              ],
+            );
+          } else {
             return ListTile(
-                title: Text(
-                    'Enable (${_durationToString(state.durationRemaining)})'),
+                title: Text('Enable'),
                 leading: Icon(Icons.timer_off),
                 onTap: () {
-//                  setState(() {
-//                    isExpanded = false;
-//                  });
                   statusBloc.dispatch(EnableStatus());
                 });
           }
-          if (state is BlocStateSuccess<Status> ||
-              state is BlocStateLoading<Status>) {
-            if (state is BlocStateSuccess<Status>) {
-              _cache = state.data;
-            }
+        }
 
-            if (_cache != null && _cache.enabled) {
-              return ExpansionTile(
-                title: Text('Disable',
-                    style:
-                        TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600)),
-                leading: Icon(
-                  Icons.pause,
-                ),
-                initiallyExpanded: isExpanded,
-                onExpansionChanged: (bool value) => isExpanded = value,
-                backgroundColor: Theme.of(context).dividerColor,
-                children: <Widget>[
-                  SleepButtonPermanent(),
-                  SleepButton(
-                    duration: Duration(seconds: 10),
-                    onDispatch: _shrink,
-                  ),
-                  SleepButton(
-                    duration: Duration(seconds: 30),
-                    onDispatch: _shrink,
-                  ),
-                  SleepButton(
-                    duration: Duration(minutes: 5),
-                    onDispatch: _shrink,
-                  ),
-                  SleepButtonCustom(),
-                ],
-              );
-            } else {
-              return ListTile(
-                  title: Text('Enable'),
-                  leading: Icon(Icons.timer_off),
-                  onTap: () {
-//                    setState(() {
-//                      isExpanded = false;
-//                    });
-                    statusBloc.dispatch(EnableStatus());
-                  });
-            }
-          }
-
-          return Container();
-        },
-      ),
+        return ListTile(
+          title: Text(
+            'Disable',
+            style: TextStyle(color: Theme
+                .of(context)
+                .textTheme
+                .caption
+                .color),
+          ),
+          leading: Icon(Icons.pause,
+              color: Theme
+                  .of(context)
+                  .textTheme
+                  .caption
+                  .color),
+        );
+      },
     );
   }
 

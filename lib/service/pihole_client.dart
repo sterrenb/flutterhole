@@ -80,11 +80,6 @@ class PiholeClient {
       dio.options.baseUrl = pihole.baseUrl;
 
       if (pihole.proxy.basicAuth.isNotEmpty) {
-        // Disable basic auth headers, and instead provide
-        // credentials in the HTTP request.
-//        dio.options.headers['Proxy-Authorization'] =
-//        'Basic ${pihole.proxy.basicAuth}';
-
         dio.options.baseUrl = '${pihole.baseUrl}';
       }
 
@@ -93,11 +88,6 @@ class PiholeClient {
         if (pihole.allowSelfSigned) {
           client.badCertificateCallback =
               (X509Certificate cert, String host, int port) => true;
-        }
-        if (pihole.proxy.directConnection.isNotEmpty) {
-          client.findProxy = (uri) {
-            return "PROXY ${pihole.proxy.directConnection}";
-          };
         }
 
         return client;
@@ -336,20 +326,10 @@ class PiholeClient {
     return queries;
   }
 
-//  List<Query> _responseToQueries(Response response) {
-  List<Query> _listToQueries(List<dynamic> data) {
-    List<Query> queries = [];
-    data.forEach((entry) {
-      queries.add(Query.fromJson(entry));
-    });
-
-    return queries;
-  }
-
   List<Query> _responseToQueries(Response response) {
     if (response.data is Map<String, dynamic>) {
       try {
-        return _listToQueries(response.data['data']);
+        return queriesFromJson(response.data['data']);
       } catch (e) {
         throw PiholeException(message: 'unknown error', e: e);
       }

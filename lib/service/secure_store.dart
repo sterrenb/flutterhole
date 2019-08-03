@@ -4,10 +4,10 @@ import 'package:flutterhole/model/pihole.dart';
 import 'globals.dart';
 
 const String piholePrefix = 'pihole_';
-const String activePrefix = 'active_pihole';
+const String activePiholeKey = 'active_pihole';
 
 class SecureStore {
-  SecureStore([this.map]);
+  SecureStore(this.storage, [this.map]);
 
   Pihole _active;
 
@@ -19,29 +19,30 @@ class SecureStore {
 
   Map<String, String> map;
 
-  final FlutterSecureStorage _storage = FlutterSecureStorage();
+  final FlutterSecureStorage storage;
 
   Future<String> get(String key) async {
     if (map != null) return map[key];
 
-    return _storage.read(key: '$piholePrefix$key');
+    return storage.read(key: '$piholePrefix$key');
   }
 
   Future<void> _updateActive() async {
-    final String activeTitle = await _storage.read(key: activePrefix);
+    final String activeTitleLoaded = await storage.read(key: activePiholeKey);
 
-    if (activeTitle != null && piholes.isNotEmpty) {
-      if (piholes.containsKey(activeTitle)) {
-        return activate(piholes[activeTitle]);
-      } else {
-        Globals.tree.log('SecureStore',
-            'active not found in cache, activating first pihole (out of ${piholes.length} piholes)');
-        return activate(piholes.values.first);
-      }
-    } else {
-      Globals.tree.log('SecureStore', 'no configurations found, using default');
-      return activate(Pihole());
+    if (activeTitleLoaded != null && piholes.containsKey(activeTitleLoaded)) {
+      return activate(piholes[activeTitleLoaded]);
     }
+
+    if (piholes.isNotEmpty) {
+      Globals.tree.log('SecureStore',
+          'active not found in cache, activating first pihole (out of ${piholes
+              .length} piholes)');
+      return activate(piholes.values.first);
+    }
+
+    Globals.tree.log('SecureStore', 'no configurations found, using default');
+    return activate(Pihole());
   }
 
   Future<void> activate(Pihole pihole) async {
@@ -50,13 +51,13 @@ class SecureStore {
           .log('SecureStore', 'using uncached configuration `${pihole.title}`');
     }
 
-    await _storage.write(key: activePrefix, value: pihole.title);
+    await storage.write(key: activePiholeKey, value: pihole.title);
     piholes[pihole.title] = pihole;
     _active = pihole;
   }
 
   Future<void> deleteAll() async {
-    await _storage.deleteAll();
+    await storage.deleteAll();
     piholes.clear();
     _active = null;
   }
@@ -64,7 +65,7 @@ class SecureStore {
   Future<void> reload() async {
     piholes.clear();
 
-    map = await _storage.readAll();
+    map = await storage.readAll();
 
     // retain only pihole pairs
     map.removeWhere((key, value) {
@@ -117,9 +118,6 @@ class SecureStore {
     });
 
     await _updateActive();
-
-    print('SecureStore: reload: $piholes');
-    print('active: $active');
   }
 
   Future<void> remove(Pihole pihole) async {
@@ -127,7 +125,7 @@ class SecureStore {
 
     await Future.forEach(map.keys, (key) async {
       try {
-        return _storage.delete(key: '$piholePrefix${pihole.title}_$key');
+        return storage.delete(key: '$piholePrefix${pihole.title}_$key');
       } catch (e) {
         Globals.tree.log('SecureStore', 'remove failed: ${e.toString()}');
       }
@@ -137,7 +135,7 @@ class SecureStore {
   }
 
   Future<void> add(Pihole pihole, {bool allowOverride = false}) async {
-    if (allowOverride && piholes.containsValue(pihole)) {
+    if (!allowOverride && piholes.containsValue(pihole)) {
       throw Exception(
           '${pihole
               .title} already present - if this was intended, set `allowOverride = true`');
@@ -148,10 +146,10 @@ class SecureStore {
     await Future.forEach(map.keys, (key) async {
       final String value = map[key];
       try {
-        return _storage.write(
+        return storage.write(
             key: '$piholePrefix${pihole.title}_$key', value: value);
       } catch (e) {
-        Globals.tree.log('SecureStore', 'remove failed: ${e.toString()}');
+        Globals.tree.log('SecureStore', 'add failed: ${e.toString()}');
       }
     });
 
@@ -159,6 +157,12 @@ class SecureStore {
   }
 
   Future<void> update(Pihole original, Pihole update) async {
+    if (!piholes.containsKey(original.title)) {
+      Globals.tree.log(
+          'SecureStore', 'the original Pihole is not yet present during update',
+          tag: 'warning');
+    }
+
     if (update == original) return;
 
     final bool originalIsActive = (original == active);

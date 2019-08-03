@@ -55,7 +55,7 @@ class ForwardDestinationsChartBuilder extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 2.0),
                     child: Text(item.title)),
                 Text(
-                  '${item.percent.toString()}%',
+                  '${item.percent.toStringAsFixed(1)}%',
                   style: Theme
                       .of(context)
                       .textTheme

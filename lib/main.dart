@@ -4,6 +4,7 @@ import 'package:fimber/fimber.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/api/queries_over_time.dart';
@@ -25,14 +26,13 @@ import 'package:flutterhole/widget/app.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 
 import 'bloc/api/status.dart';
-import 'bloc/base/event.dart';
 
 void main() async {
   Globals.tree = MemoryTree();
   Fimber.plantTree(MemoryTree());
 
   Globals.router = Router();
-  Globals.secureStore = SecureStore();
+  Globals.secureStore = SecureStore(FlutterSecureStorage());
 
   await Globals.secureStore.reload();
 
@@ -76,28 +76,13 @@ void main() async {
   final BlacklistBloc blacklistBloc =
   BlacklistBloc(BlacklistRepository(Globals.client));
 
-  Globals.refreshAllBlocs = () {
-    Globals.client.cancel();
-    statusBloc.dispatch(Fetch());
-    summaryBloc.dispatch(Fetch());
-    versionsBloc.dispatch(Fetch());
-    queriesOverTimeBloc.dispatch(Fetch());
-    queryTypesBloc..dispatch(Fetch());
-    forwardDestinationsBloc.dispatch(Fetch());
-    topSourcesBloc.dispatch(Fetch());
-    topItemsBloc.dispatch(Fetch());
-    queryBloc.dispatch(Fetch());
-    whitelistBloc.dispatch(Fetch());
-    blacklistBloc.dispatch(Fetch());
-  };
-
   assert(() {
     Globals.debug = true;
     return true;
   }());
 
   if (Globals.debug) {
-    if (false) BlocSupervisor.delegate = SimpleBlocDelegate();
+    if (true) BlocSupervisor.delegate = SimpleBlocDelegate();
     Globals.tree.log('main', 'Running in debug mode');
   } else {
     Globals.tree.log('main', 'Running in release mode');
@@ -123,5 +108,22 @@ void main() async {
     ],
   ));
 
-  Globals.refreshAllBlocs();
+  Globals.fetchForAll = () {
+    Globals.client.cancel();
+    Globals.fetchForBlocs([
+      statusBloc,
+      summaryBloc,
+      versionsBloc,
+      queriesOverTimeBloc,
+      queryTypesBloc,
+      forwardDestinationsBloc,
+      topSourcesBloc,
+      topItemsBloc,
+      queryBloc,
+      whitelistBloc,
+      blacklistBloc,
+    ]);
+  };
+
+  Globals.fetchForAll();
 }

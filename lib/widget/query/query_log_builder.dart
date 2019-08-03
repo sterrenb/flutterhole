@@ -8,7 +8,7 @@ import 'package:flutterhole/model/api/blacklist.dart';
 import 'package:flutterhole/model/api/query.dart';
 import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/service/browser.dart';
-import 'package:flutterhole/service/convert.dart';
+import 'package:flutterhole/service/converter.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 import 'package:flutterhole/widget/layout/search_options.dart';

@@ -25,8 +25,7 @@ class _SettingsBuilderState extends State<SettingsBuilder> {
           children: <Widget>[
             DarkModeSwitch(),
             CustomThemeSwitch(),
-            Flex(
-              direction: Axis.horizontal,
+            Row(
               children: <Widget>[
                 Flexible(child: PrimaryColorPicker()),
                 Flexible(child: AccentColorPicker()),

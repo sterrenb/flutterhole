@@ -14,76 +14,68 @@ class ToggleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final StatusBloc statusBloc = BlocProvider.of<StatusBloc>(context);
 
-    return BlocListener(
+    return BlocBuilder(
       bloc: statusBloc,
-      listener: (BuildContext context, BlocState state) {
-        if (state is BlocStateEmpty<Status>) {
-          statusBloc.dispatch(Fetch());
+      builder: (context, state) {
+        if (state is StatusStateSleeping) {
+          return IconButton(
+            onPressed: () {
+              statusBloc.dispatch(EnableStatus());
+            },
+            icon: Icon(Icons.play_arrow),
+          );
         }
-      },
-      child: BlocBuilder(
-        bloc: statusBloc,
-        builder: (context, state) {
-          if (state is StatusStateSleeping) {
+        if (state is BlocStateSuccess<Status>) {
+          if (state.data.enabled) {
+            return IconButton(
+              onPressed: () {
+                statusBloc.dispatch(DisableStatus());
+              },
+              icon: Icon(Icons.pause),
+              tooltip: 'Disable Pi-hole',
+            );
+          } else {
             return IconButton(
               onPressed: () {
                 statusBloc.dispatch(EnableStatus());
               },
               icon: Icon(Icons.play_arrow),
+              tooltip: 'Enable Pi-hole',
             );
           }
-          if (state is BlocStateSuccess<Status>) {
-            if (state.data.enabled) {
-              return IconButton(
-                onPressed: () {
-                  statusBloc.dispatch(DisableStatus());
-                },
-                icon: Icon(Icons.pause),
-                tooltip: 'Disable Pi-hole',
-              );
-            } else {
-              return IconButton(
-                onPressed: () {
-                  statusBloc.dispatch(EnableStatus());
-                },
-                icon: Icon(Icons.play_arrow),
-                tooltip: 'Enable Pi-hole',
-              );
-            }
-          }
-          if (state is BlocStateLoading<Status>) {
-            return Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: SizedBox(
-                    width: 10.0,
-                    height: 10.0,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.0,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    )),
-              ),
-            );
-          }
-          if (state is BlocStateError<Status>) {
-            return IconButton(
-              onPressed: () {
-                statusBloc.dispatch(Fetch());
-              },
-              icon: Icon(Icons.error),
-              tooltip: 'Get Pi-hole status',
-            );
-          }
-
+        }
+        if (state is BlocStateLoading<Status>) {
+          return Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
+              child: SizedBox(
+                  width: 10.0,
+                  height: 10.0,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.0,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  )),
+            ),
+          );
+        }
+        if (state is BlocStateError<Status>) {
           return IconButton(
             onPressed: () {
               statusBloc.dispatch(Fetch());
             },
-            icon: Icon(Icons.refresh),
-            tooltip: 'Check Pi-hole status',
+            icon: Icon(Icons.error),
+            tooltip: 'Get Pi-hole status',
           );
-        },
-      ),
+        }
+
+        return IconButton(
+          onPressed: () {
+            statusBloc.dispatch(Fetch());
+          },
+          icon: Icon(Icons.refresh),
+          tooltip: 'Check Pi-hole status',
+        );
+      },
     );
   }
 }

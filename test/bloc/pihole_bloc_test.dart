@@ -1,5 +1,6 @@
 import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -249,7 +250,8 @@ main() {
                       active: update),
                 ]));
 
-            piholeBloc.dispatch(UpdatePihole(original, update));
+            piholeBloc.dispatch(
+                UpdatePihole(original: original, update: update));
           });
 
       test(
@@ -266,7 +268,8 @@ main() {
                   PiholeStateError(PiholeException()),
                 ]));
 
-            piholeBloc.dispatch(UpdatePihole(original, update));
+            piholeBloc.dispatch(
+                UpdatePihole(original: original, update: update));
           });
     });
   });
@@ -274,6 +277,10 @@ main() {
   group('repository', () {
     MockSecureStore secureStore;
     PiholeRepository piholeRepository;
+
+//    setUpAll(() {
+//      Globals.client = MockPiholeClient();
+//    });
 
     setUp(() {
       secureStore = MockSecureStore();
@@ -316,6 +323,7 @@ main() {
     test('activate', () {
       final pihole = mockPiholes.first;
       when(secureStore.activate(pihole)).thenAnswer((_) => Future.value(true));
+      Globals.fetchForAll = () {};
       expect(piholeRepository.activate(pihole), completes);
     });
 
@@ -327,9 +335,11 @@ main() {
       expect(piholeRepository.update(original, update), completes);
     });
 
-//    test('reset', () {
-//      when(secureStore.reset()).thenAnswer((_) => Future.value(true));
-//      expect(piholeRepository.reset(), completes);
-//    });
+    test('reset', () {
+      when(secureStore.deleteAll()).thenAnswer((_) => Future.value(true));
+      when(secureStore.add(any)).thenAnswer((_) => Future.value(true));
+      when(secureStore.reload()).thenAnswer((_) => Future.value(true));
+      expect(piholeRepository.reset(), completes);
+    });
   });
 }

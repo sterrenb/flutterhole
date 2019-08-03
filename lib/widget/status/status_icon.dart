@@ -81,11 +81,6 @@ class _VersionsStatusIconState extends State<VersionsStatusIcon> {
       },
     );
   }
-
-  double _start(StatusStateSleeping state) =>
-      1.0 -
-          (state.durationRemaining.inMilliseconds /
-              state.durationTotal.inMilliseconds);
 }
 
 class StatusIcon extends StatelessWidget {

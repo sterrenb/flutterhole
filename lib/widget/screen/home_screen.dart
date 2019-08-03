@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
         TopSourcesBuilder(),
         TopItemsBuilder(),
       ],
-      items: [
+      navbarItems: [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           title: Text('Summary'),

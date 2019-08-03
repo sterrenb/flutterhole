@@ -44,7 +44,7 @@ void main() {
   test('fromString', () {
     expect(
         Versions.fromString(
-            '{"core_update":true,"web_update":false,"FTL_update":false,"core_current":"v1.2.3","web_current":"v1.2.3","FTL_current":"v1.2.6","core_latest":"","web_latest":"","FTL_latest":"","core_branch":"master","web_branch":"master","FTL_branch":"master"}'),
+            '{"core_update":true,"web_update":false,"FTL_update":false,"core_current":"v1.2.3","web_current":"v1.2.4","FTL_current":"v1.2.5","core_latest":"","web_latest":"","FTL_latest":"","core_branch":"master","web_branch":"master","FTL_branch":"master"}'),
         mockVersions);
   });
 
