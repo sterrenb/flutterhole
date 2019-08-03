@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/domains_over_time.dart';
 import 'package:flutterhole/model/api/forward_destinations.dart';
 import 'package:flutterhole/model/api/queries_over_time.dart';
 import 'package:flutterhole/model/api/query.dart';
@@ -401,6 +402,17 @@ class PiholeClient {
       return QueriesOverTime.fromString(response.data);
     } else {
       return QueriesOverTime.fromJson(response.data);
+    }
+  }
+
+  Future<DomainsOverTime> fetchDomainsOverTime() async {
+    Response response = await _getSecure({'overTimeDataClients': ''});
+    if (response.data is String) {
+      final x = DomainsOverTime.fromString(response.data);
+      print('x: ${x.overTime}');
+      return DomainsOverTime.fromString(response.data);
+    } else {
+      return DomainsOverTime.fromJson(response.data);
     }
   }
 }
