@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class MyLineChart extends StatefulWidget {
+class QueriesOverTimeLineChart extends StatefulWidget {
   final List<FlSpot> greenSpots;
   final List<FlSpot> redSpots;
   final double maxY;
   final String tooltipPrefix;
 
-  const MyLineChart(
+  const QueriesOverTimeLineChart(
       {Key key,
       @required this.greenSpots,
       @required this.redSpots,
@@ -18,10 +18,10 @@ class MyLineChart extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => MyLineChartState();
+  State<StatefulWidget> createState() => QueriesOverTimeLineChartState();
 }
 
-class MyLineChartState extends State<MyLineChart> {
+class QueriesOverTimeLineChartState extends State<QueriesOverTimeLineChart> {
   static final _colors = [
     Colors.green,
     Colors.red,

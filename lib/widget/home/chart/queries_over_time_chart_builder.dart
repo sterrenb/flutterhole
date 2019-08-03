@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/queries_over_time.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/api/queries_over_time.dart';
-import 'package:flutterhole/widget/home/chart/my_line_chart.dart';
-import 'package:flutterhole/widget/layout/error_message.dart';
+import 'package:flutterhole/widget/home/chart/queries_over_time_line_chart.dart';
 
 class QueriesOverTimeChartBuilder extends StatelessWidget {
   @override
@@ -43,7 +42,7 @@ class QueriesOverTimeChartBuilder extends StatelessWidget {
             index++;
           });
 
-          return MyLineChart(
+          return QueriesOverTimeLineChart(
 //            greenSpots: domainSpots,
             greenSpots: domainSpots..removeLast(),
 //            redSpots: adSpots,
@@ -52,7 +51,16 @@ class QueriesOverTimeChartBuilder extends StatelessWidget {
           );
         }
         if (state is BlocStateError<QueriesOverTime>) {
-          return ErrorMessage(errorMessage: state.e.message);
+          if (state.e.message == 'API token is empty') {
+            return Container();
+          }
+
+          return Card(
+              child: ListTile(
+                leading: Icon(Icons.warning),
+                title: Text(
+                    'Cannot load queries over time: ${state.e.message}'),
+              ));
         }
         return Center(child: CircularProgressIndicator());
       },
