@@ -1,5 +1,6 @@
 import 'package:flutterhole/bloc/pihole/bloc.dart';
 import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
@@ -277,6 +278,10 @@ main() {
     MockSecureStore secureStore;
     PiholeRepository piholeRepository;
 
+//    setUpAll(() {
+//      Globals.client = MockPiholeClient();
+//    });
+
     setUp(() {
       secureStore = MockSecureStore();
       piholeRepository = PiholeRepository(secureStore);
@@ -318,6 +323,7 @@ main() {
     test('activate', () {
       final pihole = mockPiholes.first;
       when(secureStore.activate(pihole)).thenAnswer((_) => Future.value(true));
+      Globals.fetchForAll = () {};
       expect(piholeRepository.activate(pihole), completes);
     });
 

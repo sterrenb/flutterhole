@@ -30,15 +30,15 @@ class Globals {
 
   static SecureStore secureStore;
 
-  static VoidCallback refreshAllBlocs;
-
-  static void _fetchForBlocs(List<BaseBloc> blocs) {
+  static void fetchForBlocs(List<BaseBloc> blocs) {
     blocs.forEach((bloc) => bloc.dispatch(Fetch()));
   }
 
+  static VoidCallback fetchForAll;
+
   static RefreshCallBack fetchForHome =
       (BuildContext context) =>
-      _fetchForBlocs([
+      fetchForBlocs([
         BlocProvider.of<SummaryBloc>(context),
         BlocProvider.of<StatusBloc>(context),
         BlocProvider.of<ForwardDestinationsBloc>(context),
@@ -50,30 +50,30 @@ class Globals {
 
   static RefreshCallBack fetchForTopSources =
       (BuildContext context) =>
-      _fetchForBlocs([
+      fetchForBlocs([
         BlocProvider.of<SummaryBloc>(context),
         BlocProvider.of<TopSourcesBloc>(context),
       ]);
 
   static RefreshCallBack fetchForTopItems =
       (BuildContext context) =>
-      _fetchForBlocs([
+      fetchForBlocs([
         BlocProvider.of<SummaryBloc>(context),
         BlocProvider.of<TopItemsBloc>(context),
       ]);
 
   static void fetchForWhitelistView(BuildContext context) =>
-      _fetchForBlocs([
+      fetchForBlocs([
         BlocProvider.of<WhitelistBloc>(context),
       ]);
 
   static void fetchForBlacklistView(BuildContext context) =>
-      _fetchForBlocs([
+      fetchForBlocs([
         BlocProvider.of<BlacklistBloc>(context),
       ]);
 
   static void fetchForQueryView(BuildContext context) =>
-      _fetchForBlocs([
+      fetchForBlocs([
         BlocProvider.of<QueryBloc>(context),
         BlocProvider.of<WhitelistBloc>(context),
         BlocProvider.of<BlacklistBloc>(context),

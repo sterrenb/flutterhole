@@ -7,10 +7,6 @@ import '../mock_material_app.dart';
 void main() {
   MockMaterialApp materialApp;
 
-//  setUp(() {
-//    materialApp = MockMaterialApp(child: PiholeEditForm(original: original));
-//  });
-
   group('DefaultScaffold', () {
     testWidgets('has default title', (WidgetTester tester) async {
       materialApp =

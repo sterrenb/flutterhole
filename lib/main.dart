@@ -26,7 +26,6 @@ import 'package:flutterhole/widget/app.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 
 import 'bloc/api/status.dart';
-import 'bloc/base/event.dart';
 
 void main() async {
   Globals.tree = MemoryTree();
@@ -77,21 +76,6 @@ void main() async {
   final BlacklistBloc blacklistBloc =
   BlacklistBloc(BlacklistRepository(Globals.client));
 
-  Globals.refreshAllBlocs = () {
-    Globals.client.cancel();
-    statusBloc.dispatch(Fetch());
-    summaryBloc.dispatch(Fetch());
-    versionsBloc.dispatch(Fetch());
-    queriesOverTimeBloc.dispatch(Fetch());
-    queryTypesBloc..dispatch(Fetch());
-    forwardDestinationsBloc.dispatch(Fetch());
-    topSourcesBloc.dispatch(Fetch());
-    topItemsBloc.dispatch(Fetch());
-    queryBloc.dispatch(Fetch());
-    whitelistBloc.dispatch(Fetch());
-    blacklistBloc.dispatch(Fetch());
-  };
-
   assert(() {
     Globals.debug = true;
     return true;
@@ -124,5 +108,22 @@ void main() async {
     ],
   ));
 
-  Globals.refreshAllBlocs();
+  Globals.fetchForAll = () {
+    Globals.client.cancel();
+    Globals.fetchForBlocs([
+      statusBloc,
+      summaryBloc,
+      versionsBloc,
+      queriesOverTimeBloc,
+      queryTypesBloc,
+      forwardDestinationsBloc,
+      topSourcesBloc,
+      topItemsBloc,
+      queryBloc,
+      whitelistBloc,
+      blacklistBloc,
+    ]);
+  };
+
+  Globals.fetchForAll();
 }
