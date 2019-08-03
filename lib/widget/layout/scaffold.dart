@@ -26,7 +26,6 @@ class DefaultScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       appBar: StatusAppBar(title: title, actions: actions),
       drawer: DefaultDrawer(),
       endDrawer: DefaultEndDrawer(),
@@ -85,7 +84,6 @@ class _SearchScaffoldState extends State<SearchScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       appBar: searching
           ? AppBar(
         automaticallyImplyLeading: false,
@@ -136,17 +134,17 @@ class _SearchScaffoldState extends State<SearchScaffold> {
 class TabScaffold extends StatefulWidget {
   final String title;
   final List<Widget> children;
-  final List<BottomNavigationBarItem> items;
+  final List<BottomNavigationBarItem> navbarItems;
   final Widget floatingActionButton;
 
   const TabScaffold({
     Key key,
     this.title,
     @required this.children,
-    @required this.items,
+    @required this.navbarItems,
     this.floatingActionButton,
   })
-      : assert(children.length == items.length),
+      : assert(children.length == navbarItems.length),
         super(key: key);
 
   @override
@@ -156,7 +154,7 @@ class TabScaffold extends StatefulWidget {
 class _TabScaffoldState extends State<TabScaffold> {
   int _currentIndex = 0;
 
-  void _onTap(int index) {
+  void onTap(int index) {
     setState(() {
       _currentIndex = index;
     });
@@ -165,12 +163,11 @@ class _TabScaffoldState extends State<TabScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       appBar: StatusAppBar(title: widget.title),
       drawer: DefaultDrawer(),
       endDrawer: DefaultEndDrawer(),
       bottomNavigationBar: BottomNavigationBar(
-          onTap: _onTap, currentIndex: _currentIndex, items: widget.items),
+          onTap: onTap, currentIndex: _currentIndex, items: widget.navbarItems),
       floatingActionButton: widget.floatingActionButton,
       body: widget.children[_currentIndex],
     );
@@ -196,7 +193,6 @@ class SimpleScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-//      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(
           title,

@@ -47,6 +47,7 @@ class MockThemeListenable extends StatelessWidget {
 class MockMaterialApp extends StatelessWidget {
   final Widget child;
   final Widget appbar;
+  final Widget scaffold;
 
   final MockStatusBloc statusBloc = MockStatusBloc();
   final MockPiholeBloc piholeBloc = MockPiholeBloc();
@@ -55,7 +56,9 @@ class MockMaterialApp extends StatelessWidget {
   final MockBlacklistBloc blacklistBloc = MockBlacklistBloc();
   final MockQueryBloc queryBloc = MockQueryBloc();
 
-  MockMaterialApp({Key key, this.appbar, this.child}) : super(key: key);
+  MockMaterialApp({Key key, this.appbar, this.child, this.scaffold})
+      : assert(appbar != null || child != null || scaffold != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +73,9 @@ class MockMaterialApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Mock',
-        home: Scaffold(
+        home: scaffold != null
+            ? scaffold
+            : Scaffold(
           appBar: appbar ?? AppBar(),
           body: MockThemeListenable(child: child ?? Container()),
         ),
