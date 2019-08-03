@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/api/status.dart';
 import 'package:flutterhole/bloc/api/versions.dart';
@@ -15,6 +16,9 @@ class MockPiholeBloc extends Mock implements PiholeBloc {}
 class MockStatusBloc extends Mock implements StatusBloc {}
 
 class MockVersionsBloc extends Mock implements VersionsBloc {}
+
+class MockForwardDestinationsBloc extends Mock
+    implements ForwardDestinationsBloc {}
 
 class MockWhitelistBloc extends Mock implements WhitelistBloc {}
 
@@ -52,6 +56,8 @@ class MockMaterialApp extends StatelessWidget {
   final MockStatusBloc statusBloc = MockStatusBloc();
   final MockPiholeBloc piholeBloc = MockPiholeBloc();
   final MockVersionsBloc versionsBloc = MockVersionsBloc();
+  final MockForwardDestinationsBloc forwardDestinationsBloc =
+  MockForwardDestinationsBloc();
   final MockWhitelistBloc whitelistBloc = MockWhitelistBloc();
   final MockBlacklistBloc blacklistBloc = MockBlacklistBloc();
   final MockQueryBloc queryBloc = MockQueryBloc();
@@ -67,6 +73,8 @@ class MockMaterialApp extends StatelessWidget {
         BlocProvider<PiholeBloc>(builder: (context) => piholeBloc),
         BlocProvider<StatusBloc>(builder: (context) => statusBloc),
         BlocProvider<VersionsBloc>(builder: (context) => versionsBloc),
+        BlocProvider<ForwardDestinationsBloc>(
+            builder: (context) => forwardDestinationsBloc),
         BlocProvider<WhitelistBloc>(builder: (context) => whitelistBloc),
         BlocProvider<BlacklistBloc>(builder: (context) => blacklistBloc),
         BlocProvider<QueryBloc>(builder: (context) => queryBloc),
