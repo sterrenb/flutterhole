@@ -3,7 +3,7 @@
 import 'dart:convert';
 
 import 'package:flutterhole/model/serializable.dart';
-import 'package:flutterhole/service/convert.dart';
+import 'package:flutterhole/service/converter.dart';
 
 List<Query> queriesFromJson(List<dynamic> data) {
   List<Query> queries = [];

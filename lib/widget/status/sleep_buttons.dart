@@ -6,7 +6,7 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:flutterhole/bloc/api/status.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/api/status.dart';
-import 'package:flutterhole/service/convert.dart';
+import 'package:flutterhole/service/converter.dart';
 
 /// A list of [SleepButton], [SleepButtonPermanent], and [SleepButtonCustom].
 class SleepButtons extends StatefulWidget {

@@ -1,8 +1,13 @@
 import 'package:flutterhole/model/api/query.dart';
-import 'package:flutterhole/service/convert.dart';
+import 'package:flutterhole/service/converter.dart';
 import "package:test/test.dart";
 
 void main() {
+  test('timestampFormatter', () {
+    expect(timestampFormatter.format(DateTime(1000, 3, 2, 1)),
+        '1000-03-02 01:00:00');
+  });
+
   test('numWithCommas', () {
     expect(numWithCommas(123), '123');
     expect(numWithCommas(1234), '1,234');
