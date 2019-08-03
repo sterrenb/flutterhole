@@ -10,7 +10,7 @@ import 'package:flutterhole/widget/status/status_icon.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../mock.dart';
-import '../mock.dart';
+import '../mock_material_app.dart';
 
 void main() {
   MockMaterialApp materialApp;

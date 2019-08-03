@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/api/query.dart';
 import 'package:flutterhole/bloc/api/status.dart';
 import 'package:flutterhole/bloc/api/versions.dart';
+import 'package:flutterhole/bloc/api/whitelist.dart';
 import 'package:flutterhole/bloc/pihole/pihole_bloc.dart';
 import 'package:mockito/mockito.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
@@ -12,6 +15,12 @@ class MockPiholeBloc extends Mock implements PiholeBloc {}
 class MockStatusBloc extends Mock implements StatusBloc {}
 
 class MockVersionsBloc extends Mock implements VersionsBloc {}
+
+class MockWhitelistBloc extends Mock implements WhitelistBloc {}
+
+class MockBlacklistBloc extends Mock implements BlacklistBloc {}
+
+class MockQueryBloc extends Mock implements QueryBloc {}
 
 class MockThemeModel extends Mock implements ThemeModel {
   Color accentColor;
@@ -42,6 +51,9 @@ class MockMaterialApp extends StatelessWidget {
   final MockStatusBloc statusBloc = MockStatusBloc();
   final MockPiholeBloc piholeBloc = MockPiholeBloc();
   final MockVersionsBloc versionsBloc = MockVersionsBloc();
+  final MockWhitelistBloc whitelistBloc = MockWhitelistBloc();
+  final MockBlacklistBloc blacklistBloc = MockBlacklistBloc();
+  final MockQueryBloc queryBloc = MockQueryBloc();
 
   MockMaterialApp({Key key, this.appbar, this.child}) : super(key: key);
 
@@ -52,6 +64,9 @@ class MockMaterialApp extends StatelessWidget {
         BlocProvider<PiholeBloc>(builder: (context) => piholeBloc),
         BlocProvider<StatusBloc>(builder: (context) => statusBloc),
         BlocProvider<VersionsBloc>(builder: (context) => versionsBloc),
+        BlocProvider<WhitelistBloc>(builder: (context) => whitelistBloc),
+        BlocProvider<BlacklistBloc>(builder: (context) => blacklistBloc),
+        BlocProvider<QueryBloc>(builder: (context) => queryBloc),
       ],
       child: MaterialApp(
         title: 'Mock',

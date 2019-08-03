@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/widget/pihole/pihole_button_row.dart';
 
-import '../mock.dart';
+import '../mock_material_app.dart';
 
 void main() {
   MockMaterialApp materialApp;

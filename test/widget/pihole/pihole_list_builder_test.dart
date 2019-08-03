@@ -10,7 +10,7 @@ import 'package:flutterhole/widget/pihole/pihole_list_builder.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../mock.dart';
-import '../mock.dart';
+import '../mock_material_app.dart';
 
 class MockRouter extends Mock implements Router {}
 
