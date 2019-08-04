@@ -7,7 +7,6 @@ import 'package:flutterhole/model/api/query.dart';
 import 'package:flutterhole/model/api/status.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
-import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import "package:test/test.dart";
@@ -75,7 +74,7 @@ void main() {
   PiholeClient client;
 
   setUp(() async {
-    Globals.tree = MemoryTree();
+    Globals.tree = MockMemoryTree();
     pihole = Pihole(
       title: 'Testing',
       host: 'test',
@@ -422,58 +421,72 @@ void main() {
         expect(client.editOnWhitelist('original.com', 'new.com'), completes);
       });
     });
+  });
 
-    group('fetchTopSources', () {
-      test('returns TopSources on successful fetch', () async {
-        dio.httpClientAdapter = MockAdapter.json(mockTopSources.toJson());
-        expect(client.fetchTopSources(), completion(mockTopSources));
-      });
+  group('fetchTopSources', () {
+    test('returns TopSources on successful fetch', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockTopSources.toJson());
+      expect(client.fetchTopSources(), completion(mockTopSources));
     });
+  });
 
-    group('fetchVersions', () {
-      test('returns Versions on successful fetch', () async {
-        dio.httpClientAdapter = MockAdapter.json(mockVersions.toJson());
-        expect(client.fetchVersions(), completion(mockVersions));
-      });
+  group('fetchVersions', () {
+    test('returns Versions on successful fetch', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockVersions.toJson());
+      expect(client.fetchVersions(), completion(mockVersions));
     });
+  });
 
-    group('fetchQueries', () {
-      test('returns Queries on successful fetch', () async {
-        dio.httpClientAdapter = MockAdapter.json(
-            mockQueries.map((query) => query.toJson()).toList());
-        expect(client.fetchQueries(), completion(mockQueries));
-      });
+  group('fetchQueries', () {
+    test('returns Queries on successful fetch', () async {
+      dio.httpClientAdapter =
+          MockAdapter.json(mockQueries.map((query) => query.toJson()).toList());
+      expect(client.fetchQueries(), completion(mockQueries));
     });
+  });
 
-    group('fetchQueriesForClient', () {
-      test('returns Queries on successful fetch', () async {
-        dio.httpClientAdapter = MockAdapter.json(
-            mockQueries.map((query) => query.toJson()).toList());
-        expect(client.fetchQueriesForClient('client'), completion(mockQueries));
-      });
+  group('fetchQueriesForClient', () {
+    test('returns Queries on successful fetch', () async {
+      dio.httpClientAdapter =
+          MockAdapter.json(mockQueries.map((query) => query.toJson()).toList());
+      expect(client.fetchQueriesForClient('client'), completion(mockQueries));
     });
+  });
 
-    group('fetchQueriesForQueryType', () {
-      test('returns Queries on successful fetch', () async {
-        dio.httpClientAdapter = MockAdapter.json(
-            mockQueries.map((query) => query.toJson()).toList());
-        expect(client.fetchQueriesForQueryType(QueryType.A),
-            completion(mockQueries));
-      });
+  group('fetchQueriesForQueryType', () {
+    test('returns Queries on successful fetch', () async {
+      dio.httpClientAdapter =
+          MockAdapter.json(mockQueries.map((query) => query.toJson()).toList());
+      expect(client.fetchQueriesForQueryType(QueryType.A),
+          completion(mockQueries));
     });
+  });
 
-    group('fetchQueryTypes', () {
-      test('returns QueryTypes on successful fetch', () async {
-        dio.httpClientAdapter = MockAdapter.json(mockQueryTypes.toJson());
-        expect(client.fetchQueryTypes(), completion(mockQueryTypes));
-      });
+  group('fetchQueryTypes', () {
+    test('returns QueryTypes on successful fetch', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockQueryTypes.toJson());
+      expect(client.fetchQueryTypes(), completion(mockQueryTypes));
     });
+  });
 
-    group('fetchQueriesOverTime', () {
-      test('returns QueriesOverTime on successful fetch', () async {
-        dio.httpClientAdapter = MockAdapter.json(mockQueriesOverTime.toJson());
-        expect(client.fetchQueriesOverTime(), completion(mockQueriesOverTime));
-      });
+  group('fetchQueriesOverTime', () {
+    test('returns QueriesOverTime on successful fetch', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockQueriesOverTime.toJson());
+      expect(client.fetchQueriesOverTime(), completion(mockQueriesOverTime));
+    });
+  });
+
+  group('fetchClientsOverTime', () {
+    test('returns ClientsOverTime on successful fetch', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockClientsOverTime.toJson());
+      expect(client.fetchClientsOverTime(), completion(mockClientsOverTime));
+    });
+  });
+
+  group('fetchClientNames', () {
+    test('returns ClientNames on successful fetch', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockClientNames.toJson());
+      expect(client.fetchClientNames(), completion(mockClientNames));
     });
   });
 }

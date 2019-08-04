@@ -1,10 +1,11 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
-import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/secure_store.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
+
+import '../mock.dart';
 
 class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
 
@@ -16,7 +17,7 @@ void main() {
   Map<String, String> mockMap;
 
   setUp(() {
-    Globals.tree = MemoryTree();
+    Globals.tree = MockMemoryTree();
     map = {};
     storage = MockFlutterSecureStorage();
     when(storage.readAll()).thenAnswer((_) => Future.value(map));

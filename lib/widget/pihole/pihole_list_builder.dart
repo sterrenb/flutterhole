@@ -71,7 +71,7 @@ class _PiholeListBuilderState extends State<PiholeListBuilder> {
             _cacheAll.forEach((pihole) {
               Widget tile;
               final bool isActive = (pihole == _cacheActive);
-              if (widget.editable && _cacheAll.length > 1) {
+              if (widget.editable) {
                 tile = Dismissible(
                   key: Key(pihole.title),
                   onDismissed: (direction) async {

@@ -17,9 +17,13 @@ class StatusAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(title: TitleIconRow(title: title,), actions: [
-      ...actions,
-      ...[ToggleButton()]
-    ]);
+    return AppBar(
+        title: TitleIconRow(
+          title: title,
+        ),
+        actions: [
+          ...actions,
+          ...[ToggleButton()]
+        ]);
   }
 }

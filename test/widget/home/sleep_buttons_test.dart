@@ -18,8 +18,8 @@ void main() {
 
   testWidgets('shows disable button for BlocStateSuccess<Status> enabled',
       (WidgetTester tester) async {
-    when(materialApp.statusBloc.currentState)
-        .thenAnswer((_) => BlocStateSuccess<Status>(mockStatusEnabled));
+        when(materialApp.statusBloc.hasCache).thenReturn(true);
+        when(materialApp.statusBloc.cache).thenReturn(mockStatusEnabled);
     await tester.pumpWidget(materialApp);
 
     expect(find.text('Disable'), findsOneWidget);
@@ -36,8 +36,8 @@ void main() {
   });
 
   testWidgets('permanently disable button', (WidgetTester tester) async {
-    when(materialApp.statusBloc.currentState)
-        .thenAnswer((_) => BlocStateSuccess<Status>(mockStatusEnabled));
+    when(materialApp.statusBloc.hasCache).thenReturn(true);
+    when(materialApp.statusBloc.cache).thenReturn(mockStatusEnabled);
     await tester.pumpWidget(materialApp);
     await tester.tap(find.byType(ListTile));
     await tester.pumpAndSettle();
@@ -47,8 +47,8 @@ void main() {
 
   testWidgets('shows play button for BlocStateSuccess<Status> disabled',
       (WidgetTester tester) async {
-    when(materialApp.statusBloc.currentState)
-        .thenAnswer((_) => BlocStateSuccess<Status>(mockStatusDisabled));
+        when(materialApp.statusBloc.hasCache).thenReturn(true);
+        when(materialApp.statusBloc.cache).thenReturn(mockStatusDisabled);
     await tester.pumpWidget(materialApp);
 
     expect(find.text('Enable'), findsOneWidget);
@@ -71,6 +71,7 @@ void main() {
       (WidgetTester tester) async {
     when(materialApp.statusBloc.currentState)
         .thenAnswer((_) => BlocStateError<Status>());
+    when(materialApp.statusBloc.hasCache).thenReturn(false);
     await tester.pumpWidget(materialApp);
 
     final titleFinder = find.text('Disable');

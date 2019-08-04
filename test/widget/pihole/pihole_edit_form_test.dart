@@ -5,7 +5,6 @@ import 'package:flutterhole/bloc/api/versions.dart';
 import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
-import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/widget/pihole/pihole_edit_form.dart';
 import 'package:mockito/mockito.dart';
 
@@ -20,7 +19,7 @@ void main() {
     BlocSupervisor.delegate = SimpleBlocDelegate();
     Globals.client = MockPiholeClient();
     Globals.router = MockRouter();
-    Globals.tree = MemoryTree();
+    Globals.tree = MockMemoryTree();
   });
 
   setUp(() {

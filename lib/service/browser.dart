@@ -4,7 +4,7 @@ import 'globals.dart';
 
 /// Launches the [url] in the default browser.
 ///
-/// Logs a warning if the urlcan not be launched.
+/// Logs a warning if the url can not be launched.
 Future<bool> launchURL(String url) async {
   final uri = Uri.parse(url);
   final parsedUrl =

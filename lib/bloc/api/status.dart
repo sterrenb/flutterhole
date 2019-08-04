@@ -36,8 +36,8 @@ class StatusBloc extends BaseBloc<Status> {
   Stream<BlocState> _enable() async* {
     yield BlocStateLoading<Status>();
     try {
-      final status = await repository.enable();
-      yield BlocStateSuccess<Status>(status);
+      cache = await repository.enable();
+      yield BlocStateSuccess<Status>(cache);
     } on PiholeException catch (e) {
       yield BlocStateError<Status>(e);
     }
@@ -46,8 +46,8 @@ class StatusBloc extends BaseBloc<Status> {
   Stream<BlocState> _disable() async* {
     yield BlocStateLoading<Status>();
     try {
-      final status = await repository.disable();
-      yield BlocStateSuccess<Status>(status);
+      cache = await repository.disable();
+      yield BlocStateSuccess<Status>(cache);
     } on PiholeException catch (e) {
       yield BlocStateError<Status>(e);
     }

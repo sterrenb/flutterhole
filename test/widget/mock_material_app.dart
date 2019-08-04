@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/api/client_names.dart';
+import 'package:flutterhole/bloc/api/clients_over_time.dart';
+import 'package:flutterhole/bloc/api/forward_destinations.dart';
+import 'package:flutterhole/bloc/api/queries_over_time.dart';
 import 'package:flutterhole/bloc/api/query.dart';
+import 'package:flutterhole/bloc/api/query_types.dart';
 import 'package:flutterhole/bloc/api/status.dart';
 import 'package:flutterhole/bloc/api/versions.dart';
 import 'package:flutterhole/bloc/api/whitelist.dart';
@@ -15,6 +20,17 @@ class MockPiholeBloc extends Mock implements PiholeBloc {}
 class MockStatusBloc extends Mock implements StatusBloc {}
 
 class MockVersionsBloc extends Mock implements VersionsBloc {}
+
+class MockClientNamesBloc extends Mock implements ClientNamesBloc {}
+
+class MockClientsOverTimeBloc extends Mock implements ClientsOverTimeBloc {}
+
+class MockQueryTypesBloc extends Mock implements QueryTypesBloc {}
+
+class MockQueriesOverTimeBloc extends Mock implements QueriesOverTimeBloc {}
+
+class MockForwardDestinationsBloc extends Mock
+    implements ForwardDestinationsBloc {}
 
 class MockWhitelistBloc extends Mock implements WhitelistBloc {}
 
@@ -52,6 +68,12 @@ class MockMaterialApp extends StatelessWidget {
   final MockStatusBloc statusBloc = MockStatusBloc();
   final MockPiholeBloc piholeBloc = MockPiholeBloc();
   final MockVersionsBloc versionsBloc = MockVersionsBloc();
+  final MockClientNamesBloc clientNamesBloc = MockClientNamesBloc();
+  final MockClientsOverTimeBloc clientsOverTimeBloc = MockClientsOverTimeBloc();
+  final MockQueryTypesBloc queryTypesBloc = MockQueryTypesBloc();
+  final MockQueriesOverTimeBloc queriesOverTimeBloc = MockQueriesOverTimeBloc();
+  final MockForwardDestinationsBloc forwardDestinationsBloc =
+  MockForwardDestinationsBloc();
   final MockWhitelistBloc whitelistBloc = MockWhitelistBloc();
   final MockBlacklistBloc blacklistBloc = MockBlacklistBloc();
   final MockQueryBloc queryBloc = MockQueryBloc();
@@ -67,6 +89,14 @@ class MockMaterialApp extends StatelessWidget {
         BlocProvider<PiholeBloc>(builder: (context) => piholeBloc),
         BlocProvider<StatusBloc>(builder: (context) => statusBloc),
         BlocProvider<VersionsBloc>(builder: (context) => versionsBloc),
+        BlocProvider<ClientNamesBloc>(builder: (context) => clientNamesBloc),
+        BlocProvider<ClientsOverTimeBloc>(
+            builder: (context) => clientsOverTimeBloc),
+        BlocProvider<QueryTypesBloc>(builder: (context) => queryTypesBloc),
+        BlocProvider<QueriesOverTimeBloc>(
+            builder: (context) => queriesOverTimeBloc),
+        BlocProvider<ForwardDestinationsBloc>(
+            builder: (context) => forwardDestinationsBloc),
         BlocProvider<WhitelistBloc>(builder: (context) => whitelistBloc),
         BlocProvider<BlacklistBloc>(builder: (context) => blacklistBloc),
         BlocProvider<QueryBloc>(builder: (context) => queryBloc),

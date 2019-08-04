@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/api/client_names.dart';
 import 'package:flutterhole/bloc/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/api/queries_over_time.dart';
 import 'package:flutterhole/bloc/api/query.dart';
@@ -25,6 +26,7 @@ import 'package:flutterhole/service/secure_store.dart';
 import 'package:flutterhole/widget/app.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 
+import 'bloc/api/clients_over_time.dart';
 import 'bloc/api/status.dart';
 
 void main() async {
@@ -51,8 +53,14 @@ void main() async {
   final VersionsBloc versionsBloc =
   VersionsBloc(VersionsRepository(Globals.client));
 
+  final ClientNamesBloc clientNamesBloc =
+  ClientNamesBloc(ClientNamesRepository(Globals.client));
+
   final QueriesOverTimeBloc queriesOverTimeBloc =
   QueriesOverTimeBloc(QueriesOverTimeRepository(Globals.client));
+
+  final ClientsOverTimeBloc clientsOverTimeBloc =
+  ClientsOverTimeBloc(ClientsOverTimeRepository(Globals.client));
 
   final QueryTypesBloc queryTypesBloc =
   QueryTypesBloc(QueryTypesRepository(Globals.client));
@@ -82,7 +90,7 @@ void main() async {
   }());
 
   if (Globals.debug) {
-    if (true) BlocSupervisor.delegate = SimpleBlocDelegate();
+    if (false) BlocSupervisor.delegate = SimpleBlocDelegate();
     Globals.tree.log('main', 'Running in debug mode');
   } else {
     Globals.tree.log('main', 'Running in release mode');
@@ -94,8 +102,11 @@ void main() async {
       BlocProvider<PiholeBloc>(builder: (context) => piholeBloc),
       BlocProvider<SummaryBloc>(builder: (context) => summaryBloc),
       BlocProvider<VersionsBloc>(builder: (context) => versionsBloc),
+      BlocProvider<ClientNamesBloc>(builder: (context) => clientNamesBloc),
       BlocProvider<QueriesOverTimeBloc>(
           builder: (context) => queriesOverTimeBloc),
+      BlocProvider<ClientsOverTimeBloc>(
+          builder: (context) => clientsOverTimeBloc),
       BlocProvider<QueryTypesBloc>(builder: (context) => queryTypesBloc),
       BlocProvider<ForwardDestinationsBloc>(
           builder: (context) => forwardDestinationsBloc),
@@ -114,7 +125,9 @@ void main() async {
       statusBloc,
       summaryBloc,
       versionsBloc,
+      clientNamesBloc,
       queriesOverTimeBloc,
+      clientsOverTimeBloc,
       queryTypesBloc,
       forwardDestinationsBloc,
       topSourcesBloc,

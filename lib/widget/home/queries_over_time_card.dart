@@ -27,7 +27,7 @@ class QueriesOverTimeCard extends StatelessWidget {
                     onPressed: () {
                       Globals.navigateTo(
                         context,
-                        graphPath,
+                        graphQueriesOverTimePath,
                       );
                     },
                   )

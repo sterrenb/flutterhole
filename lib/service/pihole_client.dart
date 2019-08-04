@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
+import 'package:flutterhole/model/api/client_names.dart';
+import 'package:flutterhole/model/api/clients_over_time.dart';
 import 'package:flutterhole/model/api/forward_destinations.dart';
 import 'package:flutterhole/model/api/queries_over_time.dart';
 import 'package:flutterhole/model/api/query.dart';
@@ -111,7 +113,7 @@ class PiholeClient {
         throw PiholeException(message: 'unexpected plaintext response');
       }
 
-//      await Future.delayed(Duration(seconds: 2));
+//      await Future.delayed(Duration(seconds: 3));
 
       return response;
     } on DioError catch (e) {
@@ -401,6 +403,24 @@ class PiholeClient {
       return QueriesOverTime.fromString(response.data);
     } else {
       return QueriesOverTime.fromJson(response.data);
+    }
+  }
+
+  Future<ClientsOverTime> fetchClientsOverTime() async {
+    Response response = await _getSecure({'overTimeDataClients': ''});
+    if (response.data is String) {
+      return ClientsOverTime.fromString(response.data);
+    } else {
+      return ClientsOverTime.fromJson(response.data);
+    }
+  }
+
+  Future<ClientNames> fetchClientNames() async {
+    Response response = await _getSecure({'getClientNames': ''});
+    if (response.data is String) {
+      return ClientNames.fromString(response.data);
+    } else {
+      return ClientNames.fromJson(response.data);
     }
   }
 }
