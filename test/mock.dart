@@ -13,6 +13,7 @@ import 'package:flutterhole/model/api/top_sources.dart';
 import 'package:flutterhole/model/api/versions.dart';
 import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/model/pihole.dart';
+import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/secure_store.dart';
 import 'package:mockito/mockito.dart';
@@ -28,6 +29,8 @@ class MockPiholeClient extends Mock implements PiholeClient {}
 class MockVersionsRepository extends Mock implements VersionsRepository {}
 
 class MockRouter extends Mock implements Router {}
+
+class MockMemoryTree extends Mock implements MemoryTree {}
 
 class MockSecureStore extends Mock implements SecureStore {
   @override

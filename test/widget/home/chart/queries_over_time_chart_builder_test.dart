@@ -20,46 +20,25 @@ void main() {
   testWidgets(
       'shows CircularProgressIndicator for BlocStateEmpty<QueriesOverTime>',
       (WidgetTester tester) async {
-    when(materialApp.queriesOverTimeBloc.currentState)
-        .thenAnswer((_) => BlocStateEmpty<QueriesOverTime>());
+        when(materialApp.queriesOverTimeBloc.hasCache).thenReturn(false);
     await tester.pumpWidget(materialApp);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
-  testWidgets(
-      'shows CircularProgressIndicator for BlocStateLoading<QueriesOverTime>',
-      (WidgetTester tester) async {
-    when(materialApp.queriesOverTimeBloc.currentState)
-        .thenAnswer((_) => BlocStateLoading<QueriesOverTime>());
-    await tester.pumpWidget(materialApp);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-  });
-
-  testWidgets('shows warning Card for BlocStateError<QueriesOverTime>',
+  testWidgets('shows warning for BlocStateError<QueriesOverTime>',
       (WidgetTester tester) async {
     when(materialApp.queriesOverTimeBloc.currentState)
         .thenAnswer((_) => BlocStateError<QueriesOverTime>(PiholeException()));
     await tester.pumpWidget(materialApp);
-    expect(find.byType(Card), findsOneWidget);
     expect(find.byIcon(Icons.warning), findsOneWidget);
-  });
-
-  testWidgets(
-      'shows Container for BlocStateError<QueriesOverTime> with PiholeException("API token is empty"',
-      (WidgetTester tester) async {
-    when(materialApp.queriesOverTimeBloc.currentState).thenAnswer((_) =>
-        BlocStateError<QueriesOverTime>(
-            PiholeException(message: 'API token is empty')));
-    await tester.pumpWidget(materialApp);
-    expect(find.byType(Container), findsOneWidget);
-    expect(find.byIcon(Icons.warning), findsNothing);
   });
 
   testWidgets(
       'shows QueriesOverTimeLineChart for BlocStateSuccess<QueriesOverTime>',
       (WidgetTester tester) async {
-    when(materialApp.queriesOverTimeBloc.currentState).thenAnswer(
-        (_) => BlocStateSuccess<QueriesOverTime>(mockQueriesOverTime));
+        when(materialApp.queriesOverTimeBloc.hasCache).thenReturn(true);
+        when(materialApp.queriesOverTimeBloc.cache).thenReturn(
+            mockQueriesOverTime);
     await tester.pumpWidget(materialApp);
     expect(find.byType(QueriesOverTimeLineChart), findsOneWidget);
   });

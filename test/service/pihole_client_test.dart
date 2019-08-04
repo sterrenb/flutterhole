@@ -7,7 +7,6 @@ import 'package:flutterhole/model/api/query.dart';
 import 'package:flutterhole/model/api/status.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
-import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import "package:test/test.dart";
@@ -75,7 +74,7 @@ void main() {
   PiholeClient client;
 
   setUp(() async {
-    Globals.tree = MemoryTree();
+    Globals.tree = MockMemoryTree();
     pihole = Pihole(
       title: 'Testing',
       host: 'test',

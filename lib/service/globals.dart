@@ -38,19 +38,26 @@ class Globals {
 
   static VoidCallback fetchForAll;
 
-  static RefreshCallBack fetchForHome =
-      (BuildContext context) =>
-      fetchForBlocs([
-        BlocProvider.of<SummaryBloc>(context),
-        BlocProvider.of<StatusBloc>(context),
-        BlocProvider.of<ForwardDestinationsBloc>(context),
-        BlocProvider.of<TopSourcesBloc>(context),
-        BlocProvider.of<TopItemsBloc>(context),
-        BlocProvider.of<QueryTypesBloc>(context),
-        BlocProvider.of<QueriesOverTimeBloc>(context),
-        BlocProvider.of<ClientNamesBloc>(context),
-        BlocProvider.of<ClientsOverTimeBloc>(context),
-      ]);
+  static RefreshCallBack fetchForHome = (BuildContext context) {
+    List<BaseBloc> blocs = [
+      BlocProvider.of<SummaryBloc>(context),
+      BlocProvider.of<ForwardDestinationsBloc>(context),
+      BlocProvider.of<TopSourcesBloc>(context),
+      BlocProvider.of<TopItemsBloc>(context),
+      BlocProvider.of<QueryTypesBloc>(context),
+      BlocProvider.of<QueriesOverTimeBloc>(context),
+      BlocProvider.of<ClientNamesBloc>(context),
+      BlocProvider.of<ClientsOverTimeBloc>(context),
+    ];
+
+    final statusBloc = BlocProvider.of<StatusBloc>(context);
+
+    // Only fetch status when not already sleeping
+    if (!(statusBloc.currentState is StatusStateSleeping))
+      blocs.add(statusBloc);
+
+    fetchForBlocs(blocs);
+  };
 
   static RefreshCallBack fetchForTopSources =
       (BuildContext context) =>
@@ -89,6 +96,7 @@ class Globals {
 
   static Future<dynamic> navigateTo(BuildContext context, String path) {
     client.cancel();
+//    client.clear();
     if (path == homePath) fetchForHome(context);
     if (path == whitelistViewPath) fetchForWhitelistView(context);
     if (path == blacklistViewPath) fetchForBlacklistView(context);

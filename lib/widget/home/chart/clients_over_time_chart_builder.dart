@@ -6,45 +6,36 @@ import 'package:flutterhole/bloc/api/clients_over_time.dart';
 import 'package:flutterhole/bloc/base/bloc.dart';
 import 'package:flutterhole/model/api/client_names.dart';
 import 'package:flutterhole/model/api/clients_over_time.dart';
-import 'package:flutterhole/widget/home/chart/line_chart_builder.dart';
+import 'package:flutterhole/service/globals.dart';
+import 'package:flutterhole/widget/home/chart/clients_over_time_line_chart_builder.dart';
 
-class ClientsOverTimeChartBuilder extends StatefulWidget {
-  @override
-  _ClientsOverTimeChartBuilderState createState() =>
-      _ClientsOverTimeChartBuilderState();
-}
-
-class _ClientsOverTimeChartBuilderState
-    extends State<ClientsOverTimeChartBuilder> {
-  ClientNames clientNamesCache;
-
-  @override
-  void initState() {
-    super.initState();
-    clientNamesCache = ClientNames([]);
-  }
-
+class ClientsOverTimeChartBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ClientNamesBloc clientNamesBloc =
     BlocProvider.of<ClientNamesBloc>(context);
     final ClientsOverTimeBloc clientsOverTimeBloc =
     BlocProvider.of<ClientsOverTimeBloc>(context);
+
     return BlocBuilder(
       bloc: clientNamesBloc,
-      builder: (context, state) {
-        if (state is BlocStateSuccess<ClientNames>) {
-          clientNamesCache = state.data;
+      builder: (context, namesState) {
+        if (namesState is BlocStateError<ClientNames>) {
+          return buildError(namesState);
         }
+
         return BlocBuilder(
           bloc: clientsOverTimeBloc,
-          builder: (context, state) {
-            if (state is BlocStateSuccess<ClientsOverTime>) {
-              return buildSuccess(state);
+          builder: (context, overTimeState) {
+            if (overTimeState is BlocStateError<ClientsOverTime>) {
+              return buildError(overTimeState);
             }
-            if (state is BlocStateError<ClientsOverTime>) {
-              return buildError(state);
+
+            if (clientsOverTimeBloc.hasCache && clientNamesBloc.hasCache) {
+              return buildSuccess(
+                  clientsOverTimeBloc.cache, clientNamesBloc.cache);
             }
+
             return buildLoading();
           },
         );
@@ -52,52 +43,54 @@ class _ClientsOverTimeChartBuilderState
     );
   }
 
-  LineChartBuilder buildSuccess(BlocStateSuccess<ClientsOverTime> state) {
-    final clientsOverTime = state.data;
+  Widget buildSuccess(ClientsOverTime clientsOverTime,
+      ClientNames clientNames) {
     Map<String, List<FlSpot>> spots = {};
 
-    int index = 0;
+    int x = 0;
     int maxY = 0;
+
     clientsOverTime.overTime.forEach((String timeString, List<int> hits) {
       hits.asMap().forEach((int clientIndex, int hitsForClient) {
         if (hitsForClient > maxY) maxY = hitsForClient;
 
-        final Client currentClient = clientNamesCache.clients[clientIndex];
+        Client currentClient;
+
+        try {
+          currentClient = clientNames.clients[clientIndex];
+        } catch (e) {
+          Globals.tree.log(
+              'ClientChartBuilder', 'cannot find client at index $clientIndex}',
+              tag: 'warning');
+          currentClient = Client(name: '', ip: 'Unknown');
+        }
 
         final String spotKey =
         currentClient.name.isEmpty ? currentClient.ip : currentClient.name;
-
-
-//        final String spotKey = '$clientIdentifier: $hitsForClient';
-//        final spotKey = '$clientIndex:${currentClient.name}';
-
-        print('client 0: ${clientNamesCache.clients.first}');
-        print('client 1: ${clientNamesCache.clients[1]}');
 
         if (!spots.containsKey(spotKey)) {
           spots[spotKey] = [];
         }
 
         spots[spotKey].add(FlSpot(
-            index.toDouble() * (2400 / clientsOverTime.overTime.length),
+            x.toDouble() * (2400 / clientsOverTime.overTime.length),
             hitsForClient.toDouble()));
       });
-      index++;
+      x++;
     });
 
-    return LineChartBuilder(spots: spots, maxY: maxY.toDouble());
+    spots.keys.forEach((String key) =>
+    spots[key]
+      ..removeLast());
+
+    return ClientsOverTimeLineChartBuilder(spots: spots, maxY: maxY.toDouble());
   }
 
-  StatelessWidget buildError(BlocStateError<ClientsOverTime> state) {
-    if (state.e.message == 'API token is empty') {
-      return Container();
-    }
-
-    return Card(
-        child: ListTile(
-          leading: Icon(Icons.warning),
-          title: Text('Cannot load domains over time: ${state.e.message}'),
-        ));
+  StatelessWidget buildError(BlocStateError state) {
+    return ListTile(
+      leading: Icon(Icons.warning),
+      title: Text('Cannot load domains over time: ${state.e.message}'),
+    );
   }
 
   Center buildLoading() => Center(child: CircularProgressIndicator());

@@ -1,11 +1,12 @@
 import 'package:flutterhole/service/browser.dart';
 import 'package:flutterhole/service/globals.dart';
-import 'package:flutterhole/service/memory_tree.dart';
 import 'package:test/test.dart';
+
+import '../mock.dart';
 
 void main() {
   setUp(() {
-    Globals.tree = MemoryTree();
+    Globals.tree = MockMemoryTree();
   });
   test('launchURL', () {
     expect(launchURL('example.com'), completion(false));

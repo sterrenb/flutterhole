@@ -113,7 +113,7 @@ class PiholeClient {
         throw PiholeException(message: 'unexpected plaintext response');
       }
 
-//      await Future.delayed(Duration(seconds: 2));
+//      await Future.delayed(Duration(seconds: 3));
 
       return response;
     } on DioError catch (e) {

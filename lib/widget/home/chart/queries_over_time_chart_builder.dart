@@ -14,8 +14,15 @@ class QueriesOverTimeChartBuilder extends StatelessWidget {
     return BlocBuilder(
       bloc: queriesOverTimeBloc,
       builder: (context, state) {
-        if (state is BlocStateSuccess<QueriesOverTime>) {
-          final queriesOverTime = state.data;
+        if (state is BlocStateError<QueriesOverTime>) {
+          return ListTile(
+            leading: Icon(Icons.warning),
+            title: Text('Cannot load queries over time: ${state.e.message}'),
+          );
+        }
+
+        if (queriesOverTimeBloc.hasCache) {
+          final queriesOverTime = queriesOverTimeBloc.cache;
 
           List<FlSpot> domainSpots = [];
           List<FlSpot> adSpots = [];
@@ -25,10 +32,10 @@ class QueriesOverTimeChartBuilder extends StatelessWidget {
           queriesOverTime.clientsOverTime.forEach((String str, int hits) {
             if (hits.toDouble() > maxY) maxY = hits.toDouble();
 
-            domainSpots.add(FlSpot(
-                index.toDouble() *
-                    (2400 / queriesOverTime.clientsOverTime.length),
-                hits.toDouble()));
+            final double posX = index.toDouble() *
+                (2400 / queriesOverTime.clientsOverTime.length);
+
+            domainSpots.add(FlSpot(posX, hits.toDouble()));
             index++;
           });
 
@@ -48,18 +55,7 @@ class QueriesOverTimeChartBuilder extends StatelessWidget {
             maxY: maxY,
           );
         }
-        if (state is BlocStateError<QueriesOverTime>) {
-          if (state.e.message == 'API token is empty') {
-            return Container();
-          }
 
-          return Card(
-              child: ListTile(
-                leading: Icon(Icons.warning),
-                title: Text(
-                    'Cannot load queries over time: ${state.e.message}'),
-              ));
-        }
         return Center(child: CircularProgressIndicator());
       },
     );

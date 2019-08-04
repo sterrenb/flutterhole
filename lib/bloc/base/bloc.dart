@@ -12,6 +12,10 @@ export 'state.dart';
 abstract class BaseBloc<T> extends Bloc<BlocEvent, BlocState> {
   final BaseRepository<T> repository;
 
+  bool get hasCache => cache != null;
+
+  T cache;
+
   BaseBloc(this.repository);
 
   @override
@@ -26,8 +30,8 @@ abstract class BaseBloc<T> extends Bloc<BlocEvent, BlocState> {
   Stream<BlocState> fetch() async* {
     yield BlocStateLoading<T>();
     try {
-      final data = await repository.get();
-      yield BlocStateSuccess<T>(data);
+      cache = await repository.get();
+      yield BlocStateSuccess<T>(cache);
     } on PiholeException catch (e) {
       yield BlocStateError<T>(e);
     }

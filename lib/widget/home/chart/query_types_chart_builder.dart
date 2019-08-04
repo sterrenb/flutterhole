@@ -75,10 +75,8 @@ class QueryTypesChartBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final QueryTypesBloc queryTypesBloc =
-        BlocProvider.of<QueryTypesBloc>(context);
     return BlocBuilder(
-      bloc: queryTypesBloc,
+      bloc: BlocProvider.of<QueryTypesBloc>(context),
       builder: (context, state) {
         if (state is BlocStateSuccess<QueryTypes>) {
           final screenWidth = MediaQuery.of(context).size.width;
