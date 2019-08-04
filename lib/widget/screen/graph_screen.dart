@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhole/widget/home/chart/clients_over_time_chart_builder.dart';
 import 'package:flutterhole/widget/home/chart/queries_over_time_chart_builder.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 
 class GraphScreen extends StatelessWidget {
   final ScrollController _scrollController = ScrollController();
 
+  final String title;
+  final Widget chartBuilder;
+  final int numberOfScreens;
+
+  GraphScreen({Key key,
+    @required this.title,
+    @required this.chartBuilder,
+    this.numberOfScreens = 5})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-      title: 'Queries over last 24 hours',
+      title: title,
       actions: <Widget>[
         IconButton(
           tooltip: 'Scroll to start',
@@ -41,11 +52,35 @@ class GraphScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: [
                   Container(
-                      width: MediaQuery.of(context).size.width * 5,
+                      width:
+                      MediaQuery
+                          .of(context)
+                          .size
+                          .width * numberOfScreens,
                       height: MediaQuery.of(context).size.height,
-                      child: QueriesOverTimeChartBuilder())
+                      child: chartBuilder)
                 ]),
           )),
+    );
+  }
+}
+
+class QueriesOverTimeGraphScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GraphScreen(
+      title: 'Queries over last 24 hours',
+      chartBuilder: QueriesOverTimeChartBuilder(),
+    );
+  }
+}
+
+class ClientsOverTimeGraphScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GraphScreen(
+      title: 'Clients over last 24 hours',
+      chartBuilder: ClientsOverTimeChartBuilder(),
     );
   }
 }

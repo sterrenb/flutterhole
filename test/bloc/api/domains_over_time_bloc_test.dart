@@ -1,80 +1,80 @@
-import 'package:flutterhole/bloc/api/domains_over_time.dart';
+import 'package:flutterhole/bloc/api/clients_over_time.dart';
 import 'package:flutterhole/bloc/base/event.dart';
 import 'package:flutterhole/bloc/base/state.dart';
-import 'package:flutterhole/model/api/domains_over_time.dart';
+import 'package:flutterhole/model/api/clients_over_time.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
 import '../../mock.dart';
 
-class MockDomainsOverTimeRepository extends Mock
-    implements DomainsOverTimeRepository {}
+class MockClientsOverTimeRepository extends Mock
+    implements ClientsOverTimeRepository {}
 
 main() {
   group('bloc', () {
-    MockDomainsOverTimeRepository domainsOverTimeRepository;
-    DomainsOverTimeBloc domainsOverTimeBloc;
+    MockClientsOverTimeRepository clientsOverTimeRepository;
+    ClientsOverTimeBloc clientsOverTimeBloc;
 
     setUp(() {
-      domainsOverTimeRepository = MockDomainsOverTimeRepository();
-      domainsOverTimeBloc = DomainsOverTimeBloc(domainsOverTimeRepository);
+      clientsOverTimeRepository = MockClientsOverTimeRepository();
+      clientsOverTimeBloc = ClientsOverTimeBloc(clientsOverTimeRepository);
     });
 
     test('has a correct initialState', () {
       expect(
-          domainsOverTimeBloc.initialState, BlocStateEmpty<DomainsOverTime>());
+          clientsOverTimeBloc.initialState, BlocStateEmpty<ClientsOverTime>());
     });
 
     group('Fetch', () {
       test(
-          'emits [BlocStateEmpty<DomainsOverTime>, BlocStateLoading<DomainsOverTime>, BlocStateSuccess<DomainsOverTime>] when repository returns DomainsOverTime',
+          'emits [BlocStateEmpty<ClientsOverTime>, BlocStateLoading<ClientsOverTime>, BlocStateSuccess<ClientsOverTime>] when repository returns ClientsOverTime',
           () {
-        when(domainsOverTimeRepository.get())
-            .thenAnswer((_) => Future.value(mockDomainsOverTime));
+            when(clientsOverTimeRepository.get())
+                .thenAnswer((_) => Future.value(mockClientsOverTime));
 
         expectLater(
-            domainsOverTimeBloc.state,
+            clientsOverTimeBloc.state,
             emitsInOrder([
-              BlocStateEmpty<DomainsOverTime>(),
-              BlocStateLoading<DomainsOverTime>(),
-              BlocStateSuccess<DomainsOverTime>(mockDomainsOverTime),
+              BlocStateEmpty<ClientsOverTime>(),
+              BlocStateLoading<ClientsOverTime>(),
+              BlocStateSuccess<ClientsOverTime>(mockClientsOverTime),
             ]));
 
-        domainsOverTimeBloc.dispatch(Fetch());
+            clientsOverTimeBloc.dispatch(Fetch());
       });
 
       test(
-          'emits [BlocStateEmpty<DomainsOverTime>, BlocStateLoading<DomainsOverTime>, BlocStateError<DomainsOverTime>] when home repository throws PiholeException',
+          'emits [BlocStateEmpty<ClientsOverTime>, BlocStateLoading<ClientsOverTime>, BlocStateError<ClientsOverTime>] when home repository throws PiholeException',
           () {
-        when(domainsOverTimeRepository.get()).thenThrow(PiholeException());
+            when(clientsOverTimeRepository.get()).thenThrow(PiholeException());
 
         expectLater(
-            domainsOverTimeBloc.state,
+            clientsOverTimeBloc.state,
             emitsInOrder([
-              BlocStateEmpty<DomainsOverTime>(),
-              BlocStateLoading<DomainsOverTime>(),
-              BlocStateError<DomainsOverTime>(PiholeException()),
+              BlocStateEmpty<ClientsOverTime>(),
+              BlocStateLoading<ClientsOverTime>(),
+              BlocStateError<ClientsOverTime>(PiholeException()),
             ]));
 
-        domainsOverTimeBloc.dispatch(Fetch());
+            clientsOverTimeBloc.dispatch(Fetch());
       });
     });
   });
 
   group('repository', () {
     MockPiholeClient client;
-    DomainsOverTimeRepository domainsOverTimeRepository;
+    ClientsOverTimeRepository clientsOverTimeRepository;
 
     setUp(() {
       client = MockPiholeClient();
-      domainsOverTimeRepository = DomainsOverTimeRepository(client);
+      clientsOverTimeRepository = ClientsOverTimeRepository(client);
     });
 
-    test('getDomainsOverTime', () {
-      when(client.fetchDomainsOverTime())
-          .thenAnswer((_) => Future.value(mockDomainsOverTime));
-      expect(domainsOverTimeRepository.get(), completion(mockDomainsOverTime));
+    test('getClientsOverTime', () {
+      when(client.fetchClientsOverTime())
+          .thenAnswer((_) => Future.value(mockClientsOverTime));
+      expect(clientsOverTimeRepository.get(), completion(mockClientsOverTime));
     });
   });
 }

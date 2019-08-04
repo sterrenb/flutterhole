@@ -1,7 +1,8 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutterhole/bloc/api/versions.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
-import 'package:flutterhole/model/api/domains_over_time.dart';
+import 'package:flutterhole/model/api/client_names.dart';
+import 'package:flutterhole/model/api/clients_over_time.dart';
 import 'package:flutterhole/model/api/forward_destinations.dart';
 import 'package:flutterhole/model/api/queries_over_time.dart';
 import 'package:flutterhole/model/api/query.dart';
@@ -120,6 +121,12 @@ final ForwardDestinations mockForwardDestinations = ForwardDestinations({
   "dns.google|8.8.4.4": 40.41,
   "dns.google|8.8.8.8": 35.53
 });
+
+final ClientNames mockClientNames = ClientNames([
+  Client(name: 'localhost', ip: '127.0.0.1'),
+  Client(name: 'second', ip: '1.2.3.4'),
+  Client(name: '', ip: '10.0.1.1'),
+]);
 
 final List<Query> mockQueries = [
   Query(
@@ -279,7 +286,7 @@ final mockQueriesOverTime = QueriesOverTime(adsOverTime: {
   '1564073700000': 7,
   '1564074300000': 7,
   '1564074900000': 13
-}, domainsOverTime: {
+}, clientsOverTime: {
   '1563991500000': 122,
   '1563992100000': 97,
   '1563992700000': 75,
@@ -422,7 +429,7 @@ final mockQueriesOverTime = QueriesOverTime(adsOverTime: {
   '1564074900000': 69
 });
 
-final mockDomainsOverTime = DomainsOverTime(overTime: {
+final mockClientsOverTime = ClientsOverTime(overTime: {
   "1564783500": [0, 23, 0, 6, 0, 0, 0, 0, 0, 0, 0],
   "1564784100": [0, 23, 0, 2, 0, 0, 0, 0, 0, 0, 0],
   "1564784700": [0, 89, 1, 3, 0, 4, 0, 0, 0, 0, 0],

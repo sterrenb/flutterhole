@@ -22,12 +22,12 @@ class QueriesOverTimeChartBuilder extends StatelessWidget {
           double maxY = 0;
 
           int index = 0;
-          queriesOverTime.domainsOverTime.forEach((String str, int hits) {
+          queriesOverTime.clientsOverTime.forEach((String str, int hits) {
             if (hits.toDouble() > maxY) maxY = hits.toDouble();
 
             domainSpots.add(FlSpot(
                 index.toDouble() *
-                    (2400 / queriesOverTime.domainsOverTime.length),
+                    (2400 / queriesOverTime.clientsOverTime.length),
                 hits.toDouble()));
             index++;
           });
@@ -43,9 +43,7 @@ class QueriesOverTimeChartBuilder extends StatelessWidget {
           });
 
           return QueriesOverTimeLineChart(
-//            greenSpots: domainSpots,
             greenSpots: domainSpots..removeLast(),
-//            redSpots: adSpots,
             redSpots: adSpots..removeLast(),
             maxY: maxY,
           );

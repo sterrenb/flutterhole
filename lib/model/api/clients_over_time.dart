@@ -2,20 +2,18 @@ import 'dart:convert';
 
 import 'package:flutterhole/model/serializable.dart';
 
-class DomainsOverTime extends Serializable {
+class ClientsOverTime extends Serializable {
   Map<String, List<int>> overTime;
 
-  DomainsOverTime({
+  ClientsOverTime({
     this.overTime,
   }) : super([overTime]);
 
-  factory DomainsOverTime.fromString(String str) =>
-      DomainsOverTime.fromJson(json.decode(str));
+  factory ClientsOverTime.fromString(String str) =>
+      ClientsOverTime.fromJson(json.decode(str));
 
-//  String toRawJson() => json.encode(toJson());
-
-  factory DomainsOverTime.fromJson(Map<String, dynamic> json) =>
-      DomainsOverTime(
+  factory ClientsOverTime.fromJson(Map<String, dynamic> json) =>
+      ClientsOverTime(
         overTime: Map.from(json["over_time"]).map((k, v) =>
             MapEntry<String, List<int>>(k, List<int>.from(v.map((x) => x)))),
       );

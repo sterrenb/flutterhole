@@ -2,6 +2,8 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/blacklist.dart';
+import 'package:flutterhole/bloc/api/client_names.dart';
+import 'package:flutterhole/bloc/api/clients_over_time.dart';
 import 'package:flutterhole/bloc/api/forward_destinations.dart';
 import 'package:flutterhole/bloc/api/queries_over_time.dart';
 import 'package:flutterhole/bloc/api/query.dart';
@@ -46,6 +48,8 @@ class Globals {
         BlocProvider.of<TopItemsBloc>(context),
         BlocProvider.of<QueryTypesBloc>(context),
         BlocProvider.of<QueriesOverTimeBloc>(context),
+        BlocProvider.of<ClientNamesBloc>(context),
+        BlocProvider.of<ClientsOverTimeBloc>(context),
       ]);
 
   static RefreshCallBack fetchForTopSources =

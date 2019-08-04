@@ -11,6 +11,7 @@ import 'package:flutterhole/service/converter.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/widget/home/chart/forward_destinations_chart_builder.dart';
 import 'package:flutterhole/widget/home/chart/query_types_chart_builder.dart';
+import 'package:flutterhole/widget/home/clients_over_time_card.dart';
 import 'package:flutterhole/widget/home/queries_over_time_card.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:flutterhole/widget/refreshable.dart';
@@ -99,6 +100,7 @@ class _SummaryBuilderState extends State<SummaryBuilder> {
                   return ListView(
                     children: [
                       ...summaryTiles,
+                      ClientsOverTimeCard(),
                       QueriesOverTimeCard(),
                       QueryTypesChartBuilder(),
                       ForwardDestinationsChartBuilder(),

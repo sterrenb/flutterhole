@@ -45,8 +45,11 @@ const String _queryTypeLogPath = '/query/queryType/:queryType';
 String queryTypeLogPath(String queryType) =>
     _queryTypeLogPath.replaceAll(':queryType', queryType);
 
-/// The route to [GraphScreen].
-const String graphPath = '/graph';
+/// The route to [QueriesOverTimeGraphScreen].
+const String graphQueriesOverTimePath = '/graph/queriesOverTime';
+
+/// The route to [ClientsOverTimeGraphScreen].
+const String graphClientsOverTimePath = '/graph/clientsOverTime';
 
 /// The route to [AboutScreen].
 const String aboutPath = '/about';
@@ -176,7 +179,10 @@ void configureRoutes(Router router) {
 
   router.define(logPath, handler: _SimpleHandler(LogScreen()));
 
-  router.define(graphPath, handler: _SimpleHandler(GraphScreen()));
+  router.define(graphQueriesOverTimePath,
+      handler: _SimpleHandler(QueriesOverTimeGraphScreen()));
+  router.define(graphClientsOverTimePath,
+      handler: _SimpleHandler(ClientsOverTimeGraphScreen()));
 
   router.define(privacyPath, handler: _SimpleHandler(PrivacyScreen()));
 }

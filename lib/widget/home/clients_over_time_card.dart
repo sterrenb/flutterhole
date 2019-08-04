@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
-import 'package:flutterhole/widget/home/chart/queries_over_time_chart_builder.dart';
+import 'package:flutterhole/widget/home/chart/clients_over_time_chart_builder.dart';
 
-class QueriesOverTimeCard extends StatelessWidget {
+class ClientsOverTimeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -18,7 +18,7 @@ class QueriesOverTimeCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "Queries over last 24 hours",
+                    "Clients over last 24 hours",
                     style: Theme.of(context).textTheme.title,
                   ),
                   IconButton(
@@ -27,7 +27,7 @@ class QueriesOverTimeCard extends StatelessWidget {
                     onPressed: () {
                       Globals.navigateTo(
                         context,
-                        graphQueriesOverTimePath,
+                        graphClientsOverTimePath,
                       );
                     },
                   )
@@ -37,7 +37,7 @@ class QueriesOverTimeCard extends StatelessWidget {
             ],
           ),
         ),
-        AspectRatio(aspectRatio: 2, child: QueriesOverTimeChartBuilder()),
+        AspectRatio(aspectRatio: 2, child: ClientsOverTimeChartBuilder()),
       ],
     ));
   }

@@ -440,24 +440,24 @@ void main() {
 
   group('fetchQueries', () {
     test('returns Queries on successful fetch', () async {
-      dio.httpClientAdapter = MockAdapter.json(
-          mockQueries.map((query) => query.toJson()).toList());
+      dio.httpClientAdapter =
+          MockAdapter.json(mockQueries.map((query) => query.toJson()).toList());
       expect(client.fetchQueries(), completion(mockQueries));
     });
   });
 
   group('fetchQueriesForClient', () {
     test('returns Queries on successful fetch', () async {
-      dio.httpClientAdapter = MockAdapter.json(
-          mockQueries.map((query) => query.toJson()).toList());
+      dio.httpClientAdapter =
+          MockAdapter.json(mockQueries.map((query) => query.toJson()).toList());
       expect(client.fetchQueriesForClient('client'), completion(mockQueries));
     });
   });
 
   group('fetchQueriesForQueryType', () {
     test('returns Queries on successful fetch', () async {
-      dio.httpClientAdapter = MockAdapter.json(
-          mockQueries.map((query) => query.toJson()).toList());
+      dio.httpClientAdapter =
+          MockAdapter.json(mockQueries.map((query) => query.toJson()).toList());
       expect(client.fetchQueriesForQueryType(QueryType.A),
           completion(mockQueries));
     });
@@ -477,10 +477,17 @@ void main() {
     });
   });
 
-  group('fetchDomainsOverTime', () {
-    test('returns DomainsOverTime on successful fetch', () async {
-      dio.httpClientAdapter = MockAdapter.json(mockDomainsOverTime.toJson());
-      expect(client.fetchDomainsOverTime(), completion(mockDomainsOverTime));
+  group('fetchClientsOverTime', () {
+    test('returns ClientsOverTime on successful fetch', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockClientsOverTime.toJson());
+      expect(client.fetchClientsOverTime(), completion(mockClientsOverTime));
+    });
+  });
+
+  group('fetchClientNames', () {
+    test('returns ClientNames on successful fetch', () async {
+      dio.httpClientAdapter = MockAdapter.json(mockClientNames.toJson());
+      expect(client.fetchClientNames(), completion(mockClientNames));
     });
   });
 }
