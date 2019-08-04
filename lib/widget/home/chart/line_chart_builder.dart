@@ -51,8 +51,6 @@ class LineChartBuilderState extends State<LineChartBuilder> {
     List<LineChartBarData> list = [];
     int i = 0;
     widget.spots.forEach((title, spots) {
-      print('parsing spots for $title (${spots.length} spots)');
-      i++;
       list.add(LineChartBarData(
         spots: spots,
         isCurved: true,
@@ -67,6 +65,8 @@ class LineChartBuilderState extends State<LineChartBuilder> {
           show: false,
         ),
       ));
+
+      i++;
     });
 
     return list;
@@ -115,8 +115,7 @@ class LineChartBuilderState extends State<LineChartBuilder> {
                               text = widget.spots.keys.toList()[index] ??
                                   'Unknown';
 
-//                              if (color == _colors.first) text = 'first: $text';
-//                              if (color == _colors.last) text = 'last: $text';
+                              text = '$text: ${touchedSpot.spot.y.toInt()}';
 
                               return TooltipItem(
                                   text,

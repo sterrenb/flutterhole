@@ -63,8 +63,16 @@ class _ClientsOverTimeChartBuilderState
         if (hitsForClient > maxY) maxY = hitsForClient;
 
         final Client currentClient = clientNamesCache.clients[clientIndex];
+
         final String spotKey =
         currentClient.name.isEmpty ? currentClient.ip : currentClient.name;
+
+
+//        final String spotKey = '$clientIdentifier: $hitsForClient';
+//        final spotKey = '$clientIndex:${currentClient.name}';
+
+        print('client 0: ${clientNamesCache.clients.first}');
+        print('client 1: ${clientNamesCache.clients[1]}');
 
         if (!spots.containsKey(spotKey)) {
           spots[spotKey] = [];
