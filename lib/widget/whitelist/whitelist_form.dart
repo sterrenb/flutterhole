@@ -105,8 +105,7 @@ class _WhitelistFormState extends State<WhitelistForm> {
                                   "Do you want to remove ${widget.initialValue}?"),
                             ),
                             continueText: 'Remove', onConfirm: () {
-                          whitelistBloc.dispatch(
-                              Remove(widget.initialValue));
+                          whitelistBloc.dispatch(Remove(widget.initialValue));
                         });
                       },
                     )

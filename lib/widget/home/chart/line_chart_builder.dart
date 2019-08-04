@@ -111,8 +111,12 @@ class LineChartBuilderState extends State<LineChartBuilder> {
 
                               final color = touchedSpot.getColor();
 
-                              if (color == _colors.first) text = 'first: $text';
-                              if (color == _colors.last) text = 'last: $text';
+                              final int index = _colors.indexOf(color);
+                              text = widget.spots.keys.toList()[index] ??
+                                  'Unknown';
+
+//                              if (color == _colors.first) text = 'first: $text';
+//                              if (color == _colors.last) text = 'last: $text';
 
                               return TooltipItem(
                                   text,
