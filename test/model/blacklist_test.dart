@@ -67,6 +67,20 @@ void main() {
     expect(wildcardList.wildcard, mockBlacklist.wildcard..remove(wildcardItem));
   });
 
+  group('blacklistTypeToString', () {
+    test('exact', () {
+      expect(blacklistTypeToString(BlacklistType.Exact), 'Exact');
+    });
+
+    test('wildcard', () {
+      expect(blacklistTypeToString(BlacklistType.Wildcard), 'Wildcard');
+    });
+
+    test('regex', () {
+      expect(blacklistTypeToString(BlacklistType.Regex), 'Regex');
+    });
+  });
+
   group('blacklistTypeFromString', () {
     test('exact', () {
       expect(blacklistTypeFromString('exact'), BlacklistType.Exact);

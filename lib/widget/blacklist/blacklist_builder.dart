@@ -7,8 +7,8 @@ import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:flutterhole/widget/layout/list_tab.dart';
+import 'package:flutterhole/widget/layout/refreshable.dart';
 import 'package:flutterhole/widget/layout/removable_tile.dart';
-import 'package:flutterhole/widget/refreshable.dart';
 
 class BlacklistBuilder extends StatefulWidget {
   @override

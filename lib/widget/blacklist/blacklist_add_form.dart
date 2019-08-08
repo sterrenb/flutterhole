@@ -4,7 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutterhole/bloc/api/blacklist.dart';
 import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/model/api/blacklist.dart';
-import 'package:flutterhole/widget/blacklist/blacklist_form.dart';
+import 'package:flutterhole/widget/blacklist/blacklist_item_form.dart';
 
 class BlacklistAddForm extends StatefulWidget {
   @override
@@ -48,9 +48,9 @@ class _BlacklistAddFormState extends State<BlacklistAddForm> {
           Navigator.of(context).pop(_item);
         }
       },
-      child: BlacklistForm(
+      child: BlacklistItemForm(
         fbKey: _fbKey,
-        onVoidSubmitted: () {
+        onSubmit: () {
           _fbKey.currentState.save();
           blacklistBloc.dispatch(Add(_item));
         },

@@ -10,7 +10,7 @@ import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/home/frequency_tile.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
-import 'package:flutterhole/widget/refreshable.dart';
+import 'package:flutterhole/widget/layout/refreshable.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
 class TopSourcesBuilder extends StatefulWidget {

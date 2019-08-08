@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/widget/layout/list_tab.dart';
 
-import 'mock_material_app.dart';
+import '../mock_material_app.dart';
 
 void main() {
   testWidgets('ListTab has title', (WidgetTester tester) async {

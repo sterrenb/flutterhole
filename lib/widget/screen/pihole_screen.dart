@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
-import 'package:flutterhole/widget/pihole/pihole_edit_form.dart';
+import 'package:flutterhole/widget/pihole/pihole_form.dart';
 
 class PiholeAddScreen extends StatelessWidget {
   final Pihole original;
 
-  final PiholeEditForm form;
+  final PiholeForm form;
 
   PiholeAddScreen({Key key})
       : original = Pihole(title: ''),
-        form = PiholeEditForm(original: Pihole(title: '')),
+        form = PiholeForm(original: Pihole(title: '')),
         super(key: key);
 
   @override
@@ -28,7 +28,7 @@ class PiholeEditScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SimpleScaffold(
         title: 'Editing ${pihole.title}',
-        body: PiholeEditForm(
+        body: PiholeForm(
           original: pihole,
         ));
   }

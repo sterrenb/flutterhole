@@ -10,9 +10,9 @@ import 'package:flutterhole/model/api/whitelist.dart';
 import 'package:flutterhole/service/browser.dart';
 import 'package:flutterhole/service/converter.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
+import 'package:flutterhole/widget/layout/refreshable.dart';
 import 'package:flutterhole/widget/layout/scaffold.dart';
 import 'package:flutterhole/widget/layout/search_options.dart';
-import 'package:flutterhole/widget/refreshable.dart';
 import 'package:provider/provider.dart';
 
 enum FilterType {

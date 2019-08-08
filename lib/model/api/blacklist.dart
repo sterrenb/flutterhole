@@ -12,6 +12,9 @@ const String _exact = 'exact';
 const String _wildcard = 'wildcard';
 const String _regex = 'regex';
 
+String blacklistTypeToString(BlacklistType type) =>
+    type.toString().replaceAll('BlacklistType.', '');
+
 BlacklistType blacklistTypeFromString(String str) {
   str = str.toLowerCase();
   if (str.contains(_exact)) return BlacklistType.Exact;

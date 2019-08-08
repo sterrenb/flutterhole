@@ -10,7 +10,7 @@ import 'package:flutterhole/widget/home/clients_over_time_card.dart';
 import 'package:flutterhole/widget/home/queries_over_time_card.dart';
 import 'package:flutterhole/widget/home/summary_tile.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
-import 'package:flutterhole/widget/refreshable.dart';
+import 'package:flutterhole/widget/layout/refreshable.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 import 'package:provider/provider.dart';
 
