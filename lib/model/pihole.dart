@@ -74,6 +74,12 @@ class Pihole extends Serializable {
   final bool allowSelfSigned;
   final Proxy proxy;
 
+  /// The full root url of this [Pihole] configuration.
+  ///
+  /// Includes plaintext basic authentication.
+  /// TODO option for using authentication header instead
+  ///
+  /// Example: https://user:pass@pi.hole:8080
   String get baseUrl {
     final String scheme = (port == 443 || useSSL) ? 'https' : 'http';
     final String portString = (port == 80 && !useSSL) || (port == 443 && useSSL)
@@ -92,9 +98,24 @@ class Pihole extends Serializable {
     return '$scheme://$basicAuthString$hostString$portString';
   }
 
+  /// The full root url with obscured authentication values.
+  ///
+  /// Returns [baseUrl] if authentication values are empty.
+  ///
+  /// Example: https://<hidden>@pi.hole:8080
   String get baseUrlObscured {
     if (proxy.basicAuth.isEmpty) return baseUrl;
     return baseUrl.replaceFirst(proxy.basicAuth, obscured);
+  }
+
+  /// The full root url without authentication values.
+  ///
+  /// Returns [baseUrl] if authentication values are empty.
+  ///
+  /// Example: https://pi.hole:8080
+  String get baseUrlWithoutAuth {
+    if (proxy.basicAuth.isEmpty) return baseUrl;
+    return baseUrl.replaceFirst(proxy.basicAuth, '');
   }
 
   Pihole({this.title = 'FlutterHole',
