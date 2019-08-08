@@ -14,8 +14,8 @@ import '../mock_material_app.dart';
 void main() {
   MockMaterialApp materialApp;
   GlobalKey<FormBuilderState> formKey;
+
   setUpAll(() {
-//    BlocSupervisor.delegate = SimpleBlocDelegate();
     Globals.client = MockPiholeClient();
     Globals.router = MockRouter();
     Globals.tree = MockMemoryTree();

@@ -115,7 +115,7 @@ class Pihole extends Serializable {
   /// Example: https://pi.hole:8080
   String get baseUrlWithoutAuth {
     if (proxy.basicAuth.isEmpty) return baseUrl;
-    return baseUrl.replaceFirst(proxy.basicAuth, '');
+    return baseUrl.replaceFirst(proxy.basicAuth, '').replaceFirst('@', '');
   }
 
   Pihole({this.title = 'FlutterHole',

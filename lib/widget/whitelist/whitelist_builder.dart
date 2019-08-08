@@ -17,12 +17,16 @@ class WhitelistBuilder extends StatefulWidget {
 class _WhitelistBuilderState extends State<WhitelistBuilder> {
   Whitelist _cache;
 
-  void _removeDomain(String domain, WhitelistBloc whitelistBloc,
-      BuildContext context) {
+  void _removeDomain(String domain, WhitelistBloc whitelistBloc) {
     setState(() {
       _cache = Whitelist.withoutItem(_cache, domain);
     });
+
     whitelistBloc.dispatch(Remove(domain));
+    _showRemoveSnackBar(domain, whitelistBloc);
+  }
+
+  void _showRemoveSnackBar(String domain, WhitelistBloc whitelistBloc) {
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text("$domain removed"),
       action: SnackBarAction(
@@ -35,7 +39,43 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
             whitelistBloc.dispatch(Add(domain));
           }),
     ));
-//    setState(() {});
+  }
+
+  Widget _buildList(WhitelistBloc whitelistBloc) {
+    return Scrollbar(
+      child: ListView(
+        children: ListTile.divideTiles(
+            context: context,
+            tiles: _cache.list.map((String domain) {
+              return RemovableTile(
+                title: domain,
+                onTap: () async {
+                  final String message = await Globals.navigateTo(
+                    context,
+                    whitelistEditPath(domain),
+                  );
+                  if (message != null)
+                    Scaffold.of(context)
+                        .showSnackBar(SnackBar(content: Text(message)));
+                },
+                onDismissed: (_) {
+                  _removeDomain(domain, whitelistBloc);
+                },
+              );
+            })).toList(),
+      ),
+    );
+  }
+
+  ListView _buildErrorMessage(BlocStateError<Whitelist> state) {
+    return ListView(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          child: ErrorMessage(errorMessage: state.e.message),
+        ),
+      ],
+    );
   }
 
   @override
@@ -43,13 +83,7 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
     final whitelistBloc = BlocProvider.of<WhitelistBloc>(context);
     return BlocListener(
         bloc: whitelistBloc,
-        listener: (context, state) {
-          if (state is BlocStateSuccess<Whitelist>) {
-            setState(() {
-              _cache = state.data;
-            });
-          }
-        },
+        listener: _listener,
         child: Refreshable(
             onRefresh: (context) {
               Globals.fetchForWhitelistView(context);
@@ -60,48 +94,27 @@ class _WhitelistBuilderState extends State<WhitelistBuilder> {
                 builder: (context, state) {
                   if (state is BlocStateSuccess<Whitelist> ||
                       (state is BlocStateLoading<Whitelist> &&
-                          _cache != null &&
-                          _cache.list.isNotEmpty)) {
-                    return Scrollbar(
-                      child: ListView(
-                        children: ListTile.divideTiles(
-                            context: context,
-                            tiles: _cache.list.map((String domain) {
-                              return RemovableTile(
-                                title: domain,
-                                onTap: () async {
-                                  final String message =
-                                  await Globals.navigateTo(
-                                    context,
-                                    whitelistEditPath(domain),
-                                  );
-                                  if (message != null)
-                                    Scaffold.of(context).showSnackBar(
-                                        SnackBar(content: Text(message)));
-                                },
-                                onDismissed: (_) {
-                                  _removeDomain(domain, whitelistBloc, context);
-                                },
-                              );
-                            })).toList(),
-                      ),
-                    );
+                          _cache != null)) {
+                    if (state is BlocStateSuccess<Whitelist>) {
+                      _cache = state.data;
+                    }
+
+                    return _buildList(whitelistBloc);
                   }
 
                   if (state is BlocStateError<Whitelist>) {
-                    return Center(
-                      child: ListView(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20.0),
-                            child: ErrorMessage(errorMessage: state.e.message),
-                          ),
-                        ],
-                      ),
-                    );
+                    return _buildErrorMessage(state);
                   }
 
                   return Center(child: CircularProgressIndicator());
                 })));
+  }
+
+  void _listener(context, state) {
+    if (state is BlocStateSuccess<Whitelist>) {
+      setState(() {
+        _cache = state.data;
+      });
+    }
   }
 }
