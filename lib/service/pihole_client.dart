@@ -22,7 +22,6 @@ import 'globals.dart';
 import 'pihole_exception.dart';
 
 const String _authParameterKey = 'auth';
-const String _logKey = 'client';
 
 class PiholeClient {
   final Dio dio;
@@ -30,8 +29,10 @@ class PiholeClient {
 
   CancelToken token;
 
+  static bool _warnedAboutEmptyApiToken = false;
+
   void _log(String message, {String tag}) {
-    Globals.tree.log(_logKey, message, tag: tag);
+    Globals.tree.log('client', message, tag: tag);
   }
 
   PiholeClient({@required this.dio,
@@ -113,8 +114,6 @@ class PiholeClient {
         throw PiholeException(message: 'unexpected plaintext response');
       }
 
-//      await Future.delayed(Duration(seconds: 3));
-
       return response;
     } on DioError catch (e) {
       _log(e.message, tag: 'dio error');
@@ -126,18 +125,25 @@ class PiholeClient {
   }
 
   /// Performs [_get] with the API token set in [queryParameters].
+  ///
+  /// If the API token is empty, a warning is logged once and subsequent
+  /// requests will return [_get].
   Future<Response> _getSecure(Map<String, dynamic> queryParameters,
       {ResponseType responseType = ResponseType.json, Pihole pihole}) async {
     pihole = pihole ?? secureStore.active;
+
     if (pihole.auth.isEmpty) {
-      throw PiholeException(message: 'API token is empty');
+      if (!_warnedAboutEmptyApiToken) {
+        _log('API token is empty (only showing warning once)',
+            tag: 'warning');
+        _warnedAboutEmptyApiToken = true;
+      }
+
+      return _get(queryParameters, responseType: responseType, pihole: pihole);
     }
 
-    final response = await _get(
-        queryParameters..addAll({_authParameterKey: pihole.auth}),
-        responseType: responseType,
-        pihole: pihole);
-    return response;
+    return _get(queryParameters..addAll({_authParameterKey: pihole.auth}),
+        responseType: responseType, pihole: pihole);
   }
 
   /// Tries to convert an HTTP response to a [Status].

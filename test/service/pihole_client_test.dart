@@ -9,6 +9,7 @@ import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
+import 'package:mockito/mockito.dart';
 import "package:test/test.dart";
 
 import '../mock.dart';
@@ -197,15 +198,15 @@ void main() {
       expect(client.enable(), completion(mockStatusEnabled));
     });
 
-    test('throws PiholeException when API token is empty', () async {
+    test('logs warning when API token is empty', () async {
       secureStore.active = Pihole.copyWith(pihole, auth: '');
       dio.httpClientAdapter = MockAdapter.json(mockStatusEnabled.toJson());
-      try {
-        await client.enable();
-        fail('exception not thrown');
-      } on PiholeException catch (e) {
-        expect(e.message, 'API token is empty');
-      }
+
+      await client.enable();
+      verify(Globals.tree.log(
+          'client', 'API token is empty (only showing warning once)',
+          tag: 'warning'));
+//      expect(Globals.tree.logs.first.logLine, 'API token is empty (only showing warning once)');
     });
 
     test('throws PiholeException on disabled response', () async {
