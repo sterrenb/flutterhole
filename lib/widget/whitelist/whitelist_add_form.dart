@@ -21,18 +21,24 @@ class _WhitelistAddFormState extends State<WhitelistAddForm> {
     final WhitelistBloc whitelistBloc = BlocProvider.of<WhitelistBloc>(context);
     return BlocListener(
       bloc: whitelistBloc,
-      listener: (context, state) {
-        if (state is BlocStateSuccess<Whitelist>) {
-          Navigator.of(context).pop(_domain);
-        }
-      },
-      child: WhitelistForm(
-        fbKey: _fbKey,
-        onVoidSubmitted: () {
-          _fbKey.currentState.save();
-          whitelistBloc.dispatch(Add(_domain));
-        },
-      ),
+      listener: _listener,
+      child: _buildWhitelistForm(whitelistBloc),
     );
+  }
+
+  WhitelistForm _buildWhitelistForm(WhitelistBloc whitelistBloc) {
+    return WhitelistForm(
+      fbKey: _fbKey,
+      onSubmit: () {
+        _fbKey.currentState.save();
+        whitelistBloc.dispatch(Add(_domain));
+      },
+    );
+  }
+
+  void _listener(context, state) {
+    if (state is BlocStateSuccess<Whitelist>) {
+      Navigator.of(context).pop(_domain);
+    }
   }
 }

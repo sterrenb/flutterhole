@@ -10,6 +10,37 @@ import 'package:flutterhole/widget/layout/icon_text_button.dart';
 const entryAttribute = "entry";
 const listTypeAttribute = "listType";
 
+/// Mixin for shared getters in blacklist form parents.
+abstract class BlacklistFormParent {
+  final GlobalKey<FormBuilderState> formBuilderKey =
+  GlobalKey<FormBuilderState>();
+
+  String get localEntry => formBuilderKey.currentState.value[entryAttribute];
+
+  String get localListType =>
+      formBuilderKey.currentState.value[listTypeAttribute];
+
+  BlacklistItem get localItem {
+    final BlacklistType blacklistType = blacklistTypeFromString(localListType);
+    String entry = localEntry;
+
+    if (blacklistType == BlacklistType.Wildcard) {
+      if (!entry.startsWith(wildcardPrefix)) {
+        entry = wildcardPrefix + entry;
+      }
+
+      if (!entry.endsWith(wildcardSuffix)) {
+        entry = entry + wildcardSuffix;
+      }
+    }
+
+    return BlacklistItem(
+      entry: entry,
+      type: blacklistType,
+    );
+  }
+}
+
 class BlacklistItemForm extends StatefulWidget {
   final GlobalKey<FormBuilderState> fbKey;
   final VoidCallback onSubmit;
@@ -127,14 +158,7 @@ class _BlacklistItemFormState extends State<BlacklistItemForm> {
           icon: Icons.delete_outline,
           color: Colors.red,
           onPressed: () {
-            showAlertDialog(
-                context,
-                Container(
-                  child: Text(
-                      "Do you want to remove ${widget.initialValue.entry}?"),
-                ), onConfirm: () {
-              blacklistBloc.dispatch(Remove(widget.initialValue));
-            });
+            _showRemoieDialog(blacklistBloc);
           },
         )
             : Container(),
@@ -150,6 +174,16 @@ class _BlacklistItemFormState extends State<BlacklistItemForm> {
         ),
       ],
     );
+  }
+
+  void _showRemoieDialog(BlacklistBloc blacklistBloc) {
+    showAlertDialog(
+        context,
+        Container(
+          child: Text("Do you want to remove ${widget.initialValue.entry}?"),
+        ), onConfirm: () {
+      blacklistBloc.dispatch(Remove(widget.initialValue));
+    });
   }
 
   void _submit() {
