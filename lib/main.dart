@@ -41,6 +41,7 @@ void main() async {
   configureRoutes(Globals.router);
 
   Globals.client = PiholeClient(dio: Dio(), secureStore: Globals.secureStore);
+  Globals.client = PiholeClient(dio: Dio(), secureStore: Globals.secureStore);
 
   final PiholeBloc piholeBloc =
   PiholeBloc(PiholeRepository(Globals.secureStore));
@@ -90,7 +91,7 @@ void main() async {
   }());
 
   if (Globals.debug) {
-    if (false) BlocSupervisor.delegate = SimpleBlocDelegate();
+    BlocSupervisor.delegate = SimpleBlocDelegate();
     Globals.tree.log('main', 'Running in debug mode');
   } else {
     Globals.tree.log('main', 'Running in release mode');
