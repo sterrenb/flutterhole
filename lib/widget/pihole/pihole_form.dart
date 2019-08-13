@@ -14,16 +14,16 @@ import 'package:flutterhole/widget/status/status_icon.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
-class PiholeEditForm extends StatefulWidget {
+class PiholeForm extends StatefulWidget {
   final Pihole original;
 
-  const PiholeEditForm({Key key, @required this.original}) : super(key: key);
+  const PiholeForm({Key key, @required this.original}) : super(key: key);
 
   @override
-  _PiholeEditFormState createState() => _PiholeEditFormState();
+  _PiholeFormState createState() => _PiholeFormState();
 }
 
-class _PiholeEditFormState extends State<PiholeEditForm> {
+class _PiholeFormState extends State<PiholeForm> {
   Pihole pihole;
 
   final _formKey = GlobalKey<FormState>();

@@ -25,25 +25,31 @@ class _WhitelistEditFormState extends State<WhitelistEditForm> {
     final WhitelistBloc whitelistBloc = BlocProvider.of<WhitelistBloc>(context);
     return BlocListener(
       bloc: whitelistBloc,
-      listener: (context, state) {
-        if (state is BlocStateSuccess<Whitelist>) {
-          if (_update == null) {
-            Navigator.of(context).pop('Removed ${widget.original}');
-          } else {
-            Navigator.of(context).pop('Edited ${widget.original} to $_update');
-          }
+      listener: _listener,
+      child: _buildWhitelistForm(whitelistBloc),
+    );
+  }
+
+  WhitelistForm _buildWhitelistForm(WhitelistBloc whitelistBloc) {
+    return WhitelistForm(
+      fbKey: _fbKey,
+      initialValue: widget.original,
+      onSubmit: () {
+        _fbKey.currentState.save();
+        if (widget.original != _update) {
+          whitelistBloc.dispatch(Edit(widget.original, _update));
         }
       },
-      child: WhitelistForm(
-        fbKey: _fbKey,
-        initialValue: widget.original,
-        onVoidSubmitted: () {
-          _fbKey.currentState.save();
-          if (widget.original != _update) {
-            whitelistBloc.dispatch(Edit(widget.original, _update));
-          }
-        },
-      ),
     );
+  }
+
+  void _listener(context, state) {
+    if (state is BlocStateSuccess<Whitelist>) {
+      if (_update == null) {
+        Navigator.of(context).pop('Removed ${widget.original}');
+      } else {
+        Navigator.of(context).pop('Edited ${widget.original} to $_update');
+      }
+    }
   }
 }

@@ -19,8 +19,9 @@ main() {
     intBloc = IntBloc(intRepository);
   });
 
-  test('has a correct initialState', () {
+  test('has a correct initial state', () {
     expect(intBloc.initialState, BlocStateEmpty<int>());
+    expect(intBloc.hasCache, isFalse);
   });
 
   group('FetchGeneric', () {

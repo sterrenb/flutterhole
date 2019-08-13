@@ -28,6 +28,15 @@ class BlacklistBloc extends BaseBloc<Blacklist> {
 
   BlacklistBloc(this.blacklistRepository) : super(blacklistRepository);
 
+  @override
+  Stream<BlocState> mapEventToState(BlocEvent event,) async* {
+    yield BlocStateLoading<Blacklist>();
+    if (event is Fetch) yield* fetch();
+    if (event is Add) yield* _add(event.item);
+    if (event is Remove) yield* _remove(event.item);
+    if (event is Edit) yield* _edit(event.original, event.update);
+  }
+
   Stream<BlocState> _add(BlacklistItem item) async* {
     try {
       final blacklist = await blacklistRepository.add(item);
@@ -53,17 +62,6 @@ class BlacklistBloc extends BaseBloc<Blacklist> {
     } on PiholeException catch (e) {
       yield BlocStateError<Blacklist>(e);
     }
-  }
-
-  @override
-  Stream<BlocState> mapEventToState(
-    BlocEvent event,
-  ) async* {
-    yield BlocStateLoading<Blacklist>();
-    if (event is Fetch) yield* fetch();
-    if (event is Add) yield* _add(event.item);
-    if (event is Remove) yield* _remove(event.item);
-    if (event is Edit) yield* _edit(event.original, event.update);
   }
 }
 

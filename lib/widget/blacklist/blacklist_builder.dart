@@ -7,8 +7,8 @@ import 'package:flutterhole/service/globals.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/widget/layout/error_message.dart';
 import 'package:flutterhole/widget/layout/list_tab.dart';
+import 'package:flutterhole/widget/layout/refreshable.dart';
 import 'package:flutterhole/widget/layout/removable_tile.dart';
-import 'package:flutterhole/widget/refreshable.dart';
 
 class BlacklistBuilder extends StatefulWidget {
   @override
@@ -62,64 +62,75 @@ class _BlacklistBuilderState extends State<BlacklistBuilder> {
     final blacklistBloc = BlocProvider.of<BlacklistBloc>(context);
     return BlocListener(
       bloc: blacklistBloc,
-      listener: (context, state) {
-        if (state is BlocStateSuccess<Blacklist>) {
-          setState(() {
-            _cache = state.data;
-          });
-        }
-      },
-      child: Refreshable(
-          onRefresh: (context) {
-            Globals.fetchForBlacklistView(context);
-          },
-          bloc: blacklistBloc,
-          child: BlocBuilder(
-              bloc: blacklistBloc,
-              builder: (context, state) {
-                if (state is BlocStateSuccess<Blacklist> ||
-                    (state is BlocStateLoading<Blacklist> &&
-                        _cache != null &&
-                        _cache.exact.length + _cache.wildcard.length > 0)) {
-                  if (state is BlocStateSuccess<Blacklist>) {
-                    _cache = state.data;
-                  }
-
-                  List<Widget> exactTiles = [ListTab('Exact blocking')];
-                  exactTiles.addAll(_cache.exact.map((BlacklistItem item) =>
-                      _itemToTile(item, blacklistBloc)));
-
-                  List<Widget> wildTiles = [
-                    ListTab('Regex & Wildcard blocking')
-                  ];
-                  wildTiles.addAll(_cache.wildcard.map((BlacklistItem item) =>
-                      _itemToTile(item, blacklistBloc)));
-
-                  return Scrollbar(
-                    child: ListView(
-                      children: ListTile.divideTiles(
-                              context: context,
-                              tiles: exactTiles..addAll(wildTiles))
-                          .toList(),
-                    ),
-                  );
-                }
-
-                if (state is BlocStateError<Blacklist>) {
-                  return Center(
-                    child: ListView(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20.0),
-                          child: ErrorMessage(errorMessage: state.e.message),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                return Center(child: CircularProgressIndicator());
-              })),
+      listener: _listener,
+      child: _buildListBuilder(blacklistBloc),
     );
+  }
+
+  Refreshable _buildListBuilder(BlacklistBloc blacklistBloc) {
+    return Refreshable(
+        onRefresh: (context) {
+          Globals.fetchForBlacklistView(context);
+        },
+        bloc: blacklistBloc,
+        child: BlocBuilder(
+            bloc: blacklistBloc,
+            builder: (context, state) {
+              if (state is BlocStateSuccess<Blacklist> ||
+                  (state is BlocStateLoading<Blacklist> &&
+                      _cache != null &&
+                      _cache.exact.length + _cache.wildcard.length > 0)) {
+                if (state is BlocStateSuccess<Blacklist>) {
+                  _cache = state.data;
+                }
+
+                return _buildSuccess(blacklistBloc);
+              }
+
+              if (state is BlocStateError<Blacklist>) {
+                return _buildErrorMessage(state);
+              }
+
+              return Center(child: CircularProgressIndicator());
+            }));
+  }
+
+  Center _buildErrorMessage(BlocStateError<Blacklist> state) {
+    return Center(
+      child: ListView(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: ErrorMessage(errorMessage: state.e.message),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Scrollbar _buildSuccess(BlacklistBloc blacklistBloc) {
+    List<Widget> exactTiles = [ListTab('Exact blocking')];
+    exactTiles.addAll(_cache.exact
+        .map((BlacklistItem item) => _itemToTile(item, blacklistBloc)));
+
+    List<Widget> wildTiles = [ListTab('Regex & Wildcard blocking')];
+    wildTiles.addAll(_cache.wildcard
+        .map((BlacklistItem item) => _itemToTile(item, blacklistBloc)));
+
+    return Scrollbar(
+      child: ListView(
+        children: ListTile.divideTiles(
+            context: context, tiles: exactTiles..addAll(wildTiles))
+            .toList(),
+      ),
+    );
+  }
+
+  void _listener(context, state) {
+    if (state is BlocStateSuccess<Blacklist>) {
+      setState(() {
+        _cache = state.data;
+      });
+    }
   }
 }

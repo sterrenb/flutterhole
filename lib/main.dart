@@ -23,7 +23,7 @@ import 'package:flutterhole/service/memory_tree.dart';
 import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/routes.dart';
 import 'package:flutterhole/service/secure_store.dart';
-import 'package:flutterhole/widget/app.dart';
+import 'package:flutterhole/widget/layout/app.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 
 import 'bloc/api/clients_over_time.dart';
@@ -40,6 +40,7 @@ void main() async {
 
   configureRoutes(Globals.router);
 
+  Globals.client = PiholeClient(dio: Dio(), secureStore: Globals.secureStore);
   Globals.client = PiholeClient(dio: Dio(), secureStore: Globals.secureStore);
 
   final PiholeBloc piholeBloc =
@@ -90,7 +91,7 @@ void main() async {
   }());
 
   if (Globals.debug) {
-    if (false) BlocSupervisor.delegate = SimpleBlocDelegate();
+    BlocSupervisor.delegate = SimpleBlocDelegate();
     Globals.tree.log('main', 'Running in debug mode');
   } else {
     Globals.tree.log('main', 'Running in release mode');

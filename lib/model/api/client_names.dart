@@ -32,8 +32,6 @@ class Client extends Serializable {
     @required this.ip,
   }) : super([name, ip]);
 
-  factory Client.fromString(String str) => Client.fromJson(json.decode(str));
-
   factory Client.fromJson(Map<String, dynamic> json) => Client(
         name: json["name"],
         ip: json["ip"],

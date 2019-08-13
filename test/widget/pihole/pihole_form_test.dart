@@ -1,11 +1,9 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/bloc/api/versions.dart';
-import 'package:flutterhole/bloc/simple_bloc_delegate.dart';
 import 'package:flutterhole/model/pihole.dart';
 import 'package:flutterhole/service/globals.dart';
-import 'package:flutterhole/widget/pihole/pihole_edit_form.dart';
+import 'package:flutterhole/widget/pihole/pihole_form.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../mock.dart';
@@ -16,7 +14,7 @@ void main() {
   MockMaterialApp materialApp;
 
   setUpAll(() {
-    BlocSupervisor.delegate = SimpleBlocDelegate();
+//    BlocSupervisor.delegate = SimpleBlocDelegate();
     Globals.client = MockPiholeClient();
     Globals.router = MockRouter();
     Globals.tree = MockMemoryTree();
@@ -24,7 +22,7 @@ void main() {
 
   setUp(() {
     original = Pihole();
-    materialApp = MockMaterialApp(child: PiholeEditForm(original: original));
+    materialApp = MockMaterialApp(child: PiholeForm(original: original));
   });
 
   testWidgets('show form with original values', (WidgetTester tester) async {
@@ -39,19 +37,6 @@ void main() {
     await tester.tap(find.byTooltip('Open in browser'));
     await tester.pumpAndSettle();
   });
-
-//  testWidgets('save button tap',
-//      (WidgetTester tester) async {
-//    await tester.pumpWidget(materialApp);
-//    await tester.tap(find.byIcon(Icons.save));
-//    await tester.pumpAndSettle();
-//  });
-
-//  testWidgets('reset button tap', (WidgetTester tester) async {
-//    await tester.pumpWidget(materialApp);
-//    await tester.tap(find.byIcon(Icons.save));
-//    await tester.pumpAndSettle();
-//  });
 
   group('edit fields', () {
     testWidgets('edit title', (WidgetTester tester) async {
@@ -114,17 +99,6 @@ void main() {
             cancelOldRequests: true)),
       ).called(1);
     });
-
-//    testWidgets('edit allowSelfSigned', (WidgetTester tester) async {
-//      await tester.pumpWidget(materialApp);
-//      await tester.tap(find.text('Allow self-signed certificates'));
-//      await tester.pumpAndSettle();
-//      verify(
-//        materialApp.versionsBloc.dispatch(FetchForPihole(
-//            Pihole.copyWith(original, allowSelfSigned: true),
-//            cancelOldRequests: true)),
-//      ).called(1);
-//    });
 
     testWidgets('edit proxyHost', (WidgetTester tester) async {
       await tester.pumpWidget(materialApp);
