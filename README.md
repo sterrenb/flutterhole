@@ -29,6 +29,45 @@ Testing is done using a local Pi-hole installation on an internal network. Due t
 
 If you want to improve the network support for FlutterHole by testing against your own setups, you can build the app locally and debug any issues.
 
+### Getting Started ###
+After cloning this repository, perform the following steps before building your project.
+
+All snippets assume your initial working directory is the root of the project.
+
+#### Generate a debug signing key ####
+
+Skip the questions, and confirm with `yes`.
+``` shell
+#!/bin/bash
+cd android/app
+keytool -genkey -v -keystore keystore.jks -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000
+```
+
+#### Create a properties file for the signing key ####
+``` shell
+#!/bin/bash
+cd android
+touch key.properties
+```
+
+After creating the file, populate it with plaintext describing the debug key.
+
+```
+storePassword=android
+keyPassword=android
+keyAlias=androiddebugkey
+storeFile=keystore.jks
+```
+
+#### Generate the icon assets ####
+``` shell
+#!/bin/bash
+flutter pub get
+flutter pub run flutter_launcher_icons:main
+```
+
+You can now build and run the app on either an emulator or a physical device using `flutter run`.
+
 ## API ##
 This application interacts with the [PHP API](https://discourse.pi-hole.net/t/pi-hole-api/1863).
 
