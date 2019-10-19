@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhole/widget/home/chart/legend.dart';
 
 class QueriesOverTimeLineChart extends StatefulWidget {
   final List<FlSpot> greenSpots;
@@ -105,15 +106,7 @@ class QueriesOverTimeLineChartState extends State<QueriesOverTimeLineChart> {
                           .caption,
                       margin: 10,
                       getTitles: (value) {
-                        useLegendTitle = !useLegendTitle;
-                        if (useLegendTitle) {
-                          final index = value / 100;
-                          final val =
-                              (index + now.hour + 1) % Duration.hoursPerDay;
-
-                          return val.toInt().toString().padLeft(2, '0') + ':00';
-                        }
-
+                        if (useLegendTitle) return getTimeTitles(value, now);
                         return '';
                       },
                     ),
@@ -125,7 +118,11 @@ class QueriesOverTimeLineChartState extends State<QueriesOverTimeLineChart> {
                         fontSize: 14,
                       ),
                       getTitles: (value) {
-                        return value.toInt().toString();
+                        final rounded = value.toInt();
+
+                        if (rounded % 50 == 0) return rounded.toString();
+
+                        return '';
                       },
                       margin: 8,
                       reservedSize: 30,
@@ -158,7 +155,7 @@ class QueriesOverTimeLineChartState extends State<QueriesOverTimeLineChart> {
                       colors: [
                         Colors.green,
                       ],
-                      belowBarData: BelowBarData(
+                      belowBarData: BarAreaData(
                         show: true,
                         colors: [
                           Colors.green.withOpacity(0.2),
@@ -176,7 +173,7 @@ class QueriesOverTimeLineChartState extends State<QueriesOverTimeLineChart> {
                       colors: [
                         Colors.red,
                       ],
-                      belowBarData: BelowBarData(
+                      belowBarData: BarAreaData(
                         show: true,
                         colors: [Colors.red.withOpacity(0.2)],
                       ),

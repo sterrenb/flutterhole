@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/bloc/api/clients_over_time.dart';
 import 'package:flutterhole/bloc/base/state.dart';
 import 'package:flutterhole/model/api/clients_over_time.dart';
+import 'package:flutterhole/widget/home/chart/legend.dart';
 
 class ClientsOverTimeLineChartBuilder extends StatefulWidget {
   final Map<String, List<FlSpot>> spots;
@@ -60,7 +61,7 @@ class ClientsOverTimeLineChartBuilderState
         spots: spots,
         isCurved: true,
         colors: [_color(i)],
-        belowBarData: BelowBarData(
+        belowBarData: BarAreaData(
           show: true,
           colors: [_color(i).withOpacity(0.2)],
         ),
@@ -158,16 +159,8 @@ class ClientsOverTimeLineChartBuilderState
                                 .caption,
                             margin: 10,
                             getTitles: (value) {
-                              useLegendTitle = !useLegendTitle;
-                              if (useLegendTitle) {
-                                final index = value / 100;
-                                final val = (index + now.hour + 1) %
-                                    Duration.hoursPerDay;
-
-                                return val.toInt().toString().padLeft(2, '0') +
-                                    ':00';
-                              }
-
+                              if (useLegendTitle)
+                                return getTimeTitles(value, now);
                               return '';
                             },
                           ),
@@ -179,7 +172,11 @@ class ClientsOverTimeLineChartBuilderState
                               fontSize: 14,
                             ),
                             getTitles: (value) {
-                              return value.toInt().toString();
+                              final rounded = value.toInt();
+
+                              if (rounded % 50 == 0) return rounded.toString();
+
+                              return '';
                             },
                             margin: 8,
                             reservedSize: 30,

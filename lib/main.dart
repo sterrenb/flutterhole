@@ -30,6 +30,8 @@ import 'bloc/api/clients_over_time.dart';
 import 'bloc/api/status.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   Globals.tree = MemoryTree();
   Fimber.plantTree(MemoryTree());
 

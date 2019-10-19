@@ -92,7 +92,8 @@ class _ListTile extends StatelessWidget {
     @required this.subtitle,
     this.latest = '',
   })  : _subtitle =
-            '$subtitle${(title != 'Loading...' && latest != null && latest.length > 0) ? ' (update available: $latest)' : ''}',
+  '$subtitle${(title != 'Loading...' && latest != null && latest != title &&
+      latest.length > 0) ? ' (update available: $latest)' : ''}',
         super(key: key);
 
   final String title;

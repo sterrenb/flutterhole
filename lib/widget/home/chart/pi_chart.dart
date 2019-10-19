@@ -38,14 +38,16 @@ class _PiChartState extends State<PiChart> {
     showingSections = pieChartRawSections;
 
     pieTouchedResultStreamController = StreamController();
-    pieTouchedResultStreamController.stream.distinct().listen((details) {
+    pieTouchedResultStreamController.stream
+        .distinct()
+        .listen((PieTouchResponse details) {
       if (details == null) {
         return;
       }
 
       touchedIndex = -1;
-      if (details.sectionData != null) {
-        touchedIndex = showingSections.indexOf(details.sectionData);
+      if (details.touchedSectionPosition != null) {
+        touchedIndex = showingSections.indexOf(details.touchedSection);
       }
 
       setState(() {
