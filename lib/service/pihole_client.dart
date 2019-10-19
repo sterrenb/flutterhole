@@ -52,10 +52,7 @@ class PiholeClient {
         _log(message, tag: 'request');
         return options;
       }, onResponse: (Response response) {
-//        _log(response.data
-//            .toString()
-//            .length
-//            .toString(), tag: 'response');
+        _log(response.data.toString(), tag: 'response');
         return response;
       }, onError: (DioError error) {
         _log(error.message, tag: 'error');
@@ -107,7 +104,8 @@ class PiholeClient {
       }
 
       if (dataString.length == 2 && dataString.contains('[]')) {
-        throw PiholeException(message: 'empty response');
+        throw PiholeException(
+            message: 'empty response - is your API token valid?');
       }
 
       if (dataString.contains('<!--')) {
@@ -134,8 +132,7 @@ class PiholeClient {
 
     if (pihole.auth.isEmpty) {
       if (!_warnedAboutEmptyApiToken) {
-        _log('API token is empty (only showing warning once)',
-            tag: 'warning');
+        _log('API token is empty (only showing warning once)', tag: 'warning');
         _warnedAboutEmptyApiToken = true;
       }
 

@@ -15,16 +15,17 @@ class SettingsBuilder extends StatefulWidget {
 class _SettingsBuilderState extends State<SettingsBuilder> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
+      shrinkWrap: true,
       children: <Widget>[
         ListTab('Pihole settings'),
         PiholeListBuilder(),
         ListTab('Theme'),
-        ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            DarkModeSwitch(),
+        DarkModeSwitch(),
 // Popup buttons seem broken: https://github.com/AppleEducate/plugins/issues/71
+//        ListView(
+//          shrinkWrap: true,
+//          children: <Widget>[
 //            CustomThemeSwitch(),
 //            Row(
 //              children: <Widget>[
@@ -33,8 +34,8 @@ class _SettingsBuilderState extends State<SettingsBuilder> {
 //              ],
 //            ),
 //            DarkAccentColorPicker(),
-          ],
-        ),
+//          ],
+//        ),
       ],
     );
   }

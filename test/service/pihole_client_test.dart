@@ -167,7 +167,7 @@ void main() {
         await client.fetchStatus();
         fail('exception not thrown');
       } on PiholeException catch (e) {
-        expect(e.message, 'empty response');
+        expect(e.message, 'empty response - is your API token valid?');
       }
     });
 

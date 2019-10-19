@@ -3,10 +3,11 @@
 import 'package:fimber/fimber.dart';
 
 class LogEntry {
-  final String logLine;
-  final DateTime timestamp;
+  LogEntry(this.logLine, {this.level}) : timestamp = DateTime.now();
 
-  LogEntry(this.logLine) : timestamp = DateTime.now();
+  final String logLine;
+  final String level;
+  final DateTime timestamp;
 }
 
 class MemoryTree extends DebugTree {
@@ -14,7 +15,7 @@ class MemoryTree extends DebugTree {
 
   @override
   void printLog(String logLine, {String level}) {
-    logs.insert(0, LogEntry(logLine));
+    logs.insert(0, LogEntry(logLine, level: level));
     super.printLog(logLine, level: level);
   }
 }
