@@ -5,17 +5,25 @@ import 'package:flutterhole/model/serializable.dart';
 import 'package:meta/meta.dart';
 
 class ForwardDestinationItem extends Equatable {
+  ForwardDestinationItem(
+      {@required this.ipString, this.title = '', this.percent = 0});
+
   final String ipString;
   final String title;
   final double percent;
 
-  ForwardDestinationItem(
-      {@required this.ipString, this.title = '', this.percent = 0});
+  @override
+  List<Object> get props => [ipString, title, percent];
 }
 
 /// The API model for http://pi.hole/admin/api.php?getForwardDestinations.
 class ForwardDestinations extends Serializable {
+  ForwardDestinations(this.values,);
+
   final Map<String, double> values;
+
+  @override
+  List<Object> get props => [values];
 
   List<ForwardDestinationItem> get items {
     List<ForwardDestinationItem> items = [];
@@ -29,10 +37,6 @@ class ForwardDestinations extends Serializable {
 
     return items;
   }
-
-  ForwardDestinations(
-    this.values,
-  ) : super([values]);
 
   factory ForwardDestinations.fromString(String str) =>
       ForwardDestinations.fromJson(json.decode(str));
@@ -49,6 +53,6 @@ class ForwardDestinations extends Serializable {
   @override
   Map<String, dynamic> toJson() => {
     "forward_destinations":
-            Map.from(values).map((k, v) => MapEntry<String, dynamic>(k, v)),
-      };
+    Map.from(values).map((k, v) => MapEntry<String, dynamic>(k, v)),
+  };
 }

@@ -25,8 +25,13 @@ BlacklistType blacklistTypeFromString(String str) {
 }
 
 class BlacklistItem extends Serializable {
+  BlacklistItem({@required this.entry, @required this.type});
+
   final String entry;
   final BlacklistType type;
+
+  @override
+  List<Object> get props => [entry, type];
 
   /// The string representation of which list to add to in the Pihole API.
   String get addList => type == BlacklistType.Exact ? 'black' : 'regex';
@@ -39,9 +44,6 @@ class BlacklistItem extends Serializable {
 
     throw Exception('unknown BlacklistType $type');
   }
-
-  BlacklistItem({@required this.entry, @required this.type})
-      : super([entry, type]);
 
   factory BlacklistItem.exact({@required entry}) =>
       BlacklistItem(entry: entry, type: BlacklistType.Exact);
@@ -62,11 +64,21 @@ class BlacklistItem extends Serializable {
 
 /// The API model for http://pi.hole/admin/api.php?list=black.
 class Blacklist extends Serializable {
+  Blacklist({this.exact = const [], this.wildcard = const []});
+
   final List<BlacklistItem> exact;
+
   final List<BlacklistItem> wildcard;
 
-  Blacklist({this.exact = const [], this.wildcard = const []})
-      : super([exact, wildcard]);
+  @override
+  List<Object> get props => [exact, wildcard];
+
+  @override
+  Map<String, dynamic> toJson() =>
+      {
+        'exact': exact,
+        'wildcard': wildcard,
+      };
 
   Blacklist.withItem(Blacklist original, BlacklistItem item)
       : this.exact = item.type == BlacklistType.Exact
@@ -132,7 +144,7 @@ class Blacklist extends Serializable {
           : BlacklistType.Regex;
       return BlacklistItem(entry: entry, type: type);
     }).toList()
-          ..sort((a, b) => a.entry.compareTo(b.entry)));
+      ..sort((a, b) => a.entry.compareTo(b.entry)));
 
     return Blacklist(exact: exact, wildcard: wildcard);
   }
@@ -141,11 +153,4 @@ class Blacklist extends Serializable {
     final List<String> exactStrings = List<String>.from(json[0]);
     return exactStrings;
   }
-
-  @override
-  Map<String, dynamic> toJson() =>
-      {
-        'exact': exact,
-        'wildcard': wildcard,
-      };
 }

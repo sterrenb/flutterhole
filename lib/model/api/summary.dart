@@ -4,24 +4,6 @@ import 'package:flutterhole/model/serializable.dart';
 
 /// The API model for http://pi.hole/admin/api.php?summary.
 class Summary extends Serializable {
-  final int domainsBeingBlocked;
-  final int dnsQueriesToday;
-  final int adsBlockedToday;
-  final double adsPercentageToday;
-  final int uniqueDomains;
-  final int queriesForwarded;
-  final int queriesCached;
-  final int clientsEverSeen;
-  final int uniqueClients;
-  final int dnsQueriesAllTypes;
-  final int replyNodata;
-  final int replyNxdomain;
-  final int replyCname;
-  final int replyIp;
-  final int privacyLevel;
-  final String status;
-  final GravityLastUpdated gravityLastUpdated;
-
   Summary({
     this.domainsBeingBlocked,
     this.dnsQueriesToday,
@@ -40,25 +22,46 @@ class Summary extends Serializable {
     this.privacyLevel,
     this.status,
     this.gravityLastUpdated,
-  }) : super([
-          domainsBeingBlocked,
-          dnsQueriesToday,
-          adsBlockedToday,
-          adsPercentageToday,
-          uniqueDomains,
-          queriesForwarded,
-          queriesCached,
-          clientsEverSeen,
-          uniqueClients,
-          dnsQueriesAllTypes,
-          replyNodata,
-          replyNxdomain,
-          replyCname,
-          replyIp,
-          privacyLevel,
-          status,
-          gravityLastUpdated,
-        ]);
+  });
+
+  final int domainsBeingBlocked;
+  final int dnsQueriesToday;
+  final int adsBlockedToday;
+  final double adsPercentageToday;
+  final int uniqueDomains;
+  final int queriesForwarded;
+  final int queriesCached;
+  final int clientsEverSeen;
+  final int uniqueClients;
+  final int dnsQueriesAllTypes;
+  final int replyNodata;
+  final int replyNxdomain;
+  final int replyCname;
+  final int replyIp;
+  final int privacyLevel;
+  final String status;
+  final GravityLastUpdated gravityLastUpdated;
+
+  @override
+  List<Object> get props =>
+      [
+        domainsBeingBlocked,
+        dnsQueriesToday,
+        adsBlockedToday,
+        adsPercentageToday,
+        uniqueDomains,
+        queriesForwarded,
+        clientsEverSeen,
+        uniqueClients,
+        dnsQueriesAllTypes,
+        replyNodata,
+        replyNxdomain,
+        replyCname,
+        replyIp,
+        privacyLevel,
+        status,
+        gravityLastUpdated,
+      ];
 
   factory Summary.fromString(String str) => Summary.fromJson(json.decode(str));
 
@@ -106,19 +109,18 @@ class Summary extends Serializable {
 }
 
 class GravityLastUpdated extends Serializable {
-  final bool fileExists;
-  final int absolute;
-  final Relative relative;
-
   GravityLastUpdated({
     this.fileExists,
     this.absolute,
     this.relative,
-  }) : super([
-          fileExists,
-          absolute,
-          relative,
-        ]);
+  });
+
+  final bool fileExists;
+  final int absolute;
+  final Relative relative;
+
+  @override
+  List<Object> get props => [fileExists, absolute, relative];
 
   factory GravityLastUpdated.fromJson(Map<String, dynamic> json) =>
       new GravityLastUpdated(
@@ -137,19 +139,19 @@ class GravityLastUpdated extends Serializable {
 }
 
 class Relative extends Serializable {
-  final String days;
-  final String hours;
-  final String minutes;
-
   Relative({
     this.days,
     this.hours,
     this.minutes,
-  }) : super([
-          days,
-          hours,
-          minutes,
-        ]);
+  })
+  ;
+
+  final String days;
+  final String hours;
+  final String minutes;
+
+  @override
+  List<Object> get props => [days, hours, minutes];
 
   factory Relative.fromJson(Map<String, dynamic> json) => new Relative(
         days: json["days"],

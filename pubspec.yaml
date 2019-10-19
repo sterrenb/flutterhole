@@ -20,7 +20,7 @@ dependencies:
   flutter:
     sdk: flutter
   dio: ^2.1.7
-  equatable: ^0.2.6
+  equatable: ^0.6.1
   bloc: ^0.14.4
   flutter_bloc: ^0.19.1
   fimber: ^0.3.0

@@ -47,13 +47,6 @@ enum DnsSecStatus {
 }
 
 class Query extends Serializable {
-  final DateTime time;
-  final QueryType queryType;
-  final String entry;
-  final String client;
-  final QueryStatus queryStatus;
-  final DnsSecStatus dnsSecStatus;
-
   Query({
     this.time,
     this.queryType,
@@ -61,14 +54,18 @@ class Query extends Serializable {
     this.client,
     this.queryStatus,
     this.dnsSecStatus,
-  }) : super([
-    time,
-    queryType,
-    entry,
-    client,
-    queryStatus,
-    dnsSecStatus,
-  ]);
+  });
+
+  final DateTime time;
+  final QueryType queryType;
+  final String entry;
+  final String client;
+  final QueryStatus queryStatus;
+  final DnsSecStatus dnsSecStatus;
+
+  @override
+  List<Object> get props =>
+      [time, queryStatus, entry, client, queryStatus, dnsSecStatus];
 
   factory Query.fromJson(List<dynamic> json) =>
       Query(
@@ -114,11 +111,14 @@ class Query extends Serializable {
 }
 
 class QueryTypes extends Serializable {
-  final Map<String, double> queryTypes;
-
   QueryTypes([
     this.queryTypes,
   ]);
+
+  final Map<String, double> queryTypes;
+
+  @override
+  List<Object> get props => [queryTypes];
 
   factory QueryTypes.fromString(String str) =>
       QueryTypes.fromJson(json.decode(str));

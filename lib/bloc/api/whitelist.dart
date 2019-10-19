@@ -7,20 +7,29 @@ import 'package:flutterhole/service/pihole_exception.dart';
 class Add extends BlocEvent {
   final String domain;
 
-  Add(this.domain) : super([domain]);
+  Add(this.domain);
+
+  @override
+  List<Object> get props => [domain];
 }
 
 class Remove extends BlocEvent {
   final String domain;
 
-  Remove(this.domain) : super([domain]);
+  Remove(this.domain);
+
+  @override
+  List<Object> get props => [domain];
 }
 
 class Edit extends BlocEvent {
   final String original;
   final String update;
 
-  Edit(this.original, this.update) : super([original, update]);
+  Edit(this.original, this.update);
+
+  @override
+  List<Object> get props => [original, update];
 }
 
 class WhitelistBloc extends BaseBloc<Whitelist> {

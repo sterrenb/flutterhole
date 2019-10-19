@@ -4,7 +4,8 @@ import 'package:meta/meta.dart';
 
 @immutable
 abstract class BlocState<T> extends Equatable {
-  BlocState([List props = const []]) : super(props);
+  @override
+  List<Object> get props => [];
 }
 
 class BlocStateEmpty<T> extends BlocState<T> {}
@@ -20,11 +21,17 @@ class BlocStateLoading<T> extends BlocState<T> {
 class BlocStateSuccess<T> extends BlocState {
   final T data;
 
-  BlocStateSuccess(this.data) : super([data]);
+  BlocStateSuccess(this.data);
+
+  @override
+  List<Object> get props => [data];
 }
 
 class BlocStateError<T> extends BlocState<T> {
   final PiholeException e;
 
-  BlocStateError([this.e]) : super([e]);
+  BlocStateError([this.e]);
+
+  @override
+  List<Object> get props => [e];
 }

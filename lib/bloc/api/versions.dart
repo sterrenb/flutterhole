@@ -9,8 +9,10 @@ class FetchForPihole extends BlocEvent {
   final Pihole pihole;
   final bool cancelOldRequests;
 
-  FetchForPihole(this.pihole, {this.cancelOldRequests = false})
-      : super([pihole]);
+  FetchForPihole(this.pihole, {this.cancelOldRequests = false});
+
+  @override
+  List<Object> get props => [pihole, cancelOldRequests];
 }
 
 class VersionsBloc extends BaseBloc<Versions> {

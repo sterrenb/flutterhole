@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class PiholeException extends Equatable implements Exception {
-  String _message;
+  final String _message;
   final dynamic e;
 
   String get message {
@@ -16,6 +16,8 @@ class PiholeException extends Equatable implements Exception {
   static const String defaultMessage = 'unknown Pihole error';
 
   PiholeException({String message = defaultMessage, this.e})
-      : this._message = message,
-        super([message, e]);
+      : this._message = message;
+
+  @override
+  List<Object> get props => [message, e];
 }

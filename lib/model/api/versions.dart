@@ -3,19 +3,6 @@ import 'dart:convert';
 import 'package:flutterhole/model/serializable.dart';
 
 class Versions extends Serializable {
-  final bool coreUpdate;
-  final bool webUpdate;
-  final bool ftlUpdate;
-  final String coreCurrent;
-  final String webCurrent;
-  final String ftlCurrent;
-  final String coreLatest;
-  final String webLatest;
-  final String ftlLatest;
-  final String coreBranch;
-  final String webBranch;
-  final String ftlBranch;
-
   Versions({
     this.coreUpdate,
     this.webUpdate,
@@ -29,20 +16,37 @@ class Versions extends Serializable {
     this.coreBranch,
     this.webBranch,
     this.ftlBranch,
-  }) : super([
-          coreUpdate,
-          webUpdate,
-          ftlUpdate,
-          coreCurrent,
-          webCurrent,
-          ftlCurrent,
-          coreLatest,
-          webLatest,
-          ftlLatest,
-          coreBranch,
-          webBranch,
-          ftlBranch,
-        ]);
+  });
+
+  final bool coreUpdate;
+  final bool webUpdate;
+  final bool ftlUpdate;
+  final String coreCurrent;
+  final String webCurrent;
+  final String ftlCurrent;
+  final String coreLatest;
+  final String webLatest;
+  final String ftlLatest;
+  final String coreBranch;
+  final String webBranch;
+  final String ftlBranch;
+
+  @override
+  List<Object> get props =>
+      [
+        coreUpdate,
+        webUpdate,
+        ftlUpdate,
+        coreCurrent,
+        webCurrent,
+        ftlCurrent,
+        coreLatest,
+        webLatest,
+        ftlLatest,
+        coreBranch,
+        webBranch,
+        ftlBranch,
+      ];
 
   factory Versions.fromString(String str) =>
       Versions.fromJson(json.decode(str));

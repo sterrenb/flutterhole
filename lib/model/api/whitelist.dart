@@ -4,9 +4,12 @@ import 'package:flutterhole/model/serializable.dart';
 
 /// The API model for http://pi.hole/admin/api.php?list=white.
 class Whitelist extends Serializable {
+  Whitelist([this.list = const []]);
+
   final List<String> list;
 
-  Whitelist([this.list = const []]) : super([list]);
+  @override
+  List<Object> get props => [list];
 
   factory Whitelist.withItem(Whitelist source, String domain) {
     List<String> list = List.from([

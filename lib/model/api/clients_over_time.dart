@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'package:flutterhole/model/serializable.dart';
 
 class ClientsOverTime extends Serializable {
-  Map<String, List<int>> overTime;
-
   ClientsOverTime({
     this.overTime,
-  }) : super([overTime]);
+  });
+
+  Map<String, List<int>> overTime;
+
+  @override
+  List<Object> get props => [overTime];
 
   factory ClientsOverTime.fromString(String str) =>
       ClientsOverTime.fromJson(json.decode(str));

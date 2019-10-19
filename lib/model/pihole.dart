@@ -15,6 +15,29 @@ const String passwordKey = 'password';
 const String obscured = '<hidden>';
 
 class Proxy extends Equatable {
+  Proxy({
+    this.host = '',
+    this.port = 8080,
+    this.username = '',
+    this.password = '',
+  });
+
+  factory Proxy.copyWith(Proxy source, {
+    String host,
+    int port,
+    String username,
+    String password,
+  }) =>
+      Proxy(
+        host: host ?? source.host,
+        port: port ?? source.port,
+        username: username ?? source.username,
+        password: password ?? source.password,
+      );
+
+  @override
+  List<Object> get props => [host, port, username, password];
+
   final String host;
   final int port;
   final String username;
@@ -37,34 +60,41 @@ class Proxy extends Equatable {
       return '$username:$password';
     }
   }
-
-  Proxy({
-    this.host = '',
-    this.port = 8080,
-    this.username = '',
-    this.password = '',
-  }) : super([
-    host,
-    port,
-    username,
-    password,
-  ]);
-
-  factory Proxy.copyWith(Proxy source, {
-    String host,
-    int port,
-    String username,
-    String password,
-  }) =>
-      Proxy(
-        host: host ?? source.host,
-        port: port ?? source.port,
-        username: username ?? source.username,
-        password: password ?? source.password,
-      );
 }
 
 class Pihole extends Serializable {
+  Pihole({this.title = 'FlutterHole',
+    this.host = 'pi.hole',
+    this.apiPath = 'admin/api.php',
+    this.port = 80,
+    this.auth = '',
+    this.useSSL = false,
+    this.allowSelfSigned = false,
+    Proxy proxy})
+      : this.proxy = proxy ?? Proxy();
+
+  /// Returns a new Pihole with the given parameters, using the [source] as base.
+  factory Pihole.copyWith(Pihole source, {
+    String title,
+    String host,
+    String apiPath,
+    int port,
+    String auth,
+    bool useSSL,
+    bool allowSelfSigned,
+    Proxy proxy,
+  }) =>
+      Pihole(
+        title: title ?? source.title,
+        host: host ?? source.host,
+        apiPath: apiPath ?? source.apiPath,
+        port: port ?? source.port,
+        auth: auth ?? source.auth,
+        useSSL: useSSL ?? source.useSSL,
+        allowSelfSigned: allowSelfSigned ?? source.allowSelfSigned,
+        proxy: proxy ?? source.proxy,
+      );
+
   final String title;
   final String host;
   final String apiPath;
@@ -73,6 +103,10 @@ class Pihole extends Serializable {
   final bool useSSL;
   final bool allowSelfSigned;
   final Proxy proxy;
+
+  @override
+  List<Object> get props =>
+      [title, host, apiPath, port, auth, useSSL, allowSelfSigned, proxy];
 
   /// The full root url of this [Pihole] configuration.
   ///
@@ -117,47 +151,6 @@ class Pihole extends Serializable {
     if (proxy.basicAuth.isEmpty) return baseUrl;
     return baseUrl.replaceFirst(proxy.basicAuth, '').replaceFirst('@', '');
   }
-
-  Pihole({this.title = 'FlutterHole',
-    this.host = 'pi.hole',
-    this.apiPath = 'admin/api.php',
-    this.port = 80,
-    this.auth = '',
-    this.useSSL = false,
-    this.allowSelfSigned = false,
-    Proxy proxy})
-      : this.proxy = proxy ?? Proxy(),
-        super([
-        title,
-        host,
-        port,
-        auth,
-        useSSL,
-        allowSelfSigned,
-        proxy ?? Proxy(),
-      ]);
-
-  /// Returns a new Pihole with the given parameters, using the [source] as base.
-  factory Pihole.copyWith(Pihole source, {
-    String title,
-    String host,
-    String apiPath,
-    int port,
-    String auth,
-    bool useSSL,
-    bool allowSelfSigned,
-    Proxy proxy,
-  }) =>
-      Pihole(
-        title: title ?? source.title,
-        host: host ?? source.host,
-        apiPath: apiPath ?? source.apiPath,
-        port: port ?? source.port,
-        auth: auth ?? source.auth,
-        useSSL: useSSL ?? source.useSSL,
-        allowSelfSigned: allowSelfSigned ?? source.allowSelfSigned,
-        proxy: proxy ?? source.proxy,
-      );
 
   @override
   Map<String, String> toJson() =>

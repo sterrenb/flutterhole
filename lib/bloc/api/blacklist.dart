@@ -5,22 +5,31 @@ import 'package:flutterhole/service/pihole_client.dart';
 import 'package:flutterhole/service/pihole_exception.dart';
 
 class Add extends BlocEvent {
+  Add(this.item);
+
   final BlacklistItem item;
 
-  Add(this.item) : super([item]);
+  @override
+  List<Object> get props => [item];
 }
 
 class Remove extends BlocEvent {
+  Remove(this.item);
+
   final BlacklistItem item;
 
-  Remove(this.item) : super([item]);
+  @override
+  List<Object> get props => [item];
 }
 
 class Edit extends BlocEvent {
+  Edit(this.original, this.update);
+
   final BlacklistItem original;
   final BlacklistItem update;
 
-  Edit(this.original, this.update) : super([original, update]);
+  @override
+  List<Object> get props => [original, update];
 }
 
 class BlacklistBloc extends BaseBloc<Blacklist> {

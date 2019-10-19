@@ -4,7 +4,8 @@ import 'package:meta/meta.dart';
 
 @immutable
 abstract class PiholeEvent extends Equatable {
-  PiholeEvent([List props = const []]) : super(props);
+  @override
+  List<Object> get props => [];
 }
 
 class FetchPiholes extends PiholeEvent {}
@@ -14,19 +15,28 @@ class ResetPiholes extends PiholeEvent {}
 class AddPihole extends PiholeEvent {
   final Pihole pihole;
 
-  AddPihole(this.pihole) : super([pihole]);
+  AddPihole(this.pihole);
+
+  @override
+  List<Object> get props => [pihole];
 }
 
 class RemovePihole extends PiholeEvent {
   final Pihole pihole;
 
-  RemovePihole(this.pihole) : super([pihole]);
+  RemovePihole(this.pihole);
+
+  @override
+  List<Object> get props => [pihole];
 }
 
 class ActivatePihole extends PiholeEvent {
   final Pihole pihole;
 
-  ActivatePihole(this.pihole) : super([pihole]);
+  ActivatePihole(this.pihole);
+
+  @override
+  List<Object> get props => [pihole];
 }
 
 class UpdatePihole extends PiholeEvent {
@@ -36,5 +46,8 @@ class UpdatePihole extends PiholeEvent {
   UpdatePihole({
     @required this.original,
     @required this.update,
-  }) : super([original, update]);
+  });
+
+  @override
+  List<Object> get props => [original, update];
 }

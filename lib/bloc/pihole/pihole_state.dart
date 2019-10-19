@@ -4,7 +4,8 @@ import 'package:meta/meta.dart';
 
 @immutable
 abstract class PiholeState extends Equatable {
-  PiholeState([List props = const []]) : super(props);
+  @override
+  List<Object> get props => [];
 }
 
 class PiholeStateEmpty extends PiholeState {}
@@ -15,11 +16,17 @@ class PiholeStateSuccess extends PiholeState {
   final List<Pihole> all;
   final Pihole active;
 
-  PiholeStateSuccess({this.all, this.active}) : super([all, active]);
+  PiholeStateSuccess({this.all, this.active});
+
+  @override
+  List<Object> get props => [all, active];
 }
 
 class PiholeStateError extends PiholeState {
   final dynamic e;
 
-  PiholeStateError([this.e]) : super([e]);
+  PiholeStateError([this.e]);
+
+  @override
+  List<Object> get props => [e];
 }

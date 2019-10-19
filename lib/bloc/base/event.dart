@@ -3,7 +3,8 @@ import 'package:meta/meta.dart';
 
 @immutable
 abstract class BlocEvent extends Equatable {
-  BlocEvent([List props = const []]) : super(props);
+  @override
+  List<Object> get props => [];
 }
 
 class Fetch extends BlocEvent {}

@@ -7,13 +7,19 @@ import 'package:flutterhole/service/pihole_exception.dart';
 class FetchForClient extends BlocEvent {
   final String client;
 
-  FetchForClient(this.client) : super([client]);
+  FetchForClient(this.client);
+
+  @override
+  List<Object> get props => [client];
 }
 
 class FetchForQueryType extends BlocEvent {
   final QueryType type;
 
-  FetchForQueryType(this.type) : super([type]);
+  FetchForQueryType(this.type);
+
+  @override
+  List<Object> get props => [type];
 }
 
 class QueryBloc extends BaseBloc<List<Query>> {

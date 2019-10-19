@@ -12,8 +12,10 @@ class StatusStateSleeping extends BlocState<Status> {
 
   Duration get durationRemaining => durationTotal - stopwatch.elapsed;
 
-  StatusStateSleeping(this.durationTotal, this.stopwatch)
-      : super([durationTotal, stopwatch]);
+  StatusStateSleeping(this.durationTotal, this.stopwatch);
+
+  @override
+  List<Object> get props => [durationTotal, stopwatch];
 }
 
 class EnableStatus extends BlocEvent {}
@@ -25,7 +27,7 @@ class WakeStatus extends BlocEvent {}
 class SleepStatus extends BlocEvent {
   final Duration duration;
 
-  SleepStatus(this.duration) : super([duration]);
+  SleepStatus(this.duration);
 }
 
 class StatusBloc extends BaseBloc<Status> {

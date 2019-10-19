@@ -5,13 +5,16 @@ import 'package:meta/meta.dart';
 
 /// The API model for http://pi.hole/admin/api.php?topItems.
 class TopItems extends Serializable {
-  final Map<String, int> topQueries;
-  final Map<String, int> topAds;
-
   TopItems({
     @required this.topQueries,
     @required this.topAds,
-  }) : super([topQueries, topAds]);
+  });
+
+  final Map<String, int> topQueries;
+  final Map<String, int> topAds;
+
+  @override
+  List<Object> get props => [topQueries, topAds];
 
   factory TopItems.fromString(String str) =>
       TopItems.fromJson(json.decode(str));

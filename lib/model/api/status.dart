@@ -5,13 +5,16 @@ import 'package:meta/meta.dart';
 
 /// The API model for http://pi.hole/admin/api.php?status.
 class Status extends Serializable {
-  final bool enabled;
-
-  bool get disabled => !enabled;
-
   Status({
     @required this.enabled,
-  }) : super([enabled]);
+  });
+
+  final bool enabled;
+
+  @override
+  List<Object> get props => [enabled];
+
+  bool get disabled => !enabled;
 
   factory Status.fromJson(Map<String, dynamic> json) =>
       Status(
