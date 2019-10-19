@@ -24,14 +24,15 @@ class _SettingsBuilderState extends State<SettingsBuilder> {
           shrinkWrap: true,
           children: <Widget>[
             DarkModeSwitch(),
-            CustomThemeSwitch(),
-            Row(
-              children: <Widget>[
-                Flexible(child: PrimaryColorPicker()),
-                Flexible(child: AccentColorPicker()),
-              ],
-            ),
-            DarkAccentColorPicker(),
+// Popup buttons seem broken: https://github.com/AppleEducate/plugins/issues/71
+//            CustomThemeSwitch(),
+//            Row(
+//              children: <Widget>[
+//                Flexible(child: PrimaryColorPicker()),
+//                Flexible(child: AccentColorPicker()),
+//              ],
+//            ),
+//            DarkAccentColorPicker(),
           ],
         ),
       ],

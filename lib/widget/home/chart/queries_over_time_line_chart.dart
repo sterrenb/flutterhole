@@ -56,7 +56,7 @@ class QueriesOverTimeLineChartState extends State<QueriesOverTimeLineChart> {
                   gridData: FlGridData(
                     show: true,
                     drawHorizontalGrid: true,
-                    horizontalInterval: 200.0,
+                    horizontalInterval: 100.0,
                     verticalInterval: maxY / 4,
                   ),
                   lineTouchData: LineTouchData(

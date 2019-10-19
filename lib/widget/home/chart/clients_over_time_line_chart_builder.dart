@@ -98,7 +98,7 @@ class ClientsOverTimeLineChartBuilderState
                         gridData: FlGridData(
                           show: true,
                           drawHorizontalGrid: true,
-                          horizontalInterval: 200.0,
+                          horizontalInterval: 100.0,
                           verticalInterval: widget.maxYRounded / 4,
                         ),
                         lineTouchData: LineTouchData(
