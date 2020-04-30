@@ -6,7 +6,7 @@ part 'summary.freezed.dart';
 
 part 'summary.g.dart';
 
-/// {{ base_url  }}?summaryRaw
+/// {{ base_url  }}?summaryRaw  {{ base_url  }}?getQueryTypes&auth={{ auth  }}
 @freezed
 abstract class Summary extends Model with _$Summary {
   const factory Summary({
