@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/api/data/models/model.dart';
+import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 
 import 'fixture_reader.dart';
@@ -30,4 +31,5 @@ void main() {
       'singleDnsQueryType.json', (json) => DnsQueryType.fromJson(json));
   testModel<DnsQueryTypeResult>(
       'getQueryTypes.json', (json) => DnsQueryTypeResult.fromJson(json));
+  testModel<OverTimeData>('overTimeData10mins.json', (json) => OverTimeData.fromJson(json));
 }
