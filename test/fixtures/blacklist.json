@@ -1,0 +1,12 @@
+[
+  [
+    "exact.com",
+    "hello.org",
+    "1.2.3.4"
+  ],
+  [
+    "(^|\\.)wildcard.org$",
+    "(^|\\.)regex$",
+    "(^|\\.)testing$"
+  ]
+]

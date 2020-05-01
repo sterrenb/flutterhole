@@ -7,7 +7,7 @@ part 'top_items.g.dart';
 
 /// {{ base_url  }}?topItems&auth={{ auth  }}
 @freezed
-abstract class TopItems extends Model with _$TopItems {
+abstract class TopItems extends MapModel with _$TopItems {
   const factory TopItems({
     @required @JsonKey(name: 'top_queries') Map<String, int> topQueries,
     @required @JsonKey(name: 'top_ads') Map<String, int> topAds,

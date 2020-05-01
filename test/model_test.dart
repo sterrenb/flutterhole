@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutterhole/features/api/data/models/blacklist.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/api/data/models/model.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
@@ -10,7 +11,7 @@ import 'package:flutterhole/features/api/data/models/top_sources.dart';
 
 import 'fixture_reader.dart';
 
-void testModel<T extends Model>(
+void testMapModel<T extends MapModel>(
     String fixtureName, Function1<Map<String, dynamic>, T> fromJson) {
   test(
     '$T toJson/fromJson should be cyclical',
@@ -19,25 +20,42 @@ void testModel<T extends Model>(
       final Map<String, dynamic> json = jsonFixture('$fixtureName');
       // act
       final T model = fromJson(json);
-      final map = model.toJson();
+      final Map<String, dynamic> map = model.toJson();
       // assert
-      json.forEach((key, value) {
-        expect(map, containsPair(key, value));
-      });
+      expect(map, equals(json));
+    },
+  );
+}
+
+void testListModel<T extends ListModel>(
+    String fixtureName, Function1<List<dynamic>, T> fromList) {
+  test(
+    '$T toJson/fromJson should be cyclical',
+    () async {
+      // arrange
+      final List<dynamic> json = jsonFixture('$fixtureName');
+      // act
+      final T model = fromList(json);
+      final List<dynamic> list = model.toList();
+      // assert
+      expect(list, equals(json));
     },
   );
 }
 
 void main() {
-  testModel<Summary>('summaryRaw.json', (json) => Summary.fromJson(json));
-  testModel<DnsQueryType>(
+  testMapModel<Summary>('summaryRaw.json', (json) => Summary.fromJson(json));
+  testMapModel<DnsQueryType>(
       'singleDnsQueryType.json', (json) => DnsQueryType.fromJson(json));
-  testModel<DnsQueryTypeResult>(
+  testMapModel<DnsQueryTypeResult>(
       'getQueryTypes.json', (json) => DnsQueryTypeResult.fromJson(json));
-  testModel<OverTimeData>(
+  testMapModel<OverTimeData>(
       'overTimeData10mins.json', (json) => OverTimeData.fromJson(json));
-  testModel<TopItems>('topItems.json', (json) => TopItems.fromJson(json));
-  testModel<PiClient>('singlePiClient.json', (json) => PiClient.fromJson(json));
-  testModel<TopSourcesResult>(
+  testMapModel<TopItems>('topItems.json', (json) => TopItems.fromJson(json));
+  testMapModel<PiClient>(
+      'singlePiClient.json', (json) => PiClient.fromJson(json));
+  testMapModel<TopSourcesResult>(
       'getQuerySources.json', (json) => TopSourcesResult.fromJson(json));
+  testListModel<Blacklist>(
+      'blacklist.json', (json) => Blacklist.fromList(json));
 }

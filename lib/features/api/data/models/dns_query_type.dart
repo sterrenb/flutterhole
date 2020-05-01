@@ -7,7 +7,7 @@ part 'dns_query_type.freezed.dart';
 part 'dns_query_type.g.dart';
 
 @freezed
-abstract class DnsQueryType extends Model with _$DnsQueryType {
+abstract class DnsQueryType extends MapModel with _$DnsQueryType {
   const factory DnsQueryType({String title, double fraction}) = _DnsQueryType;
 
   factory DnsQueryType.fromJson(Map<String, dynamic> json) =>
@@ -26,7 +26,7 @@ dynamic _dnsQueryTypesToValues(List<DnsQueryType> queryTypes) =>
 
 /// {{ base_url  }}?getQueryTypes&auth={{ auth  }}
 @freezed
-abstract class DnsQueryTypeResult extends Model with _$DnsQueryTypeResult {
+abstract class DnsQueryTypeResult extends MapModel with _$DnsQueryTypeResult {
   const factory DnsQueryTypeResult({
     @JsonKey(
       name: 'querytypes',

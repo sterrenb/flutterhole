@@ -13,7 +13,7 @@ enum PiStatusEnum {
 }
 
 @freezed
-abstract class PiStatus extends Model with _$PiStatus {
+abstract class PiStatus extends MapModel with _$PiStatus {
   const factory PiStatus({
     @JsonKey(
       name: 'status',

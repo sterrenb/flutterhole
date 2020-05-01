@@ -19,5 +19,14 @@ String _loadFileAsString(String name) {
 }
 
 /// Returns the json representation of the fixture file [name].
-Map<String, dynamic> jsonFixture(String name) =>
-    jsonDecode(_loadFileAsString(name));
+///
+/// Typically returns a `Map<String, dynamic>` or `List<dynamic>`.
+dynamic jsonFixture(String name) {
+  final string = _loadFileAsString(name);
+
+  try {
+    return jsonDecode(string);
+  } catch(_) {
+    return string;
+  }
+}

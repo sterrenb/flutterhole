@@ -21,7 +21,7 @@ dynamic _datesOverTimeToValues(Map<DateTime, int> dates) {
 
 /// {{ base_url  }}?overTimeData10mins
 @freezed
-abstract class OverTimeData extends Model with _$OverTimeData {
+abstract class OverTimeData extends MapModel with _$OverTimeData {
   const factory OverTimeData({
     @JsonKey(
       name: 'domains_over_time',

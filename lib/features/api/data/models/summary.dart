@@ -9,7 +9,7 @@ part 'summary.g.dart';
 
 /// {{ base_url  }}?summaryRaw  {{ base_url  }}?getQueryTypes&auth={{ auth  }}
 @freezed
-abstract class Summary extends Model with _$Summary {
+abstract class Summary extends MapModel with _$Summary {
   @JsonSerializable(explicitToJson: true)
   const factory Summary({
     @JsonKey(name: 'domains_being_blocked') int domainsBeingBlocked,
@@ -37,7 +37,7 @@ abstract class Summary extends Model with _$Summary {
 }
 
 @freezed
-abstract class GravityRelative extends Model with _$GravityRelative {
+abstract class GravityRelative extends MapModel with _$GravityRelative {
   const factory GravityRelative({
     String days,
     String hours,
@@ -49,7 +49,7 @@ abstract class GravityRelative extends Model with _$GravityRelative {
 }
 
 @freezed
-abstract class GravityLastUpdated extends Model with _$GravityLastUpdated {
+abstract class GravityLastUpdated extends MapModel with _$GravityLastUpdated {
   @JsonSerializable(explicitToJson: true)
   const factory GravityLastUpdated({
     @JsonKey(name: 'file_exists') bool fileExists,

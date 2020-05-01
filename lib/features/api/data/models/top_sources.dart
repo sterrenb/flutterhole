@@ -28,7 +28,7 @@ dynamic _topSourcesToValue(Map<PiClient, int> topSources) =>
 
 /// {{ base_url  }}?getQuerySources&auth={{ auth  }}
 @freezed
-abstract class TopSourcesResult extends Model with _$TopSourcesResult {
+abstract class TopSourcesResult extends MapModel with _$TopSourcesResult {
   const factory TopSourcesResult(
       {@JsonKey(
         name: 'top_sources',

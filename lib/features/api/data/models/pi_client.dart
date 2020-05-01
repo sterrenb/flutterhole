@@ -6,7 +6,7 @@ part 'pi_client.freezed.dart';
 part 'pi_client.g.dart';
 
 @freezed
-abstract class PiClient extends Model with _$PiClient {
+abstract class PiClient extends MapModel with _$PiClient {
   const factory PiClient({
     String title,
     String ip,
