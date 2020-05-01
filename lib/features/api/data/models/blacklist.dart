@@ -6,6 +6,7 @@ part 'blacklist.freezed.dart';
 
 part 'blacklist.g.dart';
 
+/// {{ base_url  }}?list=black&auth={{ auth  }}
 @freezed
 abstract class Blacklist extends ListModel implements _$Blacklist {
   const Blacklist._();
@@ -24,10 +25,8 @@ abstract class Blacklist extends ListModel implements _$Blacklist {
       );
 
   @override
-  List<dynamic> toList() {
-    return <dynamic>[
-      exacts,
-      wildcards,
-    ];
-  }
+  List<dynamic> toList() => <dynamic>[
+        exacts,
+        wildcards,
+      ];
 }

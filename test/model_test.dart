@@ -8,6 +8,7 @@ import 'package:flutterhole/features/api/data/models/pi_client.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/top_items.dart';
 import 'package:flutterhole/features/api/data/models/top_sources.dart';
+import 'package:flutterhole/features/api/data/models/whitelist.dart';
 
 import 'fixture_reader.dart';
 
@@ -58,4 +59,6 @@ void main() {
       'getQuerySources.json', (json) => TopSourcesResult.fromJson(json));
   testListModel<Blacklist>(
       'blacklist.json', (json) => Blacklist.fromList(json));
+  testListModel<Whitelist>(
+      'whitelist.json', (json) => Whitelist.fromList(json));
 }
