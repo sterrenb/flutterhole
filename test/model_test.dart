@@ -5,6 +5,7 @@ import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/api/data/models/model.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/pi_client.dart';
+import 'package:flutterhole/features/api/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/top_items.dart';
 import 'package:flutterhole/features/api/data/models/top_sources.dart';
@@ -61,4 +62,7 @@ void main() {
       'blacklist.json', (json) => Blacklist.fromList(json));
   testListModel<Whitelist>(
       'whitelist.json', (json) => Whitelist.fromList(json));
+
+  testMapModel<PiholeSettings>(
+      'pihole_settings_default.json', (json) => PiholeSettings.fromJson(json));
 }

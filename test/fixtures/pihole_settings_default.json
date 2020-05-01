@@ -1,0 +1,13 @@
+{
+  "title": "Pihole",
+  "description": "",
+  "baseUrl": "http://pi.hole",
+  "apiPath": "/admin/api.php",
+  "apiPort": 80,
+  "apiToken": "",
+  "allowSelfSignedCertificates": false,
+  "basicAuthenticationUsername": "",
+  "basicAuthenticationPassword": "",
+  "proxyUrl": "",
+  "proxyPort": 8080
+}
