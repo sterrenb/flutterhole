@@ -1,27 +1,27 @@
 {
-  "domains_being_blocked": 0,
-  "dns_queries_today": 15216,
-  "ads_blocked_today": 1,
-  "ads_percentage_today": 0.006572,
-  "unique_domains": 10493,
-  "queries_forwarded": 14036,
-  "queries_cached": 1179,
+  "domains_being_blocked": 128977,
+  "dns_queries_today": 14773,
+  "ads_blocked_today": 48,
+  "ads_percentage_today": 0.324917,
+  "unique_domains": 10897,
+  "queries_forwarded": 13653,
+  "queries_cached": 1072,
   "clients_ever_seen": 13,
   "unique_clients": 11,
-  "dns_queries_all_types": 15216,
-  "reply_NODATA": 138,
-  "reply_NXDOMAIN": 684,
-  "reply_CNAME": 6133,
-  "reply_IP": 3974,
+  "dns_queries_all_types": 14773,
+  "reply_NODATA": 59,
+  "reply_NXDOMAIN": 528,
+  "reply_CNAME": 7603,
+  "reply_IP": 4818,
   "privacy_level": 0,
-  "status": "disabled",
+  "status": "enabled",
   "gravity_last_updated": {
     "file_exists": true,
-    "absolute": 1588249916,
+    "absolute": 1587863077,
     "relative": {
-      "days": "0",
-      "hours": "08",
-      "minutes": "05"
+      "days": "5",
+      "hours": "17",
+      "minutes": "16"
     }
   }
 }
