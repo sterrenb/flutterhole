@@ -6,6 +6,7 @@ import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/api/data/models/top_sources.dart';
+import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:injectable/injectable.dart';
 
 @prod
@@ -16,7 +17,8 @@ class ApiDataSourceDio implements ApiDataSource {
 
   final Dio _dio;
 
-  Future<dynamic> _get({
+  Future<dynamic> _get(
+    PiholeSettings settings, {
     Map<String, dynamic> queryParameters = const {},
   }) async {
     try {
@@ -28,8 +30,8 @@ class ApiDataSourceDio implements ApiDataSource {
         if (data.isEmpty) throw EmptyResponseException();
       }
 
-      if (data is List) {
-        if (data.isEmpty) throw EmptyResponseException();
+      if (data is List && data.isEmpty) {
+        throw EmptyResponseException();
       }
 
       return data;
@@ -38,9 +40,25 @@ class ApiDataSourceDio implements ApiDataSource {
     }
   }
 
+  Future<dynamic> _getSecure(
+    PiholeSettings settings, {
+    Map<String, dynamic> queryParameters = const {},
+  }) async {
+    if (settings.apiToken.isEmpty) throw NotAuthenticatedException();
+
+    queryParameters.addAll({'auth': settings.apiToken});
+
+    try {
+      final result = await _get(settings, queryParameters: queryParameters);
+      return result;
+    } on EmptyResponseException catch (_) {
+      throw NotAuthenticatedException();
+    }
+  }
+
   @override
-  Future<Summary> fetchSummary() async {
-    final Map<String, dynamic> json = await _get(queryParameters: {
+  Future<Summary> fetchSummary(PiholeSettings settings) async {
+    final Map<String, dynamic> json = await _get(settings, queryParameters: {
       'summaryRaw': '',
     });
 
@@ -48,8 +66,8 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
-  Future<ToggleStatus> pingPihole() async {
-    final Map<String, dynamic> json = await _get(queryParameters: {
+  Future<ToggleStatus> pingPihole(PiholeSettings settings) async {
+    final Map<String, dynamic> json = await _get(settings, queryParameters: {
       'status': '',
     });
 
@@ -57,8 +75,9 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
-  Future<ToggleStatus> enablePihole() async {
-    final Map<String, dynamic> json = await _get(queryParameters: {
+  Future<ToggleStatus> enablePihole(PiholeSettings settings) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
       'enable': '',
     });
 
@@ -66,31 +85,32 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
-  Future<ToggleStatus> disablePihole() async {
+  Future<ToggleStatus> disablePihole(PiholeSettings settings) async {
     // TODO: implement disablePihole
     throw UnimplementedError();
   }
 
   @override
-  Future<OverTimeData> fetchQueriesOverTime() async {
+  Future<OverTimeData> fetchQueriesOverTime(PiholeSettings settings) async {
     // TODO: implement fetchQueriesOverTime
     throw UnimplementedError();
   }
 
   @override
-  Future<DnsQueryTypeResult> fetchQueryTypes() async {
+  Future<DnsQueryTypeResult> fetchQueryTypes(PiholeSettings settings) async {
     // TODO: implement fetchQueryTypes
     throw UnimplementedError();
   }
 
   @override
-  Future<TopSourcesResult> fetchTopSources() async {
+  Future<TopSourcesResult> fetchTopSources(PiholeSettings settings) async {
     // TODO: implement fetchTopSources
     throw UnimplementedError();
   }
 
   @override
-  Future<ToggleStatus> sleepPihole(Duration duration) async {
+  Future<ToggleStatus> sleepPihole(
+      PiholeSettings settings, Duration duration) async {
     // TODO: implement sleepPihole
     throw UnimplementedError();
   }

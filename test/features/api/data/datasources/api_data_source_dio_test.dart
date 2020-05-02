@@ -6,6 +6,7 @@ import 'package:flutterhole/features/api/data/datasources/api_data_source.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source_dio.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/toggle_status.dart';
+import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../../../fixture_reader.dart';
@@ -35,12 +36,14 @@ Map<String, dynamic> stubFixtureResponse(String fileName, int statusCode) {
 void main() async {
   ApiDataSourceDio apiDataSourceDio;
   Dio dio;
+  PiholeSettings piholeSettings;
 
   await setUpAllForTest();
 
   setUp(() {
     mockHttpClientAdapter = MockHttpClientAdapter();
     dio = Dio();
+    piholeSettings = PiholeSettings(baseUrl: 'http://example.com');
     dio.httpClientAdapter = mockHttpClientAdapter;
     apiDataSourceDio = ApiDataSourceDio(dio);
   });
@@ -52,7 +55,8 @@ void main() async {
         // arrange
         final json = stubFixtureResponse('summary_raw.json', 200);
         // act
-        final Summary result = await apiDataSourceDio.fetchSummary();
+        final Summary result =
+            await apiDataSourceDio.fetchSummary(piholeSettings);
         // assert
         expect(result, equals(Summary.fromJson(json)));
       },
@@ -64,7 +68,7 @@ void main() async {
         // arrange
         stubStringResponse('', 200);
         // assert
-        expect(() => apiDataSourceDio.fetchSummary(),
+        expect(() => apiDataSourceDio.fetchSummary(piholeSettings),
             throwsA(isA<EmptyResponseException>()));
       },
     );
@@ -75,7 +79,7 @@ void main() async {
         // arrange
         stubStringResponse('[]', 200);
         // assert
-        expect(() => apiDataSourceDio.fetchSummary(),
+        expect(() => apiDataSourceDio.fetchSummary(piholeSettings),
             throwsA(isA<EmptyResponseException>()));
       },
     );
@@ -86,7 +90,7 @@ void main() async {
         // arrange
         stubStringResponse('hello', 200);
         // assert
-        expect(() => apiDataSourceDio.fetchSummary(),
+        expect(() => apiDataSourceDio.fetchSummary(piholeSettings),
             throwsA(isA<MalformedResponseException>()));
       },
     );
@@ -99,7 +103,8 @@ void main() async {
         // arrange
         final json = stubFixtureResponse('status_enabled.json', 200);
         // act
-        final ToggleStatus result = await apiDataSourceDio.pingPihole();
+        final ToggleStatus result =
+            await apiDataSourceDio.pingPihole(piholeSettings);
         // assert
         expect(result, equals(ToggleStatus.fromJson(json)));
       },
@@ -111,22 +116,51 @@ void main() async {
         // arrange
         final json = stubFixtureResponse('status_disabled.json', 200);
         // act
-        final ToggleStatus result = await apiDataSourceDio.pingPihole();
+        final ToggleStatus result =
+            await apiDataSourceDio.pingPihole(piholeSettings);
         // assert
         expect(result, equals(ToggleStatus.fromJson(json)));
       },
     );
   });
 
-  test(
-    'should return ToggleStatus.enabled on successful enablePihole',
-        () async {
-      // arrange
-      final json = stubFixtureResponse('status_enabled.json', 200);
-      // act
-      final ToggleStatus result = await apiDataSourceDio.enablePihole();
-      // assert
-      expect(result, equals(ToggleStatus.fromJson(json)));
-    },
-  );
+  group('enablePihole', () {
+    test(
+      'should return $ToggleStatus.enabled on successful enablePihole',
+      () async {
+        // arrange
+        final json = stubFixtureResponse('status_enabled.json', 200);
+        piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+        // act
+        final ToggleStatus result =
+            await apiDataSourceDio.enablePihole(piholeSettings);
+        // assert
+        expect(result, equals(ToggleStatus.fromJson(json)));
+      },
+    );
+
+    test(
+      'should throw $NotAuthenticatedException on enablePihole without apiToken',
+      () async {
+        // arrange
+        stubStringResponse('[]', 200);
+        piholeSettings = piholeSettings.copyWith(apiToken: '');
+        // assert
+        expect(() => apiDataSourceDio.enablePihole(piholeSettings),
+            throwsA(isA<NotAuthenticatedException>()));
+      },
+    );
+
+    test(
+      'should throw $NotAuthenticatedException on enablePihole with invalid apiToken',
+          () async {
+        // arrange
+        stubStringResponse('[]', 200);
+        piholeSettings = piholeSettings.copyWith(apiToken: 'invalid');
+        // assert
+        expect(() => apiDataSourceDio.enablePihole(piholeSettings),
+            throwsA(isA<NotAuthenticatedException>()));
+      },
+    );
+  });
 }
