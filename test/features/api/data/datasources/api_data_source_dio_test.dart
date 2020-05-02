@@ -20,7 +20,7 @@ void stubStringResponse(String data, int statusCode) {
   when(mockHttpClientAdapter.fetch(any, any, any))
       .thenAnswer((_) async => ResponseBody.fromString(
             data,
-            200,
+            statusCode,
             headers: {
               Headers.contentTypeHeader: [Headers.jsonContentType],
             },
@@ -43,6 +43,11 @@ void main() async {
   setUp(() {
     mockHttpClientAdapter = MockHttpClientAdapter();
     dio = Dio();
+    dio.options.baseUrl = 'http://example.com';
+    dio.interceptors.add(LogInterceptor(
+      requestHeader: false,
+      responseBody: true,
+    ));
     piholeSettings = PiholeSettings(baseUrl: 'http://example.com');
     dio.httpClientAdapter = mockHttpClientAdapter;
     apiDataSourceDio = ApiDataSourceDio(dio);
@@ -74,13 +79,24 @@ void main() async {
     );
 
     test(
-      'should throw EmptyResponseException on empty Json list response',
+      'should throw $EmptyResponseException on empty Json list response',
       () async {
         // arrange
         stubStringResponse('[]', 200);
         // assert
         expect(() => apiDataSourceDio.fetchSummary(piholeSettings),
             throwsA(isA<EmptyResponseException>()));
+      },
+    );
+
+    test(
+      'should throw $NotFoundResponseException on 404 empty json response',
+      () async {
+        // arrange
+        stubStringResponse('{}', 404);
+        // assert
+        expect(() => apiDataSourceDio.fetchSummary(piholeSettings),
+            throwsA(isA<NotFoundResponseException>()));
       },
     );
 
@@ -153,7 +169,7 @@ void main() async {
 
     test(
       'should throw $NotAuthenticatedException on enablePihole with invalid apiToken',
-          () async {
+      () async {
         // arrange
         stubStringResponse('[]', 200);
         piholeSettings = piholeSettings.copyWith(apiToken: 'invalid');

@@ -24,6 +24,7 @@ class ApiDataSourceDio implements ApiDataSource {
     try {
       final Response response =
           await _dio.get('', queryParameters: queryParameters);
+
       final data = response.data;
 
       if (data is String) {
@@ -35,8 +36,24 @@ class ApiDataSourceDio implements ApiDataSource {
       }
 
       return data;
-    } on DioError catch (_) {
-      throw MalformedResponseException();
+    } on DioError catch (e) {
+      switch (e.type) {
+        case DioErrorType.CONNECT_TIMEOUT:
+        case DioErrorType.SEND_TIMEOUT:
+        case DioErrorType.RECEIVE_TIMEOUT:
+          throw PiholeTimeoutException();
+        case DioErrorType.RESPONSE:
+          throw NotFoundResponseException();
+        case DioErrorType.CANCEL:
+        case DioErrorType.DEFAULT:
+        default:
+          switch (e.response?.statusCode ?? 0) {
+            case 404:
+              throw NotFoundResponseException();
+            default:
+              throw MalformedResponseException();
+          }
+      }
     }
   }
 

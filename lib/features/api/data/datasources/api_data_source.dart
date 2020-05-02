@@ -7,6 +7,10 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 
 class EmptyResponseException implements Exception {}
 
+class NotFoundResponseException implements Exception {}
+
+class PiholeTimeoutException implements Exception {}
+
 class NotAuthenticatedException implements Exception {}
 
 class MalformedResponseException implements Exception {}
