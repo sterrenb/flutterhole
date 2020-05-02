@@ -14,26 +14,31 @@ class ApiDataSourceDio implements ApiDataSource {
 
   final Dio _dio;
 
-  Future<Map<String, dynamic>> _get({
+  Future<dynamic> _get({
     Map<String, dynamic> queryParameters = const {},
   }) async {
-    final Response response =
-        await _dio.get('', queryParameters: queryParameters);
+    try {
+      final Response response =
+          await _dio.get('', queryParameters: queryParameters);
+      final data = response.data;
 
-    final data = response.data;
+      if (data is String) {
+        if (data.isEmpty) throw EmptyResponseException();
+      }
 
-    if (data is String) {
-      if (data.isEmpty) throw EmptyResponseException();
-      if (data == '[]') throw NotAuthenticatedException();
+      if (data is List) {
+        if (data.isEmpty) throw EmptyResponseException();
+      }
+
+      return data;
+    } on DioError catch (_) {
       throw MalformedResponseException();
     }
-
-    return data;
   }
 
   @override
   Future<Summary> fetchSummary() async {
-    final json = await _get(queryParameters: {
+    final Map<String, dynamic> json = await _get(queryParameters: {
       'summaryRaw': '',
     });
 

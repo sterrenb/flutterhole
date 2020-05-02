@@ -33,6 +33,8 @@
 # Generated files
 *.g.dart
 *.freezed.dart
+*.iconfig.dart
+/coverage
 
 # Web related
 lib/generated_plugin_registrant.dart
