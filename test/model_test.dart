@@ -9,6 +9,7 @@ import 'package:flutterhole/features/api/data/models/pi_client.dart';
 import 'package:flutterhole/features/api/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/api/data/models/query_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
+import 'package:flutterhole/features/api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/api/data/models/top_items.dart';
 import 'package:flutterhole/features/api/data/models/top_sources.dart';
 import 'package:flutterhole/features/api/data/models/whitelist.dart';
@@ -68,6 +69,10 @@ void main() {
       'query_data_single.json', (json) => QueryData.fromList(json));
   testMapModel<ManyQueryData>(
       'get_all_queries_10.json', (json) => ManyQueryData.fromJson(json));
+  testMapModel<ToggleStatus>(
+      'status_enabled.json', (json) => ToggleStatus.fromJson(json));
+  testMapModel<ToggleStatus>(
+      'status_disabled.json', (json) => ToggleStatus.fromJson(json));
 
   testMapModel<PiholeSettings>(
       'pihole_settings_default.json', (json) => PiholeSettings.fromJson(json));
