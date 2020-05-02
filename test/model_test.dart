@@ -49,18 +49,18 @@ void testListModel<T extends ListModel>(
 }
 
 void main() {
-  testMapModel<Summary>('summaryRaw.json', (json) => Summary.fromJson(json));
+  testMapModel<Summary>('summary_raw.json', (json) => Summary.fromJson(json));
   testMapModel<DnsQueryType>(
-      'singleDnsQueryType.json', (json) => DnsQueryType.fromJson(json));
+      'single_dns_query_type.json', (json) => DnsQueryType.fromJson(json));
   testMapModel<DnsQueryTypeResult>(
-      'getQueryTypes.json', (json) => DnsQueryTypeResult.fromJson(json));
+      'get_query_types.json', (json) => DnsQueryTypeResult.fromJson(json));
   testMapModel<OverTimeData>(
-      'overTimeData10mins.json', (json) => OverTimeData.fromJson(json));
-  testMapModel<TopItems>('topItems.json', (json) => TopItems.fromJson(json));
+      'over_time_data_10mins.json', (json) => OverTimeData.fromJson(json));
+  testMapModel<TopItems>('top_items.json', (json) => TopItems.fromJson(json));
   testMapModel<PiClient>(
-      'singlePiClient.json', (json) => PiClient.fromJson(json));
+      'single_pi_client.json', (json) => PiClient.fromJson(json));
   testMapModel<TopSourcesResult>(
-      'getQuerySources.json', (json) => TopSourcesResult.fromJson(json));
+      'get_query_sources.json', (json) => TopSourcesResult.fromJson(json));
   testListModel<Blacklist>(
       'blacklist.json', (json) => Blacklist.fromList(json));
   testListModel<Whitelist>(
