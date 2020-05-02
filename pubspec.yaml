@@ -42,10 +42,11 @@ dependencies:
   # storage
   hive: ^1.4.1+1
   hive_flutter: ^0.3.0+2
-#  path_provider: any
   # model annotation
   freezed_annotation: ^0.7.1
   json_annotation: ^3.0.1
+
+  supercharged: ^1.5.1
 
 dev_dependencies:
   flutter_test:

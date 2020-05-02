@@ -597,6 +597,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
+  supercharged:
+    dependency: "direct main"
+    description:
+      name: supercharged
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.1"
   term_glyph:
     dependency: transitive
     description:

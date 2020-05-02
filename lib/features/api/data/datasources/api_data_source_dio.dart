@@ -103,32 +103,51 @@ class ApiDataSourceDio implements ApiDataSource {
 
   @override
   Future<ToggleStatus> disablePihole(PiholeSettings settings) async {
-    // TODO: implement disablePihole
-    throw UnimplementedError();
-  }
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'disable': '',
+    });
 
-  @override
-  Future<OverTimeData> fetchQueriesOverTime(PiholeSettings settings) async {
-    // TODO: implement fetchQueriesOverTime
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<DnsQueryTypeResult> fetchQueryTypes(PiholeSettings settings) async {
-    // TODO: implement fetchQueryTypes
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<TopSourcesResult> fetchTopSources(PiholeSettings settings) async {
-    // TODO: implement fetchTopSources
-    throw UnimplementedError();
+    return ToggleStatus.fromJson(json);
   }
 
   @override
   Future<ToggleStatus> sleepPihole(
       PiholeSettings settings, Duration duration) async {
-    // TODO: implement sleepPihole
-    throw UnimplementedError();
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'disable': '${duration.inSeconds}',
+    });
+
+    return ToggleStatus.fromJson(json);
+  }
+
+  @override
+  Future<OverTimeData> fetchQueriesOverTime(PiholeSettings settings) async {
+    final Map<String, dynamic> json = await _get(settings, queryParameters: {
+      'overTimeData10mins': '',
+    });
+
+    return OverTimeData.fromJson(json);
+  }
+
+  @override
+  Future<DnsQueryTypeResult> fetchQueryTypes(PiholeSettings settings) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'getQueryTypes': '',
+    });
+
+    return DnsQueryTypeResult.fromJson(json);
+  }
+
+  @override
+  Future<TopSourcesResult> fetchTopSources(PiholeSettings settings) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'getQuerySources': '',
+    });
+
+    return TopSourcesResult.fromJson(json);
   }
 }

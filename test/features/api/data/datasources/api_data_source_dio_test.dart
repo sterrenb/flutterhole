@@ -4,10 +4,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source_dio.dart';
+import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/toggle_status.dart';
+import 'package:flutterhole/features/api/data/models/top_sources.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:mockito/mockito.dart';
+import 'package:supercharged/supercharged.dart';
 
 import '../../../../fixture_reader.dart';
 import '../../../../test_dependency_injection.dart';
@@ -179,4 +183,73 @@ void main() async {
       },
     );
   });
+
+  test(
+    'should return $ToggleStatus.disabled on successful disablePihole',
+    () async {
+      // arrange
+      final json = stubFixtureResponse('status_disabled.json', 200);
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      // act
+      final ToggleStatus result =
+          await apiDataSourceDio.disablePihole(piholeSettings);
+      // assert
+      expect(result, equals(ToggleStatus.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $ToggleStatus.disabled on successful sleepPihole',
+    () async {
+      // arrange
+      final json = stubFixtureResponse('status_disabled.json', 200);
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      // act
+      final ToggleStatus result =
+          await apiDataSourceDio.sleepPihole(piholeSettings, 10.seconds);
+      // assert
+      expect(result, equals(ToggleStatus.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $OverTimeData on successful fetchQueriesOverTime',
+    () async {
+      // arrange
+      final json = stubFixtureResponse('over_time_data_10mins.json', 200);
+      // act
+      final OverTimeData result =
+          await apiDataSourceDio.fetchQueriesOverTime(piholeSettings);
+      // assert
+      expect(result, equals(OverTimeData.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $DnsQueryTypeResult on successful fetchQueryTypes',
+    () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('get_query_types.json', 200);
+      // act
+      final DnsQueryTypeResult result =
+          await apiDataSourceDio.fetchQueryTypes(piholeSettings);
+      // assert
+      expect(result, equals(DnsQueryTypeResult.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $TopSourcesResult on successful fetchTopSources',
+        () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('get_query_sources.json', 200);
+      // act
+      final TopSourcesResult result =
+      await apiDataSourceDio.fetchTopSources(piholeSettings);
+      // assert
+      expect(result, equals(TopSourcesResult.fromJson(json)));
+    },
+  );
 }
