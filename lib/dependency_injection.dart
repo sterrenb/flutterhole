@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/dependency_injection.iconfig.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
@@ -15,14 +14,14 @@ Future<void> configure(String environment) async {
 
 @registerModule
 abstract class RegisterModule {
+  @prod
   @injectable
   Dio get dio => Dio();
 
   @prod
   @preResolve
   Future<HiveInterface> get hive async {
-    print('preresolving hive');
-    await Hive.initFlutter(Constants.settingsSubDirectory);
+    await Hive.initFlutter();
 //    await Hive.openBox(Constants.piholeSettingsSubDirectory);
     return Hive;
   }

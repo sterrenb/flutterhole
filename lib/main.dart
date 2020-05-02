@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/dependency_injection.dart';
-import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:injectable/injectable.dart';
 
-import 'features/api/data/datasources/api_data_source.dart';
+import 'features/settings/data/datasources/settings_data_source.dart';
 
 void main() async {
   await configure(Environment.prod);
@@ -38,16 +37,20 @@ class MyApp extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RaisedButton(
-              onPressed: () {
-                print(PiholeSettings().toJson());
+              onPressed: () async {
+                final settings = getIt<SettingsDataSource>();
+                final all = await settings.fetchAllPiholeSettings();
+                print(all);
               },
-              child: Text('print'),
+              child: Text('print all'),
             ),
             RaisedButton(
-              onPressed: () {
-                print(getIt<ApiDataSource>());
+              onPressed: () async {
+                final settings = getIt<SettingsDataSource>();
+                final res = await settings.createPiholeSettings();
+                print(res);
               },
-              child: Text('store'),
+              child: Text('print create'),
             ),
           ],
         ),

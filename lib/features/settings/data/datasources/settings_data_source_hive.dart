@@ -3,7 +3,11 @@ import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/settings/data/datasources/settings_data_source.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:hive/hive.dart';
+import 'package:injectable/injectable.dart';
 
+@prod
+@injectable
+@RegisterAs(SettingsDataSource)
 class SettingsDataSourceHive implements SettingsDataSource {
   SettingsDataSourceHive([HiveInterface hive])
       : _hive = hive ?? getIt<HiveInterface>();
@@ -52,8 +56,9 @@ class SettingsDataSourceHive implements SettingsDataSource {
   Future<List<PiholeSettings>> fetchAllPiholeSettings() async {
     final box = await _piholeBox;
 
-    final List<PiholeSettings> list =
-        box.values.map((e) => PiholeSettings.fromJson(e)).toList();
+    final List<PiholeSettings> list = box.values
+        .map((e) => PiholeSettings.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
     return list;
   }
 }
