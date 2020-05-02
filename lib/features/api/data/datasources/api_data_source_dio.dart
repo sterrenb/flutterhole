@@ -8,7 +8,9 @@ import 'package:flutterhole/features/api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/api/data/models/top_sources.dart';
 import 'package:injectable/injectable.dart';
 
+@prod
 @injectable
+@RegisterAs(ApiDataSource)
 class ApiDataSourceDio implements ApiDataSource {
   ApiDataSourceDio([Dio dio]) : _dio = dio ?? getIt<Dio>();
 
