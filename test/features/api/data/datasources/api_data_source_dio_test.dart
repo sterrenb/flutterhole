@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutterhole/features/api/data/datasources/api_data_source.dart';
+import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source_dio.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
@@ -72,46 +72,46 @@ void main() async {
     );
 
     test(
-      'should throw EmptyResponseException on empty Json response',
+      'should throw EmptyResponsePiException on empty Json response',
       () async {
         // arrange
         stubStringResponse('', 200);
         // assert
         expect(() => apiDataSourceDio.fetchSummary(piholeSettings),
-            throwsA(isA<EmptyResponseException>()));
+            throwsA(isA<EmptyResponsePiException>()));
       },
     );
 
     test(
-      'should throw $EmptyResponseException on empty Json list response',
+      'should throw $EmptyResponsePiException on empty Json list response',
       () async {
         // arrange
         stubStringResponse('[]', 200);
         // assert
         expect(() => apiDataSourceDio.fetchSummary(piholeSettings),
-            throwsA(isA<EmptyResponseException>()));
+            throwsA(isA<EmptyResponsePiException>()));
       },
     );
 
     test(
-      'should throw $NotFoundResponseException on 404 empty json response',
+      'should throw $NotFoundPiException on 404 empty json response',
       () async {
         // arrange
         stubStringResponse('{}', 404);
         // assert
         expect(() => apiDataSourceDio.fetchSummary(piholeSettings),
-            throwsA(isA<NotFoundResponseException>()));
+            throwsA(isA<NotFoundPiException>()));
       },
     );
 
     test(
-      'should throw MalformedResponseException on unknown String response',
+      'should throw MalformedResponsePiException on unknown String response',
       () async {
         // arrange
         stubStringResponse('hello', 200);
         // assert
         expect(() => apiDataSourceDio.fetchSummary(piholeSettings),
-            throwsA(isA<MalformedResponseException>()));
+            throwsA(isA<MalformedResponsePiException>()));
       },
     );
   });
@@ -160,26 +160,26 @@ void main() async {
     );
 
     test(
-      'should throw $NotAuthenticatedException on enablePihole without apiToken',
+      'should throw $NotAuthenticatedPiException on enablePihole without apiToken',
       () async {
         // arrange
         stubStringResponse('[]', 200);
         piholeSettings = piholeSettings.copyWith(apiToken: '');
         // assert
         expect(() => apiDataSourceDio.enablePihole(piholeSettings),
-            throwsA(isA<NotAuthenticatedException>()));
+            throwsA(isA<NotAuthenticatedPiException>()));
       },
     );
 
     test(
-      'should throw $NotAuthenticatedException on enablePihole with invalid apiToken',
+      'should throw $NotAuthenticatedPiException on enablePihole with invalid apiToken',
       () async {
         // arrange
         stubStringResponse('[]', 200);
         piholeSettings = piholeSettings.copyWith(apiToken: 'invalid');
         // assert
         expect(() => apiDataSourceDio.enablePihole(piholeSettings),
-            throwsA(isA<NotAuthenticatedException>()));
+            throwsA(isA<NotAuthenticatedPiException>()));
       },
     );
   });

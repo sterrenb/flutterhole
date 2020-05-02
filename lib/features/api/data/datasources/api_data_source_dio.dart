@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
@@ -28,11 +29,11 @@ class ApiDataSourceDio implements ApiDataSource {
       final data = response.data;
 
       if (data is String) {
-        if (data.isEmpty) throw EmptyResponseException();
+        if (data.isEmpty) throw EmptyResponsePiException();
       }
 
       if (data is List && data.isEmpty) {
-        throw EmptyResponseException();
+        throw EmptyResponsePiException();
       }
 
       return data;
@@ -41,17 +42,17 @@ class ApiDataSourceDio implements ApiDataSource {
         case DioErrorType.CONNECT_TIMEOUT:
         case DioErrorType.SEND_TIMEOUT:
         case DioErrorType.RECEIVE_TIMEOUT:
-          throw PiholeTimeoutException();
+          throw TimeOutPiException();
         case DioErrorType.RESPONSE:
-          throw NotFoundResponseException();
+          throw NotFoundPiException();
         case DioErrorType.CANCEL:
         case DioErrorType.DEFAULT:
         default:
           switch (e.response?.statusCode ?? 0) {
             case 404:
-              throw NotFoundResponseException();
+              throw NotFoundPiException();
             default:
-              throw MalformedResponseException();
+              throw MalformedResponsePiException();
           }
       }
     }
@@ -61,15 +62,15 @@ class ApiDataSourceDio implements ApiDataSource {
     PiholeSettings settings, {
     Map<String, dynamic> queryParameters = const {},
   }) async {
-    if (settings.apiToken.isEmpty) throw NotAuthenticatedException();
+    if (settings.apiToken.isEmpty) throw NotAuthenticatedPiException();
 
     queryParameters.addAll({'auth': settings.apiToken});
 
     try {
       final result = await _get(settings, queryParameters: queryParameters);
       return result;
-    } on EmptyResponseException catch (_) {
-      throw NotAuthenticatedException();
+    } on EmptyResponsePiException catch (_) {
+      throw NotAuthenticatedPiException();
     }
   }
 
