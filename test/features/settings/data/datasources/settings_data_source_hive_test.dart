@@ -34,25 +34,25 @@ void main() async {
         // arrange
         when(mockBox.isOpen).thenReturn(true);
         when(mockBox.length).thenReturn(123);
-        final PiholeSettings piholeSettings = PiholeSettings(title: 'Pihole #123');
+        final PiholeSettings piholeSettings =
+            PiholeSettings(title: 'Pihole #123');
         // act
         final PiholeSettings result =
             await settingsDataSourceHive.createPiholeSettings();
         // assert
         expect(result, equals(piholeSettings));
-        verify(mockBox.put(
-            piholeSettings.title, piholeSettings.toJson()));
+        verify(mockBox.put(piholeSettings.title, piholeSettings.toJson()));
       },
     );
 
     test(
-      'should throw SettingsWriteException on createPiholeSettings with closed box',
+      'should throw SettingsException on createPiholeSettings with closed box',
       () async {
         // arrange
         when(mockBox.isOpen).thenReturn(false);
         // assert
         expect(() => settingsDataSourceHive.createPiholeSettings(),
-            throwsA(isA<SettingsWriteException>()));
+            throwsA(isA<SettingsException>()));
       },
     );
   });
@@ -86,37 +86,66 @@ void main() async {
     );
 
     test(
-      'should throw SettingsWriteException on updatePiholeSettings with empty settings title',
+      'should throw SettingsException on updatePiholeSettings with empty settings title',
       () async {
         // arrange
         final PiholeSettings piholeSettings = PiholeSettings(title: '');
         // assert
         expect(
             () => settingsDataSourceHive.updatePiholeSettings(piholeSettings),
-            throwsA(isA<SettingsWriteException>()));
+            throwsA(isA<SettingsException>()));
       },
     );
   });
 
   test(
-    'should return List<PiholeSettings> on successful fetchAllPiholeSettings',
+    'should return on successful activatePiholeSettings',
     () async {
       // arrange
       when(mockBox.isOpen).thenReturn(true);
-      final allPiholeSettings = <PiholeSettings>[
-        PiholeSettings(title: 'First'),
-        PiholeSettings(
-            title: 'Second', basicAuthenticationPassword: 'password'),
-        PiholeSettings(
-          title: 'Last',
-          apiPort: 123,
-        ),
-      ];
-      when(mockBox.values).thenReturn(allPiholeSettings.map((e) => e.toJson()));
+      final PiholeSettings piholeSettings =
+          PiholeSettings(title: 'Activate me');
+      when(mockBox.put(any, any)).thenAnswer((_) async {});
       // act
-      final result = await settingsDataSourceHive.fetchAllPiholeSettings();
+      await settingsDataSourceHive.activatePiholeSettings(piholeSettings);
       // assert
-      expect(result, equals(allPiholeSettings));
+      verify(mockBox.put(Constants.piholeSettingsActive, piholeSettings.title));
     },
   );
+
+  group('fetchAllPiholeSettings', () {
+    test(
+      'should return List<PiholeSettings> on successful fetchAllPiholeSettings',
+      () async {
+        // arrange
+        when(mockBox.isOpen).thenReturn(true);
+        final allPiholeSettings = <PiholeSettings>[
+          PiholeSettings(title: 'First'),
+          PiholeSettings(
+              title: 'Second', basicAuthenticationPassword: 'password'),
+          PiholeSettings(
+            title: 'Last',
+            apiPort: 123,
+          ),
+        ];
+        when(mockBox.values)
+            .thenReturn(allPiholeSettings.map((e) => e.toJson()));
+        // act
+        final result = await settingsDataSourceHive.fetchAllPiholeSettings();
+        // assert
+        expect(result, equals(allPiholeSettings));
+      },
+    );
+
+    test(
+      'should throw SettingsException on fetchAllPiholeSettings with closed box',
+      () async {
+        // arrange
+        when(mockBox.isOpen).thenReturn(false);
+        // assert
+        expect(() => settingsDataSourceHive.fetchAllPiholeSettings(),
+            throwsA(isA<SettingsException>()));
+      },
+    );
+  });
 }

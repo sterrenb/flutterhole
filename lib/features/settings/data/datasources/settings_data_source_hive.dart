@@ -13,7 +13,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
   Future<Box> get _piholeBox async {
     final Box box = await _hive.openBox(Constants.piholeSettingsSubDirectory);
 
-    if (!box.isOpen) throw SettingsWriteException();
+    if (!box.isOpen) throw SettingsException();
 
     return box;
   }
@@ -29,7 +29,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
 
   @override
   Future<void> updatePiholeSettings(PiholeSettings piholeSettings) async {
-    if (piholeSettings.title.isEmpty) throw SettingsWriteException();
+    if (piholeSettings.title.isEmpty) throw SettingsException();
 
     final box = await _piholeBox;
     await box.put(piholeSettings.title, piholeSettings.toJson());
@@ -40,6 +40,12 @@ class SettingsDataSourceHive implements SettingsDataSource {
   Future<void> deletePiholeSettings(PiholeSettings piholeSettings) async {
     final box = await _piholeBox;
     await box.delete(piholeSettings.title);
+  }
+
+  @override
+  Future<void> activatePiholeSettings(PiholeSettings piholeSettings) async {
+    final box = await _piholeBox;
+    await box.put(Constants.piholeSettingsActive, piholeSettings.title);
   }
 
   @override
