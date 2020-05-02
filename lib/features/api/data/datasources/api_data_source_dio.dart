@@ -55,14 +55,17 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
-  Future<ToggleStatus> disablePihole() async {
-    // TODO: implement disablePihole
-    throw UnimplementedError();
+  Future<ToggleStatus> enablePihole() async {
+    final Map<String, dynamic> json = await _get(queryParameters: {
+      'enable': '',
+    });
+
+    return ToggleStatus.fromJson(json);
   }
 
   @override
-  Future<ToggleStatus> enablePihole() async {
-    // TODO: implement enablePihole
+  Future<ToggleStatus> disablePihole() async {
+    // TODO: implement disablePihole
     throw UnimplementedError();
   }
 

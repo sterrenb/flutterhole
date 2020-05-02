@@ -33,7 +33,7 @@ Map<String, dynamic> stubFixtureResponse(String fileName, int statusCode) {
 }
 
 void main() async {
-  ApiDataSourceDio apiDataSource;
+  ApiDataSourceDio apiDataSourceDio;
   Dio dio;
 
   await setUpAllForTest();
@@ -42,7 +42,7 @@ void main() async {
     mockHttpClientAdapter = MockHttpClientAdapter();
     dio = Dio();
     dio.httpClientAdapter = mockHttpClientAdapter;
-    apiDataSource = ApiDataSourceDio(dio);
+    apiDataSourceDio = ApiDataSourceDio(dio);
   });
 
   group('fetchSummary', () {
@@ -52,7 +52,7 @@ void main() async {
         // arrange
         final json = stubFixtureResponse('summary_raw.json', 200);
         // act
-        final Summary result = await apiDataSource.fetchSummary();
+        final Summary result = await apiDataSourceDio.fetchSummary();
         // assert
         expect(result, equals(Summary.fromJson(json)));
       },
@@ -64,7 +64,7 @@ void main() async {
         // arrange
         stubStringResponse('', 200);
         // assert
-        expect(() => apiDataSource.fetchSummary(),
+        expect(() => apiDataSourceDio.fetchSummary(),
             throwsA(isA<EmptyResponseException>()));
       },
     );
@@ -75,7 +75,7 @@ void main() async {
         // arrange
         stubStringResponse('[]', 200);
         // assert
-        expect(() => apiDataSource.fetchSummary(),
+        expect(() => apiDataSourceDio.fetchSummary(),
             throwsA(isA<EmptyResponseException>()));
       },
     );
@@ -86,7 +86,7 @@ void main() async {
         // arrange
         stubStringResponse('hello', 200);
         // assert
-        expect(() => apiDataSource.fetchSummary(),
+        expect(() => apiDataSourceDio.fetchSummary(),
             throwsA(isA<MalformedResponseException>()));
       },
     );
@@ -99,7 +99,7 @@ void main() async {
         // arrange
         final json = stubFixtureResponse('status_enabled.json', 200);
         // act
-        final ToggleStatus result = await apiDataSource.pingPihole();
+        final ToggleStatus result = await apiDataSourceDio.pingPihole();
         // assert
         expect(result, equals(ToggleStatus.fromJson(json)));
       },
@@ -111,10 +111,22 @@ void main() async {
         // arrange
         final json = stubFixtureResponse('status_disabled.json', 200);
         // act
-        final ToggleStatus result = await apiDataSource.pingPihole();
+        final ToggleStatus result = await apiDataSourceDio.pingPihole();
         // assert
         expect(result, equals(ToggleStatus.fromJson(json)));
       },
     );
   });
+
+  test(
+    'should return ToggleStatus.enabled on successful enablePihole',
+        () async {
+      // arrange
+      final json = stubFixtureResponse('status_enabled.json', 200);
+      // act
+      final ToggleStatus result = await apiDataSourceDio.enablePihole();
+      // assert
+      expect(result, equals(ToggleStatus.fromJson(json)));
+    },
+  );
 }

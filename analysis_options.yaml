@@ -1,0 +1,8 @@
+analyzer:
+  errors:
+    missing_required_param: error # add this
+    missing_return: error # functions might expect other functions to return something
+    todo: warning # so you remember things you said you'd do like 6 months ago
+  strong-mode: # you can add strong mode as well
+    implicit-casts: true
+    implicit-dynamic: true

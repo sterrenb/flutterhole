@@ -6,13 +6,13 @@ import 'package:flutterhole/features/api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/api/data/models/model.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/pi_client.dart';
-import 'package:flutterhole/features/api/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/api/data/models/query_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/api/data/models/top_items.dart';
 import 'package:flutterhole/features/api/data/models/top_sources.dart';
 import 'package:flutterhole/features/api/data/models/whitelist.dart';
+import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 
 import 'fixture_reader.dart';
 
