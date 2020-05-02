@@ -2,10 +2,12 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/features/api/data/models/blacklist.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/api/data/models/model.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/pi_client.dart';
 import 'package:flutterhole/features/api/data/models/pihole_settings.dart';
+import 'package:flutterhole/features/api/data/models/query_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/top_items.dart';
 import 'package:flutterhole/features/api/data/models/top_sources.dart';
@@ -62,6 +64,10 @@ void main() {
       'blacklist.json', (json) => Blacklist.fromList(json));
   testListModel<Whitelist>(
       'whitelist.json', (json) => Whitelist.fromList(json));
+  testListModel<QueryData>(
+      'query_data_single.json', (json) => QueryData.fromList(json));
+  testMapModel<ManyQueryData>(
+      'get_all_queries_10.json', (json) => ManyQueryData.fromJson(json));
 
   testMapModel<PiholeSettings>(
       'pihole_settings_default.json', (json) => PiholeSettings.fromJson(json));
