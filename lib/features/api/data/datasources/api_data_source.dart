@@ -15,15 +15,15 @@ abstract class ApiDataSource {
 
   Future<ToggleStatus> pingPihole();
 
-  Future<ToggleStatus> enablePihole(String apiToken);
+  Future<ToggleStatus> enablePihole();
 
-  Future<ToggleStatus> disablePihole(String apiToken);
+  Future<ToggleStatus> disablePihole();
 
-  Future<ToggleStatus> sleepPihole(String apiToken, Duration duration);
+  Future<ToggleStatus> sleepPihole(Duration duration);
 
   Future<OverTimeData> fetchQueriesOverTime();
 
-  Future<TopSourcesResult> fetchTopSources(String apiToken);
+  Future<TopSourcesResult> fetchTopSources();
 
-  Future<DnsQueryTypeResult> fetchQueryTypes(String apiToken);
+  Future<DnsQueryTypeResult> fetchQueryTypes();
 }

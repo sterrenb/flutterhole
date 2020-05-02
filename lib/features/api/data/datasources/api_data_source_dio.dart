@@ -46,13 +46,22 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
-  Future<ToggleStatus> disablePihole(String apiToken) async {
+  Future<ToggleStatus> pingPihole() async {
+    final Map<String, dynamic> json = await _get(queryParameters: {
+      'status': '',
+    });
+
+    return ToggleStatus.fromJson(json);
+  }
+
+  @override
+  Future<ToggleStatus> disablePihole() async {
     // TODO: implement disablePihole
     throw UnimplementedError();
   }
 
   @override
-  Future<ToggleStatus> enablePihole(String apiToken) async {
+  Future<ToggleStatus> enablePihole() async {
     // TODO: implement enablePihole
     throw UnimplementedError();
   }
@@ -64,25 +73,19 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
-  Future<DnsQueryTypeResult> fetchQueryTypes(String apiToken) async {
+  Future<DnsQueryTypeResult> fetchQueryTypes() async {
     // TODO: implement fetchQueryTypes
     throw UnimplementedError();
   }
 
   @override
-  Future<TopSourcesResult> fetchTopSources(String apiToken) async {
+  Future<TopSourcesResult> fetchTopSources() async {
     // TODO: implement fetchTopSources
     throw UnimplementedError();
   }
 
   @override
-  Future<ToggleStatus> pingPihole() async {
-    // TODO: implement pingPihole
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<ToggleStatus> sleepPihole(String apiToken, Duration duration) async {
+  Future<ToggleStatus> sleepPihole(Duration duration) async {
     // TODO: implement sleepPihole
     throw UnimplementedError();
   }

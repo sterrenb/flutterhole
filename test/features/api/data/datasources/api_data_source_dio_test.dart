@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source_dio.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
+import 'package:flutterhole/features/api/data/models/toggle_status.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../../../fixture_reader.dart';
@@ -87,6 +88,32 @@ void main() async {
         // assert
         expect(() => apiDataSource.fetchSummary(),
             throwsA(isA<MalformedResponseException>()));
+      },
+    );
+  });
+
+  group('pingPihole', () {
+    test(
+      'should return ToggleStatus.enabled on successful pingPihole',
+      () async {
+        // arrange
+        final json = stubFixtureResponse('status_enabled.json', 200);
+        // act
+        final ToggleStatus result = await apiDataSource.pingPihole();
+        // assert
+        expect(result, equals(ToggleStatus.fromJson(json)));
+      },
+    );
+
+    test(
+      'should return ToggleStatus.disabled on successful pingPihole',
+      () async {
+        // arrange
+        final json = stubFixtureResponse('status_disabled.json', 200);
+        // act
+        final ToggleStatus result = await apiDataSource.pingPihole();
+        // assert
+        expect(result, equals(ToggleStatus.fromJson(json)));
       },
     );
   });
