@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source.dart';
@@ -20,57 +21,66 @@ class ApiRepositoryImpl implements ApiRepository {
 
   final ApiDataSource _apiDataSource;
 
-
-
-  @override
-  Future<Either<Failure, ToggleStatus>> disablePihole(PiholeSettings settings) {
-    // TODO: implement disablePihole
-    throw UnimplementedError();
+  /// Wrapper for accessing simple [ApiDataSource] methods.
+  Future<Either<Failure, T>> _simpleFetch<T>(
+    PiholeSettings settings,
+    Function dataSourceMethod,
+  ) async {
+    try {
+      final T result = await dataSourceMethod(settings);
+      return Right(result);
+    } on PiException catch (_) {
+      return Left(Failure());
+    }
   }
 
   @override
-  Future<Either<Failure, ToggleStatus>> enablePihole(PiholeSettings settings) {
-    // TODO: implement enablePihole
+  Future<Either<Failure, Summary>> fetchSummary(
+          PiholeSettings settings) async =>
+      _simpleFetch<Summary>(settings, _apiDataSource.fetchSummary);
+
+  @override
+  Future<Either<Failure, ToggleStatus>> pingPihole(
+          PiholeSettings settings) async =>
+      _simpleFetch<ToggleStatus>(settings, _apiDataSource.pingPihole);
+
+  @override
+  Future<Either<Failure, ToggleStatus>> enablePihole(
+      PiholeSettings settings) async {
+    return _simpleFetch<ToggleStatus>(settings, _apiDataSource.enablePihole);
+  }
+
+  @override
+  Future<Either<Failure, ToggleStatus>> disablePihole(
+      PiholeSettings settings) async {
+    return _simpleFetch<ToggleStatus>(settings, _apiDataSource.disablePihole);
+  }
+
+  @override
+  Future<Either<Failure, ToggleStatus>> sleepPihole(
+      PiholeSettings settings, Duration duration) async {
+    // TODO: implement sleepPihole
     throw UnimplementedError();
   }
 
   @override
   Future<Either<Failure, OverTimeData>> fetchQueriesOverTime(
-      PiholeSettings settings) {
+      PiholeSettings settings) async {
     // TODO: implement fetchQueriesOverTime
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, DnsQueryTypeResult>> fetchQueryTypes(
-      PiholeSettings settings) {
-    // TODO: implement fetchQueryTypes
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Either<Failure, Summary>> fetchSummary() {
-    // TODO: implement fetchSummary
-    throw UnimplementedError();
-  }
-
-  @override
   Future<Either<Failure, TopSourcesResult>> fetchTopSources(
-      PiholeSettings settings) {
+      PiholeSettings settings) async {
     // TODO: implement fetchTopSources
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, ToggleStatus>> pingPihole(PiholeSettings settings) {
-    // TODO: implement pingPihole
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Either<Failure, ToggleStatus>> sleepPihole(
-      PiholeSettings settings, Duration duration) {
-    // TODO: implement sleepPihole
+  Future<Either<Failure, DnsQueryTypeResult>> fetchQueryTypes(
+      PiholeSettings settings) async {
+    // TODO: implement fetchQueryTypes
     throw UnimplementedError();
   }
 }

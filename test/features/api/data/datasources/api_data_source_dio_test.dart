@@ -18,10 +18,10 @@ import '../../../../test_dependency_injection.dart';
 
 class MockHttpClientAdapter extends Mock implements HttpClientAdapter {}
 
-HttpClientAdapter mockHttpClientAdapter;
+HttpClientAdapter httpClientAdapterMock;
 
 void stubStringResponse(String data, int statusCode) {
-  when(mockHttpClientAdapter.fetch(any, any, any))
+  when(httpClientAdapterMock.fetch(any, any, any))
       .thenAnswer((_) async => ResponseBody.fromString(
             data,
             statusCode,
@@ -38,14 +38,15 @@ Map<String, dynamic> stubFixtureResponse(String fileName, int statusCode) {
 }
 
 void main() async {
+  await setUpAllForTest();
+
   ApiDataSourceDio apiDataSourceDio;
   Dio dio;
   PiholeSettings piholeSettings;
 
-  await setUpAllForTest();
 
   setUp(() {
-    mockHttpClientAdapter = MockHttpClientAdapter();
+    httpClientAdapterMock = MockHttpClientAdapter();
     dio = Dio();
     dio.options.baseUrl = 'http://example.com';
     dio.interceptors.add(LogInterceptor(
@@ -53,7 +54,7 @@ void main() async {
       responseBody: true,
     ));
     piholeSettings = PiholeSettings(baseUrl: 'http://example.com');
-    dio.httpClientAdapter = mockHttpClientAdapter;
+    dio.httpClientAdapter = httpClientAdapterMock;
     apiDataSourceDio = ApiDataSourceDio(dio);
   });
 
