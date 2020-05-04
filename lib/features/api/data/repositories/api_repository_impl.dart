@@ -46,41 +46,39 @@ class ApiRepositoryImpl implements ApiRepository {
 
   @override
   Future<Either<Failure, ToggleStatus>> enablePihole(
-      PiholeSettings settings) async {
-    return _simpleFetch<ToggleStatus>(settings, _apiDataSource.enablePihole);
-  }
+          PiholeSettings settings) async =>
+      _simpleFetch<ToggleStatus>(settings, _apiDataSource.enablePihole);
 
   @override
   Future<Either<Failure, ToggleStatus>> disablePihole(
-      PiholeSettings settings) async {
-    return _simpleFetch<ToggleStatus>(settings, _apiDataSource.disablePihole);
-  }
+          PiholeSettings settings) async =>
+      _simpleFetch<ToggleStatus>(settings, _apiDataSource.disablePihole);
 
   @override
   Future<Either<Failure, ToggleStatus>> sleepPihole(
       PiholeSettings settings, Duration duration) async {
-    // TODO: implement sleepPihole
-    throw UnimplementedError();
+    try {
+      final ToggleStatus result =
+          await _apiDataSource.sleepPihole(settings, duration);
+      return Right(result);
+    } on PiException catch (_) {
+      return Left(Failure());
+    }
   }
 
   @override
   Future<Either<Failure, OverTimeData>> fetchQueriesOverTime(
-      PiholeSettings settings) async {
-    // TODO: implement fetchQueriesOverTime
-    throw UnimplementedError();
-  }
+          PiholeSettings settings) async =>
+      _simpleFetch<OverTimeData>(settings, _apiDataSource.fetchQueriesOverTime);
 
   @override
   Future<Either<Failure, TopSourcesResult>> fetchTopSources(
-      PiholeSettings settings) async {
-    // TODO: implement fetchTopSources
-    throw UnimplementedError();
-  }
+          PiholeSettings settings) async =>
+      _simpleFetch<TopSourcesResult>(settings, _apiDataSource.fetchTopSources);
 
   @override
   Future<Either<Failure, DnsQueryTypeResult>> fetchQueryTypes(
-      PiholeSettings settings) async {
-    // TODO: implement fetchQueryTypes
-    throw UnimplementedError();
-  }
+          PiholeSettings settings) async =>
+      _simpleFetch<DnsQueryTypeResult>(
+          settings, _apiDataSource.fetchQueryTypes);
 }

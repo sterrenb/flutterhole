@@ -3,9 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source.dart';
+import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/pi_status.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/toggle_status.dart';
+import 'package:flutterhole/features/api/data/models/top_sources.dart';
 import 'package:flutterhole/features/api/data/repositories/api_repository_impl.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:mockito/mockito.dart';
@@ -125,7 +128,7 @@ void main() async {
       'should return $ToggleStatus on successful disablePihole',
       () async {
         // arrange
-        final toggleStatus = ToggleStatus(status: PiStatusEnum.enabled);
+        final toggleStatus = ToggleStatus(status: PiStatusEnum.disabled);
         when(mockApiDataSource.disablePihole(piholeSettings))
             .thenAnswer((_) async => toggleStatus);
         // act
@@ -145,6 +148,136 @@ void main() async {
         // act
         final Either<Failure, ToggleStatus> result =
             await apiRepository.disablePihole(piholeSettings);
+        // assert
+        expect(result, equals(Left(Failure())));
+      },
+    );
+  });
+
+  group('sleepPihole', () {
+    test(
+      'should return $ToggleStatus on successful sleepPihole',
+      () async {
+        // arrange
+        final duration = Duration(seconds: 10);
+        final toggleStatus = ToggleStatus(status: PiStatusEnum.disabled);
+        when(mockApiDataSource.sleepPihole(piholeSettings, duration))
+            .thenAnswer((_) async => toggleStatus);
+        // act
+        final Either<Failure, ToggleStatus> result =
+            await apiRepository.sleepPihole(piholeSettings, duration);
+        // assert
+        expect(result, equals(Right(toggleStatus)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed sleepPihole',
+      () async {
+        // arrange
+        final duration = Duration(seconds: 10);
+        final tError = PiException.emptyResponse();
+        when(mockApiDataSource.sleepPihole(piholeSettings, duration))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, ToggleStatus> result =
+            await apiRepository.sleepPihole(piholeSettings, duration);
+        // assert
+        expect(result, equals(Left(Failure())));
+      },
+    );
+  });
+
+  group('fetchQueriesOverTime', () {
+    test(
+      'should return $OverTimeData on successful fetchQueriesOverTime',
+      () async {
+        // arrange
+        final overTimeData = OverTimeData(domainsOverTime: {}, adsOverTime: {});
+        when(mockApiDataSource.fetchQueriesOverTime(piholeSettings))
+            .thenAnswer((_) async => overTimeData);
+        // act
+        final Either<Failure, OverTimeData> result =
+            await apiRepository.fetchQueriesOverTime(piholeSettings);
+        // assert
+        expect(result, equals(Right(overTimeData)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed fetchQueriesOverTime',
+      () async {
+        // arrange
+        final tError = PiException.emptyResponse();
+        when(mockApiDataSource.fetchQueriesOverTime(piholeSettings))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, OverTimeData> result =
+            await apiRepository.fetchQueriesOverTime(piholeSettings);
+        // assert
+        expect(result, equals(Left(Failure())));
+      },
+    );
+  });
+
+  group('fetchTopSources', () {
+    test(
+      'should return $TopSourcesResult on successful fetchTopSources',
+      () async {
+        // arrange
+        final topSources = TopSourcesResult(topSources: {});
+        when(mockApiDataSource.fetchTopSources(piholeSettings))
+            .thenAnswer((_) async => topSources);
+        // act
+        final Either<Failure, TopSourcesResult> result =
+            await apiRepository.fetchTopSources(piholeSettings);
+        // assert
+        expect(result, equals(Right(topSources)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed fetchTopSources',
+      () async {
+        // arrange
+        final tError = PiException.emptyResponse();
+        when(mockApiDataSource.fetchTopSources(piholeSettings))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, TopSourcesResult> result =
+            await apiRepository.fetchTopSources(piholeSettings);
+        // assert
+        expect(result, equals(Left(Failure())));
+      },
+    );
+  });
+
+  group('fetchQueryTypes', () {
+    test(
+      'should return $DnsQueryTypeResult on successful fetchQueryTypes',
+          () async {
+        // arrange
+        final queryTypes = DnsQueryTypeResult();
+        when(mockApiDataSource.fetchQueryTypes(piholeSettings))
+            .thenAnswer((_) async => queryTypes);
+        // act
+        final Either<Failure, DnsQueryTypeResult> result =
+        await apiRepository.fetchQueryTypes(piholeSettings);
+        // assert
+        expect(result, equals(Right(queryTypes)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed fetchQueryTypes',
+          () async {
+        // arrange
+        final tError = PiException.emptyResponse();
+        when(mockApiDataSource.fetchQueryTypes(piholeSettings))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, DnsQueryTypeResult> result =
+        await apiRepository.fetchQueryTypes(piholeSettings);
         // assert
         expect(result, equals(Left(Failure())));
       },
