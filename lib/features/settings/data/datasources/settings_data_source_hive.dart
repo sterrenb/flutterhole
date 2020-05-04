@@ -32,24 +32,26 @@ class SettingsDataSourceHive implements SettingsDataSource {
   }
 
   @override
-  Future<void> updatePiholeSettings(PiholeSettings piholeSettings) async {
+  Future<bool> updatePiholeSettings(PiholeSettings piholeSettings) async {
     if (piholeSettings.title.isEmpty) throw SettingsException();
 
     final box = await _piholeBox;
     await box.put(piholeSettings.title, piholeSettings.toJson());
-    return piholeSettings;
+    return true;
   }
 
   @override
-  Future<void> deletePiholeSettings(PiholeSettings piholeSettings) async {
+  Future<bool> deletePiholeSettings(PiholeSettings piholeSettings) async {
     final box = await _piholeBox;
     await box.delete(piholeSettings.title);
+    return true;
   }
 
   @override
-  Future<void> activatePiholeSettings(PiholeSettings piholeSettings) async {
+  Future<bool> activatePiholeSettings(PiholeSettings piholeSettings) async {
     final box = await _piholeBox;
     await box.put(Constants.piholeSettingsActive, piholeSettings.title);
+    return true;
   }
 
   @override
