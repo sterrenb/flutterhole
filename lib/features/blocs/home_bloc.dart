@@ -11,7 +11,6 @@ import 'package:flutterhole/features/api/data/repositories/api_repository.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/data/repositories/settings_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:injectable/injectable.dart';
 
 part 'home_bloc.freezed.dart';
 
@@ -36,8 +35,6 @@ abstract class HomeEvent with _$HomeEvent {
   const factory HomeEvent.fetch() = HomeEventFetch;
 }
 
-@prod
-@injectable
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc([
     ApiRepository apiRepository,

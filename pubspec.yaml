@@ -47,6 +47,7 @@ dependencies:
   json_annotation: ^3.0.1
 
   supercharged: ^1.5.1
+  flutter_bloc: ^4.0.0
 
   # ui sugar
   bottom_navy_bar: ^5.4.0

@@ -8,7 +8,7 @@ import 'package:flutterhole/features/settings/data/repositories/settings_reposit
 import 'package:injectable/injectable.dart';
 
 @prod
-@singleton
+@lazySingleton
 @RegisterAs(SettingsRepository)
 class SettingsRepositoryImpl implements SettingsRepository {
   SettingsRepositoryImpl([SettingsDataSource settingsDataSource])
