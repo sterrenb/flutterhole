@@ -49,7 +49,7 @@ void testListModel<T extends ListModel>(
 }
 
 void main() {
-  testMapModel<Summary>('summary_raw.json', (json) => Summary.fromJson(json));
+  testMapModel<SummaryModel>('summary_raw.json', (json) => SummaryModel.fromJson(json));
   testMapModel<DnsQueryType>(
       'single_dns_query_type.json', (json) => DnsQueryType.fromJson(json));
   testMapModel<DnsQueryTypeResult>(

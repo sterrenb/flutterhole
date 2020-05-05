@@ -32,14 +32,14 @@ void main() async {
 
   group('fetchSummary', () {
     test(
-      'should return $Summary on successful fetchSummary',
+      'should return $SummaryModel on successful fetchSummary',
       () async {
         // arrange
-        final tSummary = Summary(dnsQueriesToday: 5);
+        final tSummary = SummaryModel(dnsQueriesToday: 5);
         when(mockApiDataSource.fetchSummary(piholeSettings))
             .thenAnswer((_) async => tSummary);
         // act
-        final Either<Failure, Summary> result =
+        final Either<Failure, SummaryModel> result =
             await apiRepository.fetchSummary(piholeSettings);
         // assert
         expect(result, equals(Right(tSummary)));
@@ -53,7 +53,7 @@ void main() async {
         final tError = PiException.emptyResponse();
         when(mockApiDataSource.fetchSummary(piholeSettings)).thenThrow(tError);
         // act
-        final Either<Failure, Summary> result =
+        final Either<Failure, SummaryModel> result =
             await apiRepository.fetchSummary(piholeSettings);
         // assert
         expect(result, equals(Left(Failure())));

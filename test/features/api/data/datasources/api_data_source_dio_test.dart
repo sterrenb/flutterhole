@@ -65,10 +65,10 @@ void main() async {
         // arrange
         final json = stubFixtureResponse('summary_raw.json', 200);
         // act
-        final Summary result =
+        final SummaryModel result =
             await apiDataSourceDio.fetchSummary(piholeSettings);
         // assert
-        expect(result, equals(Summary.fromJson(json)));
+        expect(result, equals(SummaryModel.fromJson(json)));
       },
     );
 

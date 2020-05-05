@@ -6,7 +6,7 @@ import 'package:flutterhole/features/api/data/models/top_sources.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 
 abstract class ApiDataSource {
-  Future<Summary> fetchSummary(PiholeSettings settings);
+  Future<SummaryModel> fetchSummary(PiholeSettings settings);
 
   Future<ToggleStatus> pingPihole(PiholeSettings settings);
 

@@ -16,4 +16,6 @@ abstract class SettingsRepository {
 
   Future<Either<Failure, List<PiholeSettings>>> fetchAllPiholeSettings(
       PiholeSettings piholeSettings);
+  
+  Future<Either<Failure, PiholeSettings>> fetchActivePiholeSettings();
 }

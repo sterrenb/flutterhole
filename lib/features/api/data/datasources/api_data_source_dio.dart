@@ -75,12 +75,12 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
-  Future<Summary> fetchSummary(PiholeSettings settings) async {
+  Future<SummaryModel> fetchSummary(PiholeSettings settings) async {
     final Map<String, dynamic> json = await _get(settings, queryParameters: {
       'summaryRaw': '',
     });
 
-    return Summary.fromJson(json);
+    return SummaryModel.fromJson(json);
   }
 
   @override

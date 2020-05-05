@@ -12,4 +12,6 @@ abstract class SettingsDataSource {
   Future<bool> activatePiholeSettings(PiholeSettings piholeSettings);
 
   Future<List<PiholeSettings>> fetchAllPiholeSettings();
+
+  Future<PiholeSettings> fetchActivePiholeSettings();
 }

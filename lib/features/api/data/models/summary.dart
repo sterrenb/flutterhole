@@ -9,9 +9,9 @@ part 'summary.g.dart';
 
 /// {{ base_url  }}?summaryRaw  {{ base_url  }}?getQueryTypes&auth={{ auth  }}
 @freezed
-abstract class Summary extends MapModel with _$Summary {
+abstract class SummaryModel extends MapModel with _$SummaryModel {
   @JsonSerializable(explicitToJson: true)
-  const factory Summary({
+  const factory SummaryModel({
     @JsonKey(name: 'domains_being_blocked') int domainsBeingBlocked,
     @JsonKey(name: 'dns_queries_today') int dnsQueriesToday,
     @JsonKey(name: 'ads_blocked_today') int adsBlockedToday,
@@ -32,8 +32,8 @@ abstract class Summary extends MapModel with _$Summary {
         GravityLastUpdated gravityLastUpdated,
   }) = _Summary;
 
-  factory Summary.fromJson(Map<String, dynamic> json) =>
-      _$SummaryFromJson(json);
+  factory SummaryModel.fromJson(Map<String, dynamic> json) =>
+      _$SummaryModelFromJson(json);
 }
 
 @freezed

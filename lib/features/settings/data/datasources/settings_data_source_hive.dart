@@ -1,4 +1,5 @@
 import 'package:flutterhole/constants.dart';
+import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/settings/data/datasources/settings_data_source.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
@@ -62,5 +63,19 @@ class SettingsDataSourceHive implements SettingsDataSource {
         .map((e) => PiholeSettings.fromJson(Map<String, dynamic>.from(e)))
         .toList();
     return list;
+  }
+
+  @override
+  Future<PiholeSettings> fetchActivePiholeSettings() async {
+    final box = await _piholeBox;
+    String title = box.get(Constants.piholeSettingsActive);
+    if (title == null) {
+      throw NotFoundPiException();
+    }
+
+    final List<PiholeSettings> all = await fetchAllPiholeSettings();
+    final PiholeSettings active =
+        all.firstWhere((element) => element.title == title);
+    return active;
   }
 }

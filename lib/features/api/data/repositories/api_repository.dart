@@ -8,7 +8,7 @@ import 'package:flutterhole/features/api/data/models/top_sources.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 
 abstract class ApiRepository {
-  Future<Either<Failure, Summary>> fetchSummary(PiholeSettings settings);
+  Future<Either<Failure, SummaryModel>> fetchSummary(PiholeSettings settings);
 
   Future<Either<Failure, ToggleStatus>> pingPihole(PiholeSettings settings);
 

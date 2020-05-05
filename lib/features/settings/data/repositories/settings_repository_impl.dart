@@ -8,7 +8,7 @@ import 'package:flutterhole/features/settings/data/repositories/settings_reposit
 import 'package:injectable/injectable.dart';
 
 @prod
-@injectable
+@singleton
 @RegisterAs(SettingsRepository)
 class SettingsRepositoryImpl implements SettingsRepository {
   SettingsRepositoryImpl([SettingsDataSource settingsDataSource])
@@ -71,5 +71,16 @@ class SettingsRepositoryImpl implements SettingsRepository {
       PiholeSettings piholeSettings) async {
     return _simpleSettings<bool>(
         piholeSettings, _settingsDataSource.updatePiholeSettings);
+  }
+
+  @override
+  Future<Either<Failure, PiholeSettings>> fetchActivePiholeSettings() async {
+    try {
+      final PiholeSettings result =
+          await _settingsDataSource.fetchActivePiholeSettings();
+      return Right(result);
+    } on PiException catch (_) {
+      return Left(Failure());
+    }
   }
 }

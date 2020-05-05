@@ -148,4 +148,35 @@ void main() async {
       },
     );
   });
+
+  group('fetchActivePiholeSettings', () {
+    test(
+      'should return PiholeSettings on successful fetchActivePiholeSettings',
+      () async {
+        // arrange
+        final PiholeSettings active = PiholeSettings(title: 'First');
+        final List<PiholeSettings> allPiholeSettings = <PiholeSettings>[
+          active,
+          PiholeSettings(
+              title: 'Second', basicAuthenticationPassword: 'password'),
+          PiholeSettings(
+            title: 'Last',
+            apiPort: 123,
+          ),
+        ];
+
+        when(mockBox.isOpen).thenReturn(true);
+        when(mockBox.values)
+            .thenReturn(allPiholeSettings.map((e) => e.toJson()));
+        when(mockBox.get(Constants.piholeSettingsActive))
+            .thenReturn(active.title);
+
+        // act
+        final PiholeSettings result =
+            await settingsDataSourceHive.fetchActivePiholeSettings();
+        // assert
+        expect(result, equals(active));
+      },
+    );
+  });
 }

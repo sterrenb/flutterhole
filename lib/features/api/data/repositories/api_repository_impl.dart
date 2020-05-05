@@ -13,7 +13,7 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:injectable/injectable.dart';
 
 @prod
-@injectable
+@singleton
 @RegisterAs(ApiRepository)
 class ApiRepositoryImpl implements ApiRepository {
   ApiRepositoryImpl([ApiDataSource apiDataSource])
@@ -35,9 +35,9 @@ class ApiRepositoryImpl implements ApiRepository {
   }
 
   @override
-  Future<Either<Failure, Summary>> fetchSummary(
+  Future<Either<Failure, SummaryModel>> fetchSummary(
           PiholeSettings settings) async =>
-      _simpleFetch<Summary>(settings, _apiDataSource.fetchSummary);
+      _simpleFetch<SummaryModel>(settings, _apiDataSource.fetchSummary);
 
   @override
   Future<Either<Failure, ToggleStatus>> pingPihole(

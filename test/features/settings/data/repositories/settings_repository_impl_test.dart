@@ -180,4 +180,38 @@ void main() async {
       },
     );
   });
+
+  group('fetchActivePiholeSettings', () {
+    test(
+      'should return $PiholeSettings on successful fetchActivePiholeSettings',
+      () async {
+        // arrange
+        final PiholeSettings piholeSettings =
+            PiholeSettings(title: 'Activated');
+
+        when(mockSettingsDataSource.fetchActivePiholeSettings())
+            .thenAnswer((_) async => piholeSettings);
+        // act
+        final Either<Failure, PiholeSettings> result =
+            await settingsRepository.fetchActivePiholeSettings();
+        // assert
+        expect(result, equals(Right(piholeSettings)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed fetchActivePiholeSettings',
+      () async {
+        // arrange
+        final tError = PiException.emptyResponse();
+        when(mockSettingsDataSource.fetchActivePiholeSettings())
+            .thenThrow(tError);
+        // act
+        final Either<Failure, PiholeSettings> result =
+            await settingsRepository.fetchActivePiholeSettings();
+        // assert
+        expect(result, equals(Left(Failure())));
+      },
+    );
+  });
 }
