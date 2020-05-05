@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhole/core/debug/bloc_delegate.dart';
 import 'package:flutterhole/dependency_injection.dart';
-import 'package:flutterhole/widgets/pages/home_page.dart';
+import 'package:flutterhole/features/settings/presentation/pages/settings_page.dart';
 import 'package:injectable/injectable.dart';
 
 import 'features/settings/data/datasources/settings_data_source.dart';
 
 void main() async {
   await configure(Environment.prod);
+  enableBlocDelegate();
   runApp(MyApp());
 }
 
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: SettingsPage(),
     );
   }
 }

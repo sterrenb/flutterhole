@@ -20,14 +20,14 @@ abstract class HomeState with _$HomeState {
 
   const factory HomeState.loading() = HomeStateLoading;
 
+  const factory HomeState.failure(Failure failure) = HomeStateFailure;
+
   const factory HomeState.success(
     Either<Failure, SummaryModel> summary,
     Either<Failure, OverTimeData> overTimeData,
     Either<Failure, TopSourcesResult> topSources,
     Either<Failure, DnsQueryTypeResult> dnsQueryTypes,
   ) = HomeStateSuccess;
-
-  const factory HomeState.failure(Failure failure) = HomeStateFailure;
 }
 
 @freezed

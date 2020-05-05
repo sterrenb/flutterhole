@@ -1,5 +1,4 @@
 import 'package:flutterhole/constants.dart';
-import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/settings/data/datasources/settings_data_source.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
@@ -28,7 +27,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
     final box = await _piholeBox;
     final piholeSettings = PiholeSettings(title: 'Pihole #${box.length}');
 
-    await box.put(piholeSettings.title, piholeSettings.toJson());
+    await box.add(piholeSettings.toJson());
     return piholeSettings;
   }
 
@@ -37,21 +36,36 @@ class SettingsDataSourceHive implements SettingsDataSource {
     if (piholeSettings.title.isEmpty) throw SettingsException();
 
     final box = await _piholeBox;
-    await box.put(piholeSettings.title, piholeSettings.toJson());
+
+    await box.putAt(0, piholeSettings.toJson());
+
     return true;
   }
 
   @override
   Future<bool> deletePiholeSettings(PiholeSettings piholeSettings) async {
     final box = await _piholeBox;
-    await box.delete(piholeSettings.title);
+    final all = await fetchAllPiholeSettings();
+
+    if (all.contains(piholeSettings)) {
+      await box.deleteAt(all.indexOf(piholeSettings));
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> deleteAllSettings()async  {
+    await _hive.deleteFromDisk();
     return true;
   }
+
 
   @override
   Future<bool> activatePiholeSettings(PiholeSettings piholeSettings) async {
     final box = await _piholeBox;
-    await box.put(Constants.piholeSettingsActive, piholeSettings.title);
+    await box.putAt(0, piholeSettings.toJson());
     return true;
   }
 
@@ -59,23 +73,21 @@ class SettingsDataSourceHive implements SettingsDataSource {
   Future<List<PiholeSettings>> fetchAllPiholeSettings() async {
     final box = await _piholeBox;
 
-    final List<PiholeSettings> list = box.values
-        .map((e) => PiholeSettings.fromJson(Map<String, dynamic>.from(e)))
+    final list = box.values
+        .map((e) => PiholeSettings.fromJson(e))
         .toList();
-    return list;
+    return List<PiholeSettings>.from(list);
   }
 
   @override
   Future<PiholeSettings> fetchActivePiholeSettings() async {
     final box = await _piholeBox;
-    String title = box.get(Constants.piholeSettingsActive);
-    if (title == null) {
-      throw NotFoundPiException();
+    final json = box.getAt(0);
+    if (json == null) {
+      print('no active pihole found, returning default');
+      return PiholeSettings();
     }
 
-    final List<PiholeSettings> all = await fetchAllPiholeSettings();
-    final PiholeSettings active =
-        all.firstWhere((element) => element.title == title);
-    return active;
+    return PiholeSettings.fromJson(json);
   }
 }

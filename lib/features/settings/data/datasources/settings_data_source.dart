@@ -9,6 +9,8 @@ abstract class SettingsDataSource {
 
   Future<bool> deletePiholeSettings(PiholeSettings piholeSettings);
 
+  Future<bool> deleteAllSettings();
+
   Future<bool> activatePiholeSettings(PiholeSettings piholeSettings);
 
   Future<List<PiholeSettings>> fetchAllPiholeSettings();

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/features/blocs/home_bloc.dart';
+import 'package:flutterhole/widgets/layout/default_drawer.dart';
 import 'package:flutterhole/widgets/pages/clients_page_view.dart';
 import 'package:flutterhole/widgets/pages/domains_page_view.dart';
 import 'package:flutterhole/widgets/pages/summary_page_view.dart';
@@ -49,6 +50,7 @@ class _HomePageState extends State<HomePage> {
     return BlocProvider<HomeBloc>(
       create: (_) => HomeBloc(),
       child: Scaffold(
+        drawer: DefaultDrawer(),
         appBar: AppBar(
           title: Text('Flutter'),
         ),

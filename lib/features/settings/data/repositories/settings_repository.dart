@@ -11,11 +11,12 @@ abstract class SettingsRepository {
   Future<Either<Failure, bool>> deletePiholeSettings(
       PiholeSettings piholeSettings);
 
+  Future<Either<Failure, bool>> deleteAllSettings();
+
   Future<Either<Failure, bool>> activatePiholeSettings(
       PiholeSettings piholeSettings);
 
-  Future<Either<Failure, List<PiholeSettings>>> fetchAllPiholeSettings(
-      PiholeSettings piholeSettings);
-  
+  Future<Either<Failure, List<PiholeSettings>>> fetchAllPiholeSettings();
+
   Future<Either<Failure, PiholeSettings>> fetchActivePiholeSettings();
 }

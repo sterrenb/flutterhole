@@ -50,7 +50,8 @@ void main() async {
         final Either<Failure, bool> result =
             await settingsRepository.activatePiholeSettings(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result,
+            equals(Left(Failure('activatePiholeSettings failed', tError))));
       },
     );
   });
@@ -80,7 +81,8 @@ void main() async {
         final Either<Failure, PiholeSettings> result =
             await settingsRepository.createPiholeSettings();
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result,
+            equals(Left(Failure('createPiholeSettings failed', tError))));
       },
     );
   });
@@ -111,14 +113,48 @@ void main() async {
         final Either<Failure, bool> result =
             await settingsRepository.deletePiholeSettings(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result,
+            equals(Left(Failure('deletePiholeSettings failed', tError))));
+      },
+    );
+  });
+
+  group('deleteAllSettings', () {
+    test(
+      'should return true on successful deleteAllSettings',
+      () async {
+        // arrange
+        when(mockSettingsDataSource.deleteAllSettings())
+            .thenAnswer((_) async => true);
+        // act
+        final Either<Failure, bool> result =
+            await settingsRepository.deleteAllSettings();
+        // assert
+        expect(result, equals(Right(true)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed deleteAllSettings',
+      () async {
+        // arrange
+        final tError = PiException.emptyResponse();
+        when(mockSettingsDataSource.deleteAllSettings()).thenThrow(tError);
+        // act
+        final Either<Failure, bool> result =
+            await settingsRepository.deleteAllSettings();
+        // assert
+        expect(
+            result, equals(Left(Failure('deleteAllSettings failed', tError))));
       },
     );
   });
 
   group('fetchAllPiholeSettings', () {
+    final tSettings = PiholeSettings(title: 'Newly created');
+
     test(
-      'should return true on successful fetchAllPiholeSettings',
+      'should return List<PiholeSettings> on successful fetchAllPiholeSettings',
       () async {
         // arrange
         final List<PiholeSettings> all = [
@@ -129,9 +165,40 @@ void main() async {
             .thenAnswer((_) async => all);
         // act
         final Either<Failure, List<PiholeSettings>> result =
-            await settingsRepository.fetchAllPiholeSettings(piholeSettings);
+            await settingsRepository.fetchAllPiholeSettings();
         // assert
         expect(result, equals(Right(all)));
+      },
+    );
+
+    test(
+      'should add default settings to list on successful empty fetchAllPiholeSettings',
+      () async {
+        // arrange
+        final List<PiholeSettings> all = [];
+        when(mockSettingsDataSource.fetchAllPiholeSettings())
+            .thenAnswer((_) async => all);
+        when(mockSettingsDataSource.createPiholeSettings())
+            .thenAnswer((_) async => tSettings);
+        when(mockSettingsDataSource.activatePiholeSettings(tSettings))
+            .thenAnswer((_) async => true);
+        // act
+        final Either<Failure, List<PiholeSettings>> result =
+            await settingsRepository.fetchAllPiholeSettings();
+        // assert
+        expect(result.isRight(), isTrue);
+
+        result.fold(
+          (l) {
+            fail('expected List<PiholeSettings>');
+          },
+          (r) {
+            expect(r, equals([tSettings]));
+          },
+        );
+
+        verify(mockSettingsDataSource.createPiholeSettings());
+        verify(mockSettingsDataSource.activatePiholeSettings(tSettings));
       },
     );
 
@@ -143,9 +210,10 @@ void main() async {
         when(mockSettingsDataSource.fetchAllPiholeSettings()).thenThrow(tError);
         // act
         final Either<Failure, List<PiholeSettings>> result =
-            await settingsRepository.fetchAllPiholeSettings(piholeSettings);
+            await settingsRepository.fetchAllPiholeSettings();
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result,
+            equals(Left(Failure('fetchAllPiholeSettings failed', tError))));
       },
     );
   });
@@ -176,7 +244,8 @@ void main() async {
         final Either<Failure, bool> result =
             await settingsRepository.updatePiholeSettings(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result,
+            equals(Left(Failure('updatePiholeSettings failed', tError))));
       },
     );
   });
@@ -203,14 +272,16 @@ void main() async {
       'should return $Failure on failed fetchActivePiholeSettings',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+        final tError = PiException.timeOut();
         when(mockSettingsDataSource.fetchActivePiholeSettings())
             .thenThrow(tError);
         // act
         final Either<Failure, PiholeSettings> result =
             await settingsRepository.fetchActivePiholeSettings();
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result,
+            equals(Left(Failure('fetchActivePiholeSettings failed', tError))));
+        verifyNever(mockSettingsDataSource.createPiholeSettings());
       },
     );
   });

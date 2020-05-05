@@ -41,7 +41,7 @@ void main() async {
             await settingsDataSourceHive.createPiholeSettings();
         // assert
         expect(result, equals(piholeSettings));
-        verify(mockBox.put(piholeSettings.title, piholeSettings.toJson()));
+        verify(mockBox.add(piholeSettings.toJson()));
       },
     );
 
@@ -57,20 +57,6 @@ void main() async {
     );
   });
 
-  test(
-    'should return on successful deletePiholeSettings',
-    () async {
-      // arrange
-      when(mockBox.isOpen).thenReturn(true);
-      final PiholeSettings piholeSettings = PiholeSettings(title: 'Delete me');
-      when(mockBox.delete(any)).thenAnswer((_) async {});
-      // act
-      await settingsDataSourceHive.deletePiholeSettings(piholeSettings);
-      // assert
-      verify(mockBox.delete(piholeSettings.title));
-    },
-  );
-
   group('updatePiholeSettings', () {
     test(
       'should return PiholeSettings on successful updatePiholeSettings',
@@ -81,7 +67,7 @@ void main() async {
         // act
         await settingsDataSourceHive.updatePiholeSettings(piholeSettings);
         // assert
-        verify(mockBox.put(piholeSettings.title, piholeSettings.toJson()));
+        verify(mockBox.putAt(0, piholeSettings.toJson()));
       },
     );
 
@@ -98,6 +84,43 @@ void main() async {
     );
   });
 
+  group('deletePiholeSettings', () {
+    test(
+      'should return on successful deletePiholeSettings',
+      () async {
+        // arrange
+        final PiholeSettings piholeSettings =
+            PiholeSettings(title: 'Delete me');
+        when(mockBox.isOpen).thenReturn(true);
+        when(mockBox.values).thenReturn([
+          PiholeSettings().toJson(),
+          piholeSettings.toJson(),
+        ]);
+
+        when(mockBox.deleteAt(1)).thenAnswer((_) async {});
+        // act
+        await settingsDataSourceHive.deletePiholeSettings(piholeSettings);
+        // assert
+      },
+    );
+  });
+
+  group('deleteAllSettings', () {
+    test(
+      'should return on successful deleteAllSettings',
+      () async {
+        // arrange
+        when(mockBox.isOpen).thenReturn(true);
+
+        when(mockBox.deleteFromDisk()).thenAnswer((_) async {});
+        // act
+        await settingsDataSourceHive.deleteAllSettings();
+        // assert
+        verify(mockHive.deleteFromDisk());
+      },
+    );
+  });
+
   test(
     'should return on successful activatePiholeSettings',
     () async {
@@ -105,11 +128,12 @@ void main() async {
       when(mockBox.isOpen).thenReturn(true);
       final PiholeSettings piholeSettings =
           PiholeSettings(title: 'Activate me');
-      when(mockBox.put(any, any)).thenAnswer((_) async {});
+      when(mockBox.putAt(0, piholeSettings.toJson())).thenAnswer((_) async {});
       // act
-      await settingsDataSourceHive.activatePiholeSettings(piholeSettings);
+      final result =
+          await settingsDataSourceHive.activatePiholeSettings(piholeSettings);
       // assert
-      verify(mockBox.put(Constants.piholeSettingsActive, piholeSettings.title));
+      expect(result, isTrue);
     },
   );
 
@@ -129,7 +153,7 @@ void main() async {
           ),
         ];
         when(mockBox.values)
-            .thenReturn(allPiholeSettings.map((e) => e.toJson()));
+            .thenReturn(allPiholeSettings.map((e) => e.toJson()).toList());
         // act
         final result = await settingsDataSourceHive.fetchAllPiholeSettings();
         // assert
@@ -151,12 +175,26 @@ void main() async {
 
   group('fetchActivePiholeSettings', () {
     test(
-      'should return PiholeSettings on successful fetchActivePiholeSettings',
+      'should return PiholeSettings on succesful fetchActivePiholeSettings',
       () async {
         // arrange
         final PiholeSettings active = PiholeSettings(title: 'First');
+        when(mockBox.isOpen).thenReturn(true);
+        when(mockBox.getAt(0)).thenReturn(active.toJson());
+        // act
+        final PiholeSettings result =
+            await settingsDataSourceHive.fetchActivePiholeSettings();
+        // assert
+        expect(result, equals(active));
+      },
+    );
+
+    test(
+      'should return PiholeSettings on null fetchActivePiholeSettings',
+      () async {
+        // arrange
         final List<PiholeSettings> allPiholeSettings = <PiholeSettings>[
-          active,
+          PiholeSettings(title: 'First'),
           PiholeSettings(
               title: 'Second', basicAuthenticationPassword: 'password'),
           PiholeSettings(
@@ -168,14 +206,15 @@ void main() async {
         when(mockBox.isOpen).thenReturn(true);
         when(mockBox.values)
             .thenReturn(allPiholeSettings.map((e) => e.toJson()));
-        when(mockBox.get(Constants.piholeSettingsActive))
-            .thenReturn(active.title);
+        when(mockBox.get(Constants.piholeSettingsActive,
+                defaultValue: anyNamed('defaultValue')))
+            .thenReturn(null);
 
         // act
         final PiholeSettings result =
             await settingsDataSourceHive.fetchActivePiholeSettings();
         // assert
-        expect(result, equals(active));
+        expect(result, equals(PiholeSettings()));
       },
     );
   });
