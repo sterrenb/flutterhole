@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/dependency_injection.dart';
@@ -46,8 +47,25 @@ class SettingsPage extends StatelessWidget {
                     itemCount: all.length,
                     itemBuilder: (context, index) {
                       final settings = all.elementAt(index);
-                      return ListTile(
-                        title: Text('${settings.title}'),
+                      return OpenContainer(
+                        tappable: false,
+                        openElevation: 0,
+                        closedElevation: 0,
+                        closedBuilder:
+                            (BuildContext context, VoidCallback openContainer) {
+                          return ListTile(
+                            title: Text('${settings.title}'),
+                            trailing: Visibility(
+                              visible: settings == active,
+                              child: Icon(Icons.check),
+                            ),
+                            onTap: openContainer,
+                          );
+                        },
+                        openBuilder: (BuildContext context,
+                            VoidCallback closeContainer) {
+                          return Scaffold();
+                        },
                       );
                     });
               },
