@@ -6,7 +6,6 @@ class Constants {
 
   static const String piholeSettingsSubDirectory = 'piholes';
   static const String piholeSettingsAll = 'all';
-  static const String piholeSettingsActive = 'active_pihole';
 }
 
 class KIcons {

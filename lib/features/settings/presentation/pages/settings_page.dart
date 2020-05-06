@@ -21,6 +21,12 @@ class SettingsPage extends StatelessWidget {
               ),
               actions: <Widget>[
                 IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    getIt<SettingsBloc>().add(SettingsEventCreate());
+                  },
+                ),
+                IconButton(
                   icon: Icon(Icons.refresh),
                   onPressed: () {
                     getIt<SettingsBloc>().add(SettingsEventInit());

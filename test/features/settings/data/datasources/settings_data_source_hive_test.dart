@@ -206,9 +206,6 @@ void main() async {
         when(mockBox.isOpen).thenReturn(true);
         when(mockBox.values)
             .thenReturn(allPiholeSettings.map((e) => e.toJson()));
-        when(mockBox.get(Constants.piholeSettingsActive,
-                defaultValue: anyNamed('defaultValue')))
-            .thenReturn(null);
 
         // act
         final PiholeSettings result =

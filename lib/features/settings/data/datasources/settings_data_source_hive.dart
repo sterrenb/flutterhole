@@ -56,11 +56,10 @@ class SettingsDataSourceHive implements SettingsDataSource {
   }
 
   @override
-  Future<bool> deleteAllSettings()async  {
+  Future<bool> deleteAllSettings() async {
     await _hive.deleteFromDisk();
     return true;
   }
-
 
   @override
   Future<bool> activatePiholeSettings(PiholeSettings piholeSettings) async {
@@ -74,7 +73,8 @@ class SettingsDataSourceHive implements SettingsDataSource {
     final box = await _piholeBox;
 
     final list = box.values
-        .map((e) => PiholeSettings.fromJson(e))
+        .map<PiholeSettings>(
+            (e) => PiholeSettings.fromJson(Map<String, dynamic>.from(e)))
         .toList();
     return List<PiholeSettings>.from(list);
   }
@@ -88,6 +88,6 @@ class SettingsDataSourceHive implements SettingsDataSource {
       return PiholeSettings();
     }
 
-    return PiholeSettings.fromJson(json);
+    return PiholeSettings.fromJson(Map.from(json));
   }
 }
