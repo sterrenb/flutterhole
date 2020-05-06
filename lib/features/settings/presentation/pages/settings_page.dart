@@ -2,8 +2,9 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
-import 'package:flutterhole/widgets/layout/default_drawer.dart';
+import 'package:flutterhole/features/settings/presentation/pages/pihole_settings_page.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -64,7 +65,7 @@ class SettingsPage extends StatelessWidget {
                         },
                         openBuilder: (BuildContext context,
                             VoidCallback closeContainer) {
-                          return Scaffold();
+                          return PiholeSettingsPage(initialValue: settings);
                         },
                       );
                     });

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/core/debug/bloc_delegate.dart';
 import 'package:flutterhole/dependency_injection.dart';
-import 'package:flutterhole/features/settings/presentation/pages/settings_page.dart';
+import 'package:flutterhole/features/routing/services/router_service.dart';
 import 'package:injectable/injectable.dart';
 
 import 'features/settings/data/datasources/settings_data_source.dart';
@@ -9,6 +9,7 @@ import 'features/settings/data/datasources/settings_data_source.dart';
 void main() async {
   await configure(Environment.prod);
   enableBlocDelegate();
+  getIt<RouterService>().createRoutes();
   runApp(MyApp());
 }
 
@@ -18,6 +19,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      navigatorKey: getIt<RouterService>().navigatorKey,
+      onGenerateRoute: getIt<RouterService>().onGenerateRoute,
+      initialRoute: RouterService.home,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -35,7 +39,6 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SettingsPage(),
     );
   }
 }

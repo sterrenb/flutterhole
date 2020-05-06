@@ -49,13 +49,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   @override
   SettingsState get initialState => SettingsStateInitial();
 
-  @override
-  Stream<SettingsState> mapEventToState(SettingsEvent event) async* {
-    if (event is SettingsEventInit) yield* _init();
-    if (event is SettingsEventReset) yield* _reset();
-    if (event is SettingsEventCreate) yield* _create();
-  }
-
   Stream<SettingsState> _init() async* {
     yield SettingsStateLoading();
 
@@ -106,5 +99,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         yield* _init();
       },
     );
+  }
+
+  @override
+  Stream<SettingsState> mapEventToState(SettingsEvent event) async* {
+    if (event is SettingsEventInit) yield* _init();
+    if (event is SettingsEventReset) yield* _reset();
+    if (event is SettingsEventCreate) yield* _create();
   }
 }
