@@ -1,3 +1,4 @@
+import 'package:alice/alice.dart';
 import 'package:dio/dio.dart';
 import 'package:flutterhole/dependency_injection.iconfig.dart';
 import 'package:get_it/get_it.dart';
@@ -16,7 +17,7 @@ Future<void> configure(String environment) async {
 @registerModule
 abstract class RegisterModule {
   @prod
-  @injectable
+  @singleton
   Dio get dio => Dio();
 
   @prod
@@ -33,4 +34,10 @@ abstract class RegisterModule {
           options: SailorOptions(
         isLoggingEnabled: true,
       ));
+
+  @singleton
+  Alice get alice => Alice(
+        showNotification: true,
+        darkTheme: true,
+      );
 }

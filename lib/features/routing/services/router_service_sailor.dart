@@ -1,3 +1,4 @@
+import 'package:alice/alice.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/navigator.dart';
 import 'package:flutterhole/dependency_injection.dart';
@@ -13,9 +14,14 @@ import 'package:sailor/sailor.dart';
 @singleton
 @RegisterAs(RouterService)
 class RouterServiceSailor implements RouterService {
-  RouterServiceSailor([Sailor sailor]) : _sailor = sailor ?? getIt<Sailor>();
+  RouterServiceSailor([Sailor sailor, Alice alice])
+      : _sailor = sailor ?? getIt<Sailor>(),
+        _alice = alice ?? getIt<Alice>() {
+    _alice.setNavigatorKey(navigatorKey);
+  }
 
   final Sailor _sailor;
+  final Alice _alice;
 
   @override
   void createRoutes() {

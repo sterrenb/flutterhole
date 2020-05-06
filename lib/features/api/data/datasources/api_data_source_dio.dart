@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:alice/alice.dart';
 import 'package:dio/dio.dart';
 import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/dependency_injection.dart';
@@ -14,17 +17,34 @@ import 'package:injectable/injectable.dart';
 @injectable
 @RegisterAs(ApiDataSource)
 class ApiDataSourceDio implements ApiDataSource {
-  ApiDataSourceDio([Dio dio]) : _dio = dio ?? getIt<Dio>();
+  ApiDataSourceDio([Dio dio, Alice alice])
+      : _dio = dio ?? getIt<Dio>(),
+        _alice = alice ?? getIt<Alice>() {
+    _dio.interceptors.add(_alice.getDioInterceptor());
+    print('interceptors: ${_dio.interceptors?.length}');
+  }
 
   final Dio _dio;
+  final Alice _alice;
 
   Future<dynamic> _get(
     PiholeSettings settings, {
     Map<String, dynamic> queryParameters = const {},
   }) async {
+    print('getting ${settings.baseUrl} $queryParameters');
+
     try {
-      final Response response =
-          await _dio.get('', queryParameters: queryParameters);
+      final Response response = await _dio.get(
+        '${settings.baseUrl}:${settings.apiPort}${settings.apiPath}',
+        queryParameters: queryParameters,
+        options: Options(
+          headers: {
+            HttpHeaders.userAgentHeader: "flutterhole",
+          },
+          contentType: Headers.jsonContentType,
+          responseType: ResponseType.json,
+        ),
+      );
 
       final data = response.data;
 

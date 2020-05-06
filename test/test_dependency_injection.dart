@@ -1,10 +1,10 @@
-import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart' as flutter_test;
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:injectable/injectable.dart';
 
 Future<void> setUpAllForTest() async {
-  setUpAll(() async {
+  flutter_test.setUpAll(() async {
     await configure(Environment.test);
-    TestWidgetsFlutterBinding.ensureInitialized();
+    flutter_test.TestWidgetsFlutterBinding.ensureInitialized();
   });
 }

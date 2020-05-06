@@ -1,3 +1,4 @@
+import 'package:alice/alice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/dependency_injection.dart';
@@ -63,6 +64,13 @@ class DefaultDrawer extends StatelessWidget {
             routeName: RouterService.about,
             title: Text('About'),
             icon: Icon(KIcons.about),
+          ),
+          ListTile(
+            title: Text('API Log'),
+            leading: Icon(KIcons.log),
+            onTap: () {
+              getIt<Alice>().showInspector();
+            },
           ),
         ],
       ),

@@ -53,6 +53,16 @@ class _HomePageState extends State<HomePage> {
         drawer: DefaultDrawer(),
         appBar: AppBar(
           title: Text('Flutter'),
+          actions: <Widget>[
+            Builder(builder: (BuildContext context) {
+              return IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () {
+                  BlocProvider.of<HomeBloc>(context).add(HomeEvent.fetch());
+                },
+              );
+            }),
+          ],
         ),
         bottomNavigationBar: BottomNavyBar(
           selectedIndex: _selectedIndex,
