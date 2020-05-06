@@ -58,6 +58,12 @@ class DefaultDrawer extends StatelessWidget {
             title: Text('Settings'),
             icon: Icon(KIcons.settings),
           ),
+          Divider(),
+          _DrawerTile(
+            routeName: RouterService.about,
+            title: Text('About'),
+            icon: Icon(KIcons.about),
+          ),
         ],
       ),
     );

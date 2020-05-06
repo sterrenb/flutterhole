@@ -1,6 +1,8 @@
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/navigator.dart';
 import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/routing/presentation/pages/about_page.dart';
+import 'package:flutterhole/features/routing/presentation/pages/privacy_page.dart';
 import 'package:flutterhole/features/routing/services/router_service.dart';
 import 'package:flutterhole/features/settings/presentation/pages/settings_page.dart';
 import 'package:flutterhole/widgets/pages/home_page.dart';
@@ -27,6 +29,16 @@ class RouterServiceSailor implements RouterService {
           name: RouterService.settings,
           builder: (context, args, params) {
             return SettingsPage();
+          }),
+      SailorRoute(
+          name: RouterService.about,
+          builder: (context, args, params) {
+            return AboutPage();
+          }),
+      SailorRoute(
+          name: RouterService.privacy,
+          builder: (context, args, params) {
+            return PrivacyPage();
           }),
     ]);
   }

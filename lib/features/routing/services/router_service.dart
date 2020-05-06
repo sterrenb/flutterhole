@@ -5,6 +5,7 @@ abstract class RouterService {
   static const String settings = '/settings';
   static const String log = '/log';
   static const String about = '/about';
+  static const String privacy = '/privacy';
 
   GlobalKey<NavigatorState> get navigatorKey;
 
