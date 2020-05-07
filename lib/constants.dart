@@ -6,6 +6,8 @@ class Constants {
 
   static const String piholeSettingsSubDirectory = 'piholes';
   static const String piholeSettingsActive = 'active';
+
+
 }
 
 class KIcons {
@@ -87,4 +89,5 @@ class KColors {
   static const Color warning = Colors.orange;
   static const Color success = Colors.green;
   static const Color error = Colors.red;
+
 }
