@@ -1,10 +1,10 @@
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:flutterhole/features/settings/presentation/pages/pihole_settings_page.dart';
+import 'package:flutterhole/widgets/layout/animated_opener.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -48,25 +48,20 @@ class SettingsPage extends StatelessWidget {
                     itemCount: all.length,
                     itemBuilder: (context, index) {
                       final settings = all.elementAt(index);
-                      return OpenContainer(
-                        tappable: false,
-                        openElevation: 0,
-                        closedElevation: 0,
-                        closedBuilder:
-                            (BuildContext context, VoidCallback openContainer) {
-                          return ListTile(
-                            title: Text('${settings.title}'),
-                            trailing: Visibility(
-                              visible: settings == active,
-                              child: Icon(Icons.check),
-                            ),
-                            onTap: openContainer,
-                          );
-                        },
-                        openBuilder: (BuildContext context,
-                            VoidCallback closeContainer) {
-                          return PiholeSettingsPage(initialValue: settings);
-                        },
+                      return AnimatedOpener(
+                        closed: (context) => ListTile(
+                          title: Text('${settings.title}'),
+                          trailing: Visibility(
+                            visible: settings == active,
+                            child: Icon(Icons.check),
+                          ),
+                          onLongPress: () {
+                            print('hi');
+//                            getIt<SettingsBloc>().add(SettingsEvent());
+                          },
+                        ),
+                        opened: (context) =>
+                            PiholeSettingsPage(initialValue: settings),
                       );
                     });
               },

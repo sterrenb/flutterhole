@@ -132,11 +132,14 @@ class _AboutTiles extends StatelessWidget {
       children: <Widget>[
         ListTitle(message: 'Help'),
         AnimatedOpener(
-          closed: _AboutTile(
+          closed: (context) => _AboutTile(
             KIcons.privacy,
             text: 'Privacy',
           ),
-          opened: PrivacyPage(),
+          opened: (context) => PrivacyPage(
+            privacyReadmeTextFuture:
+                getIt<BrowserService>().fetchPrivacyReadmeText(),
+          ),
         ),
         _AboutTile(
           KIcons.bugReport,

@@ -6,6 +6,13 @@ import 'package:flutterhole/features/browser/services/browser_service.dart';
 import 'package:flutterhole/widgets/layout/animate_on_build.dart';
 
 class PrivacyPage extends StatelessWidget {
+  const PrivacyPage({
+    Key key,
+    @required this.privacyReadmeTextFuture,
+  }) : super(key: key);
+
+  final Future<String> privacyReadmeTextFuture;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,13 +23,14 @@ class PrivacyPage extends StatelessWidget {
               tooltip: 'Open in browser',
               icon: Icon(KIcons.openInBrowser),
               onPressed: () {
-                getIt<BrowserService>().launchUrl(getIt<BrowserService>().privacyUrl);
+                getIt<BrowserService>()
+                    .launchUrl(getIt<BrowserService>().privacyUrl);
               }),
         ],
       ),
       body: FutureBuilder<String>(
-          future: getIt<BrowserService>().fetchPrivacyReadmeText(),
-          builder: (context, snapshot) {
+          future: privacyReadmeTextFuture,
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             if (snapshot.hasData) {
               return AnimateOnBuild(
                 child: Markdown(
