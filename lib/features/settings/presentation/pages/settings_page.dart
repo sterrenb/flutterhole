@@ -11,6 +11,11 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsBloc, SettingsState>(
         bloc: getIt<SettingsBloc>(),
+        condition: (SettingsState previous, SettingsState next) {
+          if (previous is SettingsStateSuccess) return false;
+
+          return true;
+        },
         builder: (BuildContext context, SettingsState state) {
           return Scaffold(
             drawer: DefaultDrawer(),
@@ -56,8 +61,8 @@ class SettingsPage extends StatelessWidget {
                             child: Icon(Icons.check),
                           ),
                           onLongPress: () {
-                            print('hi');
-//                            getIt<SettingsBloc>().add(SettingsEvent());
+                            getIt<SettingsBloc>()
+                                .add(SettingsEvent.activate(settings));
                           },
                         ),
                         opened: (context) =>

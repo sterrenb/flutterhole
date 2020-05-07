@@ -1,4 +1,5 @@
 import 'package:flutterhole/constants.dart';
+import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/settings/data/datasources/settings_data_source.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
@@ -20,6 +21,24 @@ class SettingsDataSourceHive implements SettingsDataSource {
     if (!box.isOpen) throw SettingsException();
 
     return box;
+  }
+
+  Future<int> get _activeIndex async {
+    final Box box = await _hive.openBox(Constants.piholeSettingsActive);
+
+    if (!box.isOpen) throw SettingsException();
+
+    final int index = box.get(Constants.piholeSettingsActive, defaultValue: -1);
+
+    return index;
+  }
+
+  Future<void> _setActiveIndex(int index) async {
+    final Box box = await _hive.openBox(Constants.piholeSettingsActive);
+
+    if (!box.isOpen) throw SettingsException();
+
+    await box.put(Constants.piholeSettingsActive, index);
   }
 
   @override
@@ -62,13 +81,6 @@ class SettingsDataSourceHive implements SettingsDataSource {
   }
 
   @override
-  Future<bool> activatePiholeSettings(PiholeSettings piholeSettings) async {
-    final box = await _piholeBox;
-    await box.putAt(0, piholeSettings.toJson());
-    return true;
-  }
-
-  @override
   Future<List<PiholeSettings>> fetchAllPiholeSettings() async {
     final box = await _piholeBox;
 
@@ -80,11 +92,33 @@ class SettingsDataSourceHive implements SettingsDataSource {
   }
 
   @override
+  Future<bool> activatePiholeSettings(
+      PiholeSettings piholeSettings) async {
+    final List<PiholeSettings> all = await fetchAllPiholeSettings();
+
+    final int index = all.indexOf(piholeSettings);
+    if (index < 0) {
+      throw PiException.notFound();
+    }
+
+    await _setActiveIndex(index);
+
+    return true;
+  }
+
+  @override
   Future<PiholeSettings> fetchActivePiholeSettings() async {
     final box = await _piholeBox;
-    final json = box.getAt(0);
+    final index = await _activeIndex;
+
+    if(index < 0) {
+      print('no active pihole found in storage, returning default');
+      return PiholeSettings();
+    }
+
+    final json = box.getAt(index);
     if (json == null) {
-      print('no active pihole found, returning default');
+      print('no active pihole found at index $index, returning default');
       return PiholeSettings();
     }
 

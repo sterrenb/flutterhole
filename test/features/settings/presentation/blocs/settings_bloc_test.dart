@@ -136,9 +136,41 @@ void main() {
         return bloc;
       },
       act: (SettingsBloc bloc) async => bloc.add(SettingsEventCreate()),
+      expect: [SettingsStateLoading(), SettingsStateSuccess(all, added)],
+    );
+  });
+
+  group('$SettingsEventActivate', () {
+    final settings0 = PiholeSettings(title: 'First');
+    final settings1 = PiholeSettings(title: 'Second');
+    final settings2 = PiholeSettings(title: 'Third');
+
+    final newActive = settings1;
+
+    blocTest(
+      'Emits [$SettingsStateLoading, $SettingsStateSuccess] when $SettingsEventActivate succeeds',
+      build: () async {
+        when(mockSettingsRepository.activatePiholeSettings(newActive))
+            .thenAnswer((_) async => Right(true));
+        when(mockSettingsRepository.fetchAllPiholeSettings())
+            .thenAnswer((_) async => Right([
+                  newActive,
+                  settings0,
+                  settings2,
+                ]));
+        when(mockSettingsRepository.fetchActivePiholeSettings())
+            .thenAnswer((_) async => Right(newActive));
+        return bloc;
+      },
+      act: (SettingsBloc bloc) async =>
+          bloc.add(SettingsEvent.activate(newActive)),
       expect: [
         SettingsStateLoading(),
-        SettingsStateSuccess(all, added)
+        SettingsStateSuccess([
+          newActive,
+          settings0,
+          settings2,
+        ], newActive)
       ],
     );
   });
