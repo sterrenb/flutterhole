@@ -91,12 +91,16 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
   @override
   Future<Either<Failure, bool>> updatePiholeSettings(
-      PiholeSettings piholeSettings) async {
-    return _simpleSettings<bool>(
-      piholeSettings,
-      _settingsDataSource.updatePiholeSettings,
-      'updatePiholeSettings',
-    );
+    PiholeSettings original,
+    PiholeSettings update,
+  ) async {
+    try {
+      final bool result =
+      await _settingsDataSource.updatePiholeSettings(original, update);
+      return Right(result);
+    } on PiException catch (e) {
+      return Left(Failure('updatePiholeSettings failed', e));
+    }
   }
 
   @override

@@ -6,7 +6,7 @@ abstract class SettingsRepository {
   Future<Either<Failure, PiholeSettings>> createPiholeSettings();
 
   Future<Either<Failure, bool>> updatePiholeSettings(
-      PiholeSettings piholeSettings);
+      PiholeSettings original, PiholeSettings update);
 
   Future<Either<Failure, bool>> deletePiholeSettings(
       PiholeSettings piholeSettings);

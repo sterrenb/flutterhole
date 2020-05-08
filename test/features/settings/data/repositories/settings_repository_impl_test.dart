@@ -223,11 +223,11 @@ void main() async {
       'should return true on successful updatePiholeSettings',
       () async {
         // arrange
-        when(mockSettingsDataSource.updatePiholeSettings(any))
+        when(mockSettingsDataSource.updatePiholeSettings(any, any))
             .thenAnswer((_) async => true);
         // act
-        final Either<Failure, bool> result =
-            await settingsRepository.updatePiholeSettings(piholeSettings);
+        final Either<Failure, bool> result = await settingsRepository
+            .updatePiholeSettings(piholeSettings, piholeSettings);
         // assert
         expect(result, equals(Right(true)));
       },
@@ -238,11 +238,11 @@ void main() async {
       () async {
         // arrange
         final tError = PiException.emptyResponse();
-        when(mockSettingsDataSource.updatePiholeSettings(any))
+        when(mockSettingsDataSource.updatePiholeSettings(any, any))
             .thenThrow(tError);
         // act
-        final Either<Failure, bool> result =
-            await settingsRepository.updatePiholeSettings(piholeSettings);
+        final Either<Failure, bool> result = await settingsRepository
+            .updatePiholeSettings(piholeSettings, piholeSettings);
         // assert
         expect(result,
             equals(Left(Failure('updatePiholeSettings failed', tError))));

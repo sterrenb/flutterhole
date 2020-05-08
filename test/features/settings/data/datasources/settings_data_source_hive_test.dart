@@ -66,12 +66,19 @@ void main() async {
       'should return PiholeSettings on successful updatePiholeSettings',
       () async {
         // arrange
+        final PiholeSettings original = PiholeSettings(
+          title: 'Original',
+          apiPort: 123,
+        );
+        final PiholeSettings updated = original.copyWith(title: 'Updated');
+
         when(mockPiBox.isOpen).thenReturn(true);
-        final PiholeSettings piholeSettings = PiholeSettings(title: 'Updated');
+        when(mockPiBox.values).thenReturn([original.toJson()]);
+
         // act
-        await settingsDataSourceHive.updatePiholeSettings(piholeSettings);
+        await settingsDataSourceHive.updatePiholeSettings(original, updated);
         // assert
-        verify(mockPiBox.putAt(0, piholeSettings.toJson()));
+        verify(mockPiBox.putAt(0, updated.toJson()));
       },
     );
 
@@ -79,10 +86,11 @@ void main() async {
       'should throw SettingsException on updatePiholeSettings with empty settings title',
       () async {
         // arrange
-        final PiholeSettings piholeSettings = PiholeSettings(title: '');
+        final PiholeSettings original = PiholeSettings(title: '');
+        final PiholeSettings update = original.copyWith(title: 'oi');
         // assert
         expect(
-            () => settingsDataSourceHive.updatePiholeSettings(piholeSettings),
+            () => settingsDataSourceHive.updatePiholeSettings(original, update),
             throwsA(isA<SettingsException>()));
       },
     );
@@ -199,7 +207,9 @@ void main() async {
         when(mockPiBox.isOpen).thenReturn(true);
         when(mockPiBox.getAt(2)).thenReturn(active.toJson());
         when(mockActiveBox.isOpen).thenReturn(true);
-        when(mockActiveBox.get(Constants.piholeSettingsActive, defaultValue: -1)).thenReturn(2);
+        when(mockActiveBox.get(Constants.piholeSettingsActive,
+                defaultValue: -1))
+            .thenReturn(2);
         // act
         final PiholeSettings result =
             await settingsDataSourceHive.fetchActivePiholeSettings();
@@ -226,7 +236,9 @@ void main() async {
         when(mockPiBox.values)
             .thenReturn(allPiholeSettings.map((e) => e.toJson()));
         when(mockActiveBox.isOpen).thenReturn(true);
-        when(mockActiveBox.get(Constants.piholeSettingsActive, defaultValue: -1)).thenReturn(-1);
+        when(mockActiveBox.get(Constants.piholeSettingsActive,
+                defaultValue: -1))
+            .thenReturn(-1);
         // act
         final PiholeSettings result =
             await settingsDataSourceHive.fetchActivePiholeSettings();

@@ -51,12 +51,23 @@ class SettingsDataSourceHive implements SettingsDataSource {
   }
 
   @override
-  Future<bool> updatePiholeSettings(PiholeSettings piholeSettings) async {
-    if (piholeSettings.title.isEmpty) throw SettingsException();
+  Future<bool> updatePiholeSettings(
+    PiholeSettings original,
+    PiholeSettings update,
+  ) async {
+    if (original.title.isEmpty || update.title.isEmpty)
+      throw SettingsException();
 
     final box = await _piholeBox;
 
-    await box.putAt(0, piholeSettings.toJson());
+    final List<PiholeSettings> all = await fetchAllPiholeSettings();
+
+    final int index = all.indexOf(original);
+    if (index < 0) {
+      throw PiException.notFound();
+    }
+
+    await box.putAt(index, update.toJson());
 
     return true;
   }
@@ -92,8 +103,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
   }
 
   @override
-  Future<bool> activatePiholeSettings(
-      PiholeSettings piholeSettings) async {
+  Future<bool> activatePiholeSettings(PiholeSettings piholeSettings) async {
     final List<PiholeSettings> all = await fetchAllPiholeSettings();
 
     final int index = all.indexOf(piholeSettings);
@@ -111,7 +121,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
     final box = await _piholeBox;
     final index = await _activeIndex;
 
-    if(index < 0) {
+    if (index < 0) {
       print('no active pihole found in storage, returning default');
       return PiholeSettings();
     }
