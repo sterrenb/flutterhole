@@ -56,7 +56,7 @@ void main() async {
         final Either<Failure, SummaryModel> result =
             await apiRepository.fetchSummary(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result, equals(Left(Failure('fetchSummary failed', tError))));
       },
     );
   });
@@ -87,7 +87,7 @@ void main() async {
         final Either<Failure, ToggleStatus> result =
             await apiRepository.pingPihole(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result, equals(Left(Failure('pingPihole failed', tError))));
       },
     );
   });
@@ -118,7 +118,7 @@ void main() async {
         final Either<Failure, ToggleStatus> result =
             await apiRepository.enablePihole(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result, equals(Left(Failure('enablePihole failed', tError))));
       },
     );
   });
@@ -149,7 +149,7 @@ void main() async {
         final Either<Failure, ToggleStatus> result =
             await apiRepository.disablePihole(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result, equals(Left(Failure('disablePihole failed', tError))));
       },
     );
   });
@@ -183,7 +183,7 @@ void main() async {
         final Either<Failure, ToggleStatus> result =
             await apiRepository.sleepPihole(piholeSettings, duration);
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result, equals(Left(Failure('sleepPihole failed', tError))));
       },
     );
   });
@@ -215,7 +215,7 @@ void main() async {
         final Either<Failure, OverTimeData> result =
             await apiRepository.fetchQueriesOverTime(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result, equals(Left(Failure('fetchQueriesOverTime failed', tError))));
       },
     );
   });
@@ -247,7 +247,7 @@ void main() async {
         final Either<Failure, TopSourcesResult> result =
             await apiRepository.fetchTopSources(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result, equals(Left(Failure('fetchTopSources failed', tError))));
       },
     );
   });
@@ -255,14 +255,14 @@ void main() async {
   group('fetchQueryTypes', () {
     test(
       'should return $DnsQueryTypeResult on successful fetchQueryTypes',
-          () async {
+      () async {
         // arrange
         final queryTypes = DnsQueryTypeResult();
         when(mockApiDataSource.fetchQueryTypes(piholeSettings))
             .thenAnswer((_) async => queryTypes);
         // act
         final Either<Failure, DnsQueryTypeResult> result =
-        await apiRepository.fetchQueryTypes(piholeSettings);
+            await apiRepository.fetchQueryTypes(piholeSettings);
         // assert
         expect(result, equals(Right(queryTypes)));
       },
@@ -270,16 +270,16 @@ void main() async {
 
     test(
       'should return $Failure on failed fetchQueryTypes',
-          () async {
+      () async {
         // arrange
         final tError = PiException.emptyResponse();
         when(mockApiDataSource.fetchQueryTypes(piholeSettings))
             .thenThrow(tError);
         // act
         final Either<Failure, DnsQueryTypeResult> result =
-        await apiRepository.fetchQueryTypes(piholeSettings);
+            await apiRepository.fetchQueryTypes(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure())));
+        expect(result, equals(Left(Failure('fetchQueryTypes failed', tError))));
       },
     );
   });

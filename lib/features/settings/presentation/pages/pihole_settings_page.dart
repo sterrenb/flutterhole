@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutterhole/constants.dart';
+import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/settings/blocs/pihole_settings_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
+import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -71,7 +73,12 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
                 child: Text('Save'),
                 onPressed: () {
                   if (_fbKey.currentState.saveAndValidate()) {
-                    print(_fbKey.currentState.value);
+                    final update =
+                        PiholeSettings.fromJson(_fbKey.currentState.value);
+                    print(update);
+
+                    getIt<SettingsBloc>()
+                        .add(SettingsEvent.update(widget.initialValue, update));
                   }
                 },
               ),
@@ -84,11 +91,14 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
               FormBuilderTextField(
                 attribute: 'title',
                 decoration: InputDecoration(labelText: "Title"),
+                autocorrect: false,
+                textCapitalization: TextCapitalization.words,
                 maxLines: 1,
               ),
               FormBuilderTextField(
                 attribute: 'description',
                 decoration: InputDecoration(labelText: "Description"),
+                textCapitalization: TextCapitalization.sentences,
                 minLines: 1,
                 maxLines: 5,
               ),
@@ -96,11 +106,13 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
               FormBuilderTextField(
                 attribute: 'baseUrl',
                 decoration: InputDecoration(labelText: "Base URL"),
+                autocorrect: false,
                 maxLines: 1,
               ),
               FormBuilderTextField(
                 attribute: 'apiPath',
                 decoration: InputDecoration(labelText: "API path"),
+                autocorrect: false,
                 maxLines: 1,
               ),
               FormBuilderTextField(
@@ -123,6 +135,7 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
               FormBuilderTextField(
                 attribute: 'apiToken',
                 decoration: InputDecoration(labelText: "API token"),
+                autocorrect: false,
                 maxLines: 1,
                 obscureText: true,
                 valueTransformer: (value) => (value ?? '').toString().trim(),

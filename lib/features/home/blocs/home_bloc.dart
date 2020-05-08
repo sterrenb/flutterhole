@@ -86,7 +86,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             overTimeData.isLeft() &&
             topSources.isLeft() &&
             dnsQueryTypes.isLeft()) {
-          yield HomeStateFailure(Failure('all requests failed'));
+          List<Failure> failures = [];
+          summary.leftMap((l) => failures.add(l));
+          overTimeData.leftMap((l) => failures.add(l));
+          topSources.leftMap((l) => failures.add(l));
+          dnsQueryTypes.leftMap((l) => failures.add(l));
+
+          yield HomeStateFailure(Failure(
+            'all requests failed',
+            failures,
+          ));
         } else {
           yield HomeStateSuccess(
             summary,

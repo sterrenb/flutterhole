@@ -113,26 +113,36 @@ void main() {
       ],
     );
 
+    final tFailure0 = Failure('test #0');
+    final tFailure1 = Failure('test #1');
+    final tFailure2 = Failure('test #2');
+    final tFailure3 = Failure('test #3');
+
     blocTest(
       'Emits [$HomeStateLoading, $HomeStateFailure] when $HomeEventFetch fails',
       build: () async {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(piholeSettings));
         when(mockApiRepository.fetchSummary(any))
-            .thenAnswer((_) async => Left(Failure()));
+            .thenAnswer((_) async => Left(tFailure0));
         when(mockApiRepository.fetchQueriesOverTime(any))
-            .thenAnswer((_) async => Left(Failure()));
+            .thenAnswer((_) async => Left(tFailure1));
         when(mockApiRepository.fetchTopSources(any))
-            .thenAnswer((_) async => Left(Failure()));
+            .thenAnswer((_) async => Left(tFailure2));
         when(mockApiRepository.fetchQueryTypes(any))
-            .thenAnswer((_) async => Left(Failure()));
+            .thenAnswer((_) async => Left(tFailure3));
 
         return bloc;
       },
       act: (HomeBloc bloc) async => bloc.add(HomeEventFetch()),
       expect: [
         HomeStateLoading(),
-        HomeStateFailure(Failure('all requests failed')),
+        HomeStateFailure(Failure('all requests failed', [
+          tFailure0,
+          tFailure1,
+          tFailure2,
+          tFailure3,
+        ])),
       ],
     );
 

@@ -16,7 +16,9 @@ class SummaryPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HomeBlocBuilder(builder: (BuildContext context, HomeState state) {
-      return state.maybeWhen<Widget>(success: (
+      return state.maybeWhen<Widget>(
+          failure: (failure) => CenteredFailureIndicator(failure),
+          success: (
         Either<Failure, SummaryModel> summaryResult,
         _,
         __,

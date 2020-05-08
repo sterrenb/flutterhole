@@ -31,7 +31,7 @@ class ApiDataSourceDio implements ApiDataSource {
     PiholeSettings settings, {
     Map<String, dynamic> queryParameters = const {},
   }) async {
-    print('getting ${settings.baseUrl} $queryParameters');
+    print('getting ${settings.baseUrl}${settings.apiPath} $queryParameters');
 
     try {
       final Response response = await _dio.get(
@@ -40,6 +40,7 @@ class ApiDataSourceDio implements ApiDataSource {
         options: Options(
           headers: {
             HttpHeaders.userAgentHeader: "flutterhole",
+            HttpHeaders.contentTypeHeader: Headers.jsonContentType,
           },
           contentType: Headers.jsonContentType,
           responseType: ResponseType.json,

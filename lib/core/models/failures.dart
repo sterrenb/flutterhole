@@ -11,7 +11,7 @@ part 'failures.g.dart';
 abstract class Failure extends MapModel with _$Failure {
   const factory Failure([
     String message,
-    PiException error,
+    Object error,
   ]) = _Failure;
 
   factory Failure.fromJson(Map<String, dynamic> json) =>

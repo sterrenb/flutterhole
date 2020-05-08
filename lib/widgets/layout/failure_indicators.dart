@@ -11,8 +11,12 @@ class CenteredFailureIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('${failure.message ?? 'unknown failure'}'),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text('${failure.message ?? 'unknown failure'}'),
+        Text('${failure.error?.toString()}'),
+      ],
     );
   }
 }
