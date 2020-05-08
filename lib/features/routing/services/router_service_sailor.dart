@@ -2,10 +2,10 @@ import 'package:alice/alice.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/navigator.dart';
 import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/home/presentation/pages/home_page.dart';
 import 'package:flutterhole/features/routing/presentation/pages/about_page.dart';
 import 'package:flutterhole/features/routing/services/router_service.dart';
 import 'package:flutterhole/features/settings/presentation/pages/settings_page.dart';
-import 'package:flutterhole/widgets/pages/home_page.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sailor/sailor.dart';
 

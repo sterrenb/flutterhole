@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/routing/presentation/notifiers/drawer_notifier.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/active_pihole_title.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/settings_bloc_builder.dart';
+import 'package:provider/provider.dart';
 
 class PiholeCircleAvatar extends StatelessWidget {
   const PiholeCircleAvatar(
@@ -14,17 +16,6 @@ class PiholeCircleAvatar extends StatelessWidget {
 
   final PiholeSettings settings;
   final VoidCallback onTap;
-
-  Color get _primaryColor {
-    int index = settings.title.length;
-
-    final debugIndex = settings.title.indexOf('#');
-    if (debugIndex >= 0) {
-      index = debugIndex;
-    }
-
-    return Colors.primaries.elementAt(index % Colors.primaries.length);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +31,8 @@ class PiholeCircleAvatar extends StatelessWidget {
                 .bodyText2
                 .copyWith(color: Theme.of(context).colorScheme.onPrimary),
           ),
-          backgroundColor: _primaryColor,
-//          backgroundColor: Theme.of(context).colorScheme.surface,
+          backgroundColor:
+              settings.primaryColor ?? Theme.of(context).colorScheme.surface,
         ),
         ClipOval(
           child: Tooltip(
@@ -81,9 +72,10 @@ class DefaultDrawerHeader extends StatelessWidget {
           orElse: () => null,
         ),
         otherAccountsPictures: state.maybeWhen<List<Widget>>(
-          success: (all, active) {
-            return List<Widget>.generate(all.length, (int index) {
-              final settings = all.elementAt(index);
+          success: (all, PiholeSettings active) {
+            final some = List<PiholeSettings>.from(all)..remove(active);
+            return List<Widget>.generate(some.length, (int index) {
+              final settings = some.elementAt(index);
               return PiholeCircleAvatar(
                 settings,
                 onTap: () {
@@ -94,6 +86,14 @@ class DefaultDrawerHeader extends StatelessWidget {
           },
           orElse: () => null,
         ),
+        onDetailsPressed: state.maybeWhen<VoidCallback>(
+            success: (_, __) => () {
+                  Provider.of<DrawerNotifier>(
+                    context,
+                    listen: false,
+                  ).toggle();
+                },
+            orElse: () => null),
       );
     });
   }

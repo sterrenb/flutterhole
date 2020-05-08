@@ -6,10 +6,12 @@ class AnimatedOpener extends StatelessWidget {
     Key key,
     @required this.closed,
     @required this.opened,
+    this.onLongPress,
   }) : super(key: key);
 
   final WidgetBuilder closed;
   final WidgetBuilder opened;
+  final VoidCallback onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +28,8 @@ class AnimatedOpener extends StatelessWidget {
         return Material(
           child: InkWell(
 //            splashColor: Theme.of(context).accentColor.withOpacity(.2),
-            onTap: () {
-              openContainer();
-            },
+            onTap: openContainer,
+            onLongPress: onLongPress,
             child: closed(context),
           ),
         );

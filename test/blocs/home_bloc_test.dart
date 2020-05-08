@@ -7,7 +7,7 @@ import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/top_sources.dart';
 import 'package:flutterhole/features/api/data/repositories/api_repository.dart';
-import 'package:flutterhole/features/blocs/home_bloc.dart';
+import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/data/repositories/settings_repository.dart';
 import 'package:mockito/mockito.dart';

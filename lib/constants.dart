@@ -35,6 +35,7 @@ class KIcons {
   static const IconData close = Icons.close;
   static const IconData openInBrowser = MaterialIcons.open_in_browser;
   static const IconData copy = Icons.content_copy;
+  static const IconData save = Icons.check;
   static const IconData filter_active = MaterialCommunityIcons.filter;
   static const IconData filter_inactive = MaterialCommunityIcons.filter_outline;
 

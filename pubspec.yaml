@@ -37,6 +37,7 @@ dependencies:
   injectable: ^0.3.0
   # state management
   bloc: ^4.0.0
+  provider: ^4.1.0
   # http client
   dio: ^3.0.9
   # storage
@@ -47,10 +48,13 @@ dependencies:
   json_annotation: ^3.0.1
   # routing
   sailor: ^0.7.1
+  # internationalization
+  intl: ^0.16.1
 
   # utilities
   supercharged: ^1.5.1
   flutter_bloc: ^4.0.0
+  flutter_form_builder: ^3.9.0
 
   # ui sugar
   bottom_navy_bar: ^5.4.0
@@ -58,6 +62,7 @@ dependencies:
   flutter_staggered_grid_view: ^0.3.0
   animations: ^1.0.0+5
   modal_bottom_sheet: ^0.1.5
+  flutter_spinkit: ^4.1.2+1
 
   # log page
   alice: ^0.0.30
@@ -76,7 +81,7 @@ dev_dependencies:
   # code generation
   build_runner: ^1.9.0
   # data model & sealed union code generation
-  freezed: ^0.10.7
+  freezed: ^0.10.8
   # generators
   injectable_generator: ^0.3.5
   # toJson/fromJson generator
@@ -84,7 +89,7 @@ dev_dependencies:
   # test stubbing
   mockito: ^4.1.1
   # bloc stubs & mocks
-  bloc_test: ^5.0.0
+  bloc_test: ^5.1.0
   # fast, deterministic, and async timer tests
   fake_async: ^1.1.0
 

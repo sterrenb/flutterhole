@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ListTitle extends StatelessWidget {
-  const ListTitle({
+  const ListTitle(
+    this.message, {
     Key key,
-    @required this.message,
     this.color,
   })  : assert(message != null),
         super(key: key);

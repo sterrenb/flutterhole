@@ -37,7 +37,7 @@ abstract class RegisterModule {
 
   @singleton
   Alice get alice => Alice(
-        showNotification: true,
+        showNotification: false,
         darkTheme: true,
       );
 }

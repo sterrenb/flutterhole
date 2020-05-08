@@ -130,7 +130,7 @@ class _AboutTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        ListTitle(message: 'Help'),
+        ListTitle('Help'),
         AnimatedOpener(
           closed: (context) => _AboutTile(
             KIcons.privacy,
@@ -148,7 +148,7 @@ class _AboutTiles extends StatelessWidget {
               'https://github.com/sterrenburg/flutterhole/issues/new'),
         ),
         Divider(),
-        ListTitle(message: 'Support the developer'),
+        ListTitle('Support the developer'),
         _AboutTile(
           KIcons.rate,
           text: 'Rate the app',
@@ -161,7 +161,7 @@ class _AboutTiles extends StatelessWidget {
               .launchUrl('https://github.com/sterrenburg/flutterhole/'),
         ),
         Divider(),
-        ListTitle(message: 'Other'),
+        ListTitle('Other'),
         _AboutTile(
           KIcons.share,
           text: 'Share this app',

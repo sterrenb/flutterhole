@@ -2,7 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/api/data/repositories/api_repository.dart';
-import 'package:flutterhole/features/blocs/pihole_settings_bloc.dart';
+import 'package:flutterhole/features/settings/blocs/pihole_settings_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/data/repositories/settings_repository.dart';
 import 'package:mockito/mockito.dart';

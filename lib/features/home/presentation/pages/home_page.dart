@@ -2,11 +2,12 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/constants.dart';
-import 'package:flutterhole/features/blocs/home_bloc.dart';
+import 'package:flutterhole/features/home/blocs/home_bloc.dart';
+import 'package:flutterhole/features/home/presentation/pages/clients/clients_page_view.dart';
+import 'package:flutterhole/features/home/presentation/pages/domains/domains_page_view.dart';
+import 'package:flutterhole/features/home/presentation/pages/summary/summary_page_view.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
-import 'package:flutterhole/widgets/pages/clients_page_view.dart';
-import 'package:flutterhole/widgets/pages/domains_page_view.dart';
-import 'package:flutterhole/widgets/pages/summary_page_view.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/active_pihole_title.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -52,7 +53,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         drawer: DefaultDrawer(),
         appBar: AppBar(
-          title: Text('Flutter'),
+          title: ActivePiholeTitle(),
           actions: <Widget>[
             Builder(builder: (BuildContext context) {
               return IconButton(
@@ -67,6 +68,7 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: BottomNavyBar(
           selectedIndex: _selectedIndex,
           onItemSelected: _onItemSelected,
+          curve: Curves.easeInOut,
           items: [
             BottomNavyBarItem(
               icon: Icon(KIcons.summary),

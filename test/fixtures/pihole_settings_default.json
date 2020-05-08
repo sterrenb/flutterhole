@@ -9,5 +9,6 @@
   "basicAuthenticationUsername": "",
   "basicAuthenticationPassword": "",
   "proxyUrl": "",
-  "proxyPort": 8080
+  "proxyPort": 8080,
+  "primaryColor": "blue"
 }

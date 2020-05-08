@@ -3,8 +3,10 @@ import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:flutterhole/features/settings/presentation/pages/pihole_settings_page.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/pihole_settings_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/settings_bloc_builder.dart';
 import 'package:flutterhole/widgets/layout/animated_opener.dart';
+
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -48,19 +50,16 @@ class SettingsPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final settings = all.elementAt(index);
                   return AnimatedOpener(
-                    closed: (context) => ListTile(
-                      title: Text('${settings.title}'),
-                      trailing: Visibility(
-                        visible: settings == active,
-                        child: Icon(Icons.check),
-                      ),
-                      onLongPress: () {
-                        getIt<SettingsBloc>()
-                            .add(SettingsEvent.activate(settings));
-                      },
+                    closed: (context) => PiholeSettingsTile(
+                      settings: settings,
+                      isActive: settings == active,
                     ),
                     opened: (context) =>
                         PiholeSettingsPage(initialValue: settings),
+                    onLongPress: () {
+                      getIt<SettingsBloc>()
+                          .add(SettingsEvent.activate(settings));
+                    },
                   );
                 });
           },
