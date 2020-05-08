@@ -54,109 +54,117 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
   Widget build(BuildContext context) {
     return BlocProvider<PiholeSettingsBloc>(
       create: (_) => PiholeSettingsBloc()
-        ..add(PiholeSettingsEvent.init(widget.initialValue)),
+        ..add(PiholeSettingsEvent.validate(widget.initialValue)),
       child: FormBuilder(
         key: _fbKey,
         initialValue: widget.initialValue.toJson(),
         autovalidate: true,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('${widget.initialValue.title}'),
-            actions: <Widget>[
-              MaterialButton(
-                child: Text('Reset'),
-                onPressed: () {
-                  _fbKey.currentState.reset();
-                },
-              ),
-              MaterialButton(
-                child: Text('Save'),
-                onPressed: () {
-                  if (_fbKey.currentState.saveAndValidate()) {
-                    final update =
-                        PiholeSettings.fromJson(_fbKey.currentState.value);
-                    print(update);
+        child: Builder(builder: (BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('${widget.initialValue.title}'),
+              actions: <Widget>[
+                MaterialButton(
+                  child: Text('Validate'),
+                  onPressed: () {
+                    print(BlocProvider.of<PiholeSettingsBloc>(context));
+                  },
+                ),
+                MaterialButton(
+                  child: Text('Reset'),
+                  onPressed: () {
+                    _fbKey.currentState.reset();
+                  },
+                ),
+                MaterialButton(
+                  child: Text('Save'),
+                  onPressed: () {
+                    if (_fbKey.currentState.saveAndValidate()) {
+                      final update =
+                          PiholeSettings.fromJson(_fbKey.currentState.value);
+                      print(update);
 
-                    getIt<SettingsBloc>()
-                        .add(SettingsEvent.update(widget.initialValue, update));
-                  }
-                },
-              ),
-            ],
-          ),
-          body: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            children: <Widget>[
-              ListTitle('Annotation'),
-              FormBuilderTextField(
-                attribute: 'title',
-                decoration: InputDecoration(labelText: "Title"),
-                autocorrect: false,
-                textCapitalization: TextCapitalization.words,
-                maxLines: 1,
-                validators: [
-                  FormBuilderValidators.required(),
-                ],
-              ),
-              FormBuilderTextField(
-                attribute: 'description',
-                decoration: InputDecoration(labelText: "Description"),
-                textCapitalization: TextCapitalization.sentences,
-                minLines: 1,
-                maxLines: 5,
-              ),
-              ListTitle('Host details'),
-              FormBuilderTextField(
-                attribute: 'baseUrl',
-                decoration: InputDecoration(labelText: "Base URL"),
-                autocorrect: false,
-                maxLines: 1,
-              ),
-              FormBuilderTextField(
-                attribute: 'apiPath',
-                decoration: InputDecoration(labelText: "API path"),
-                autocorrect: false,
-                maxLines: 1,
-              ),
-              FormBuilderTextField(
-                attribute: 'apiPort',
-                initialValue: widget.initialValue.apiPort.toString(),
-                decoration: InputDecoration(labelText: "API port"),
-                maxLines: 1,
-                keyboardType: TextInputType.number,
-                validators: [
-                  FormBuilderValidators.numeric(),
-                  FormBuilderValidators.min(0),
-                  FormBuilderValidators.max(65535),
-                ],
-                inputFormatters: [
-                  WhitelistingTextInputFormatter.digitsOnly,
-                ],
-                valueTransformer: (value) => int.tryParse(value ?? 80),
-              ),
-              ListTitle('Authentication'),
-              FormBuilderTextField(
-                attribute: 'apiToken',
-                decoration: InputDecoration(labelText: "API token"),
-                autocorrect: false,
-                maxLines: 1,
-                obscureText: true,
-                valueTransformer: (value) => (value ?? '').toString().trim(),
-              ),
-              FormBuilderCheckbox(
-                  attribute: 'allowSelfSignedCertificates',
-                  decoration: InputDecoration(border: InputBorder.none),
-                  label: Text('Allow self-signed certificates')),
-              FlatButton.icon(
-                onPressed: () {
-                  _showJsonViewer(context, widget.initialValue);
-                },
-                label: Text('JSON view'),
-                icon: Icon(KIcons.pihole),
-              ),
-            ],
-          ),
-        ),
+                      getIt<SettingsBloc>().add(
+                          SettingsEvent.update(widget.initialValue, update));
+                    }
+                  },
+                ),
+              ],
+            ),
+            body: ListView(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              children: <Widget>[
+                ListTitle('Annotation'),
+                FormBuilderTextField(
+                  attribute: 'title',
+                  decoration: InputDecoration(labelText: "Title"),
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.words,
+                  maxLines: 1,
+                  validators: [
+                    FormBuilderValidators.required(),
+                  ],
+                ),
+                FormBuilderTextField(
+                  attribute: 'description',
+                  decoration: InputDecoration(labelText: "Description"),
+                  textCapitalization: TextCapitalization.sentences,
+                  minLines: 1,
+                  maxLines: 5,
+                ),
+                ListTitle('Host details'),
+                FormBuilderTextField(
+                  attribute: 'baseUrl',
+                  decoration: InputDecoration(labelText: "Base URL"),
+                  autocorrect: false,
+                  maxLines: 1,
+                ),
+                FormBuilderTextField(
+                  attribute: 'apiPath',
+                  decoration: InputDecoration(labelText: "API path"),
+                  autocorrect: false,
+                  maxLines: 1,
+                ),
+                FormBuilderTextField(
+                  attribute: 'apiPort',
+                  initialValue: widget.initialValue.apiPort.toString(),
+                  decoration: InputDecoration(labelText: "API port"),
+                  maxLines: 1,
+                  keyboardType: TextInputType.number,
+                  validators: [
+                    FormBuilderValidators.numeric(),
+                    FormBuilderValidators.min(0),
+                    FormBuilderValidators.max(65535),
+                  ],
+                  inputFormatters: [
+                    WhitelistingTextInputFormatter.digitsOnly,
+                  ],
+                  valueTransformer: (value) => int.tryParse(value ?? 80),
+                ),
+                ListTitle('Authentication'),
+                FormBuilderTextField(
+                  attribute: 'apiToken',
+                  decoration: InputDecoration(labelText: "API token"),
+                  autocorrect: false,
+                  maxLines: 1,
+                  obscureText: true,
+                  valueTransformer: (value) => (value ?? '').toString().trim(),
+                ),
+                FormBuilderCheckbox(
+                    attribute: 'allowSelfSignedCertificates',
+                    decoration: InputDecoration(border: InputBorder.none),
+                    label: Text('Allow self-signed certificates')),
+                FlatButton.icon(
+                  onPressed: () {
+                    _showJsonViewer(context, widget.initialValue);
+                  },
+                  label: Text('JSON view'),
+                  icon: Icon(KIcons.pihole),
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }

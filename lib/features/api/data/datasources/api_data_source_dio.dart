@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:alice/alice.dart';
+import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/dependency_injection.dart';
@@ -31,7 +32,15 @@ class ApiDataSourceDio implements ApiDataSource {
     PiholeSettings settings, {
     Map<String, dynamic> queryParameters = const {},
   }) async {
-    print('getting ${settings.baseUrl}${settings.apiPath} $queryParameters');
+    if (settings.allowSelfSignedCertificates) {
+      // https://github.com/flutterchina/dio/issues/32#issuecomment-487401443
+      (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+        return client;
+      };
+    }
 
     try {
       final Response response = await _dio.get(
