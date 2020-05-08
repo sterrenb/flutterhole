@@ -26,9 +26,6 @@ abstract class PiholeSettingsState with _$PiholeSettingsState {
 abstract class PiholeSettingsEvent with _$PiholeSettingsEvent {
   const factory PiholeSettingsEvent.init(PiholeSettings initialValue) =
       PiholeSettingsEventInit;
-
-  const factory PiholeSettingsEvent.update(PiholeSettings update) =
-      PiholeSettingsEventUpdate;
 }
 
 class PiholeSettingsBloc
@@ -65,6 +62,5 @@ class PiholeSettingsBloc
   Stream<PiholeSettingsState> mapEventToState(
       PiholeSettingsEvent event) async* {
     if (event is PiholeSettingsEventInit) yield* _init(event.initialValue);
-    if (event is PiholeSettingsEventUpdate) yield* _update(event.update);
   }
 }

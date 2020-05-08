@@ -17,7 +17,7 @@ Future<void> configure(String environment) async {
 @registerModule
 abstract class RegisterModule {
   @prod
-  @singleton
+  @injectable
   Dio get dio => Dio();
 
   @prod

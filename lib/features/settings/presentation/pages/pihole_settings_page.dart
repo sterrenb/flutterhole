@@ -94,6 +94,9 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
                 autocorrect: false,
                 textCapitalization: TextCapitalization.words,
                 maxLines: 1,
+                validators: [
+                  FormBuilderValidators.required(),
+                ],
               ),
               FormBuilderTextField(
                 attribute: 'description',
