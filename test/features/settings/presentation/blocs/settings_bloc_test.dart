@@ -174,4 +174,42 @@ void main() {
       ],
     );
   });
+
+  group('$SettingsEventUpdate', () {
+    final settings0 = PiholeSettings(title: 'First');
+    final settings1 = PiholeSettings(title: 'Second');
+    final settings2 = PiholeSettings(title: 'Third');
+
+    final updated = settings0.copyWith(title: 'Updated');
+
+    blocTest(
+      'Emits [$SettingsStateLoading, $SettingsStateSuccess] when $SettingsEventUpdate succeeds',
+      build: () async {
+        when(mockSettingsRepository.updatePiholeSettings(settings0, updated))
+            .thenAnswer((_) async => Right(true));
+        when(mockSettingsRepository.fetchAllPiholeSettings())
+            .thenAnswer((_) async => Right([
+                  updated,
+                  settings1,
+                  settings2,
+                ]));
+        when(mockSettingsRepository.fetchActivePiholeSettings())
+            .thenAnswer((_) async => Right(settings2));
+        return bloc;
+      },
+      act: (SettingsBloc bloc) async =>
+          bloc.add(SettingsEvent.update(settings0, updated)),
+      expect: [
+        SettingsStateLoading(),
+        SettingsStateSuccess(
+          [
+            updated,
+            settings1,
+            settings2,
+          ],
+          settings2,
+        )
+      ],
+    );
+  });
 }

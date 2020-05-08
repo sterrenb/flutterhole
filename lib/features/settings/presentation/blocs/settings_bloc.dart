@@ -35,6 +35,11 @@ abstract class SettingsEvent with _$SettingsEvent {
 
   const factory SettingsEvent.activate(PiholeSettings settings) =
       SettingsEventActivate;
+
+  const factory SettingsEvent.update(
+    PiholeSettings original,
+    PiholeSettings update,
+  ) = SettingsEventUpdate;
 }
 
 @prod
@@ -118,11 +123,29 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     );
   }
 
+  Stream<SettingsState> _update(
+      PiholeSettings original, PiholeSettings update) async* {
+    yield SettingsState.loading();
+
+    final result =
+        await _settingsRepository.updatePiholeSettings(original, update);
+    yield* result.fold(
+      (failure) async* {
+        yield SettingsStateFailure(failure);
+      },
+      (success) async* {
+        yield* _init();
+      },
+    );
+  }
+
   @override
   Stream<SettingsState> mapEventToState(SettingsEvent event) async* {
     if (event is SettingsEventInit) yield* _init();
     if (event is SettingsEventReset) yield* _reset();
     if (event is SettingsEventCreate) yield* _create();
     if (event is SettingsEventActivate) yield* _activate(event.settings);
+    if (event is SettingsEventUpdate)
+      yield* _update(event.original, event.update);
   }
 }
