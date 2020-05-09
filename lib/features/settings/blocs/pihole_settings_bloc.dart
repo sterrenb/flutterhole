@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/api/data/models/pi_status.dart';
@@ -43,6 +45,8 @@ class PiholeSettingsBloc
 
   @override
   PiholeSettingsState get initialState => PiholeSettingsStateInitial();
+
+  final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
 
   Stream<PiholeSettingsState> _validate(PiholeSettings settings) async* {
     yield PiholeSettingsState.loading();

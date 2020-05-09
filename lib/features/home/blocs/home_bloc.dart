@@ -64,8 +64,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         yield HomeStateFailure(failure);
       },
       (PiholeSettings settings) async* {
-        print('fetching with ${settings.title}');
-
         final List<Future> futures = [
           _apiRepository.fetchSummary(settings),
           _apiRepository.fetchQueriesOverTime(settings),

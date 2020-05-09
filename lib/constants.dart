@@ -48,6 +48,7 @@ class KIcons {
   static const IconData visibility_on = MaterialIcons.visibility;
   static const IconData visibility_off = MaterialIcons.visibility_off;
   static const IconData version = MaterialIcons.developer_board;
+  static const IconData color = Icons.brightness_1;
 
   static const IconData share = MaterialIcons.share;
   static const IconData rate = Icons.star;

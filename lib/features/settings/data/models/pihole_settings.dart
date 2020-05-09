@@ -5,6 +5,7 @@ import 'package:flutterhole/features/settings/data/models/colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'pihole_settings.freezed.dart';
+
 part 'pihole_settings.g.dart';
 
 @freezed
@@ -13,8 +14,8 @@ abstract class PiholeSettings extends MapModel with _$PiholeSettings {
     // annotation
     @Default('Pihole') String title,
     @Default('') String description,
-    @Default(Colors.blue)
-    @JsonKey(fromJson: valueToMaterialColor, toJson: materialColorToValue)
+    @Default(Color.fromRGBO(33, 150, 243, 1)) // i.e. `Colors.blue`
+    @JsonKey(fromJson: colorFromHex, toJson: colorToHex)
         Color primaryColor,
 
     // host details

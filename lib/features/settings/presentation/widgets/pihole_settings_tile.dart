@@ -19,6 +19,10 @@ class PiholeSettingsTile extends StatelessWidget {
     return ListTile(
       title: Text('${settings.title}'),
       onTap: onTap,
+      leading: Icon(
+        KIcons.color,
+        color: settings.primaryColor,
+      ),
       trailing: AnimatedOpacity(
         duration: kThemeAnimationDuration,
         opacity: isActive ? 1 : 0,

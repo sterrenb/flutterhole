@@ -28,7 +28,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       navigatorKey: getIt<RouterService>().navigatorKey,
       onGenerateRoute: getIt<RouterService>().onGenerateRoute,
-      initialRoute: RouterService.home,
+      initialRoute: RouterService.settings,
+//      initialRoute: RouterService.home,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -45,40 +46,6 @@ class MyApp extends StatelessWidget {
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-    );
-  }
-}
-
-class DebugHome extends StatelessWidget {
-  const DebugHome({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          RaisedButton(
-            onPressed: () async {
-              final settings = getIt<SettingsDataSource>();
-              final all = await settings.fetchAllPiholeSettings();
-              print(all);
-            },
-            child: Text('print all'),
-          ),
-          RaisedButton(
-            onPressed: () async {
-              final settings = getIt<SettingsDataSource>();
-              final res = await settings.createPiholeSettings();
-              print(res);
-            },
-            child: Text('print create'),
-          ),
-        ],
       ),
     );
   }

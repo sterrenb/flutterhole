@@ -7,5 +7,5 @@ A new Flutter application.
 Code generation:
 
 ```shell script
-flutter pub run build_runner watch
+flutter pub run build_runner watch --delete-conflicting-outputs
 ```

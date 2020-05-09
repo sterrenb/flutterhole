@@ -22,7 +22,6 @@ class ApiDataSourceDio implements ApiDataSource {
       : _dio = dio ?? getIt<Dio>(),
         _alice = alice ?? getIt<Alice>() {
     _dio.interceptors.add(_alice.getDioInterceptor());
-    print('interceptors: ${_dio.interceptors?.length}');
   }
 
   final Dio _dio;

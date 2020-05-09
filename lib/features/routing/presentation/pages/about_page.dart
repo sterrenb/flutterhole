@@ -4,6 +4,7 @@ import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/browser/services/browser_service.dart';
 import 'package:flutterhole/features/routing/presentation/pages/privacy_page.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/widgets/layout/animated_opener.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
 import 'package:package_info/package_info.dart';
@@ -15,43 +16,44 @@ const String kAppUrl =
 class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<PackageInfo>(
-      future: PackageInfo.fromPlatform(),
-      builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-        PackageInfo packageInfo;
-        if (snapshot.hasData) {
-          packageInfo = snapshot.data;
-        }
+    return PiholeThemeBuilder(
+      child: FutureBuilder<PackageInfo>(
+        future: PackageInfo.fromPlatform(),
+        builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+          PackageInfo packageInfo;
+          if (snapshot.hasData) {
+            packageInfo = snapshot.data;
+          }
 
-        return Scaffold(
-          drawer: DefaultDrawer(),
-          body: CustomScrollView(
-            slivers: <Widget>[
-              SliverAppBar(
-                title: Text('About'),
+          return Scaffold(
+            drawer: DefaultDrawer(),
+            body: CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  title: Text('About'),
 //                expandedHeight: kSliverAppBarHeight,
-                flexibleSpace: FlexibleSpaceBar(
+                  flexibleSpace: FlexibleSpaceBar(
 //                  background: SvgPicture.asset(
 //                    'assets/shared_workspace.svg',
 //                    fit: BoxFit.cover,
 //                  ),
-                    ),
-              ),
-              SliverList(
-                  delegate: SliverChildListDelegate([
-                Column(
-                  children: <Widget>[
-                    ListTile(
-                      contentPadding: EdgeInsets.all(16),
-                      title: Row(
-                        children: <Widget>[
-                          Text(
-                            '${packageInfo?.appName}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline4
-                                .copyWith(color: Theme.of(context).accentColor),
-                          ),
+                      ),
+                ),
+                SliverList(
+                    delegate: SliverChildListDelegate([
+                  Column(
+                    children: <Widget>[
+                      ListTile(
+                        contentPadding: EdgeInsets.all(16),
+                        title: Row(
+                          children: <Widget>[
+                            Text(
+                              '${packageInfo?.appName}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline4
+                                  .copyWith(color: Theme.of(context).accentColor),
+                            ),
 //                          Padding(
 //                            padding:
 //                                const EdgeInsets.symmetric(horizontal: 8.0),
@@ -60,60 +62,61 @@ class AboutPage extends StatelessWidget {
 //                              data: kAppUrl,
 //                            ),
 //                          )
-                        ],
+                          ],
+                        ),
+                        subtitle: Text(
+                          'Made by Sterrenburg',
+                          style: Theme.of(context).textTheme.caption,
+                        ),
                       ),
-                      subtitle: Text(
-                        'Made by Sterrenburg',
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                    ),
-                    ListTile(
-                      leading: Icon(
-                        KIcons.version,
-                        color: KColors.success,
-                      ),
-                      trailing: FlatButton(
-                        onPressed: () {
-                          showAboutDialog(
-                            context: context,
-                            applicationName: '${packageInfo?.appName}',
-                            applicationVersion: '${packageInfo?.version}',
-                            applicationLegalese: 'Made by Sterrenburg',
-                            children: <Widget>[
-                              SizedBox(height: 24),
-                              RichText(
-                                text: TextSpan(
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text:
-                                            'FlutterHole is a free third party Android application '
-                                            'for interacting with your Pi-Hole® server. '
-                                            '\n\n'
-                                            'FlutterHole is open source, which means anyone '
-                                            'can view the code that runs your app. '
-                                            'You can find the repository on Github.'),
-                                  ],
+                      ListTile(
+                        leading: Icon(
+                          KIcons.version,
+                          color: KColors.success,
+                        ),
+                        trailing: FlatButton(
+                          onPressed: () {
+                            showAboutDialog(
+                              context: context,
+                              applicationName: '${packageInfo?.appName}',
+                              applicationVersion: '${packageInfo?.version}',
+                              applicationLegalese: 'Made by Sterrenburg',
+                              children: <Widget>[
+                                SizedBox(height: 24),
+                                RichText(
+                                  text: TextSpan(
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text:
+                                              'FlutterHole is a free third party Android application '
+                                              'for interacting with your Pi-Hole® server. '
+                                              '\n\n'
+                                              'FlutterHole is open source, which means anyone '
+                                              'can view the code that runs your app. '
+                                              'You can find the repository on Github.'),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
-                        child: Text('Details'),
+                              ],
+                            );
+                          },
+                          child: Text('Details'),
+                        ),
+                        title: Text('Version'),
+                        subtitle: Text(
+                            '${packageInfo?.version} (build #${packageInfo?.buildNumber})'),
                       ),
-                      title: Text('Version'),
-                      subtitle: Text(
-                          '${packageInfo?.version} (build #${packageInfo?.buildNumber})'),
-                    ),
-                  ],
-                ),
-                Divider(),
-                _AboutTiles(packageInfo: packageInfo),
-              ])),
-            ],
-          ),
-        );
-      },
+                    ],
+                  ),
+                  Divider(),
+                  _AboutTiles(packageInfo: packageInfo),
+                ])),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
