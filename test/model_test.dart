@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/features/api/data/models/blacklist.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/api/data/models/model.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
@@ -61,6 +62,10 @@ void main() {
       'single_pi_client.json', (json) => PiClient.fromJson(json));
   testMapModel<TopSourcesResult>(
       'get_query_sources.json', (json) => TopSourcesResult.fromJson(json));
+  testMapModel<ForwardDestination>(
+      'single_forward_destination.json', (json) => ForwardDestination.fromJson(json));
+  testMapModel<ForwardDestinationsResult>(
+      'get_forward_destinations.json', (json) => ForwardDestinationsResult.fromJson(json));
   testListModel<Blacklist>(
       'blacklist.json', (json) => Blacklist.fromList(json));
   testListModel<Whitelist>(

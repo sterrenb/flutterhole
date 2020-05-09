@@ -1,0 +1,8 @@
+{
+  "forward_destinations": {
+    "blocklist|blocklist": 32.04,
+    "cache|cache": 4.38,
+    "dns.google|8.8.4.4": 40.21,
+    "dns.google|8.8.8.8": 23.36
+  }
+}
