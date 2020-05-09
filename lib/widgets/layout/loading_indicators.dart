@@ -6,7 +6,7 @@ class CenteredLoadingIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
         child: SpinKitFadingFour(
-      color: Theme.of(context).primaryColor,
+      color: Theme.of(context).accentColor,
     ));
   }
 }
@@ -16,7 +16,7 @@ class LoadingIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return SpinKitFadingFour(
       size: 24.0,
-      color: Colors.orange,
+      color: Theme.of(context).accentColor,
     );
   }
 }

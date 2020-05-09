@@ -6,8 +6,6 @@ class Constants {
 
   static const String piholeSettingsSubDirectory = 'piholes';
   static const String piholeSettingsActive = 'active';
-
-
 }
 
 class KIcons {
@@ -47,6 +45,8 @@ class KIcons {
 
   static const IconData date = Ionicons.md_calendar;
   static const IconData qrCode = AntDesign.qrcode;
+  static const IconData visibility_on = MaterialIcons.visibility;
+  static const IconData visibility_off = MaterialIcons.visibility_off;
   static const IconData version = MaterialIcons.developer_board;
 
   static const IconData share = MaterialIcons.share;
@@ -90,5 +90,4 @@ class KColors {
   static const Color warning = Colors.orange;
   static const Color success = Colors.green;
   static const Color error = Colors.red;
-
 }

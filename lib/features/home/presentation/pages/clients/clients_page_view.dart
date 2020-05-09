@@ -26,18 +26,23 @@ class ClientsPageView extends StatelessWidget {
             return topSourcesResult.fold<Widget>(
               (failure) => CenteredFailureIndicator(failure),
               (topSources) {
-                final List<PiClient> clients = topSources.topSources.keys.toList();
-                final  List<int> queryCounts = topSources.topSources.values.toList();
+                final List<PiClient> clients =
+                    topSources.topSources.keys.toList();
+                final List<int> queryCounts =
+                    topSources.topSources.values.toList();
                 return ListView.builder(
-                  itemCount: topSources.topSources.length,
-                  itemBuilder: (context, index) {
-                    final client = clients.elementAt(index);
-                    final queryCount = queryCounts.elementAt(index);
+                    itemCount: topSources.topSources.length,
+                    itemBuilder: (context, index) {
+                      final client = clients.elementAt(index);
+                      final queryCount = queryCounts.elementAt(index);
 
-                    return ListTile(
-                      title: Text('${client.title}'),
-                    );
-                  });
+                      return ListTile(
+                        title: Text('${client.title ?? client.ip}'),
+                        subtitle: (client.title?.isEmpty ?? true)
+                            ? null
+                            : Text('${client.ip}'),
+                      );
+                    });
               },
             );
           },

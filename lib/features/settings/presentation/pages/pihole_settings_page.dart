@@ -11,6 +11,7 @@ import 'package:flutterhole/features/api/data/models/pi_status.dart';
 import 'package:flutterhole/features/settings/blocs/pihole_settings_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
+import 'package:flutterhole/features/settings/services/qr_scan_service.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 const InputDecoration _decoration = InputDecoration(
@@ -32,6 +33,17 @@ class PiholeSettingsPage extends StatefulWidget {
 
 class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
+
+  TextEditingController _apiTokenController;
+  bool _apiTokenVisible;
+
+  @override
+  void initState() {
+    super.initState();
+    _apiTokenController =
+        TextEditingController(text: widget.initialValue.apiToken);
+    _apiTokenVisible = false;
+  }
 
   void _showJsonViewer(BuildContext context, PiholeSettings settings) {
     final Map<String, dynamic> json = settings.toJson();
@@ -84,6 +96,15 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
         });
 
     return result ?? false;
+  }
+
+  void _scanQrCode() async {
+    final String apiToken = await getIt<QrScanService>().scanPiholeApiTokenQR();
+    if (apiToken.isNotEmpty) {
+      setState(() {
+        _apiTokenController.text = apiToken;
+      });
+    }
   }
 
   @override
@@ -283,7 +304,7 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
                           title: FormBuilderTextField(
                             attribute: 'apiPath',
                             decoration:
-                                _decoration.copyWith(labelText: 'API path'),
+                                _decoration.copyWith(labelText: 'API path', helperText: 'For normal use cases, the API path is "${PiholeSettings().apiPath}".'),
                             autocorrect: false,
                             maxLines: 1,
                           ),
@@ -337,11 +358,39 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
                     ListTile(
                       title: FormBuilderTextField(
                         attribute: 'apiToken',
-                        decoration:
-                            _decoration.copyWith(labelText: 'API token'),
+                        controller: _apiTokenController,
+                        decoration: _decoration.copyWith(
+                          labelText: 'API token',
+                          helperText: 'The API token can be found on the admin home at "Settings > API / Web interface". \nRequired for authenticated tasks, such as enabling & disabling.',
+                          helperMaxLines: 5,
+                          suffixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              IconButton(
+                                tooltip: 'Toggle visibility',
+                                icon: Icon(
+                                  _apiTokenVisible
+                                      ? KIcons.visibility_on
+                                      : KIcons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _apiTokenVisible = !_apiTokenVisible;
+                                  });
+                                },
+                              ),
+                              IconButton(
+                                tooltip: 'Scan QR code',
+                                icon: Icon(KIcons.qrCode),
+                                onPressed: _scanQrCode,
+                              ),
+                            ],
+                          ),
+                        ),
                         autocorrect: false,
                         maxLines: 1,
-                        obscureText: true,
+                        obscureText: !_apiTokenVisible,
                         valueTransformer: (value) =>
                             (value ?? '').toString().trim(),
                       ),
@@ -352,7 +401,7 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           helperText:
-                              'Trust certificates, even when the TLS handshake fails.',
+                              'Trust all certificates, even when the TLS handshake fails. \nUseful for using HTTPs over your own certificate.',
                         ),
                         label: Text('Allow self-signed certificates'),
                       ),

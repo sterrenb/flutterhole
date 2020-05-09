@@ -37,7 +37,7 @@ dependencies:
   injectable: ^0.3.0
   # state management
   bloc: ^4.0.0
-  provider: ^4.1.0
+  provider: ^4.1.1
   # http client
   dio: ^3.0.9
   # storage
@@ -55,6 +55,7 @@ dependencies:
   supercharged: ^1.5.1
   flutter_bloc: ^4.0.0
   flutter_form_builder: ^3.9.0
+  barcode_scan: ^3.0.1
 
   # ui sugar
   bottom_navy_bar: ^5.4.0
