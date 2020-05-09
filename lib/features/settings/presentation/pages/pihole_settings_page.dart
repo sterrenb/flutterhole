@@ -263,6 +263,7 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
                                   decoration: _decoration.copyWith(
                                     labelText: 'Base URL',
                                   ),
+                                  keyboardType: TextInputType.text,
                                   autocorrect: false,
                                   maxLines: 1,
                                 ),
