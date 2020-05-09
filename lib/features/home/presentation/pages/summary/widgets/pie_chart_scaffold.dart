@@ -32,9 +32,10 @@ class PieChartScaffold extends StatelessWidget {
               flex: 2,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.only(bottom: 16.0),
                     child: Text(
                       '$title',
                       style: TextStyle(fontSize: 16),

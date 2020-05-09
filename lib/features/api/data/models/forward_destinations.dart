@@ -19,14 +19,15 @@ abstract class ForwardDestination extends MapModel with _$ForwardDestination {
 
 Map<ForwardDestination, double> _valueToForwardDestinations(dynamic value) {
   assert(value is Map);
-  return (value as Map).cast<String, double>().map(
-    (String string, double percentage) {
+  return (value as Map).cast<String, num>().map(
+    (String string, num percentage) {
       final List<String> splits = string.split('|');
       String title;
       String ip = splits.last;
       if (splits.length > 1) title = splits.first;
 
-      return MapEntry(ForwardDestination(title: title, ip: ip), percentage);
+      return MapEntry(
+          ForwardDestination(title: title, ip: ip), percentage.toDouble());
     },
   );
 }

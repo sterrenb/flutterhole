@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/query_types_tile.dart';
+import 'package:flutterhole/features/home/presentation/pages/summary/widgets/forward_destinations_tile.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/summary_tile.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder.dart';
 import 'package:flutterhole/widgets/layout/failure_indicators.dart';
@@ -24,7 +26,8 @@ class SummaryPageView extends StatelessWidget {
             Either<Failure, SummaryModel> summaryResult,
             _,
             __,
-            ___,
+            Either<Failure, ForwardDestinationsResult>
+                forwardDestinationsResult,
             Either<Failure, DnsQueryTypeResult> dnsQueryTypesResult,
           ) {
             return summaryResult.fold<Widget>(
@@ -57,6 +60,7 @@ class SummaryPageView extends StatelessWidget {
                     color: Colors.red,
                   ),
                   QueryTypesTile(dnsQueryTypesResult),
+                  ForwardDestinationsTile(forwardDestinationsResult),
                 ],
                 staggeredTiles: <StaggeredTile>[
                   StaggeredTile.count(4, 1),
@@ -64,7 +68,7 @@ class SummaryPageView extends StatelessWidget {
                   StaggeredTile.count(4, 1),
                   StaggeredTile.count(4, 1),
                   StaggeredTile.count(4, 3),
-                  StaggeredTile.count(4, 2),
+                  StaggeredTile.count(4, 3),
                 ],
               ),
             );
