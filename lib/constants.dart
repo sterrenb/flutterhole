@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
-class Constants {
-  Constants._();
+class KStrings {
+  KStrings._();
 
   static const String piholeSettingsSubDirectory = 'piholes';
   static const String piholeSettingsActive = 'active';
+  static const String playStoreUrl =
+      'https://play.google.com/store/apps/details?id=sterrenburg.github.flutterhole';
 }
 
 class KIcons {

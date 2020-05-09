@@ -16,7 +16,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
   final HiveInterface _hive;
 
   Future<Box> get _piholeBox async {
-    final Box box = await _hive.openBox(Constants.piholeSettingsSubDirectory);
+    final Box box = await _hive.openBox(KStrings.piholeSettingsSubDirectory);
 
     if (!box.isOpen) throw SettingsException();
 
@@ -24,21 +24,21 @@ class SettingsDataSourceHive implements SettingsDataSource {
   }
 
   Future<int> get _activeIndex async {
-    final Box box = await _hive.openBox(Constants.piholeSettingsActive);
+    final Box box = await _hive.openBox(KStrings.piholeSettingsActive);
 
     if (!box.isOpen) throw SettingsException();
 
-    final int index = box.get(Constants.piholeSettingsActive, defaultValue: -1);
+    final int index = box.get(KStrings.piholeSettingsActive, defaultValue: -1);
 
     return index;
   }
 
   Future<void> _setActiveIndex(int index) async {
-    final Box box = await _hive.openBox(Constants.piholeSettingsActive);
+    final Box box = await _hive.openBox(KStrings.piholeSettingsActive);
 
     if (!box.isOpen) throw SettingsException();
 
-    await box.put(Constants.piholeSettingsActive, index);
+    await box.put(KStrings.piholeSettingsActive, index);
   }
 
   @override

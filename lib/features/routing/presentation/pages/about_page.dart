@@ -10,9 +10,6 @@ import 'package:flutterhole/widgets/layout/list_title.dart';
 import 'package:package_info/package_info.dart';
 import 'package:share/share.dart';
 
-const String kAppUrl =
-    'https://play.google.com/store/apps/details?id=sterrenburg.github.flutterhole';
-
 class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -52,7 +49,8 @@ class AboutPage extends StatelessWidget {
                               style: Theme.of(context)
                                   .textTheme
                                   .headline4
-                                  .copyWith(color: Theme.of(context).accentColor),
+                                  .copyWith(
+                                      color: Theme.of(context).accentColor),
                             ),
 //                          Padding(
 //                            padding:
@@ -85,7 +83,8 @@ class AboutPage extends StatelessWidget {
                                 SizedBox(height: 24),
                                 RichText(
                                   text: TextSpan(
-                                    style: Theme.of(context).textTheme.bodyText2,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
                                     children: <TextSpan>[
                                       TextSpan(
                                           text:
@@ -168,7 +167,7 @@ class _AboutTiles extends StatelessWidget {
         _AboutTile(
           KIcons.share,
           text: 'Share this app',
-          onTap: () => Share.share(kAppUrl,
+          onTap: () => Share.share(KStrings.playStoreUrl,
               subject: 'Check out ${packageInfo?.appName}'),
         ),
         _AboutTile(

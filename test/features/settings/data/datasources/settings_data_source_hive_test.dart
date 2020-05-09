@@ -24,9 +24,9 @@ void main() async {
     mockHive = MockHive();
     mockPiBox = MockBox();
     mockActiveBox = MockBox();
-    when(mockHive.openBox(Constants.piholeSettingsSubDirectory))
+    when(mockHive.openBox(KStrings.piholeSettingsSubDirectory))
         .thenAnswer((_) async => mockPiBox);
-    when(mockHive.openBox(Constants.piholeSettingsActive))
+    when(mockHive.openBox(KStrings.piholeSettingsActive))
         .thenAnswer((_) async => mockActiveBox);
     settingsDataSourceHive = SettingsDataSourceHive(mockHive);
   });
@@ -207,7 +207,7 @@ void main() async {
         when(mockPiBox.isOpen).thenReturn(true);
         when(mockPiBox.getAt(2)).thenReturn(active.toJson());
         when(mockActiveBox.isOpen).thenReturn(true);
-        when(mockActiveBox.get(Constants.piholeSettingsActive,
+        when(mockActiveBox.get(KStrings.piholeSettingsActive,
                 defaultValue: -1))
             .thenReturn(2);
         // act
@@ -236,7 +236,7 @@ void main() async {
         when(mockPiBox.values)
             .thenReturn(allPiholeSettings.map((e) => e.toJson()));
         when(mockActiveBox.isOpen).thenReturn(true);
-        when(mockActiveBox.get(Constants.piholeSettingsActive,
+        when(mockActiveBox.get(KStrings.piholeSettingsActive,
                 defaultValue: -1))
             .thenReturn(-1);
         // act

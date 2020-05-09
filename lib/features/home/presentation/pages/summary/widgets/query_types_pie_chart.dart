@@ -7,7 +7,7 @@ import 'package:supercharged/supercharged.dart';
 
 const double kShowTitleThresholdPercentage = 5.0;
 
-const List<Color> chartColors = [
+const List<Color> _chartColors = [
   Colors.blue,
   Colors.orange,
   Colors.green,
@@ -25,7 +25,7 @@ class QueryTypesPieChart extends StatelessWidget {
   final List<DnsQueryType> dnsQueryTypes;
 
   static Color colorAtIndex(int index) =>
-      chartColors.elementAtOrNull(index % chartColors.length);
+      _chartColors.elementAtOrNull(index % _chartColors.length);
 
   @override
   Widget build(BuildContext context) {

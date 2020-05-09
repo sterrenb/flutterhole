@@ -4,7 +4,7 @@ import 'package:flutterhole/features/settings/presentation/widgets/settings_bloc
 
 // Color to MaterialColor:
 // https://medium.com/py-bits/turn-any-color-to-material-color-for-flutter-d8e8e037a837
-Map<int, Color> color = {
+Map<int, Color> _materialColorMap = {
   50: Color.fromRGBO(136, 14, 79, .1),
   100: Color.fromRGBO(136, 14, 79, .2),
   200: Color.fromRGBO(136, 14, 79, .3),
@@ -33,7 +33,7 @@ class PiholeThemeBuilder extends StatelessWidget {
 
         if (state is SettingsStateSuccess) {
           data = data.copyWith(
-            accentColor: MaterialColor(state.active.primaryColor.value, color),
+            accentColor: MaterialColor(state.active.primaryColor.value, _materialColorMap),
           );
         }
 
