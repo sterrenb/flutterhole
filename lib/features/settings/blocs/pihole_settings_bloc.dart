@@ -8,8 +8,6 @@ import 'package:flutterhole/features/api/data/repositories/connection_repository
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'package:supercharged/supercharged.dart';
-
 part 'pihole_settings_bloc.freezed.dart';
 
 @freezed
@@ -48,6 +46,8 @@ class PiholeSettingsBloc
 
   Stream<PiholeSettingsState> _validate(PiholeSettings settings) async* {
     yield PiholeSettingsState.loading();
+
+    await Future.delayed(Duration(seconds: 1));
 
     final List<Future> futures = [
       _connectionRepository.fetchHostStatusCode(settings),

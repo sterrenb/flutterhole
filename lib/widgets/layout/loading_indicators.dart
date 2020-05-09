@@ -10,3 +10,13 @@ class CenteredLoadingIndicator extends StatelessWidget {
     ));
   }
 }
+
+class LoadingIcon extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SpinKitFadingFour(
+      size: 24.0,
+      color: Colors.orange,
+    );
+  }
+}

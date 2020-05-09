@@ -5,6 +5,7 @@ class ListTitle extends StatelessWidget {
     this.message, {
     Key key,
     this.color,
+    this.trailing,
   })  : assert(message != null),
         super(key: key);
 
@@ -12,6 +13,8 @@ class ListTitle extends StatelessWidget {
 
   /// The [message] color.
   final Color color;
+
+  final Widget trailing;
 
   Color _getColor(BuildContext context) =>
       color ?? Theme.of(context).accentColor;
@@ -26,6 +29,7 @@ class ListTitle extends StatelessWidget {
             .subtitle2
             .copyWith(color: _getColor(context)),
       ),
+      trailing: trailing,
     );
   }
 }

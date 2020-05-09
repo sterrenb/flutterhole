@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/core/debug/bloc_delegate.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/routing/services/router_service.dart';
+import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import 'features/settings/data/datasources/settings_data_source.dart';
@@ -13,6 +14,8 @@ void main() async {
   await configure(Environment.prod);
   enableBlocDelegate();
   getIt<RouterService>().createRoutes();
+
+  getIt<SettingsBloc>().add(SettingsEvent.init());
 
   runApp(MyApp());
 }

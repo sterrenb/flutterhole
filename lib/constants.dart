@@ -42,7 +42,7 @@ class KIcons {
   static const IconData info = Icons.info;
   static const IconData debug = Icons.bug_report;
   static const IconData warning = Icons.warning;
-  static const IconData error = Icons.error;
+  static const IconData error = Icons.close;
   static const IconData success = Icons.check;
 
   static const IconData date = Ionicons.md_calendar;

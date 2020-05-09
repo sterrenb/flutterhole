@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HomeBloc>(
-      create: (_) => HomeBloc(),
+      create: (_) => HomeBloc()..add(HomeEvent.fetch()),
       child: Scaffold(
         drawer: DefaultDrawer(),
         appBar: AppBar(
