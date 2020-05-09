@@ -14,7 +14,7 @@ class CenteredLoadingIndicator extends StatelessWidget {
 class LoadingIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SpinKitFadingFour(
+    return SpinKitRipple(
       size: 24.0,
       color: Theme.of(context).accentColor,
     );

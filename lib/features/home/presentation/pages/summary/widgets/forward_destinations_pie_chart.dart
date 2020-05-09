@@ -59,7 +59,7 @@ class ForwardDestinationsPieChart extends StatelessWidget {
                     index,
                     PieChartSectionData(
                       value: percentage,
-                      title: '$percentage%',
+                      title: '${percentage.toStringAsFixed(0)}%',
                       showTitle: percentage >= kShowTitleThresholdPercentage,
                       color: colorAtIndex(index),
                       radius: 60 + (notifier.selected == index ? 5.0 : 0.0),

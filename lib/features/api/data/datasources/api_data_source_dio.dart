@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:alice/alice.dart';
@@ -42,15 +43,26 @@ class ApiDataSourceDio implements ApiDataSource {
       };
     }
 
+    Map<String, String> headers = {
+      HttpHeaders.userAgentHeader: "flutterhole",
+      HttpHeaders.contentTypeHeader: Headers.jsonContentType,
+    };
+
+    if (settings.basicAuthenticationUsername.isNotEmpty ||
+        settings.basicAuthenticationPassword.isNotEmpty) {
+      String basicAuth = 'Basic ' +
+          base64Encode(utf8.encode(
+              '${settings.basicAuthenticationUsername}:${settings.basicAuthenticationPassword}'));
+
+      headers.putIfAbsent(HttpHeaders.authorizationHeader, () => basicAuth);
+    }
+
     try {
       final Response response = await _dio.get(
         '${settings.baseUrl}:${settings.apiPort}${settings.apiPath}',
         queryParameters: queryParameters,
         options: Options(
-          headers: {
-            HttpHeaders.userAgentHeader: "flutterhole",
-            HttpHeaders.contentTypeHeader: Headers.jsonContentType,
-          },
+          headers: headers,
           contentType: Headers.jsonContentType,
           responseType: ResponseType.json,
         ),

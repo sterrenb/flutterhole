@@ -60,17 +60,18 @@ class KIcons {
   static const IconData bugReport = Icons.bug_report;
 
   static const IconData queryStatus = Fontisto.direction_sign;
-  static const IconData dnsSec = MaterialCommunityIcons.dns;
   static const IconData timestamp = MaterialCommunityIcons.timelapse;
   static const IconData pingInterval = MaterialCommunityIcons.timer_sand;
   static const IconData resultWindowSize = MaterialCommunityIcons.view_array;
 
+  static const IconData annotation = MaterialCommunityIcons.tag;
+  static const IconData hostDetails = MaterialCommunityIcons.server;
+  static const IconData authentication = Ionicons.md_lock;
   static const IconData baseUrl = MaterialIcons.router;
   static const IconData apiPath = Icons.code;
   static const IconData apiToken = MaterialCommunityIcons.key_variant;
   static const IconData apiPort = Icons.adjust;
   static const IconData description = MaterialIcons.description;
-  static const IconData allowSelfSignedCertificates = Ionicons.md_unlock;
   static const IconData basicAuthenticationUsername = AntDesign.user;
   static const IconData basicAuthenticationPassword = AntDesign.key;
 }

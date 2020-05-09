@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/settings_bloc_builder.dart';
 
@@ -18,30 +19,45 @@ Map<int, Color> _materialColorMap = {
 };
 
 class PiholeThemeBuilder extends StatelessWidget {
+  /// Applies theme data from the active [PiholeSettings].
+  ///
+  /// Optionally applies theme data from [settings].
   const PiholeThemeBuilder({
     Key key,
     @required this.child,
+    this.settings,
   }) : super(key: key);
 
   final Widget child;
+  final PiholeSettings settings;
 
   @override
   Widget build(BuildContext context) {
+    if (settings != null) {
+      return Theme(
+        data: _buildTheme(context, settings),
+        child: child,
+      );
+    }
+
     return SettingsBlocBuilder(
       builder: (BuildContext context, SettingsState state) {
-        ThemeData data = Theme.of(context);
-
-        if (state is SettingsStateSuccess) {
-          data = data.copyWith(
-            accentColor: MaterialColor(state.active.primaryColor.value, _materialColorMap),
-          );
-        }
-
-        return Theme(
-          data: data,
-          child: child,
+        return state.maybeWhen<Widget>(
+          success: (all, active) => Theme(
+            data: _buildTheme(context, active),
+            child: child,
+          ),
+          orElse: () => child,
         );
       },
+    );
+  }
+
+  ThemeData _buildTheme(BuildContext context, PiholeSettings settings) {
+
+    return Theme.of(context).copyWith(
+      accentColor:
+          MaterialColor(settings.primaryColor.value, _materialColorMap),
     );
   }
 }

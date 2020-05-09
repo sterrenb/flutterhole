@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
@@ -11,7 +10,9 @@ import 'package:flutterhole/features/api/data/models/pi_status.dart';
 import 'package:flutterhole/features/settings/blocs/pihole_settings_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/features/settings/services/qr_scan_service.dart';
+import 'package:flutterhole/widgets/layout/loading_indicators.dart';
 
 extension HexColor on Color {
   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
@@ -39,7 +40,19 @@ class PiholeSettingsPage extends StatefulWidget {
   _PiholeSettingsPageState createState() => _PiholeSettingsPageState();
 }
 
-class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
+class _Form extends StatefulWidget {
+  const _Form({
+    Key key,
+    @required this.initialValue,
+  }) : super(key: key);
+
+  final PiholeSettings initialValue;
+
+  @override
+  __FormState createState() => __FormState();
+}
+
+class __FormState extends State<_Form> {
   void _validate(BuildContext context) {
     if (BlocProvider.of<PiholeSettingsBloc>(context)
         .formKey
@@ -83,6 +96,86 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<PiholeSettingsBloc, PiholeSettingsState>(
+      condition: (previous, next) {
+        return previous.maybeMap<bool>(
+          validated: (_) => false,
+          orElse: () => true,
+        );
+      },
+      builder: (BuildContext context, PiholeSettingsState state) {
+        return PiholeThemeBuilder(
+          settings: state.maybeMap<PiholeSettings>(
+            validated: (state) => state.settings,
+            orElse: () => widget.initialValue,
+          ),
+          child: WillPopScope(
+            onWillPop: () async {
+              if (BlocProvider.of<PiholeSettingsBloc>(context)
+                  .formKey
+                  .currentState
+                  .saveAndValidate()) {
+                final update = PiholeSettings.fromJson(
+                    BlocProvider.of<PiholeSettingsBloc>(context)
+                        .formKey
+                        .currentState
+                        .value);
+
+                if (update != widget.initialValue) {
+                  return _showConfirmCancelDialog(context);
+                }
+
+                return true;
+              }
+              return false;
+            },
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text('${widget.initialValue.title}'),
+                actions: <Widget>[
+                  MaterialButton(
+                    child: Text('Validate'),
+                    onPressed: () => _validate(context),
+                  ),
+                  MaterialButton(
+                    child: Text('Save'),
+                    onPressed: () {
+                      if (BlocProvider.of<PiholeSettingsBloc>(context)
+                          .formKey
+                          .currentState
+                          .saveAndValidate()) {
+                        final update = PiholeSettings.fromJson(
+                            BlocProvider.of<PiholeSettingsBloc>(context)
+                                .formKey
+                                .currentState
+                                .value);
+                        getIt<SettingsBloc>().add(
+                            SettingsEvent.update(widget.initialValue, update));
+                      }
+                    },
+                  ),
+                ],
+              ),
+              body: ListView(
+                children: <Widget>[
+                  AnnotationForm(initialValue: widget.initialValue),
+                  Divider(),
+                  HostDetailsForm(initialValue: widget.initialValue),
+                  Divider(),
+                  AuthenticationForm(initialValue: widget.initialValue),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
+  @override
+  Widget build(BuildContext context) {
     return BlocListener<SettingsBloc, SettingsState>(
       bloc: getIt<SettingsBloc>(),
       listener: (BuildContext context, SettingsState state) {
@@ -100,71 +193,7 @@ class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
               initialValue: widget.initialValue.toJson(),
               autovalidate: true,
               child: Builder(builder: (BuildContext context) {
-                return WillPopScope(
-                  onWillPop: () async {
-                    if (BlocProvider.of<PiholeSettingsBloc>(context)
-                        .formKey
-                        .currentState
-                        .saveAndValidate()) {
-                      final update = PiholeSettings.fromJson(
-                          BlocProvider.of<PiholeSettingsBloc>(context)
-                              .formKey
-                              .currentState
-                              .value);
-
-                      if (update != widget.initialValue) {
-                        return _showConfirmCancelDialog(context);
-                      }
-
-                      return true;
-                    }
-                    return false;
-                  },
-                  child: Scaffold(
-                    appBar: AppBar(
-                      title: Text('${widget.initialValue.title}'),
-                      actions: <Widget>[
-                        MaterialButton(
-                          child: Text('Validate'),
-                          onPressed: () => _validate(context),
-                        ),
-                        MaterialButton(
-                          child: Text('Save'),
-                          onPressed: () {
-                            if (BlocProvider.of<PiholeSettingsBloc>(context)
-                                .formKey
-                                .currentState
-                                .saveAndValidate()) {
-                              final update = PiholeSettings.fromJson(
-                                  BlocProvider.of<PiholeSettingsBloc>(context)
-                                      .formKey
-                                      .currentState
-                                      .value);
-                              getIt<SettingsBloc>().add(SettingsEvent.update(
-                                  widget.initialValue, update));
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    body: ListView(
-                      children: <Widget>[
-                        AnnotationForm(initialValue: widget.initialValue),
-                        Divider(),
-                        HostDetailsForm(initialValue: widget.initialValue),
-                        Divider(),
-                        AuthenticationForm(initialValue: widget.initialValue),
-//                FlatButton.icon(
-//                  onPressed: () {
-//                    _showJsonViewer(context, widget.initialValue);
-//                  },
-//                  label: Text('JSON view'),
-//                  icon: Icon(KIcons.pihole),
-//                ),
-                      ],
-                    ),
-                  ),
-                );
+                return _Form(initialValue: widget.initialValue);
               }),
             );
           },
@@ -188,6 +217,10 @@ class AnnotationForm extends StatelessWidget {
       children: <Widget>[
         ListTile(
           title: Text('Annotation'),
+          leading: Icon(
+            KIcons.annotation,
+            color: Theme.of(context).accentColor,
+          ),
         ),
         ListTile(
           title: FormBuilderTextField(
@@ -237,6 +270,10 @@ class HostDetailsForm extends StatelessWidget {
     return Column(
       children: <Widget>[
         ListTile(
+          leading: Icon(
+            KIcons.hostDetails,
+            color: Theme.of(context).accentColor,
+          ),
           title: Row(
             children: <Widget>[
               Text('Host details'),
@@ -281,10 +318,7 @@ class HostDetailsForm extends StatelessWidget {
                           },
                         );
                       },
-                      loading: () => SpinKitRipple(
-                            size: 24.0,
-                            color: Colors.orange,
-                          ),
+                      loading: () => LoadingIcon(),
                       orElse: () => Icon(KIcons.debug));
                 },
               ),
@@ -383,6 +417,10 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
     return Column(
       children: <Widget>[
         ListTile(
+          leading: Icon(
+            KIcons.authentication,
+            color: Theme.of(context).accentColor,
+          ),
           title: Row(
             children: <Widget>[
               Text('Authentication'),
@@ -411,10 +449,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
                           },
                         );
                       },
-                      loading: () => SpinKitRipple(
-                            size: 24.0,
-                            color: Colors.orange,
-                          ),
+                      loading: () => LoadingIcon(),
                       orElse: () => Icon(KIcons.debug));
                 },
               ),
@@ -464,8 +499,7 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
         ListTile(
           title: FormBuilderCheckbox(
             attribute: 'allowSelfSignedCertificates',
-            decoration: InputDecoration(
-              border: InputBorder.none,
+            decoration: _decoration.copyWith(
               helperText:
                   'Trust all certificates, even when the TLS handshake fails. \nUseful for using HTTPs over your own certificate.',
             ),
