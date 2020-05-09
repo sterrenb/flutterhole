@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source_dio.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/toggle_status.dart';
@@ -43,7 +44,6 @@ void main() async {
   ApiDataSourceDio apiDataSourceDio;
   Dio dio;
   PiholeSettings piholeSettings;
-
 
   setUp(() {
     httpClientAdapterMock = MockHttpClientAdapter();
@@ -242,15 +242,29 @@ void main() async {
 
   test(
     'should return $TopSourcesResult on successful fetchTopSources',
-        () async {
+    () async {
       // arrange
       piholeSettings = piholeSettings.copyWith(apiToken: 'token');
       final json = stubFixtureResponse('get_query_sources.json', 200);
       // act
       final TopSourcesResult result =
-      await apiDataSourceDio.fetchTopSources(piholeSettings);
+          await apiDataSourceDio.fetchTopSources(piholeSettings);
       // assert
       expect(result, equals(TopSourcesResult.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $ForwardDestinationsResult on successful fetchForwardDestinations',
+    () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('get_forward_destinations.json', 200);
+      // act
+      final ForwardDestinationsResult result =
+          await apiDataSourceDio.fetchForwardDestinations(piholeSettings);
+      // assert
+      expect(result, equals(ForwardDestinationsResult.fromJson(json)));
     },
   );
 }

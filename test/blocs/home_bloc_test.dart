@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/top_sources.dart';
@@ -54,6 +55,8 @@ void main() {
     final OverTimeData tOverTimeData =
         OverTimeData(domainsOverTime: {}, adsOverTime: {});
     final TopSourcesResult tTopSources = TopSourcesResult(topSources: {});
+    final ForwardDestinationsResult tForwardDestinations =
+        ForwardDestinationsResult(forwardDestinations: {});
     final DnsQueryTypeResult tDnsQueryTypeResult =
         DnsQueryTypeResult(dnsQueryTypes: []);
 
@@ -68,6 +71,8 @@ void main() {
             .thenAnswer((_) async => Right(tOverTimeData));
         when(mockApiRepository.fetchTopSources(any))
             .thenAnswer((_) async => Right(tTopSources));
+        when(mockApiRepository.fetchForwardDestinations(any))
+            .thenAnswer((_) async => Right(tForwardDestinations));
         when(mockApiRepository.fetchQueryTypes(any))
             .thenAnswer((_) async => Right(tDnsQueryTypeResult));
 
@@ -80,6 +85,7 @@ void main() {
           Right(tSummary),
           Right(tOverTimeData),
           Right(tTopSources),
+          Right(tForwardDestinations),
           Right(tDnsQueryTypeResult),
         )
       ],
@@ -96,6 +102,8 @@ void main() {
             .thenAnswer((_) async => Right(tOverTimeData));
         when(mockApiRepository.fetchTopSources(any))
             .thenAnswer((_) async => Left(Failure()));
+        when(mockApiRepository.fetchForwardDestinations(any))
+            .thenAnswer((_) async => Left(Failure()));
         when(mockApiRepository.fetchQueryTypes(any))
             .thenAnswer((_) async => Left(Failure()));
 
@@ -109,6 +117,7 @@ void main() {
           Right(tOverTimeData),
           Left(Failure()),
           Left(Failure()),
+          Left(Failure()),
         )
       ],
     );
@@ -117,6 +126,7 @@ void main() {
     final tFailure1 = Failure('test #1');
     final tFailure2 = Failure('test #2');
     final tFailure3 = Failure('test #3');
+    final tFailure4 = Failure('test #4');
 
     blocTest(
       'Emits [$HomeStateLoading, $HomeStateFailure] when $HomeEventFetch fails',
@@ -129,8 +139,10 @@ void main() {
             .thenAnswer((_) async => Left(tFailure1));
         when(mockApiRepository.fetchTopSources(any))
             .thenAnswer((_) async => Left(tFailure2));
-        when(mockApiRepository.fetchQueryTypes(any))
+        when(mockApiRepository.fetchForwardDestinations(any))
             .thenAnswer((_) async => Left(tFailure3));
+        when(mockApiRepository.fetchQueryTypes(any))
+            .thenAnswer((_) async => Left(tFailure4));
 
         return bloc;
       },
@@ -142,6 +154,7 @@ void main() {
           tFailure1,
           tFailure2,
           tFailure3,
+          tFailure4,
         ])),
       ],
     );

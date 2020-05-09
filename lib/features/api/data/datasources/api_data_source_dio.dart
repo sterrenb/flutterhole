@@ -7,6 +7,7 @@ import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/toggle_status.dart';
@@ -179,5 +180,16 @@ class ApiDataSourceDio implements ApiDataSource {
     });
 
     return TopSourcesResult.fromJson(json);
+  }
+
+  @override
+  Future<ForwardDestinationsResult> fetchForwardDestinations(
+      PiholeSettings settings) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'getForwardDestinations': '',
+    });
+
+    return ForwardDestinationsResult.fromJson(json);
   }
 }

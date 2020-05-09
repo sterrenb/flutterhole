@@ -4,6 +4,7 @@ import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/toggle_status.dart';
@@ -99,6 +100,15 @@ class ApiRepositoryImpl implements ApiRepository {
         settings,
         _apiDataSource.fetchTopSources,
         'fetchTopSources',
+      );
+
+  @override
+  Future<Either<Failure, ForwardDestinationsResult>> fetchForwardDestinations(
+      PiholeSettings settings) async =>
+      _simpleFetch<ForwardDestinationsResult>(
+        settings,
+        _apiDataSource.fetchForwardDestinations,
+        'fetchForwardDestinations',
       );
 
   @override

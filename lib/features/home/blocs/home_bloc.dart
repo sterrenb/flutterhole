@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/top_sources.dart';
@@ -26,6 +27,7 @@ abstract class HomeState with _$HomeState {
     Either<Failure, SummaryModel> summary,
     Either<Failure, OverTimeData> overTimeData,
     Either<Failure, TopSourcesResult> topSources,
+    Either<Failure, ForwardDestinationsResult> forwardDestinations,
     Either<Failure, DnsQueryTypeResult> dnsQueryTypes,
   ) = HomeStateSuccess;
 }
@@ -68,6 +70,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _apiRepository.fetchSummary(settings),
           _apiRepository.fetchQueriesOverTime(settings),
           _apiRepository.fetchTopSources(settings),
+          _apiRepository.fetchForwardDestinations(settings),
           _apiRepository.fetchQueryTypes(settings),
         ];
 
@@ -77,17 +80,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final Either<Failure, OverTimeData> overTimeData = results.elementAt(1);
         final Either<Failure, TopSourcesResult> topSources =
             results.elementAt(2);
-        final Either<Failure, DnsQueryTypeResult> dnsQueryTypes =
+        final Either<Failure, ForwardDestinationsResult> forwardDestinations =
             results.elementAt(3);
+        final Either<Failure, DnsQueryTypeResult> dnsQueryTypes =
+            results.elementAt(4);
 
         if (summary.isLeft() &&
             overTimeData.isLeft() &&
             topSources.isLeft() &&
+            forwardDestinations.isLeft() &&
             dnsQueryTypes.isLeft()) {
           List<Failure> failures = [];
           summary.leftMap((l) => failures.add(l));
           overTimeData.leftMap((l) => failures.add(l));
           topSources.leftMap((l) => failures.add(l));
+          forwardDestinations.leftMap((l) => failures.add(l));
           dnsQueryTypes.leftMap((l) => failures.add(l));
 
           yield HomeStateFailure(Failure(
@@ -99,6 +106,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             summary,
             overTimeData,
             topSources,
+            forwardDestinations,
             dnsQueryTypes,
           );
         }

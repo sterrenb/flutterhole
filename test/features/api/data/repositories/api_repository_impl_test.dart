@@ -4,6 +4,7 @@ import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/api/data/datasources/api_data_source.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/pi_status.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
@@ -252,6 +253,38 @@ void main() async {
     );
   });
 
+  group('fetchForwardDestinations', () {
+    test(
+      'should return $ForwardDestinationsResult on successful fetchForwardDestinations',
+          () async {
+        // arrange
+        final forwardDestinations = ForwardDestinationsResult(forwardDestinations: {});
+        when(mockApiDataSource.fetchForwardDestinations(piholeSettings))
+            .thenAnswer((_) async => forwardDestinations);
+        // act
+        final Either<Failure, ForwardDestinationsResult> result =
+        await apiRepository.fetchForwardDestinations(piholeSettings);
+        // assert
+        expect(result, equals(Right(forwardDestinations)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed fetchForwardDestinations',
+          () async {
+        // arrange
+        final tError = PiException.emptyResponse();
+        when(mockApiDataSource.fetchForwardDestinations(piholeSettings))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, ForwardDestinationsResult> result =
+        await apiRepository.fetchForwardDestinations(piholeSettings);
+        // assert
+        expect(result, equals(Left(Failure('fetchForwardDestinations failed', tError))));
+      },
+    );
+  });
+  
   group('fetchQueryTypes', () {
     test(
       'should return $DnsQueryTypeResult on successful fetchQueryTypes',

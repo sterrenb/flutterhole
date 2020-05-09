@@ -1,4 +1,5 @@
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/toggle_status.dart';
@@ -19,6 +20,9 @@ abstract class ApiDataSource {
   Future<OverTimeData> fetchQueriesOverTime(PiholeSettings settings);
 
   Future<TopSourcesResult> fetchTopSources(PiholeSettings settings);
+
+  Future<ForwardDestinationsResult> fetchForwardDestinations(
+      PiholeSettings settings);
 
   Future<DnsQueryTypeResult> fetchQueryTypes(PiholeSettings settings);
 }

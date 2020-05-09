@@ -24,6 +24,7 @@ class SummaryPageView extends StatelessWidget {
             Either<Failure, SummaryModel> summaryResult,
             _,
             __,
+            ___,
             Either<Failure, DnsQueryTypeResult> dnsQueryTypesResult,
           ) {
             return summaryResult.fold<Widget>(

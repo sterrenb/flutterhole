@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/api/data/models/dns_query_type.dart';
+import 'package:flutterhole/features/api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/api/data/models/summary.dart';
 import 'package:flutterhole/features/api/data/models/toggle_status.dart';
@@ -23,6 +24,9 @@ abstract class ApiRepository {
       PiholeSettings settings);
 
   Future<Either<Failure, TopSourcesResult>> fetchTopSources(
+      PiholeSettings settings);
+
+  Future<Either<Failure, ForwardDestinationsResult>> fetchForwardDestinations(
       PiholeSettings settings);
 
   Future<Either<Failure, DnsQueryTypeResult>> fetchQueryTypes(
