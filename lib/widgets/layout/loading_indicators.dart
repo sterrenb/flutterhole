@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CenteredLoadingIndicator extends StatelessWidget {
+  const CenteredLoadingIndicator({Key key, this.color}) : super(key: key);
+
+  final Color color;
+
   @override
   Widget build(BuildContext context) {
     return Center(
         child: SpinKitFadingFour(
-      color: Theme.of(context).accentColor,
+      color: color ?? Theme.of(context).accentColor,
     ));
   }
 }

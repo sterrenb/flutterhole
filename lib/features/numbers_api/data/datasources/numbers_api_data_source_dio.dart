@@ -7,12 +7,13 @@ import 'package:flutterhole/features/numbers_api/data/datasources/numbers_api_da
 import 'package:injectable/injectable.dart';
 
 @prod
-@injectable
+@singleton
 @RegisterAs(NumbersApiDataSource)
 class NumbersApiDataSourceDio implements NumbersApiDataSource {
   NumbersApiDataSourceDio([Dio dio, Alice alice])
       : _dio = dio ?? getIt<Dio>(),
         _alice = alice ?? getIt<Alice>() {
+    _dio.options.baseUrl = NumbersApiDataSource.baseUrl;
     _dio.interceptors.add(_alice.getDioInterceptor());
   }
 
@@ -37,6 +38,7 @@ class NumbersApiDataSourceDio implements NumbersApiDataSource {
           .map<int, String>((key, value) => MapEntry(int.tryParse(key), value));
     }
 
-    return response.data;
+    return Map<String, String>.from(response.data)
+        .map<int, String>((key, value) => MapEntry(int.tryParse(key), value));
   }
 }
