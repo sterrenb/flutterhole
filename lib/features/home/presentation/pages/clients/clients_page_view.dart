@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder.dart';
@@ -54,6 +55,7 @@ class ClientsPageView extends StatelessWidget {
                         title: title,
                         requests: queryCount,
                         totalRequests: totalQueryCount,
+                        color: KColors.clients,
                       );
                     });
               },

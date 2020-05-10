@@ -34,6 +34,7 @@ class SummaryPageView extends StatelessWidget {
             return summaryResult.fold<Widget>(
               (failure) => CenteredFailureIndicator(failure),
               (summary) => StaggeredGridView.count(
+                physics: const BouncingScrollPhysics(),
                 crossAxisCount: 4,
                 children: <Widget>[
                   SummaryTile(

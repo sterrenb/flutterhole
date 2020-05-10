@@ -18,12 +18,7 @@ class SettingsPage extends StatelessWidget {
         return Scaffold(
           drawer: DefaultDrawer(),
           appBar: AppBar(
-            title: state.maybeWhen<Widget>(
-              success: (all, active) {
-                return Text('${active?.title}');
-              },
-              orElse: () => Text('FlutterHole'),
-            ),
+            title: Text('Settings'),
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.add),
@@ -48,6 +43,7 @@ class SettingsPage extends StatelessWidget {
           body: state.maybeWhen<Widget>(
             success: (all, active) {
               return ListView.builder(
+                  physics: const BouncingScrollPhysics(),
                   itemCount: all.length,
                   itemBuilder: (context, index) {
                     final settings = all.elementAt(index);

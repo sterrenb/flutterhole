@@ -33,6 +33,7 @@ class DomainsPageView extends StatelessWidget {
               (failure) => CenteredFailureIndicator(failure),
               (topItems) {
                 return CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
                   slivers: <Widget>[
                     TopQueriesListBuilder(topItems),
                     TopAdsListBuilder(topItems),
@@ -62,7 +63,7 @@ class TopQueriesListBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListWithHeader(
       header: ListTile(
-        leading: Icon(KIcons.success),
+        leading: Icon(KIcons.success, color: KColors.success,),
         title: Text('Top permitted domains'),
       ),
       child: SliverList(
@@ -98,7 +99,7 @@ class TopAdsListBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListWithHeader(
       header: ListTile(
-        leading: Icon(KIcons.close),
+        leading: Icon(KIcons.close, color: KColors.error,),
         title: Text('Top blocked domains'),
       ),
       child: SliverList(
@@ -112,6 +113,7 @@ class TopAdsListBuilder extends StatelessWidget {
                 title: '$domain',
                 requests: queryCount,
                 totalRequests: _totalQueryCount,
+                color: KColors.error,
               );
             },
             childCount: topItems.topAds.length,

@@ -22,6 +22,20 @@ class ConnectionRepositoryDio implements ConnectionRepository {
   final Dio _dio;
   final ApiDataSource _apiDataSource;
 
+  /// Wrapper for accessing simple [ApiDataSource] methods.
+  Future<Either<Failure, T>> fetchOrFailure<T>(
+      PiholeSettings settings,
+      Function dataSourceMethod,
+      String description,
+      ) async {
+    try {
+      final T result = await dataSourceMethod(settings);
+      return Right(result);
+    } on PiException catch (e) {
+      return Left(Failure('$description failed', e));
+    }
+  }
+
   @override
   Future<Either<Failure, int>> fetchHostStatusCode(
       PiholeSettings settings) async {
@@ -69,6 +83,46 @@ class ConnectionRepositoryDio implements ConnectionRepository {
       return Right(result != null);
     } on PiException catch (_) {
       return Right(false);
+    }
+  }
+
+
+  @override
+  Future<Either<Failure, ToggleStatus>> pingPihole(
+      PiholeSettings settings) async =>
+      fetchOrFailure<ToggleStatus>(
+        settings,
+        _apiDataSource.pingPihole,
+        'pingPihole',
+      );
+
+  @override
+  Future<Either<Failure, ToggleStatus>> enablePihole(
+      PiholeSettings settings) async =>
+      fetchOrFailure<ToggleStatus>(
+        settings,
+        _apiDataSource.enablePihole,
+        'enablePihole',
+      );
+
+  @override
+  Future<Either<Failure, ToggleStatus>> disablePihole(
+      PiholeSettings settings) async =>
+      fetchOrFailure<ToggleStatus>(
+        settings,
+        _apiDataSource.disablePihole,
+        'disablePihole',
+      );
+
+  @override
+  Future<Either<Failure, ToggleStatus>> sleepPihole(
+      PiholeSettings settings, Duration duration) async {
+    try {
+      final ToggleStatus result =
+      await _apiDataSource.sleepPihole(settings, duration);
+      return Right(result);
+    } on PiException catch (e) {
+      return Left(Failure('sleepPihole failed', e));
     }
   }
 }

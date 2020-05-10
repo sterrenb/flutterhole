@@ -6,9 +6,7 @@ import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
-import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
-import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/pihole_api/data/repositories/api_repository_impl.dart';
@@ -59,133 +57,6 @@ void main() async {
             await apiRepository.fetchSummary(piholeSettings);
         // assert
         expect(result, equals(Left(Failure('fetchSummary failed', tError))));
-      },
-    );
-  });
-
-  group('pingPihole', () {
-    test(
-      'should return $ToggleStatus on successful pingPihole',
-      () async {
-        // arrange
-        final toggleStatus = ToggleStatus(status: PiStatusEnum.enabled);
-        when(mockApiDataSource.pingPihole(piholeSettings))
-            .thenAnswer((_) async => toggleStatus);
-        // act
-        final Either<Failure, ToggleStatus> result =
-            await apiRepository.pingPihole(piholeSettings);
-        // assert
-        expect(result, equals(Right(toggleStatus)));
-      },
-    );
-
-    test(
-      'should return $Failure on failed pingPihole',
-      () async {
-        // arrange
-        final tError = PiException.emptyResponse();
-        when(mockApiDataSource.pingPihole(piholeSettings)).thenThrow(tError);
-        // act
-        final Either<Failure, ToggleStatus> result =
-            await apiRepository.pingPihole(piholeSettings);
-        // assert
-        expect(result, equals(Left(Failure('pingPihole failed', tError))));
-      },
-    );
-  });
-
-  group('enablePihole', () {
-    test(
-      'should return $ToggleStatus on successful enablePihole',
-      () async {
-        // arrange
-        final toggleStatus = ToggleStatus(status: PiStatusEnum.enabled);
-        when(mockApiDataSource.enablePihole(piholeSettings))
-            .thenAnswer((_) async => toggleStatus);
-        // act
-        final Either<Failure, ToggleStatus> result =
-            await apiRepository.enablePihole(piholeSettings);
-        // assert
-        expect(result, equals(Right(toggleStatus)));
-      },
-    );
-
-    test(
-      'should return $Failure on failed enablePihole',
-      () async {
-        // arrange
-        final tError = PiException.emptyResponse();
-        when(mockApiDataSource.enablePihole(piholeSettings)).thenThrow(tError);
-        // act
-        final Either<Failure, ToggleStatus> result =
-            await apiRepository.enablePihole(piholeSettings);
-        // assert
-        expect(result, equals(Left(Failure('enablePihole failed', tError))));
-      },
-    );
-  });
-
-  group('disablePihole', () {
-    test(
-      'should return $ToggleStatus on successful disablePihole',
-      () async {
-        // arrange
-        final toggleStatus = ToggleStatus(status: PiStatusEnum.disabled);
-        when(mockApiDataSource.disablePihole(piholeSettings))
-            .thenAnswer((_) async => toggleStatus);
-        // act
-        final Either<Failure, ToggleStatus> result =
-            await apiRepository.disablePihole(piholeSettings);
-        // assert
-        expect(result, equals(Right(toggleStatus)));
-      },
-    );
-
-    test(
-      'should return $Failure on failed disablePihole',
-      () async {
-        // arrange
-        final tError = PiException.emptyResponse();
-        when(mockApiDataSource.disablePihole(piholeSettings)).thenThrow(tError);
-        // act
-        final Either<Failure, ToggleStatus> result =
-            await apiRepository.disablePihole(piholeSettings);
-        // assert
-        expect(result, equals(Left(Failure('disablePihole failed', tError))));
-      },
-    );
-  });
-
-  group('sleepPihole', () {
-    test(
-      'should return $ToggleStatus on successful sleepPihole',
-      () async {
-        // arrange
-        final duration = Duration(seconds: 10);
-        final toggleStatus = ToggleStatus(status: PiStatusEnum.disabled);
-        when(mockApiDataSource.sleepPihole(piholeSettings, duration))
-            .thenAnswer((_) async => toggleStatus);
-        // act
-        final Either<Failure, ToggleStatus> result =
-            await apiRepository.sleepPihole(piholeSettings, duration);
-        // assert
-        expect(result, equals(Right(toggleStatus)));
-      },
-    );
-
-    test(
-      'should return $Failure on failed sleepPihole',
-      () async {
-        // arrange
-        final duration = Duration(seconds: 10);
-        final tError = PiException.emptyResponse();
-        when(mockApiDataSource.sleepPihole(piholeSettings, duration))
-            .thenThrow(tError);
-        // act
-        final Either<Failure, ToggleStatus> result =
-            await apiRepository.sleepPihole(piholeSettings, duration);
-        // assert
-        expect(result, equals(Left(Failure('sleepPihole failed', tError))));
       },
     );
   });

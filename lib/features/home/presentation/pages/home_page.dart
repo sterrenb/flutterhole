@@ -127,6 +127,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 body: PageView(
+                  physics: const BouncingScrollPhysics(),
                   controller: _pageController,
                   onPageChanged: _onPageChanged,
                   children: <Widget>[

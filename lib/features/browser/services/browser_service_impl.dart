@@ -23,11 +23,11 @@ class BrowserServiceImpl implements BrowserService {
   }
 
   @override
-  Future<void> launchUrl(String url) async {
+  Future<bool> launchUrl(String url) async {
     if (await canLaunch(url)) {
-      await launch(url);
+      return await launch(url);
     } else {
-      print('Could not launch $url');
+      return false;
     }
   }
 

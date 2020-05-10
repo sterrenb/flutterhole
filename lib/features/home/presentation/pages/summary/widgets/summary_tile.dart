@@ -7,6 +7,7 @@ import 'package:flutterhole/features/browser/services/browser_service.dart';
 import 'package:flutterhole/features/numbers_api/blocs/number_trivia_bloc.dart';
 import 'package:flutterhole/widgets/layout/animate_on_build.dart';
 import 'package:flutterhole/widgets/layout/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/snackbars.dart';
 
 const String numbersApiHome = 'http://numbersapi.com/';
 
@@ -24,6 +25,8 @@ class SummaryTile extends StatelessWidget {
   final int integer;
   final Color color;
 
+  String get _url => '$numbersApiHome#$integer';
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -36,7 +39,7 @@ class SummaryTile extends StatelessWidget {
             child: _Tile(title, subtitle),
           );
         },
-        openBuilder: (_, VoidCallback closeContainer) {
+        openBuilder: (_, __) {
           return Scaffold(
             backgroundColor: color,
             appBar: AppBar(
@@ -90,18 +93,16 @@ class SummaryTile extends StatelessWidget {
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Tooltip(
-                      message: 'Open $numbersApiHome',
+                      message: 'Open $_url',
                       child: ListTile(
-                        onTap: () =>
-                            getIt<BrowserService>().launchUrl(numbersApiHome),
+                        onTap: () async {
+                          final didLaunch =
+                              await getIt<BrowserService>().launchUrl(_url);
+                          if (!didLaunch) {
+                            showErrorSnackBar(context, 'Could not open $_url');
+                          }
+                        },
                         leading: Icon(KIcons.info),
-                        trailing: IconButton(
-                          tooltip: 'Dismiss',
-                          icon: Icon(KIcons.close),
-                          onPressed: () {
-                            print('TODO');
-                          },
-                        ),
                         title: Row(
                           children: <Widget>[
                             Text('Powered by the '),

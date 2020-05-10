@@ -7,7 +7,6 @@ import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart'
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
-import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/pihole_api/data/repositories/api_repository.dart';
@@ -24,7 +23,7 @@ class ApiRepositoryImpl implements ApiRepository {
   final ApiDataSource _apiDataSource;
 
   /// Wrapper for accessing simple [ApiDataSource] methods.
-  Future<Either<Failure, T>> _simpleFetch<T>(
+  Future<Either<Failure, T>> fetchOrFailure<T>(
     PiholeSettings settings,
     Function dataSourceMethod,
     String description,
@@ -40,55 +39,16 @@ class ApiRepositoryImpl implements ApiRepository {
   @override
   Future<Either<Failure, SummaryModel>> fetchSummary(
           PiholeSettings settings) async =>
-      _simpleFetch<SummaryModel>(
+      fetchOrFailure<SummaryModel>(
         settings,
         _apiDataSource.fetchSummary,
         'fetchSummary',
       );
 
   @override
-  Future<Either<Failure, ToggleStatus>> pingPihole(
-          PiholeSettings settings) async =>
-      _simpleFetch<ToggleStatus>(
-        settings,
-        _apiDataSource.pingPihole,
-        'pingPihole',
-      );
-
-  @override
-  Future<Either<Failure, ToggleStatus>> enablePihole(
-          PiholeSettings settings) async =>
-      _simpleFetch<ToggleStatus>(
-        settings,
-        _apiDataSource.enablePihole,
-        'enablePihole',
-      );
-
-  @override
-  Future<Either<Failure, ToggleStatus>> disablePihole(
-          PiholeSettings settings) async =>
-      _simpleFetch<ToggleStatus>(
-        settings,
-        _apiDataSource.disablePihole,
-        'disablePihole',
-      );
-
-  @override
-  Future<Either<Failure, ToggleStatus>> sleepPihole(
-      PiholeSettings settings, Duration duration) async {
-    try {
-      final ToggleStatus result =
-          await _apiDataSource.sleepPihole(settings, duration);
-      return Right(result);
-    } on PiException catch (e) {
-      return Left(Failure('sleepPihole failed', e));
-    }
-  }
-
-  @override
   Future<Either<Failure, OverTimeData>> fetchQueriesOverTime(
           PiholeSettings settings) async =>
-      _simpleFetch<OverTimeData>(
+      fetchOrFailure<OverTimeData>(
         settings,
         _apiDataSource.fetchQueriesOverTime,
         'fetchQueriesOverTime',
@@ -97,7 +57,7 @@ class ApiRepositoryImpl implements ApiRepository {
   @override
   Future<Either<Failure, TopSourcesResult>> fetchTopSources(
           PiholeSettings settings) async =>
-      _simpleFetch<TopSourcesResult>(
+      fetchOrFailure<TopSourcesResult>(
         settings,
         _apiDataSource.fetchTopSources,
         'fetchTopSources',
@@ -106,7 +66,7 @@ class ApiRepositoryImpl implements ApiRepository {
   @override
   Future<Either<Failure, TopItems>> fetchTopItems(
           PiholeSettings settings) async =>
-      _simpleFetch<TopItems>(
+      fetchOrFailure<TopItems>(
         settings,
         _apiDataSource.fetchTopItems,
         'fetchTopItems',
@@ -115,7 +75,7 @@ class ApiRepositoryImpl implements ApiRepository {
   @override
   Future<Either<Failure, ForwardDestinationsResult>> fetchForwardDestinations(
           PiholeSettings settings) async =>
-      _simpleFetch<ForwardDestinationsResult>(
+      fetchOrFailure<ForwardDestinationsResult>(
         settings,
         _apiDataSource.fetchForwardDestinations,
         'fetchForwardDestinations',
@@ -124,7 +84,7 @@ class ApiRepositoryImpl implements ApiRepository {
   @override
   Future<Either<Failure, DnsQueryTypeResult>> fetchQueryTypes(
           PiholeSettings settings) async =>
-      _simpleFetch<DnsQueryTypeResult>(
+      fetchOrFailure<DnsQueryTypeResult>(
         settings,
         _apiDataSource.fetchQueryTypes,
         'fetchQueryTypes',

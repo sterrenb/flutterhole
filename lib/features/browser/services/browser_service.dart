@@ -1,7 +1,7 @@
 abstract class BrowserService {
   String get privacyUrl;
 
-  Future<void> launchUrl(String url);
+  Future<bool> launchUrl(String url);
 
   Future<void> launchReview();
 
