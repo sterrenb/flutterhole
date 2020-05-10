@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
-import 'package:flutterhole/features/api/data/models/pi_status.dart';
-import 'package:flutterhole/features/api/data/repositories/connection_repository.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
+import 'package:flutterhole/features/pihole_api/data/repositories/connection_repository.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

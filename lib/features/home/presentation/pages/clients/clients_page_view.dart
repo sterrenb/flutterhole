@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/core/models/failures.dart';
-import 'package:flutterhole/features/api/data/models/pi_client.dart';
-import 'package:flutterhole/features/api/data/models/summary.dart';
-import 'package:flutterhole/features/api/data/models/top_sources.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
+import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder.dart';
 import 'package:flutterhole/widgets/layout/failure_indicators.dart';

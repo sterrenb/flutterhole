@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole/features/api/data/models/model.dart';
+import 'package:flutterhole/features/pihole_api/data/models/model.dart';
 import 'package:flutterhole/features/settings/data/models/colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
