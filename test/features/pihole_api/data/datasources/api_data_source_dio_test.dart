@@ -9,6 +9,7 @@ import 'package:flutterhole/features/pihole_api/data/models/forward_destinations
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
+import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:mockito/mockito.dart';
@@ -265,6 +266,20 @@ void main() async {
           await apiDataSourceDio.fetchForwardDestinations(piholeSettings);
       // assert
       expect(result, equals(ForwardDestinationsResult.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $TopItems on successful fetchTopItems',
+    () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('top_items.json', 200);
+      // act
+      final TopItems result =
+          await apiDataSourceDio.fetchTopItems(piholeSettings);
+      // assert
+      expect(result, equals(TopItems.fromJson(json)));
     },
   );
 }

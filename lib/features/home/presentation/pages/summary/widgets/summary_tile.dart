@@ -39,6 +39,10 @@ class SummaryTile extends StatelessWidget {
         openBuilder: (_, VoidCallback closeContainer) {
           return Scaffold(
             backgroundColor: color,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0.0,
+            ),
             body: AnimateOnBuild(
               child: Stack(
                 children: <Widget>[
@@ -92,7 +96,7 @@ class SummaryTile extends StatelessWidget {
                             getIt<BrowserService>().launchUrl(numbersApiHome),
                         leading: Icon(KIcons.info),
                         trailing: IconButton(
-                          tooltip: 'Hide',
+                          tooltip: 'Dismiss',
                           icon: Icon(KIcons.close),
                           onPressed: () {
                             print('TODO');

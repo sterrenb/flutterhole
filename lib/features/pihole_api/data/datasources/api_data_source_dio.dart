@@ -12,6 +12,7 @@ import 'package:flutterhole/features/pihole_api/data/models/forward_destinations
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
+import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:injectable/injectable.dart';
@@ -175,16 +176,6 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
-  Future<DnsQueryTypeResult> fetchQueryTypes(PiholeSettings settings) async {
-    final Map<String, dynamic> json =
-        await _getSecure(settings, queryParameters: {
-      'getQueryTypes': '',
-    });
-
-    return DnsQueryTypeResult.fromJson(json);
-  }
-
-  @override
   Future<TopSourcesResult> fetchTopSources(PiholeSettings settings) async {
     final Map<String, dynamic> json =
         await _getSecure(settings, queryParameters: {
@@ -192,6 +183,18 @@ class ApiDataSourceDio implements ApiDataSource {
     });
 
     return TopSourcesResult.fromJson(json);
+  }
+
+  @override
+  Future<TopItems> fetchTopItems(PiholeSettings settings) async {
+    final Map<String, dynamic> json = await _getSecure(
+      settings,
+      queryParameters: {
+        'topItems': '',
+      },
+    );
+
+    return TopItems.fromJson(json);
   }
 
   @override
@@ -203,5 +206,15 @@ class ApiDataSourceDio implements ApiDataSource {
     });
 
     return ForwardDestinationsResult.fromJson(json);
+  }
+
+  @override
+  Future<DnsQueryTypeResult> fetchQueryTypes(PiholeSettings settings) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'getQueryTypes': '',
+    });
+
+    return DnsQueryTypeResult.fromJson(json);
   }
 }

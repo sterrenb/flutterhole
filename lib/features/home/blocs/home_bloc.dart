@@ -7,6 +7,7 @@ import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart'
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
+import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/pihole_api/data/repositories/api_repository.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
@@ -27,6 +28,7 @@ abstract class HomeState with _$HomeState {
     Either<Failure, SummaryModel> summary,
     Either<Failure, OverTimeData> overTimeData,
     Either<Failure, TopSourcesResult> topSources,
+    Either<Failure, TopItems> topItems,
     Either<Failure, ForwardDestinationsResult> forwardDestinations,
     Either<Failure, DnsQueryTypeResult> dnsQueryTypes,
   ) = HomeStateSuccess;
@@ -70,6 +72,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _apiRepository.fetchSummary(settings),
           _apiRepository.fetchQueriesOverTime(settings),
           _apiRepository.fetchTopSources(settings),
+          _apiRepository.fetchTopItems(settings),
           _apiRepository.fetchForwardDestinations(settings),
           _apiRepository.fetchQueryTypes(settings),
         ];
@@ -79,21 +82,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final Either<Failure, SummaryModel> summary = results.elementAt(0);
         final Either<Failure, OverTimeData> overTimeData = results.elementAt(1);
         final Either<Failure, TopSourcesResult> topSources =
-            results.elementAt(2);
-        final Either<Failure, ForwardDestinationsResult> forwardDestinations =
+        results.elementAt(2);
+        final Either<Failure, TopItems> topItems =
             results.elementAt(3);
-        final Either<Failure, DnsQueryTypeResult> dnsQueryTypes =
+        final Either<Failure, ForwardDestinationsResult> forwardDestinations =
             results.elementAt(4);
+        final Either<Failure, DnsQueryTypeResult> dnsQueryTypes =
+            results.elementAt(5);
 
         if (summary.isLeft() &&
             overTimeData.isLeft() &&
             topSources.isLeft() &&
+            topItems.isLeft() &&
             forwardDestinations.isLeft() &&
             dnsQueryTypes.isLeft()) {
           List<Failure> failures = [];
           summary.leftMap((l) => failures.add(l));
           overTimeData.leftMap((l) => failures.add(l));
           topSources.leftMap((l) => failures.add(l));
+          topItems.leftMap((l) => failures.add(l));
           forwardDestinations.leftMap((l) => failures.add(l));
           dnsQueryTypes.leftMap((l) => failures.add(l));
 
@@ -106,6 +113,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             summary,
             overTimeData,
             topSources,
+            topItems,
             forwardDestinations,
             dnsQueryTypes,
           );

@@ -29,7 +29,8 @@ class NumbersApiRepositoryImpl implements NumbersApiRepository {
   Future<Either<Failure, Map<int, String>>> fetchManyTrivia(
       List<int> integers) async {
     try {
-      final result = await _numbersApiDataSource.fetchManyTrivia(integers);
+      final result =
+          await _numbersApiDataSource.fetchManyTrivia(integers);
       return Right(result);
     } catch (e) {
       return Left(Failure('fetchManyTrivia failed', e));

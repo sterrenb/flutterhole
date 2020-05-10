@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhole/features/home/blocs/home_bloc.dart';
+import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder.dart';
 
 class DomainsPageView extends StatelessWidget {
   const DomainsPageView({
@@ -7,6 +9,10 @@ class DomainsPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.purple);
+    return HomeBlocBuilder(
+      builder: (BuildContext context, HomeState state) {
+        return Container();
+      },
+    );
   }
 }

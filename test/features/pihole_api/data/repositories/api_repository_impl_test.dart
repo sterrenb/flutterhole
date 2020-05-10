@@ -9,6 +9,7 @@ import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart'
 import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
+import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/pihole_api/data/repositories/api_repository_impl.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
@@ -216,7 +217,8 @@ void main() async {
         final Either<Failure, OverTimeData> result =
             await apiRepository.fetchQueriesOverTime(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure('fetchQueriesOverTime failed', tError))));
+        expect(result,
+            equals(Left(Failure('fetchQueriesOverTime failed', tError))));
       },
     );
   });
@@ -253,17 +255,52 @@ void main() async {
     );
   });
 
+  group('fetchTopItems', () {
+    test(
+      'should return $TopItems on successful fetchTopItems',
+      () async {
+        // arrange
+        final topItems = TopItems(
+          topQueries: {},
+          topAds: {},
+        );
+        when(mockApiDataSource.fetchTopItems(piholeSettings))
+            .thenAnswer((_) async => topItems);
+        // act
+        final Either<Failure, TopItems> result =
+            await apiRepository.fetchTopItems(piholeSettings);
+        // assert
+        expect(result, equals(Right(topItems)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed fetchTopItems',
+      () async {
+        // arrange
+        final tError = PiException.emptyResponse();
+        when(mockApiDataSource.fetchTopItems(piholeSettings)).thenThrow(tError);
+        // act
+        final Either<Failure, TopItems> result =
+            await apiRepository.fetchTopItems(piholeSettings);
+        // assert
+        expect(result, equals(Left(Failure('fetchTopItems failed', tError))));
+      },
+    );
+  });
+
   group('fetchForwardDestinations', () {
     test(
       'should return $ForwardDestinationsResult on successful fetchForwardDestinations',
-          () async {
+      () async {
         // arrange
-        final forwardDestinations = ForwardDestinationsResult(forwardDestinations: {});
+        final forwardDestinations =
+            ForwardDestinationsResult(forwardDestinations: {});
         when(mockApiDataSource.fetchForwardDestinations(piholeSettings))
             .thenAnswer((_) async => forwardDestinations);
         // act
         final Either<Failure, ForwardDestinationsResult> result =
-        await apiRepository.fetchForwardDestinations(piholeSettings);
+            await apiRepository.fetchForwardDestinations(piholeSettings);
         // assert
         expect(result, equals(Right(forwardDestinations)));
       },
@@ -271,20 +308,21 @@ void main() async {
 
     test(
       'should return $Failure on failed fetchForwardDestinations',
-          () async {
+      () async {
         // arrange
         final tError = PiException.emptyResponse();
         when(mockApiDataSource.fetchForwardDestinations(piholeSettings))
             .thenThrow(tError);
         // act
         final Either<Failure, ForwardDestinationsResult> result =
-        await apiRepository.fetchForwardDestinations(piholeSettings);
+            await apiRepository.fetchForwardDestinations(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure('fetchForwardDestinations failed', tError))));
+        expect(result,
+            equals(Left(Failure('fetchForwardDestinations failed', tError))));
       },
     );
   });
-  
+
   group('fetchQueryTypes', () {
     test(
       'should return $DnsQueryTypeResult on successful fetchQueryTypes',
