@@ -14,7 +14,7 @@ packages:
       name: alice
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.30"
+    version: "0.0.33"
   analyzer:
     dependency: transitive
     description:
@@ -384,6 +384,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
+  flutter_sticky_header:
+    dependency: "direct main"
+    description:
+      name: flutter_sticky_header
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter

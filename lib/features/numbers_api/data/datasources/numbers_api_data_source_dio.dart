@@ -43,8 +43,6 @@ class NumbersApiDataSourceDio implements NumbersApiDataSource {
       options: buildCacheOptions(NumbersApiDataSource.maxAge),
     );
 
-    print('data: ${response.data.runtimeType} ${response.data}');
-
     if (response.data is String) {
       final map = Map<String, String>.from(jsonDecode(response.data));
       return map

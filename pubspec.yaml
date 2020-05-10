@@ -66,9 +66,10 @@ dependencies:
   modal_bottom_sheet: ^0.1.5
   flutter_spinkit: ^4.1.2+1
   fl_chart: ^0.9.4
+  flutter_sticky_header: ^0.4.2
 
   # log page
-  alice: ^0.0.30
+  alice: ^0.0.33
 
   # about page
   package_info: ^0.4.0+17
