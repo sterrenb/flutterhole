@@ -1,9 +1,14 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/constants.dart';
+import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/browser/services/browser_service.dart';
 import 'package:flutterhole/features/numbers_api/blocs/number_trivia_bloc.dart';
 import 'package:flutterhole/widgets/layout/animate_on_build.dart';
 import 'package:flutterhole/widgets/layout/loading_indicators.dart';
+
+const String numbersApiHome = 'http://numbersapi.com/';
 
 class SummaryTile extends StatelessWidget {
   const SummaryTile({
@@ -35,42 +40,74 @@ class SummaryTile extends StatelessWidget {
           return Scaffold(
             backgroundColor: color,
             body: AnimateOnBuild(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Stack(
                 children: <Widget>[
-                  _Tile(title, subtitle),
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: BlocBuilder<NumberTriviaBloc, NumberTriviaState>(
-                      bloc: BlocProvider.of<NumberTriviaBloc>(context),
-                      builder: (BuildContext context, NumberTriviaState state) {
-                        return state.maybeWhen(
-                          success: (trivia) {
-                            if (trivia.containsKey(integer)) {
-                              return Text(
-                                '${trivia[integer]}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline6
-                                    .copyWith(color: Colors.white),
-                                textAlign: TextAlign.center,
-                              );
-                            }
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _Tile(title, subtitle),
+                      Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: BlocBuilder<NumberTriviaBloc, NumberTriviaState>(
+                          bloc: BlocProvider.of<NumberTriviaBloc>(context),
+                          builder:
+                              (BuildContext context, NumberTriviaState state) {
+                            return state.maybeWhen(
+                              success: (trivia) {
+                                if (trivia.containsKey(integer)) {
+                                  return Text(
+                                    '${trivia[integer]}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        .copyWith(color: Colors.white),
+                                    textAlign: TextAlign.center,
+                                  );
+                                }
 
-                            return Text(
-                              'No data for ${integer} in $trivia',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  .apply(color: Colors.white),
+                                return Text(
+                                  'No data for ${integer} in $trivia',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      .apply(color: Colors.white),
+                                );
+                              },
+                              loading: () => CenteredLoadingIndicator(
+                                color: Colors.white,
+                              ),
+                              orElse: () => Container(),
                             );
                           },
-                          loading: () => CenteredLoadingIndicator(
-                            color: Colors.white,
-                          ),
-                          orElse: () => Container(),
-                        );
-                      },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Tooltip(
+                      message: 'Open $numbersApiHome',
+                      child: ListTile(
+                        onTap: () =>
+                            getIt<BrowserService>().launchUrl(numbersApiHome),
+                        leading: Icon(KIcons.info),
+                        trailing: IconButton(
+                          tooltip: 'Hide',
+                          icon: Icon(KIcons.close),
+                          onPressed: () {
+                            print('TODO');
+                          },
+                        ),
+                        title: Row(
+                          children: <Widget>[
+                            Text('Powered by the '),
+                            Text(
+                              'Numbers API',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ],

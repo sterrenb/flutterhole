@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:alice/alice.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/numbers_api/data/datasources/numbers_api_data_source.dart';
 import 'package:injectable/injectable.dart';
@@ -10,11 +11,17 @@ import 'package:injectable/injectable.dart';
 @singleton
 @RegisterAs(NumbersApiDataSource)
 class NumbersApiDataSourceDio implements NumbersApiDataSource {
-  NumbersApiDataSourceDio([Dio dio, Alice alice])
-      : _dio = dio ?? getIt<Dio>(),
+  NumbersApiDataSourceDio([
+    Dio dio,
+    Alice alice,
+  ])  : _dio = dio ?? getIt<Dio>(),
         _alice = alice ?? getIt<Alice>() {
     _dio.options.baseUrl = NumbersApiDataSource.baseUrl;
     _dio.interceptors.add(_alice.getDioInterceptor());
+
+    _dio.interceptors.add(
+        DioCacheManager(CacheConfig(baseUrl: NumbersApiDataSource.baseUrl))
+            .interceptor);
   }
 
   final Dio _dio;
@@ -22,13 +29,19 @@ class NumbersApiDataSourceDio implements NumbersApiDataSource {
 
   @override
   Future<String> fetchTrivia(int integer) async {
-    final response = await _dio.get('${integer.toString()}');
+    final response = await _dio.get(
+      '${integer.toString()}',
+      options: buildCacheOptions(NumbersApiDataSource.maxAge),
+    );
     return response.data;
   }
 
   @override
   Future<Map<int, String>> fetchManyTrivia(List<int> integers) async {
-    final response = await _dio.get('${integers.join(',')}');
+    final response = await _dio.get(
+      '${integers.join(',')}',
+      options: buildCacheOptions(NumbersApiDataSource.maxAge),
+    );
 
     print('data: ${response.data.runtimeType} ${response.data}');
 
