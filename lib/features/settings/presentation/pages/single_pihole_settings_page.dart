@@ -1,19 +1,21 @@
-import 'package:dartz/dartz.dart' as dartz;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutterhole/constants.dart';
-import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
-import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/settings/blocs/pihole_settings_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
+import 'file:///C:/Users/tster/AndroidStudioProjects/flutterhole/lib/features/settings/presentation/widgets/form/allow_self_signed_certificates_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/api_token_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/base_url_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/host_details_status_icon.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
-import 'package:flutterhole/features/settings/services/qr_scan_service.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
-import 'package:flutterhole/widgets/layout/loading_indicators.dart';
+
+import 'file:///C:/Users/tster/AndroidStudioProjects/flutterhole/lib/features/settings/presentation/widgets/form/api_path_form_tile.dart';
+import 'file:///C:/Users/tster/AndroidStudioProjects/flutterhole/lib/features/settings/presentation/widgets/form/authentication_status_icon.dart';
 
 extension HexColor on Color {
   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
@@ -137,9 +139,9 @@ class __FormState extends State<_Form> {
               ),
               body: ListView(
                 children: <Widget>[
-                  AnnotationForm(initialValue: widget.initialValue),
+                  _AnnotationForm(initialValue: widget.initialValue),
                   Divider(),
-                  HostDetailsForm(initialValue: widget.initialValue),
+                  _HostDetailsForm(initialValue: widget.initialValue),
                   Divider(),
                   AuthenticationForm(initialValue: widget.initialValue),
                   Divider(),
@@ -201,8 +203,8 @@ class _SinglePiholeSettingsPageState extends State<SinglePiholeSettingsPage> {
   }
 }
 
-class AnnotationForm extends StatelessWidget {
-  const AnnotationForm({
+class _AnnotationForm extends StatelessWidget {
+  const _AnnotationForm({
     Key key,
     @required this.initialValue,
   }) : super(key: key);
@@ -255,8 +257,8 @@ class AnnotationForm extends StatelessWidget {
   }
 }
 
-class HostDetailsForm extends StatelessWidget {
-  const HostDetailsForm({
+class _HostDetailsForm extends StatelessWidget {
+  const _HostDetailsForm({
     Key key,
     @required this.initialValue,
   }) : super(key: key);
@@ -276,104 +278,15 @@ class HostDetailsForm extends StatelessWidget {
             children: <Widget>[
               Text('Host details'),
               SizedBox(width: 8.0),
-              BlocBuilder<PiholeSettingsBloc, PiholeSettingsState>(
-                builder: (BuildContext context, PiholeSettingsState state) {
-                  return state.maybeWhen<Widget>(
-                      validated: (
-                        PiholeSettings settings,
-                        dartz.Either<Failure, int> hostStatusCode,
-                        dartz.Either<Failure, PiStatusEnum> piholeStatus,
-                        _,
-                      ) {
-                        return hostStatusCode.fold<Widget>(
-                          (Failure failure) => Icon(
-                            KIcons.error,
-                            color: KColors.error,
-                          ),
-                          (int statusCode) {
-                            return piholeStatus.fold<Widget>(
-                              (Failure failure) => Icon(
-                                KIcons.error,
-                                color: KColors.error,
-                              ),
-                              (PiStatusEnum piStatus) {
-                                switch (piStatus) {
-                                  case PiStatusEnum.enabled:
-                                  case PiStatusEnum.disabled:
-                                    return Icon(
-                                      KIcons.success,
-                                      color: KColors.success,
-                                    );
-                                  case PiStatusEnum.unknown:
-                                  default:
-                                    return Icon(
-                                      KIcons.error,
-                                      color: KColors.error,
-                                    );
-                                }
-                              },
-                            );
-                          },
-                        );
-                      },
-                      loading: () => LoadingIcon(),
-                      orElse: () => Icon(KIcons.debug));
-                },
-              ),
+              HostDetailsStatusIcon(),
             ],
           ),
         ),
-        ListTile(
-          title: Row(
-            children: <Widget>[
-              Flexible(
-                flex: 3,
-                child: FormBuilderTextField(
-                  attribute: 'baseUrl',
-                  decoration: _decoration.copyWith(
-                    labelText: 'Base URL',
-                  ),
-                  keyboardType: TextInputType.url,
-                  autocorrect: false,
-                  maxLines: 1,
-                ),
-              ),
-              SizedBox(width: 8.0),
-              Flexible(
-                flex: 1,
-                child: FormBuilderTextField(
-                  attribute: 'apiPort',
-                  initialValue: initialValue.apiPort.toString(),
-                  decoration: _decoration.copyWith(
-                    labelText: 'Port',
-                  ),
-                  maxLines: 1,
-                  keyboardType: TextInputType.number,
-                  validators: [
-                    FormBuilderValidators.numeric(),
-                    FormBuilderValidators.min(0),
-                    FormBuilderValidators.max(65535),
-                  ],
-                  inputFormatters: [
-                    WhitelistingTextInputFormatter.digitsOnly,
-                  ],
-                  valueTransformer: (value) => int.tryParse(value ?? 80),
-                ),
-              ),
-            ],
-          ),
+        BaseUrlFormTile(
+          initialValue: initialValue,
+          decoration: _decoration,
         ),
-        ListTile(
-          title: FormBuilderTextField(
-            attribute: 'apiPath',
-            decoration: _decoration.copyWith(
-                labelText: 'API path',
-                helperText:
-                    'For normal use cases, the API path is "${PiholeSettings().apiPath}".'),
-            autocorrect: false,
-            maxLines: 1,
-          ),
-        ),
+        ApiPathFormTile(decoration: _decoration),
       ],
     );
   }
@@ -390,26 +303,6 @@ class AuthenticationForm extends StatefulWidget {
 }
 
 class _AuthenticationFormState extends State<AuthenticationForm> {
-  TextEditingController _apiTokenController;
-  bool _apiTokenVisible;
-
-  @override
-  void initState() {
-    super.initState();
-    _apiTokenController =
-        TextEditingController(text: widget.initialValue.apiToken);
-    _apiTokenVisible = false;
-  }
-
-  void _scanQrCode() async {
-    final String apiToken = await getIt<QrScanService>().scanPiholeApiTokenQR();
-    if (apiToken.isNotEmpty) {
-      setState(() {
-        _apiTokenController.text = apiToken;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -423,87 +316,15 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
             children: <Widget>[
               Text('Authentication'),
               SizedBox(width: 8.0),
-              BlocBuilder<PiholeSettingsBloc, PiholeSettingsState>(
-                builder: (BuildContext context, PiholeSettingsState state) {
-                  return state.maybeWhen<Widget>(
-                      validated: (
-                        PiholeSettings settings,
-                        _,
-                        __,
-                        dartz.Either<Failure, bool> authenticatedStatus,
-                      ) {
-                        return authenticatedStatus.fold<Widget>(
-                          (Failure failure) => Icon(
-                            KIcons.error,
-                            color: KColors.error,
-                          ),
-                          (bool isAuthenticated) {
-                            return Icon(
-                              isAuthenticated ? KIcons.success : KIcons.error,
-                              color: isAuthenticated
-                                  ? KColors.success
-                                  : KColors.error,
-                            );
-                          },
-                        );
-                      },
-                      loading: () => LoadingIcon(),
-                      orElse: () => Icon(KIcons.debug));
-                },
-              ),
+              AuthenticationStatusIcon(),
             ],
           ),
         ),
-        ListTile(
-          title: FormBuilderTextField(
-            attribute: 'apiToken',
-            controller: _apiTokenController,
-            decoration: _decoration.copyWith(
-              labelText: 'API token',
-              helperText:
-                  'The API token can be found on the admin home at "Settings > API / Web interface". \nRequired for authenticated tasks, such as enabling & disabling.',
-              helperMaxLines: 5,
-              suffixIcon: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  IconButton(
-                    tooltip: 'Toggle visibility',
-                    icon: Icon(
-                      _apiTokenVisible
-                          ? KIcons.visibility_on
-                          : KIcons.visibility_off,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _apiTokenVisible = !_apiTokenVisible;
-                      });
-                    },
-                  ),
-                  IconButton(
-                    tooltip: 'Scan QR code',
-                    icon: Icon(KIcons.qrCode),
-                    onPressed: _scanQrCode,
-                  ),
-                ],
-              ),
-            ),
-            autocorrect: false,
-            maxLines: 1,
-            obscureText: !_apiTokenVisible,
-            valueTransformer: (value) => (value ?? '').toString().trim(),
-          ),
+        ApiTokenFormTile(
+          initialValue: widget.initialValue,
+          decoration: _decoration,
         ),
-        ListTile(
-          title: FormBuilderCheckbox(
-            attribute: 'allowSelfSignedCertificates',
-            decoration: _decoration.copyWith(
-              helperText:
-                  'Trust all certificates, even when the TLS handshake fails. \nUseful for using HTTPs over your own certificate.',
-            ),
-            label: Text('Allow self-signed certificates'),
-          ),
-        ),
+        AllowSelfSignedCertificatesFormTile(decoration: _decoration),
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:flutterhole/features/settings/presentation/pages/add_pihole_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
@@ -120,7 +121,7 @@ class _AddPiholeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OpenContainer(
       openBuilder: (openContext, _) {
-        return Scaffold();
+        return AddPiholePage();
       },
       tappable: false,
       closedShape: const RoundedRectangleBorder(

@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
