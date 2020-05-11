@@ -24,7 +24,7 @@ void main() {
   setUp(() {
     mockApiRepository = MockApiRepository();
     mockSettingsRepository = MockSettingsRepository();
-    bloc = SettingsBloc(mockApiRepository, mockSettingsRepository);
+    bloc = SettingsBloc( mockSettingsRepository);
   });
 
   tearDown(() {
@@ -171,6 +171,41 @@ void main() {
           settings0,
           settings2,
         ], newActive)
+      ],
+    );
+  });
+
+  group('$SettingsEventDelete', () {
+    final settings0 = PiholeSettings(title: 'Delete me');
+    final settings1 = PiholeSettings(title: 'Second');
+    final settings2 = PiholeSettings(title: 'Third');
+
+    final deleteMe = settings1;
+
+    blocTest(
+      'Emits [$SettingsStateLoading, $SettingsStateSuccess] when $SettingsEventDelete succeeds',
+      build: () async {
+        when(mockSettingsRepository.deletePiholeSettings(deleteMe))
+            .thenAnswer((_) async => Right(true));
+        when(mockSettingsRepository.fetchAllPiholeSettings())
+            .thenAnswer((_) async => Right([
+          deleteMe,
+          settings0,
+          settings2,
+        ]));
+        when(mockSettingsRepository.fetchActivePiholeSettings())
+            .thenAnswer((_) async => Right(deleteMe));
+        return bloc;
+      },
+      act: (SettingsBloc bloc) async =>
+          bloc.add(SettingsEvent.delete(deleteMe)),
+      expect: [
+        SettingsStateLoading(),
+        SettingsStateSuccess([
+          deleteMe,
+          settings0,
+          settings2,
+        ], deleteMe)
       ],
     );
   });

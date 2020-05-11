@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 abstract class RouterService {
   static const String home = '/';
   static const String settings = '/settings';
+  static const String allPiholes = '/all-piholes';
   static const String log = '/log';
   static const String about = '/about';
   static const String privacy = '/privacy';

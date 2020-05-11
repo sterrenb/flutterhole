@@ -12,6 +12,7 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/features/settings/services/qr_scan_service.dart';
+import 'package:flutterhole/widgets/layout/dialogs.dart';
 import 'package:flutterhole/widgets/layout/loading_indicators.dart';
 
 extension HexColor on Color {
@@ -28,8 +29,8 @@ const InputDecoration _decoration = InputDecoration(
   contentPadding: EdgeInsets.all(12.0),
 );
 
-class PiholeSettingsPage extends StatefulWidget {
-  const PiholeSettingsPage({
+class SinglePiholeSettingsPage extends StatefulWidget {
+  const SinglePiholeSettingsPage({
     Key key,
     @required this.initialValue,
   }) : super(key: key);
@@ -37,7 +38,8 @@ class PiholeSettingsPage extends StatefulWidget {
   final PiholeSettings initialValue;
 
   @override
-  _PiholeSettingsPageState createState() => _PiholeSettingsPageState();
+  _SinglePiholeSettingsPageState createState() =>
+      _SinglePiholeSettingsPageState();
 }
 
 class _Form extends StatefulWidget {
@@ -68,32 +70,6 @@ class __FormState extends State<_Form> {
     }
   }
 
-  Future<bool> _showConfirmCancelDialog(BuildContext context) async {
-    final result = await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Discard changes?'),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Cancel'),
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-              ),
-              OutlineButton(
-                child: Text('Confirm'),
-                onPressed: () {
-                  Navigator.of(context).pop(true);
-                },
-              ),
-            ],
-          );
-        });
-
-    return result ?? false;
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PiholeSettingsBloc, PiholeSettingsState>(
@@ -122,7 +98,10 @@ class __FormState extends State<_Form> {
                         .value);
 
                 if (update != widget.initialValue) {
-                  return _showConfirmCancelDialog(context);
+                  return showConfirmationDialog(
+                    context,
+                    title: Text('Discard changes?'),
+                  );
                 }
 
                 return true;
@@ -163,6 +142,25 @@ class __FormState extends State<_Form> {
                   HostDetailsForm(initialValue: widget.initialValue),
                   Divider(),
                   AuthenticationForm(initialValue: widget.initialValue),
+                  Divider(),
+                  RaisedButton.icon(
+                    onPressed: () async {
+                      final bool didConfirm = await showConfirmationDialog(
+                        context,
+                        title:
+                            Text('Delete this Pihole? This cannot be undone.'),
+                      );
+
+                      if (didConfirm ?? false) {
+                        getIt<SettingsBloc>()
+                            .add(SettingsEvent.delete(widget.initialValue));
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    color: KColors.error,
+                    icon: Icon(KIcons.delete),
+                    label: Text('Delete this Pihole'),
+                  ),
                 ],
               ),
             ),
@@ -173,7 +171,7 @@ class __FormState extends State<_Form> {
   }
 }
 
-class _PiholeSettingsPageState extends State<PiholeSettingsPage> {
+class _SinglePiholeSettingsPageState extends State<SinglePiholeSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<SettingsBloc, SettingsState>(

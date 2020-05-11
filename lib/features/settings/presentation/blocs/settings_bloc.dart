@@ -3,7 +3,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
-import 'package:flutterhole/features/pihole_api/data/repositories/api_repository.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/data/repositories/settings_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -36,6 +35,9 @@ abstract class SettingsEvent with _$SettingsEvent {
   const factory SettingsEvent.activate(PiholeSettings settings) =
       SettingsEventActivate;
 
+  const factory SettingsEvent.delete(PiholeSettings settings) =
+      SettingsEventDelete;
+
   const factory SettingsEvent.update(
     PiholeSettings original,
     PiholeSettings update,
@@ -46,12 +48,9 @@ abstract class SettingsEvent with _$SettingsEvent {
 @singleton
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc([
-    ApiRepository apiRepository,
     SettingsRepository settingsRepository,
-  ])  : _apiRepository = apiRepository ?? getIt<ApiRepository>(),
-        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>();
+  ]) : _settingsRepository = settingsRepository ?? getIt<SettingsRepository>();
 
-  final ApiRepository _apiRepository;
   final SettingsRepository _settingsRepository;
 
   @override
@@ -123,6 +122,22 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     );
   }
 
+  Stream<SettingsState> _delete(PiholeSettings settings) async* {
+    yield SettingsState.loading();
+
+    await Future.delayed(Duration(seconds: 1));
+
+    final result = await _settingsRepository.deletePiholeSettings(settings);
+    yield* result.fold(
+      (failure) async* {
+        yield SettingsStateFailure(failure);
+      },
+      (success) async* {
+        yield* _init();
+      },
+    );
+  }
+
   Stream<SettingsState> _update(
       PiholeSettings original, PiholeSettings update) async* {
     yield SettingsState.loading();
@@ -140,12 +155,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   @override
-  Stream<SettingsState> mapEventToState(SettingsEvent event) async* {
-    if (event is SettingsEventInit) yield* _init();
-    if (event is SettingsEventReset) yield* _reset();
-    if (event is SettingsEventCreate) yield* _create();
-    if (event is SettingsEventActivate) yield* _activate(event.settings);
-    if (event is SettingsEventUpdate)
-      yield* _update(event.original, event.update);
-  }
+  Stream<SettingsState> mapEventToState(SettingsEvent event) => event.when(
+        init: () => _init(),
+        reset: () => _reset(),
+        create: () => _create(),
+        activate: (settings) => _activate(settings),
+        delete: (settings) => _delete(settings),
+        update: (original, update) => _update(original, update),
+      );
 }
