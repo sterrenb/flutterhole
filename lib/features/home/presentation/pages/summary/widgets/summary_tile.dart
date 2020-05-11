@@ -18,17 +18,25 @@ class SummaryTile extends StatelessWidget {
     @required this.subtitle,
     @required this.integer,
     @required this.color,
+    @required this.enableTrivia,
   }) : super(key: key);
 
   final String title;
   final String subtitle;
   final int integer;
   final Color color;
+  final bool enableTrivia;
 
   String get _url => '$numbersApiHome#$integer';
 
   @override
   Widget build(BuildContext context) {
+    if (!enableTrivia)
+      return Card(
+        color: color,
+        child: _Tile(title, subtitle),
+      );
+
     return Card(
       child: OpenContainer(
         tappable: false,

@@ -57,7 +57,8 @@ dependencies:
   flutter_bloc: ^4.0.0
   flutter_form_builder: ^3.9.0
   barcode_scan: ^3.0.1
-
+  preferences: ^5.2.0
+  
   # ui sugar
   bottom_navy_bar: ^5.4.0
   flutter_vector_icons: ^0.2.1

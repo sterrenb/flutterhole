@@ -18,15 +18,28 @@ class PiholeSettingsTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text('${settings.title}'),
+      subtitle:
+          settings.description.isEmpty ? null : Text('${settings.description}'),
       onTap: onTap,
       leading: Icon(
         KIcons.color,
         color: settings.primaryColor,
       ),
-      trailing: AnimatedOpacity(
-        duration: kThemeAnimationDuration,
-        opacity: isActive ? 1 : 0,
-        child: Icon(KIcons.success),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Visibility(
+            visible: isActive,
+            child: IconButton(
+              icon: Icon(
+                KIcons.success,
+              ),
+              onPressed: null,
+            ),
+          ),
+          Icon(KIcons.open),
+        ],
       ),
     );
   }

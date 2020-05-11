@@ -28,6 +28,7 @@ class KIcons {
   static const IconData manyQueriesLive = MaterialIcons.view_stream;
   static const IconData manyQueriesLiveOptions = Ionicons.md_options;
   static const IconData settings = MaterialIcons.settings;
+  static const IconData preferences = MaterialIcons.format_paint;
   static const IconData about = MaterialCommunityIcons.heart;
   static const IconData log = AntDesign.codesquare;
 

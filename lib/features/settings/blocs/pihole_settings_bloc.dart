@@ -51,7 +51,7 @@ class PiholeSettingsBloc
   Stream<PiholeSettingsState> _validate(PiholeSettings settings) async* {
     yield PiholeSettingsState.loading();
 
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 500));
 
     final List<Future> futures = [
       _connectionRepository.fetchHostStatusCode(settings),
