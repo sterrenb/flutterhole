@@ -118,12 +118,6 @@ class _HomePageState extends State<HomePage> {
                       activeColor: KColors.domains,
                       textAlign: TextAlign.center,
                     ),
-//          BottomNavyBarItem(
-//            icon: Icon(KIcons.settings),
-//            title: Text('Settings'),
-//            activeColor: KColors.settings,
-//            textAlign: TextAlign.center,
-//          ),
                   ],
                 ),
                 body: PageView(

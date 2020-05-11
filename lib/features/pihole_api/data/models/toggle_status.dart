@@ -9,9 +9,7 @@ part 'toggle_status.g.dart';
 
 @freezed
 abstract class ToggleStatus extends MapModel with _$ToggleStatus {
-  const factory ToggleStatus({
-    PiStatusEnum status,
-  }) = _ToggleStatus;
+  const factory ToggleStatus(PiStatusEnum status) = _ToggleStatus;
 
   factory ToggleStatus.fromJson(Map<String, dynamic> json) =>
       _$ToggleStatusFromJson(json);

@@ -25,7 +25,7 @@ class PiholeCircleAvatar extends StatelessWidget {
       children: <Widget>[
         CircleAvatar(
           child: Text(
-            '${settings.title?.substring(0, 2) ?? ''}',
+            '${String.fromCharCode(settings.title.runes.first)}',
             style: Theme.of(context)
                 .textTheme
                 .bodyText2
