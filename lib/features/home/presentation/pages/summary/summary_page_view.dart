@@ -7,6 +7,7 @@ import 'package:flutterhole/features/home/presentation/pages/summary/query_types
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/forward_destinations_tile.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/summary_tile.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder.dart';
+import 'package:flutterhole/features/home/presentation/widgets/home_bloc_overflow_refresher.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
@@ -33,49 +34,50 @@ class SummaryPageView extends StatelessWidget {
           ) {
             return summaryResult.fold<Widget>(
               (failure) => CenteredFailureIndicator(failure),
-              (summary) => StaggeredGridView.count(
-                physics: const BouncingScrollPhysics(),
-                crossAxisCount: 4,
-                children: <Widget>[
-                  SummaryTile(
-                    title: 'Total Queries',
-                    subtitle:
-                        '${_numberFormat.format(summary.dnsQueriesToday)}',
-                    integer: summary.dnsQueriesToday,
-                    color: Colors.green,
-                  ),
-                  SummaryTile(
-                    title: 'Queries Blocked',
-                    subtitle:
-                        '${_numberFormat.format(summary.adsBlockedToday)}',
-                    integer: summary.adsBlockedToday,
-                    color: Colors.blue,
-                  ),
-                  SummaryTile(
-                    title: 'Percent Blocked',
-                    subtitle:
-                        '${summary.adsPercentageToday.toStringAsFixed(2)}%',
-                    integer: summary.adsPercentageToday.round(),
-                    color: Colors.orange,
-                  ),
-                  SummaryTile(
-                    title: 'Domains on Blocklist',
-                    subtitle:
-                        '${_numberFormat.format(summary.domainsBeingBlocked)}',
-                    color: Colors.red,
-                    integer: summary.domainsBeingBlocked,
-                  ),
-                  QueryTypesTile(dnsQueryTypesResult),
-                  ForwardDestinationsTile(forwardDestinationsResult),
-                ],
-                staggeredTiles: <StaggeredTile>[
-                  StaggeredTile.count(4, 1),
-                  StaggeredTile.count(4, 1),
-                  StaggeredTile.count(4, 1),
-                  StaggeredTile.count(4, 1),
-                  StaggeredTile.count(4, 3),
-                  StaggeredTile.count(4, 3),
-                ],
+              (summary) => HomeBlocOverflowRefresher(
+                child: StaggeredGridView.count(
+                  crossAxisCount: 4,
+                  children: <Widget>[
+                    SummaryTile(
+                      title: 'Total Queries',
+                      subtitle:
+                          '${_numberFormat.format(summary.dnsQueriesToday)}',
+                      integer: summary.dnsQueriesToday,
+                      color: Colors.green,
+                    ),
+                    SummaryTile(
+                      title: 'Queries Blocked',
+                      subtitle:
+                          '${_numberFormat.format(summary.adsBlockedToday)}',
+                      integer: summary.adsBlockedToday,
+                      color: Colors.blue,
+                    ),
+                    SummaryTile(
+                      title: 'Percent Blocked',
+                      subtitle:
+                          '${summary.adsPercentageToday.toStringAsFixed(2)}%',
+                      integer: summary.adsPercentageToday.round(),
+                      color: Colors.orange,
+                    ),
+                    SummaryTile(
+                      title: 'Domains on Blocklist',
+                      subtitle:
+                          '${_numberFormat.format(summary.domainsBeingBlocked)}',
+                      color: Colors.red,
+                      integer: summary.domainsBeingBlocked,
+                    ),
+                    QueryTypesTile(dnsQueryTypesResult),
+                    ForwardDestinationsTile(forwardDestinationsResult),
+                  ],
+                  staggeredTiles: <StaggeredTile>[
+                    StaggeredTile.count(4, 1),
+                    StaggeredTile.count(4, 1),
+                    StaggeredTile.count(4, 1),
+                    StaggeredTile.count(4, 1),
+                    StaggeredTile.count(4, 3),
+                    StaggeredTile.count(4, 3),
+                  ],
+                ),
               ),
             );
           },

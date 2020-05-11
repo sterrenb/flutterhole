@@ -7,6 +7,7 @@ import 'package:flutterhole/features/home/presentation/pages/clients/clients_pag
 import 'package:flutterhole/features/home/presentation/pages/domains/domains_page_view.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/summary_page_view.dart';
 import 'package:flutterhole/features/numbers_api/blocs/number_trivia_bloc.dart';
+import 'package:flutterhole/features/pihole_api/presentation/widgets/pi_connection_toggle_button.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/active_pihole_title.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
@@ -84,15 +85,20 @@ class _HomePageState extends State<HomePage> {
               child: Scaffold(
                 drawer: DefaultDrawer(),
                 appBar: AppBar(
+                  elevation: 0.0,
                   title: ActivePiholeTitle(),
                   actions: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.refresh),
-                      onPressed: () {
-                        BlocProvider.of<HomeBloc>(context)
-                            .add(HomeEvent.fetch());
-                      },
+                    Visibility(
+                      visible: false,
+                      child: IconButton(
+                        icon: Icon(Icons.refresh),
+                        onPressed: () {
+                          BlocProvider.of<HomeBloc>(context)
+                              .add(HomeEvent.fetch());
+                        },
+                      ),
                     ),
+                    PiConnectionToggleButton(),
                   ],
                 ),
                 bottomNavigationBar: BottomNavyBar(
@@ -121,7 +127,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 body: PageView(
-                  physics: const BouncingScrollPhysics(),
+//                  physics: const BouncingScrollPhysics(),
                   controller: _pageController,
                   onPageChanged: _onPageChanged,
                   children: <Widget>[

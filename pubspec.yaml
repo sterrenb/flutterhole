@@ -68,6 +68,7 @@ dependencies:
   fl_chart: ^0.9.4
   flutter_sticky_header: ^0.4.2
   flushbar: ^1.10.2
+  pull_to_refresh: ^1.5.8
 
   # log page
   alice: ^0.0.33

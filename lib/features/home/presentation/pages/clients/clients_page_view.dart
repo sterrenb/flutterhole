@@ -4,6 +4,7 @@ import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder.dart';
+import 'package:flutterhole/features/home/presentation/widgets/home_bloc_overflow_refresher.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
@@ -41,23 +42,25 @@ class ClientsPageView extends StatelessWidget {
                   (summary) => summary.dnsQueriesToday,
                 );
 
-                return ListView.builder(
-                    itemCount: topSources.topSources.length,
-                    itemBuilder: (context, index) {
-                      final client = clients.elementAt(index);
-                      final queryCount = queryCounts.elementAt(index);
+                return HomeBlocOverflowRefresher(
+                  child: ListView.builder(
+                      itemCount: topSources.topSources.length,
+                      itemBuilder: (context, index) {
+                        final client = clients.elementAt(index);
+                        final queryCount = queryCounts.elementAt(index);
 
-                      final String title = (client.title?.isEmpty ?? true)
-                          ? client.ip
-                          : '${client.ip} (${client.title})';
+                        final String title = (client.title?.isEmpty ?? true)
+                            ? client.ip
+                            : '${client.ip} (${client.title})';
 
-                      return FrequencyTile(
-                        title: title,
-                        requests: queryCount,
-                        totalRequests: totalQueryCount,
-                        color: KColors.clients,
-                      );
-                    });
+                        return FrequencyTile(
+                          title: title,
+                          requests: queryCount,
+                          totalRequests: totalQueryCount,
+                          color: KColors.clients,
+                        );
+                      }),
+                );
               },
             );
           },

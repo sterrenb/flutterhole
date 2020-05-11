@@ -4,6 +4,7 @@ import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder.dart';
+import 'package:flutterhole/features/home/presentation/widgets/home_bloc_overflow_refresher.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/widgets/layout/failure_indicators.dart';
 import 'package:flutterhole/widgets/layout/frequency_tile.dart';
@@ -32,12 +33,13 @@ class DomainsPageView extends StatelessWidget {
             return topItemsResult.fold<Widget>(
               (failure) => CenteredFailureIndicator(failure),
               (topItems) {
-                return CustomScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  slivers: <Widget>[
-                    TopQueriesListBuilder(topItems),
-                    TopAdsListBuilder(topItems),
-                  ],
+                return HomeBlocOverflowRefresher(
+                  child: CustomScrollView(
+                    slivers: <Widget>[
+                      TopQueriesListBuilder(topItems),
+                      TopAdsListBuilder(topItems),
+                    ],
+                  ),
                 );
               },
             );

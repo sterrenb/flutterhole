@@ -80,6 +80,7 @@ class KColors {
   KColors._();
 
   static const Color inactive = Colors.grey;
+  static const Color loading = Colors.blue;
   static const Color summary = Colors.green;
   static const Color clients = Colors.blue;
   static const Color domains = Colors.orange;
@@ -94,4 +95,8 @@ class KColors {
   static const Color warning = Colors.orange;
   static const Color success = Colors.green;
   static const Color error = Colors.red;
+
+  static const Color enabled = Colors.green;
+  static const Color disabled = Colors.orange;
+  static const Color unknown = Colors.grey;
 }
