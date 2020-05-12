@@ -19,6 +19,7 @@ class HostDetailsStatusIcon extends StatelessWidget {
               dartz.Either<Failure, int> hostStatusCode,
               dartz.Either<Failure, PiStatusEnum> piholeStatus,
               _,
+                __,
             ) {
               return hostStatusCode.fold<Widget>(
                 (Failure failure) => Icon(

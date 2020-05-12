@@ -1,12 +1,9 @@
-import 'package:dartz/dartz.dart' as dartz;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutterhole/constants.dart';
-import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
-import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/settings/blocs/pihole_settings_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
@@ -16,6 +13,7 @@ import 'package:flutterhole/features/settings/presentation/widgets/form/api_toke
 import 'package:flutterhole/features/settings/presentation/widgets/form/authentication_status_icon.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/base_url_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/description_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/detected_versions_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/host_details_status_icon.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/primary_color_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/title_form_tile.dart';
@@ -111,24 +109,8 @@ class _AddPiholePageState extends State<AddPiholePage> {
                     onPressed: () => _save(context)),
               ],
             ),
-            body: BlocConsumer<PiholeSettingsBloc, PiholeSettingsState>(
-              listener: (context, state) {
-                state.maybeWhen(
-                  validated: (
-                    PiholeSettings settings,
-                    dartz.Either<Failure, int> hostStatusCode,
-                    dartz.Either<Failure, PiStatusEnum> piholeStatus,
-                    dartz.Either<Failure, bool> authenticatedStatus,
-                  ) {},
-                  failure: (failure) {
-                    showErrorSnackBar(context, failure.toString());
-                  },
-                  orElse: () {},
-                );
-
-                if (state is PiholeSettingsStateValidated) {}
-              },
-              buildWhen: (previous, next) {
+            body: BlocBuilder<PiholeSettingsBloc, PiholeSettingsState>(
+              condition: (previous, next) {
                 if (previous is PiholeSettingsStateValidated) {
                   return false;
                 }
@@ -194,6 +176,7 @@ class _AddPiholePageState extends State<AddPiholePage> {
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 5,
                               ),
+                        const DetectedVersionsTile(),
                       ]),
                       isActive: currentStep == 1,
                     ),

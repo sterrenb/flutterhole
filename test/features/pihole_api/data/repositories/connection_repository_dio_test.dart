@@ -6,6 +6,7 @@ import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/pihole_api/data/repositories/connection_repository_dio.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
@@ -89,7 +90,7 @@ void main() async {
 
   group('fetchPiholeStatus', () {
     test(
-      'should return $PiStatusEnum on successful pingPihole',
+      'should return $PiStatusEnum on successful fetchPiholeStatus',
       () async {
         // arrange
         final PiStatusEnum status = PiStatusEnum.enabled;
@@ -115,6 +116,35 @@ void main() async {
         // assert
         expect(
             result, equals(Left(Failure('fetchPiholeStatus failed', tError))));
+      },
+    );
+  });
+
+  group('fetchVersions', () {
+    test(
+      'should return $PiStatusEnum on successful fetchVersions',
+          () async {
+        // arrange
+        final versions = PiVersions(coreBranch: 'master', ftlBranch: 'testing');
+        when(mockApiDataSource.fetchVersions(settings))
+            .thenAnswer((_) async => versions);
+        // act
+        final result = await connectionRepositoryDio.fetchVersions(settings);
+        // assert
+        expect(result, equals(Right(versions)));
+      },
+    );
+
+    test(
+      'should return $Failure on exception',
+          () async {
+        // arrange
+        final tError = PiException.timeOut();
+        when(mockApiDataSource.fetchVersions(settings)).thenThrow(tError);
+        // act
+        final result = await connectionRepositoryDio.fetchVersions(settings);
+        // assert
+        expect(result, equals(Left(Failure('fetchVersions failed', tError))));
       },
     );
   });

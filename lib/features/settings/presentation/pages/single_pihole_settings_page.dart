@@ -12,6 +12,7 @@ import 'package:flutterhole/features/settings/presentation/widgets/form/api_toke
 import 'package:flutterhole/features/settings/presentation/widgets/form/authentication_status_icon.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/base_url_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/description_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/detected_versions_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/host_details_status_icon.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/primary_color_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/title_form_tile.dart';
@@ -137,30 +138,43 @@ class __FormState extends State<_Form> {
                   Divider(),
                   AuthenticationForm(initialValue: widget.initialValue),
                   Divider(),
-                  RaisedButton.icon(
-                    onPressed: () async {
-                      final bool didConfirm = await showConfirmationDialog(
-                        context,
-                        title:
-                            Text('Delete this Pihole? This cannot be undone.'),
-                      );
-
-                      if (didConfirm ?? false) {
-                        getIt<SettingsBloc>()
-                            .add(SettingsEvent.delete(widget.initialValue));
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    color: KColors.error,
-                    icon: Icon(KIcons.delete),
-                    label: Text('Delete this Pihole'),
-                  ),
+                  const DetectedVersionsTile(),
+                  _DeletePiholeButton(initialValue: widget.initialValue),
                 ],
               ),
             ),
           ),
         );
       },
+    );
+  }
+}
+
+class _DeletePiholeButton extends StatelessWidget {
+  const _DeletePiholeButton({
+    Key key,
+    @required this.initialValue,
+  }) : super(key: key);
+
+  final PiholeSettings initialValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return RaisedButton.icon(
+      onPressed: () async {
+        final bool didConfirm = await showConfirmationDialog(
+          context,
+          title: Text('Delete this Pihole? This cannot be undone.'),
+        );
+
+        if (didConfirm ?? false) {
+          getIt<SettingsBloc>().add(SettingsEvent.delete(initialValue));
+          Navigator.of(context).pop();
+        }
+      },
+      color: KColors.error,
+      icon: Icon(KIcons.delete),
+      label: Text('Delete this Pihole'),
     );
   }
 }

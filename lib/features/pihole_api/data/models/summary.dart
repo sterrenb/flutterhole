@@ -4,10 +4,9 @@ import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'summary.freezed.dart';
-
 part 'summary.g.dart';
 
-/// {{ base_url  }}?summaryRaw  {{ base_url  }}?getQueryTypes&auth={{ auth  }}
+/// {{ base_url  }}?summaryRaw
 @freezed
 abstract class SummaryModel extends MapModel with _$SummaryModel {
   @JsonSerializable(explicitToJson: true)

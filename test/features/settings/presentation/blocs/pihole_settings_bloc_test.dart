@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/repositories/connection_repository.dart';
 import 'package:flutterhole/features/settings/blocs/pihole_settings_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
@@ -20,6 +21,8 @@ void main() {
 
   ConnectionRepository mockConnectionRepository;
   PiholeSettingsBloc bloc;
+
+  final tVersions = PiVersions(currentFtlVersion: 'v1.2.3');
 
   setUp(() {
     mockConnectionRepository = MockConnectionRepository();
@@ -57,6 +60,8 @@ void main() {
             .thenAnswer((_) async => Right(PiStatusEnum.enabled));
         when(mockConnectionRepository.fetchAuthenticatedStatus(settings))
             .thenAnswer((_) async => Right(true));
+        when(mockConnectionRepository.fetchVersions(settings))
+            .thenAnswer((_) async => Right(tVersions));
         bloc.add(PiholeSettingsEvent.validate(settings));
       },
       expect: [
@@ -66,6 +71,7 @@ void main() {
           Right(200),
           Right(PiStatusEnum.enabled),
           Right(true),
+          Right(tVersions),
         )
       ],
     );
@@ -82,6 +88,8 @@ void main() {
             .thenAnswer((_) async => Left(Failure()));
         when(mockConnectionRepository.fetchAuthenticatedStatus(settings))
             .thenAnswer((_) async => Left(Failure()));
+        when(mockConnectionRepository.fetchVersions(settings))
+            .thenAnswer((_) async => Right(tVersions));
         bloc.add(PiholeSettingsEvent.validate(settings));
       },
       expect: [
@@ -91,6 +99,7 @@ void main() {
           Right(200),
           Left(Failure()),
           Left(Failure()),
+          Right(tVersions),
         )
       ],
     );
@@ -107,12 +116,15 @@ void main() {
             .thenAnswer((_) async => Left(Failure()));
         when(mockConnectionRepository.fetchAuthenticatedStatus(settings))
             .thenAnswer((_) async => Left(Failure()));
+        when(mockConnectionRepository.fetchVersions(settings))
+            .thenAnswer((_) async => Left(Failure()));
         bloc.add(PiholeSettingsEvent.validate(settings));
       },
       expect: [
         PiholeSettingsStateLoading(),
         PiholeSettingsStateValidated(
           settings,
+          Left(Failure()),
           Left(Failure()),
           Left(Failure()),
           Left(Failure()),

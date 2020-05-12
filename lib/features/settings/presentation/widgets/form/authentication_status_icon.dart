@@ -22,6 +22,7 @@ class AuthenticationStatusIcon extends StatelessWidget {
               _,
               __,
               dartz.Either<Failure, bool> authenticatedStatus,
+                ___,
             ) {
               return authenticatedStatus.fold<Widget>(
                 (Failure failure) => Icon(

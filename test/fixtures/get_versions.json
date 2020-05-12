@@ -1,0 +1,14 @@
+{
+  "core_update": false,
+  "web_update": true,
+  "FTL_update": false,
+  "core_current": "v5.0",
+  "web_current": "v5.1",
+  "FTL_current": "v5.2",
+  "core_latest": "v5.0",
+  "web_latest": "v6.0",
+  "FTL_latest": "v7.0",
+  "core_branch": "master",
+  "web_branch": "beta",
+  "FTL_branch": "alpha"
+}

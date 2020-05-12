@@ -7,6 +7,7 @@ import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart
 import 'package:flutterhole/features/pihole_api/data/models/model.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
@@ -50,7 +51,8 @@ void testListModel<T extends ListModel>(
 }
 
 void main() {
-  testMapModel<SummaryModel>('summary_raw.json', (json) => SummaryModel.fromJson(json));
+  testMapModel<SummaryModel>(
+      'summary_raw.json', (json) => SummaryModel.fromJson(json));
   testMapModel<DnsQueryType>(
       'single_dns_query_type.json', (json) => DnsQueryType.fromJson(json));
   testMapModel<DnsQueryTypeResult>(
@@ -62,10 +64,10 @@ void main() {
       'single_pi_client.json', (json) => PiClient.fromJson(json));
   testMapModel<TopSourcesResult>(
       'get_query_sources.json', (json) => TopSourcesResult.fromJson(json));
-  testMapModel<ForwardDestination>(
-      'single_forward_destination.json', (json) => ForwardDestination.fromJson(json));
-  testMapModel<ForwardDestinationsResult>(
-      'get_forward_destinations.json', (json) => ForwardDestinationsResult.fromJson(json));
+  testMapModel<ForwardDestination>('single_forward_destination.json',
+          (json) => ForwardDestination.fromJson(json));
+  testMapModel<ForwardDestinationsResult>('get_forward_destinations.json',
+          (json) => ForwardDestinationsResult.fromJson(json));
   testListModel<Blacklist>(
       'blacklist.json', (json) => Blacklist.fromList(json));
   testListModel<Whitelist>(
@@ -78,6 +80,8 @@ void main() {
       'status_enabled.json', (json) => ToggleStatus.fromJson(json));
   testMapModel<ToggleStatus>(
       'status_disabled.json', (json) => ToggleStatus.fromJson(json));
+  testMapModel<PiVersions>(
+      'get_versions.json', (json) => PiVersions.fromJson(json));
 
   testMapModel<PiholeSettings>(
       'pihole_settings_default.json', (json) => PiholeSettings.fromJson(json));

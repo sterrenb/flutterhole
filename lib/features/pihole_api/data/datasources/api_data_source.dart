@@ -1,6 +1,7 @@
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
@@ -28,4 +29,6 @@ abstract class ApiDataSource {
       PiholeSettings settings);
 
   Future<DnsQueryTypeResult> fetchQueryTypes(PiholeSettings settings);
+
+  Future<PiVersions> fetchVersions(PiholeSettings settings);
 }

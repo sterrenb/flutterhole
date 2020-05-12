@@ -7,6 +7,7 @@ import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
@@ -280,6 +281,20 @@ void main() async {
           await apiDataSourceDio.fetchTopItems(piholeSettings);
       // assert
       expect(result, equals(TopItems.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $PiVersions on successful fetchPiVersions',
+        () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('get_versions.json', 200);
+      // act
+      final PiVersions result =
+      await apiDataSourceDio.fetchVersions(piholeSettings);
+      // assert
+      expect(result, equals(PiVersions.fromJson(json)));
     },
   );
 }

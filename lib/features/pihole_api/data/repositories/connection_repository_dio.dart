@@ -6,6 +6,7 @@ import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/pihole_api/data/repositories/connection_repository.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
@@ -71,6 +72,17 @@ class ConnectionRepositoryDio implements ConnectionRepository {
       return Right(result.status);
     } on PiException catch (e) {
       return Left(Failure('fetchPiholeStatus failed', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PiVersions>> fetchVersions(
+      PiholeSettings settings) async {
+    try {
+      final PiVersions result = await _apiDataSource.fetchVersions(settings);
+      return Right(result);
+    } on PiException catch (e) {
+      return Left(Failure('fetchVersions failed', e));
     }
   }
 
