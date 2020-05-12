@@ -61,6 +61,37 @@ void main() async {
     );
   });
 
+  group('addPiholeSettings', () {
+    test(
+      'should return PiholeSettings on successful addPiholeSettings',
+      () async {
+        // arrange
+        when(mockPiBox.isOpen).thenReturn(true);
+        when(mockPiBox.length).thenReturn(123);
+        final PiholeSettings piholeSettings =
+            PiholeSettings(title: 'Pihole #124');
+        // act
+        final bool result =
+            await settingsDataSourceHive.addPiholeSettings(piholeSettings);
+        // assert
+        expect(result, isTrue);
+        verify(mockPiBox.add(piholeSettings.toJson()));
+      },
+    );
+
+    test(
+      'should throw SettingsException on addPiholeSettings with closed box',
+      () async {
+        // arrange
+        when(mockPiBox.isOpen).thenReturn(false);
+        final PiholeSettings piholeSettings =
+            PiholeSettings(title: 'Pihole #124'); // assert
+        expect(() => settingsDataSourceHive.addPiholeSettings(piholeSettings),
+            throwsA(isA<SettingsException>()));
+      },
+    );
+  });
+
   group('updatePiholeSettings', () {
     test(
       'should return PiholeSettings on successful updatePiholeSettings',
@@ -207,8 +238,7 @@ void main() async {
         when(mockPiBox.isOpen).thenReturn(true);
         when(mockPiBox.getAt(2)).thenReturn(active.toJson());
         when(mockActiveBox.isOpen).thenReturn(true);
-        when(mockActiveBox.get(KStrings.piholeSettingsActive,
-                defaultValue: -1))
+        when(mockActiveBox.get(KStrings.piholeSettingsActive, defaultValue: -1))
             .thenReturn(2);
         // act
         final PiholeSettings result =
@@ -236,8 +266,7 @@ void main() async {
         when(mockPiBox.values)
             .thenReturn(allPiholeSettings.map((e) => e.toJson()));
         when(mockActiveBox.isOpen).thenReturn(true);
-        when(mockActiveBox.get(KStrings.piholeSettingsActive,
-                defaultValue: -1))
+        when(mockActiveBox.get(KStrings.piholeSettingsActive, defaultValue: -1))
             .thenReturn(-1);
         // act
         final PiholeSettings result =

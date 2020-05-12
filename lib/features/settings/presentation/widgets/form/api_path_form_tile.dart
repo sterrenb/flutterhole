@@ -9,15 +9,18 @@ class ApiPathFormTile extends StatelessWidget {
   }) : super(key: key);
 
   final InputDecoration decoration;
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: FormBuilderTextField(
         attribute: 'apiPath',
         decoration: decoration.copyWith(
-            labelText: 'API path',
-            helperText:
-                'For normal use cases, the API path is "${const PiholeSettings().apiPath}".'),
+          labelText: 'API path',
+          helperText:
+              'For normal use cases, the API path is "${const PiholeSettings().apiPath}".',
+          helperMaxLines: 2,
+        ),
         autocorrect: false,
         maxLines: 1,
       ),

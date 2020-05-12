@@ -5,6 +5,9 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 abstract class SettingsRepository {
   Future<Either<Failure, PiholeSettings>> createPiholeSettings();
 
+  Future<Either<Failure, bool>> addPiholeSettings(
+      PiholeSettings piholeSettings);
+
   Future<Either<Failure, bool>> updatePiholeSettings(
       PiholeSettings original, PiholeSettings update);
 

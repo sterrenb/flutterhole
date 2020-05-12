@@ -87,6 +87,37 @@ void main() async {
     );
   });
 
+  group('addPiholeSettings', () {
+    test(
+      'should return true on successful addPiholeSettings',
+          () async {
+        // arrange
+        when(mockSettingsDataSource.addPiholeSettings(piholeSettings))
+            .thenAnswer((_) async => true);
+        // act
+        final Either<Failure, bool> result =
+        await settingsRepository.addPiholeSettings(piholeSettings);
+        // assert
+        expect(result, equals(Right(true)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed addPiholeSettings',
+          () async {
+        // arrange
+        final tError = PiException.emptyResponse();
+        when(mockSettingsDataSource.addPiholeSettings(piholeSettings)).thenThrow(tError);
+        // act
+        final Either<Failure, bool> result =
+        await settingsRepository.addPiholeSettings(piholeSettings);
+        // assert
+        expect(result,
+            equals(Left(Failure('addPiholeSettings failed', tError))));
+      },
+    );
+  });
+
   group('deletePiholeSettings', () {
     test(
       'should return true on successful deletePiholeSettings',

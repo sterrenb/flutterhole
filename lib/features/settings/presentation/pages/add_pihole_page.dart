@@ -1,12 +1,25 @@
+import 'package:dartz/dartz.dart' as dartz;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutterhole/constants.dart';
+import 'package:flutterhole/core/models/failures.dart';
+import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/settings/blocs/pihole_settings_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
+import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/allow_self_signed_certificates_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/api_path_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/api_token_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/authentication_status_icon.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/base_url_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/description_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/host_details_status_icon.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/primary_color_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/title_form_tile.dart';
+import 'package:flutterhole/widgets/layout/snackbars.dart';
 
 const InputDecoration _decoration = InputDecoration(
   border: const OutlineInputBorder(),
@@ -23,9 +36,7 @@ class _StepperForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+    return Column(
       children: children,
     );
   }
@@ -41,9 +52,28 @@ class AddPiholePage extends StatefulWidget {
 }
 
 class _AddPiholePageState extends State<AddPiholePage> {
+  static const PiholeSettings initialValue = PiholeSettings();
+
+  static const int stepCount = 2;
+
   int currentStep = 0;
 
-  static const PiholeSettings initialValue = PiholeSettings();
+  String hostDetailsError = '';
+
+  void _validate(BuildContext context) {
+    if (BlocProvider.of<PiholeSettingsBloc>(context)
+        .formKey
+        .currentState
+        .saveAndValidate()) {
+      final update = PiholeSettings.fromJson(
+          BlocProvider.of<PiholeSettingsBloc>(context)
+              .formKey
+              .currentState
+              .value);
+      BlocProvider.of<PiholeSettingsBloc>(context)
+          .add(PiholeSettingsEvent.validate(update));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,57 +87,120 @@ class _AddPiholePageState extends State<AddPiholePage> {
           child: Scaffold(
             appBar: AppBar(
               title: Text('Add a new Pihole'),
-            ),
-            body: CustomScrollView(
-              slivers: <Widget>[
-                SliverFillRemaining(
-                  child: Stepper(
-//                type: StepperType.horizontal,
-                    physics: const NeverScrollableScrollPhysics(),
-                    onStepTapped: (int index) {
-                      setState(() {
-                        currentStep = index;
-                      });
-                    },
-                    onStepCancel: () {
-                      if (currentStep == 0) {
-                        Navigator.of(context).pop();
-                      } else {
-                        setState(() {
-                          currentStep = currentStep - 1;
-                        });
-                      }
-                    },
-                    steps: <Step>[
-                      Step(
-                          title: Text('Host details'),
-                          content: _StepperForm(children: <Widget>[
-                            BaseUrlFormTile(
-                              initialValue: initialValue,
-                              decoration: _decoration,
-                            ),
-                            ApiPathFormTile(decoration: _decoration),
-                          ]),
-                          isActive: currentStep == 0),
-                      Step(
-                          title: Text('Authentication'),
-                          content: _StepperForm(children: <Widget>[
-                            ApiTokenFormTile(
-                              initialValue: initialValue,
-                              decoration: _decoration,
-                            ),
-                            AllowSelfSignedCertificatesFormTile(
-                                decoration: _decoration),
-                          ]),
-                          isActive: currentStep == 1),
-                      Step(
-                          title: Text('Annotation'),
-                          content: Text('Annotation'),
-                          isActive: currentStep == 2),
-                    ],
-                  ),
-                ),
+              actions: <Widget>[
+                IconButton(
+                    tooltip: 'Create Pihole',
+                    icon: Icon(KIcons.save), onPressed: () {
+                      print(getIt<SettingsBloc>());
+                }),
               ],
+            ),
+            body: BlocConsumer<PiholeSettingsBloc, PiholeSettingsState>(
+              listener: (context, state) {
+                state.maybeWhen(
+                  validated: (
+                    PiholeSettings settings,
+                    dartz.Either<Failure, int> hostStatusCode,
+                    dartz.Either<Failure, PiStatusEnum> piholeStatus,
+                    dartz.Either<Failure, bool> authenticatedStatus,
+                  ) {},
+                  failure: (failure) {
+                    showErrorSnackBar(context, failure.toString());
+                  },
+                  orElse: () {},
+                );
+
+                if (state is PiholeSettingsStateValidated) {}
+              },
+              buildWhen: (previous, next) {
+                if (previous is PiholeSettingsStateValidated) {
+                  return false;
+                }
+
+                return true;
+              },
+              builder: (BuildContext context, PiholeSettingsState state) {
+                return Stepper(
+                  physics: const NeverScrollableScrollPhysics(),
+                  currentStep: currentStep,
+                  onStepTapped: (int index) {
+                    setState(() {
+                      currentStep = index;
+                    });
+                  },
+                  onStepCancel: () {
+                    if (currentStep == 0) {
+                      Navigator.of(context).pop();
+                    } else {
+                      setState(() {
+                        currentStep = currentStep - 1;
+                      });
+                    }
+                  },
+                  onStepContinue: () {
+                    _validate(context);
+                    if (currentStep < stepCount) {
+                      setState(() {
+                        currentStep = currentStep + 1;
+                      });
+                    }
+                  },
+                  steps: <Step>[
+                    Step(
+                        title: Text('Annotation'),
+                        content: _StepperForm(children: <Widget>[
+                          TitleFormTile(decoration: _decoration),
+                          DescriptionFormTile(decoration: _decoration),
+                          PrimaryColorFormTile(
+                            initialValue: initialValue,
+                            decoration: _decoration,
+                          ),
+                        ]),
+                        isActive: currentStep == 0),
+                    Step(
+                      title: Row(
+                        children: <Widget>[
+                          Text('Host details'),
+                          SizedBox(width: 8.0),
+                          HostDetailsStatusIcon(),
+                        ],
+                      ),
+                      content: _StepperForm(children: <Widget>[
+                        BaseUrlFormTile(
+                          initialValue: _AddPiholePageState.initialValue,
+                          decoration: _decoration,
+                        ),
+                        ApiPathFormTile(decoration: _decoration),
+                        hostDetailsError.isEmpty
+                            ? Container()
+                            : Text(
+                                '$hostDetailsError',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 5,
+                              ),
+                      ]),
+                      isActive: currentStep == 1,
+                    ),
+                    Step(
+                        title: Row(
+                          children: <Widget>[
+                            Text('Authentication'),
+                            SizedBox(width: 8.0),
+                            AuthenticationStatusIcon(),
+                          ],
+                        ),
+                        content: _StepperForm(children: <Widget>[
+                          ApiTokenFormTile(
+                            initialValue: _AddPiholePageState.initialValue,
+                            decoration: _decoration,
+                          ),
+                          AllowSelfSignedCertificatesFormTile(
+                              decoration: _decoration),
+                        ]),
+                        isActive: currentStep == 2),
+                  ],
+                );
+              },
             ),
           ),
         ),

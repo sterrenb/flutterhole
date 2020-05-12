@@ -8,7 +8,7 @@ import 'package:flutterhole/features/settings/services/qr_scan_service.dart';
 class ApiTokenFormTile extends StatefulWidget {
   const ApiTokenFormTile({
     Key key,
-  @required this.initialValue,
+    @required this.initialValue,
     this.decoration = const InputDecoration(),
   }) : super(key: key);
 

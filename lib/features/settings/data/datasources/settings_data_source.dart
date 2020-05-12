@@ -5,6 +5,8 @@ class SettingsException implements Exception {}
 abstract class SettingsDataSource {
   Future<PiholeSettings> createPiholeSettings();
 
+  Future<bool> addPiholeSettings(PiholeSettings piholeSettings);
+
   Future<bool> updatePiholeSettings(PiholeSettings original, PiholeSettings update);
 
   Future<bool> deletePiholeSettings(PiholeSettings piholeSettings);

@@ -37,7 +37,7 @@ class AuthenticationStatusIcon extends StatelessWidget {
               );
             },
             loading: () => LoadingIcon(),
-            orElse: () => Icon(KIcons.debug));
+            orElse: () => Icon(KIcons.debug, color: Colors.transparent,));
       },
     );
   }

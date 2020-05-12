@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutterhole/constants.dart';
@@ -7,24 +6,17 @@ import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/settings/blocs/pihole_settings_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
-import 'file:///C:/Users/tster/AndroidStudioProjects/flutterhole/lib/features/settings/presentation/widgets/form/allow_self_signed_certificates_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/allow_self_signed_certificates_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/api_path_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/api_token_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/authentication_status_icon.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/base_url_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/description_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/host_details_status_icon.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/primary_color_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/title_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
-
-import 'file:///C:/Users/tster/AndroidStudioProjects/flutterhole/lib/features/settings/presentation/widgets/form/api_path_form_tile.dart';
-import 'file:///C:/Users/tster/AndroidStudioProjects/flutterhole/lib/features/settings/presentation/widgets/form/authentication_status_icon.dart';
-
-extension HexColor on Color {
-  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
-  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
-      '${alpha.toRadixString(16).padLeft(2, '0').toUpperCase()}'
-      '${red.toRadixString(16).padLeft(2, '0').toUpperCase()}'
-      '${green.toRadixString(16).padLeft(2, '0').toUpperCase()}'
-      '${blue.toRadixString(16).padLeft(2, '0').toUpperCase()}';
-}
 
 const InputDecoration _decoration = InputDecoration(
   border: const OutlineInputBorder(),
@@ -222,35 +214,11 @@ class _AnnotationForm extends StatelessWidget {
             color: Theme.of(context).accentColor,
           ),
         ),
-        ListTile(
-          title: FormBuilderTextField(
-            attribute: 'title',
-            decoration: _decoration.copyWith(labelText: 'Title'),
-            autocorrect: false,
-            textCapitalization: TextCapitalization.words,
-            maxLines: 1,
-            validators: [
-              FormBuilderValidators.required(),
-            ],
-          ),
-        ),
-        ListTile(
-          title: FormBuilderTextField(
-            attribute: 'description',
-            decoration: _decoration.copyWith(labelText: 'Description'),
-            textCapitalization: TextCapitalization.sentences,
-            minLines: 1,
-            maxLines: 5,
-          ),
-        ),
-        ListTile(
-          title: FormBuilderColorPicker(
-            attribute: 'primaryColor',
-            initialValue: initialValue.primaryColor,
-            decoration: _decoration.copyWith(labelText: 'Color'),
-            valueTransformer: (value) => (value as Color).toHex(),
-            colorPickerType: ColorPickerType.MaterialPicker,
-          ),
+        TitleFormTile(decoration: _decoration),
+        DescriptionFormTile(decoration: _decoration),
+        PrimaryColorFormTile(
+          initialValue: initialValue,
+          decoration: _decoration,
         ),
       ],
     );

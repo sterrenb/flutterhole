@@ -42,6 +42,14 @@ class SettingsDataSourceHive implements SettingsDataSource {
   }
 
   @override
+  Future<bool> addPiholeSettings(PiholeSettings settings) async {
+    final box = await _piholeBox;
+
+    await box.add(settings.toJson());
+    return true;
+  }
+
+  @override
   Future<PiholeSettings> createPiholeSettings() async {
     final box = await _piholeBox;
     final piholeSettings = PiholeSettings(title: 'Pihole #${box.length}');

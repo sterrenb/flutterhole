@@ -17,6 +17,7 @@ class AllowSelfSignedCertificatesFormTile extends StatelessWidget {
         decoration: decoration.copyWith(
           helperText:
               'Trust all certificates, even when the TLS handshake fails. \nUseful for using HTTPs over your own certificate.',
+          helperMaxLines: 3,
         ),
         label: Text('Allow self-signed certificates'),
       ),

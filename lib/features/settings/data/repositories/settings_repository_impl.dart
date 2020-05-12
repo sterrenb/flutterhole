@@ -52,6 +52,16 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
+  Future<Either<Failure, bool>> addPiholeSettings(
+      PiholeSettings piholeSettings) async {
+    return _simpleSettings<bool>(
+      piholeSettings,
+      _settingsDataSource.addPiholeSettings,
+      'addPiholeSettings',
+    );
+  }
+
+  @override
   Future<Either<Failure, bool>> deletePiholeSettings(
       PiholeSettings piholeSettings) async {
     return _simpleSettings<bool>(

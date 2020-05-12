@@ -2,7 +2,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/core/models/failures.dart';
-import 'package:flutterhole/features/pihole_api/data/repositories/api_repository.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/data/repositories/settings_repository.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
@@ -10,21 +9,17 @@ import 'package:mockito/mockito.dart';
 
 import '../../../../test_dependency_injection.dart';
 
-class MockApiRepository extends Mock implements ApiRepository {}
-
 class MockSettingsRepository extends Mock implements SettingsRepository {}
 
 void main() {
   setUpAllForTest();
 
-  ApiRepository mockApiRepository;
   SettingsRepository mockSettingsRepository;
   SettingsBloc bloc;
 
   setUp(() {
-    mockApiRepository = MockApiRepository();
     mockSettingsRepository = MockSettingsRepository();
-    bloc = SettingsBloc( mockSettingsRepository);
+    bloc = SettingsBloc(mockSettingsRepository);
   });
 
   tearDown(() {
@@ -140,6 +135,32 @@ void main() {
     );
   });
 
+  group('$SettingsEventAdd', () {
+    final added = PiholeSettings(title: 'Add me');
+
+    final all = <PiholeSettings>[
+      PiholeSettings(title: 'First'),
+      PiholeSettings(title: 'Second'),
+      added,
+    ];
+
+    blocTest(
+      'Emits [$SettingsStateLoading, $SettingsStateSuccess] when $SettingsEventAdd succeeds',
+      build: () async {
+        when(mockSettingsRepository.addPiholeSettings(added))
+            .thenAnswer((_) async => Right(true));
+        when(mockSettingsRepository.fetchAllPiholeSettings())
+            .thenAnswer((_) async => Right(all));
+        when(mockSettingsRepository.fetchActivePiholeSettings())
+            .thenAnswer((_) async => Right(all.first));
+
+        return bloc;
+      },
+      act: (SettingsBloc bloc) async => bloc.add(SettingsEventAdd(added)),
+      expect: [SettingsStateLoading(), SettingsStateSuccess(all, all.first)],
+    );
+  });
+
   group('$SettingsEventActivate', () {
     final settings0 = PiholeSettings(title: 'First');
     final settings1 = PiholeSettings(title: 'Second');
@@ -189,10 +210,10 @@ void main() {
             .thenAnswer((_) async => Right(true));
         when(mockSettingsRepository.fetchAllPiholeSettings())
             .thenAnswer((_) async => Right([
-          deleteMe,
-          settings0,
-          settings2,
-        ]));
+                  deleteMe,
+                  settings0,
+                  settings2,
+                ]));
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(deleteMe));
         return bloc;
