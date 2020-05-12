@@ -1,4 +1,4 @@
-package github.sterrenburg.flutterhole
+package sterrenburg.github.flutterhole
 
 import io.flutter.embedding.android.FlutterActivity
 
