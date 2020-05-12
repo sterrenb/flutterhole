@@ -68,7 +68,8 @@ class _HomePageState extends State<HomePage> {
             return BlocListener<HomeBloc, HomeState>(
               listener: (context, state) {
                 final bool enableTrivia =
-                    getIt<PreferenceService>().get(KPrefs.useNumbersApi);
+                    getIt<PreferenceService>().get(KPrefs.useNumbersApi) ??
+                        true;
 
                 if (enableTrivia) {
                   state.maybeMap(

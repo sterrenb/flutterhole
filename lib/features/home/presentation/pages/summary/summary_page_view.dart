@@ -38,7 +38,7 @@ class SummaryPageView extends StatelessWidget {
               (failure) => CenteredFailureIndicator(failure),
               (summary) {
                 final bool enableTrivia =
-                    getIt<PreferenceService>().get(KPrefs.useNumbersApi);
+                    getIt<PreferenceService>().get(KPrefs.useNumbersApi) ?? true;
 
                 return HomeBlocOverflowRefresher(
                   child: StaggeredGridView.count(
