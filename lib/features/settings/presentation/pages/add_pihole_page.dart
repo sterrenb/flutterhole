@@ -65,13 +65,30 @@ class _AddPiholePageState extends State<AddPiholePage> {
         .formKey
         .currentState
         .saveAndValidate()) {
-      final update = PiholeSettings.fromJson(
+      final toValidate = PiholeSettings.fromJson(
           BlocProvider.of<PiholeSettingsBloc>(context)
               .formKey
               .currentState
               .value);
       BlocProvider.of<PiholeSettingsBloc>(context)
-          .add(PiholeSettingsEvent.validate(update));
+          .add(PiholeSettingsEvent.validate(toValidate));
+    }
+  }
+
+  void _save(BuildContext context) {
+    if (BlocProvider.of<PiholeSettingsBloc>(context)
+        .formKey
+        .currentState
+        .saveAndValidate()) {
+      final toSave = PiholeSettings.fromJson(
+          BlocProvider.of<PiholeSettingsBloc>(context)
+              .formKey
+              .currentState
+              .value);
+      getIt<SettingsBloc>().add(SettingsEvent.add(toSave));
+      Navigator.of(context).pop();
+    } else {
+      showErrorSnackBar(context, 'Validation failed');
     }
   }
 
@@ -90,9 +107,8 @@ class _AddPiholePageState extends State<AddPiholePage> {
               actions: <Widget>[
                 IconButton(
                     tooltip: 'Create Pihole',
-                    icon: Icon(KIcons.save), onPressed: () {
-                      print(getIt<SettingsBloc>());
-                }),
+                    icon: Icon(KIcons.save),
+                    onPressed: () => _save(context)),
               ],
             ),
             body: BlocConsumer<PiholeSettingsBloc, PiholeSettingsState>(

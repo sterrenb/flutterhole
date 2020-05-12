@@ -15,6 +15,7 @@ import 'package:flutterhole/widgets/layout/snackbars.dart';
 const double _fabDimension = 56.0;
 
 enum _PopupOption {
+  createDefault,
   reloadAll,
   deleteAll,
 }
@@ -27,6 +28,11 @@ class _PopupMenu extends StatelessWidget {
         print(option);
 
         switch (option) {
+          case _PopupOption.createDefault:
+            getIt<SettingsBloc>().add(SettingsEventCreate());
+            showInfoSnackBar(context, 'Created default Pihole',
+                duration: Duration(seconds: 2));
+            break;
           case _PopupOption.reloadAll:
             getIt<SettingsBloc>().add(SettingsEventInit());
             showInfoSnackBar(context, 'Reloaded from disk',
@@ -47,6 +53,10 @@ class _PopupMenu extends StatelessWidget {
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<_PopupOption>>[
+        const PopupMenuItem(
+          child: Text('Create default Pihole'),
+          value: _PopupOption.createDefault,
+        ),
         const PopupMenuItem(
           child: Text('Reload from disk'),
           value: _PopupOption.reloadAll,
@@ -70,13 +80,6 @@ class AllPiholeSettingsPage extends StatelessWidget {
           title: Text('My Piholes'),
           actions: <Widget>[
             _PopupMenu(),
-            IconButton(
-              tooltip: 'Add a new Pihole',
-              icon: Icon(Icons.add),
-              onPressed: () {
-                getIt<SettingsBloc>().add(SettingsEventCreate());
-              },
-            ),
           ],
         ),
         floatingActionButton: _AddPiholeButton(),
