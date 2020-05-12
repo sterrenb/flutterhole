@@ -39,9 +39,9 @@ abstract class SummaryModel extends MapModel with _$SummaryModel {
 @freezed
 abstract class GravityRelative extends MapModel with _$GravityRelative {
   const factory GravityRelative({
-    String days,
-    String hours,
-    String minutes,
+    int days,
+    int hours,
+    int minutes,
   }) = _GravityRelative;
 
   factory GravityRelative.fromJson(Map<String, dynamic> json) =>
