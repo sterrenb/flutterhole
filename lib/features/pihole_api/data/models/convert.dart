@@ -1,5 +1,15 @@
-DateTime dateTimeFromPiholeString(String key) => DateTime.fromMillisecondsSinceEpoch(int.tryParse(key) * 100);
+import 'package:jiffy/jiffy.dart';
 
-String piholeStringFromDateTime(DateTime key) => '${key.millisecondsSinceEpoch ~/ 100}';
+DateTime dateTimeFromPiholeString(String key) =>
+    DateTime.fromMillisecondsSinceEpoch(int.tryParse(key + '000'));
 
-String enumToString(dynamic value) => value.toString();
+String piholeStringFromDateTime(DateTime key) =>
+    '${key.millisecondsSinceEpoch ~/ 1000}';
+
+extension DateTimeWithRelative on DateTime {
+  String get fromNow => Jiffy(this).fromNow();
+
+  String get formattedDate => Jiffy(this).format('yyyy-MM-d');
+
+  String get formattedTime => Jiffy(this).format('h:mm:ss a');
+}

@@ -8,25 +8,26 @@ import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/widgets/layout/loading_indicators.dart';
 import 'package:flutterhole/widgets/layout/snackbars.dart';
+import 'package:flutterhole/widgets/layout/toasts.dart';
 
 class PiConnectionToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PiConnectionBloc, PiConnectionState>(
       bloc: getIt<PiConnectionBloc>(),
-      listener: (context, state) {
+      listener: (BuildContext context, PiConnectionState state) {
         state.maybeWhen(
           active: (ToggleStatus toggleStatus) {
             switch (toggleStatus.status) {
               case PiStatusEnum.enabled:
-//                showInfoSnackBar(context, 'Enabled');
+                showToast('Enabled');
                 break;
               case PiStatusEnum.disabled:
-//                showInfoSnackBar(context, 'Disabled');
+                showToast('Disabled');
                 break;
               case PiStatusEnum.unknown:
               default:
-                break;
+                showToast('Unknown');
             }
           },
           failure: (failure) {

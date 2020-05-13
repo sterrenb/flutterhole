@@ -4,7 +4,6 @@ import 'package:flutterhole/features/pihole_api/data/models/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'query_data.freezed.dart';
-
 part 'query_data.g.dart';
 
 enum QueryType {
@@ -51,12 +50,17 @@ DnsSecStatus _stringToDnsSecStatus(String json) {
 
 // https://github.com/pi-hole/AdminLTE/blob/44aff727e59d129e6201341caa1d74c8b2954bd2/scripts/pi-hole/js/queries.js#L181
 QueryStatus _stringToQueryStatus(String json) {
-  final int index = int.parse(json);
+  try {
+    final int index = int.parse(json);
 
-  if (index > QueryStatus.values.length || index == 0)
-    return QueryStatus.values.first;
+    if (index > QueryStatus.values.length || index == 0)
+      return QueryStatus.values.first;
 
-  return QueryStatus.values[index - 1];
+    return QueryStatus.values[index - 1];
+  } catch (e) {
+    print('_stringToQueryStatus failed: $e');
+    return QueryStatus.Unknown;
+  }
 }
 
 @freezed

@@ -35,7 +35,7 @@ class _ApiTokenFormTileState extends State<ApiTokenFormTile> {
     final String apiToken = await getIt<QrScanService>().scanPiholeApiTokenQR();
     if (apiToken.isNotEmpty) {
       setState(() {
-        _apiTokenController.text = apiToken;
+        _apiTokenController.text = apiToken.trim();
       });
     }
   }

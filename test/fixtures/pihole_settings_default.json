@@ -10,5 +10,6 @@
   "basicAuthenticationPassword": "",
   "proxyUrl": "",
   "proxyPort": 8080,
-  "primaryColor": "#FF2196F3"
+  "primaryColor": "#FF2196F3",
+  "accentColor": "#FFF44336"
 }

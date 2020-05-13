@@ -12,10 +12,10 @@ import 'package:flutterhole/features/settings/presentation/widgets/form/api_path
 import 'package:flutterhole/features/settings/presentation/widgets/form/api_token_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/authentication_status_icon.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/base_url_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/color_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/description_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/detected_versions_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/host_details_status_icon.dart';
-import 'package:flutterhole/features/settings/presentation/widgets/form/primary_color_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/title_form_tile.dart';
 import 'package:flutterhole/widgets/layout/snackbars.dart';
 
@@ -122,6 +122,7 @@ class _AddPiholePageState extends State<AddPiholePage> {
                   physics: const NeverScrollableScrollPhysics(),
                   currentStep: currentStep,
                   onStepTapped: (int index) {
+                    _validate(context);
                     setState(() {
                       currentStep = index;
                     });
@@ -153,6 +154,10 @@ class _AddPiholePageState extends State<AddPiholePage> {
                             initialValue: initialValue,
                             decoration: _decoration,
                           ),
+//                          AccentColorFormTile(
+//                            initialValue: initialValue,
+//                            decoration: _decoration,
+//                          ),
                         ]),
                         isActive: currentStep == 0),
                     Step(

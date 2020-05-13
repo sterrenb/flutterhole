@@ -8,6 +8,8 @@ import 'package:flutterhole/features/home/presentation/widgets/home_bloc_overflo
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
+import 'package:flutterhole/features/pihole_api/presentation/pages/single_client_page.dart';
+import 'package:flutterhole/widgets/layout/animated_opener.dart';
 import 'package:flutterhole/widgets/layout/failure_indicators.dart';
 import 'package:flutterhole/widgets/layout/frequency_tile.dart';
 import 'package:flutterhole/widgets/layout/loading_indicators.dart';
@@ -49,15 +51,15 @@ class ClientsPageView extends StatelessWidget {
                         final client = clients.elementAt(index);
                         final queryCount = queryCounts.elementAt(index);
 
-                        final String title = (client.title?.isEmpty ?? true)
-                            ? client.ip
-                            : '${client.ip} (${client.title})';
-
-                        return FrequencyTile(
-                          title: title,
-                          requests: queryCount,
-                          totalRequests: totalQueryCount,
-                          color: KColors.clients,
+                        return AnimatedOpener(
+                          closed: (context) =>
+                              FrequencyTile(
+                                title: client.titleOrIp,
+                                requests: queryCount,
+                                totalRequests: totalQueryCount,
+                                color: KColors.clients,
+                              ),
+                          opened: (context) => SingleClientPage(client: client),
                         );
                       }),
                 );

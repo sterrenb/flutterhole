@@ -27,7 +27,31 @@ class PrimaryColorFormTile extends StatelessWidget {
       title: FormBuilderColorPicker(
         attribute: 'primaryColor',
         initialValue: initialValue.primaryColor,
-        decoration: decoration.copyWith(labelText: 'Color'),
+        decoration: decoration.copyWith(labelText: 'Primary color'),
+        valueTransformer: (value) => (value as Color).toHex(),
+        colorPickerType: ColorPickerType.MaterialPicker,
+      ),
+    );
+  }
+}
+
+class AccentColorFormTile extends StatelessWidget {
+  const AccentColorFormTile({
+    Key key,
+    @required this.initialValue,
+    this.decoration = const InputDecoration(),
+  }) : super(key: key);
+
+  final PiholeSettings initialValue;
+  final InputDecoration decoration;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: FormBuilderColorPicker(
+        attribute: 'accentColor',
+        initialValue: initialValue.accentColor,
+        decoration: decoration.copyWith(labelText: 'Accent color'),
         valueTransformer: (value) => (value as Color).toHex(),
         colorPickerType: ColorPickerType.MaterialPicker,
       ),

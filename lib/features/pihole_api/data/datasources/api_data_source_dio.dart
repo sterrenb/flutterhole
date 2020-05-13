@@ -9,7 +9,9 @@ import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
@@ -221,11 +223,36 @@ class ApiDataSourceDio implements ApiDataSource {
 
   @override
   Future<PiVersions> fetchVersions(PiholeSettings settings) async {
-    final Map<String, dynamic> json =
-    await _get(settings, queryParameters: {
+    final Map<String, dynamic> json = await _get(settings, queryParameters: {
       'versions': '',
     });
 
     return PiVersions.fromJson(json);
+  }
+
+  @override
+  Future<ManyQueryData> fetchQueryDataForClient(PiholeSettings settings,
+      PiClient client,) async {
+    final Map<String, dynamic> json =
+    await _getSecure(settings, queryParameters: {
+      'getAllQueries': '',
+      'client': (client.title != null && client.title.isNotEmpty)
+          ? client.title.trim()
+          : client.ip,
+    });
+
+    return ManyQueryData.fromJson(json);
+  }
+
+  @override
+  Future<ManyQueryData> fetchQueryDataForDomain(PiholeSettings settings,
+      String domain,) async {
+    final Map<String, dynamic> json =
+    await _getSecure(settings, queryParameters: {
+      'getAllQueries': '',
+      'domain': '${domain?.trim()}',
+    });
+
+    return ManyQueryData.fromJson(json);
   }
 }

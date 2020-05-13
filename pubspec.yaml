@@ -41,7 +41,8 @@ dependencies:
   flutter_form_builder: ^3.9.0
   barcode_scan: ^3.0.1
   preferences: ^5.2.0
-  
+  jiffy: ^3.0.1
+
   # ui sugar
   bottom_navy_bar: ^5.4.0
   flutter_vector_icons: ^0.2.1
@@ -52,24 +53,25 @@ dependencies:
   fl_chart: ^0.9.4
   flutter_sticky_header: ^0.4.2
   flushbar: ^1.10.2
+  fluttertoast: ^4.0.1
   pull_to_refresh: ^1.5.8
 
   # log page
   alice: ^0.0.33
 
   # about page
-  package_info: ^0.4.0+17
+  package_info: ^0.4.0+18
   qr_flutter: ^3.2.0
-  share: ^0.6.4+1
+  share: ^0.6.4+2
   launch_review: ^2.0.0
-  url_launcher: ^5.4.5
+  url_launcher: ^5.4.7
   flutter_markdown: ^0.3.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   # code generation
-  build_runner: ^1.9.0
+  build_runner: ^1.10.0
   # data model & sealed union code generation
   freezed: ^0.10.8
   # generators

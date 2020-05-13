@@ -3,6 +3,8 @@ import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
@@ -24,4 +26,10 @@ abstract class ApiRepository {
 
   Future<Either<Failure, DnsQueryTypeResult>> fetchQueryTypes(
       PiholeSettings settings);
+
+  Future<Either<Failure, List<QueryData>>> fetchQueriesForClient(
+      PiholeSettings settings, PiClient client);
+
+  Future<Either<Failure, List<QueryData>>> fetchQueriesForDomain(
+      PiholeSettings settings, String domain);
 }

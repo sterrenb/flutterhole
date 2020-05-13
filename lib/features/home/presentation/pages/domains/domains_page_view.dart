@@ -6,6 +6,8 @@ import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_bloc_overflow_refresher.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
+import 'package:flutterhole/features/pihole_api/presentation/pages/single_domain_page.dart';
+import 'package:flutterhole/widgets/layout/animated_opener.dart';
 import 'package:flutterhole/widgets/layout/failure_indicators.dart';
 import 'package:flutterhole/widgets/layout/frequency_tile.dart';
 import 'package:flutterhole/widgets/layout/list_with_header.dart';
@@ -65,7 +67,10 @@ class TopQueriesListBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListWithHeader(
       header: ListTile(
-        leading: Icon(KIcons.success, color: KColors.success,),
+        leading: Icon(
+          KIcons.success,
+          color: KColors.success,
+        ),
         title: Text('Top permitted domains'),
       ),
       child: SliverList(
@@ -75,10 +80,14 @@ class TopQueriesListBuilder extends StatelessWidget {
           final int queryCount =
               topItems.topQueries.values.elementAtOrNull(index);
 
-          return FrequencyTile(
-            title: '$domain',
-            requests: queryCount,
-            totalRequests: _totalQueryCount,
+          return AnimatedOpener(
+            closed: (context) =>
+                FrequencyTile(
+                  title: '$domain',
+                  requests: queryCount,
+                  totalRequests: _totalQueryCount,
+                ),
+            opened: (context) => SingleDomainPage(domain: domain),
           );
         },
         childCount: topItems.topQueries.length,
@@ -88,10 +97,9 @@ class TopQueriesListBuilder extends StatelessWidget {
 }
 
 class TopAdsListBuilder extends StatelessWidget {
-  const TopAdsListBuilder(
-      this.topItems, {
-        Key key,
-      }) : super(key: key);
+  const TopAdsListBuilder(this.topItems, {
+    Key key,
+  }) : super(key: key);
 
   final TopItems topItems;
 
@@ -101,21 +109,28 @@ class TopAdsListBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListWithHeader(
       header: ListTile(
-        leading: Icon(KIcons.close, color: KColors.error,),
+        leading: Icon(
+          KIcons.close,
+          color: KColors.error,
+        ),
         title: Text('Top blocked domains'),
       ),
       child: SliverList(
           delegate: SliverChildBuilderDelegate(
                 (context, index) {
               final String domain = topItems.topAds.keys.elementAtOrNull(index);
-              final int queryCount =
-              topItems.topAds.values.elementAtOrNull(index);
+              final int queryCount = topItems.topAds.values.elementAtOrNull(
+                  index);
 
-              return FrequencyTile(
-                title: '$domain',
-                requests: queryCount,
-                totalRequests: _totalQueryCount,
-                color: KColors.error,
+              return AnimatedOpener(
+                closed: (context) =>
+                    FrequencyTile(
+                      title: '$domain',
+                      requests: queryCount,
+                      totalRequests: _totalQueryCount,
+                      color: KColors.error,
+                    ),
+                opened: (context) => SingleDomainPage(domain: domain),
               );
             },
             childCount: topItems.topAds.length,

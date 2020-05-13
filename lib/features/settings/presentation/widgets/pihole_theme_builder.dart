@@ -54,10 +54,11 @@ class PiholeThemeBuilder extends StatelessWidget {
   }
 
   ThemeData _buildTheme(BuildContext context, PiholeSettings settings) {
-
     return Theme.of(context).copyWith(
-      accentColor:
-          MaterialColor(settings.primaryColor.value, _materialColorMap),
+      accentColor: MaterialColor(
+        settings.primaryColor.value,
+        _materialColorMap,
+      ),
     );
   }
 }

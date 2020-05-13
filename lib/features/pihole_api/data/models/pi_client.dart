@@ -1,12 +1,14 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutterhole/features/pihole_api/data/models/model.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'pi_client.freezed.dart';
 part 'pi_client.g.dart';
 
 @freezed
-abstract class PiClient extends MapModel with _$PiClient {
+abstract class PiClient extends MapModel implements _$PiClient {
+  const PiClient._();
+
   const factory PiClient({
     String title,
     String ip,
@@ -14,4 +16,6 @@ abstract class PiClient extends MapModel with _$PiClient {
 
   factory PiClient.fromJson(Map<String, dynamic> json) =>
       _$PiClientFromJson(json);
+
+  String get titleOrIp => (title?.isEmpty ?? true) ? ip : '${ip} (${title})';
 }

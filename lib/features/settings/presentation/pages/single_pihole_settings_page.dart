@@ -11,10 +11,10 @@ import 'package:flutterhole/features/settings/presentation/widgets/form/api_path
 import 'package:flutterhole/features/settings/presentation/widgets/form/api_token_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/authentication_status_icon.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/base_url_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/color_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/description_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/detected_versions_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/host_details_status_icon.dart';
-import 'package:flutterhole/features/settings/presentation/widgets/form/primary_color_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/title_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
@@ -234,6 +234,10 @@ class _AnnotationForm extends StatelessWidget {
           initialValue: initialValue,
           decoration: _decoration,
         ),
+//        AccentColorFormTile(
+//          initialValue: initialValue,
+//          decoration: _decoration,
+//        ),
       ],
     );
   }

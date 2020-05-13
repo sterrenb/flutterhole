@@ -46,6 +46,10 @@ class KIcons {
   static const IconData warning = Icons.warning;
   static const IconData error = Icons.close;
   static const IconData success = Icons.check;
+  static const IconData unknown = MaterialCommunityIcons.cloud_question;
+  static const IconData forwarded = MaterialCommunityIcons.fast_forward;
+  static const IconData blocked = Icons.block;
+  static const IconData cached = MaterialIcons.cached;
 
   static const IconData date = Ionicons.md_calendar;
   static const IconData qrCode = AntDesign.qrcode;
@@ -102,4 +106,7 @@ class KColors {
   static const Color enabled = Colors.green;
   static const Color disabled = Colors.orange;
   static const Color unknown = Colors.grey;
+  static const Color blocked = Colors.red;
+  static const Color forwarded = Colors.green;
+  static const Color cached = Colors.blue;
 }

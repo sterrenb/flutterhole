@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
 Color colorFromHex(String hexString) {
+  if (hexString == null || hexString.isEmpty) {
+    return Colors.blue;
+  }
+
   final buffer = StringBuffer();
   if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
   buffer.write(hexString.replaceFirst('#', ''));

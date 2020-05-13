@@ -6,7 +6,9 @@ import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source_dio.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
@@ -295,6 +297,53 @@ void main() async {
       await apiDataSourceDio.fetchVersions(piholeSettings);
       // assert
       expect(result, equals(PiVersions.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $ManyQueryData on successful fetchQueryDataForClient with titled client',
+        () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('get_all_queries_10.json', 200);
+      // act
+      final ManyQueryData result =
+      await apiDataSourceDio.fetchQueryDataForClient(
+          piholeSettings,
+          PiClient(
+            title: 'client',
+            ip: '1.2.3.4',
+          ));
+      // assert
+      expect(result, equals(ManyQueryData.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $ManyQueryData on successful fetchQueryDataForClient with titleless client',
+        () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('get_all_queries_10.json', 200);
+      // act
+      final ManyQueryData result = await apiDataSourceDio
+          .fetchQueryDataForClient(piholeSettings, PiClient(ip: '1.2.3.4'));
+      // assert
+      expect(result, equals(ManyQueryData.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $ManyQueryData on successful fetchQueryDataForDomain',
+        () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('get_all_queries_10.json', 200);
+      // act
+      final ManyQueryData result = await apiDataSourceDio
+          .fetchQueryDataForDomain(piholeSettings, 'example.com');
+      // assert
+      expect(result, equals(ManyQueryData.fromJson(json)));
     },
   );
 }
