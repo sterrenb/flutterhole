@@ -20,23 +20,23 @@ import 'package:intl/intl.dart';
 final _numberFormat = NumberFormat();
 
 class SummaryPageView extends StatelessWidget {
+  const SummaryPageView({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return HomeBlocBuilder(builder: (BuildContext context, HomeState state) {
       return state.maybeWhen<Widget>(
           failure: (failure) => CenteredFailureIndicator(failure),
-          success: (
-            Either<Failure, SummaryModel> summaryResult,
-            _,
-            __,
-            ___,
-            Either<Failure, ForwardDestinationsResult>
-                forwardDestinationsResult,
-            Either<Failure, DnsQueryTypeResult> dnsQueryTypesResult,
-          ) {
+          success: (Either<Failure, SummaryModel> summaryResult,
+              _,
+              __,
+              ___,
+              Either<Failure, ForwardDestinationsResult>
+              forwardDestinationsResult,
+              Either<Failure, DnsQueryTypeResult> dnsQueryTypesResult,) {
             return summaryResult.fold<Widget>(
-              (failure) => CenteredFailureIndicator(failure),
-              (summary) {
+                  (failure) => CenteredFailureIndicator(failure),
+                  (summary) {
                 final bool enableTrivia =
                     getIt<PreferenceService>().get(KPrefs.useNumbersApi) ?? true;
 
@@ -47,7 +47,7 @@ class SummaryPageView extends StatelessWidget {
                       SummaryTile(
                         title: 'Total Queries',
                         subtitle:
-                            '${_numberFormat.format(summary.dnsQueriesToday)}',
+                        '${_numberFormat.format(summary.dnsQueriesToday)}',
                         integer: summary.dnsQueriesToday,
                         color: Colors.green,
                         enableTrivia: enableTrivia,
@@ -55,7 +55,7 @@ class SummaryPageView extends StatelessWidget {
                       SummaryTile(
                         title: 'Queries Blocked',
                         subtitle:
-                            '${_numberFormat.format(summary.adsBlockedToday)}',
+                        '${_numberFormat.format(summary.adsBlockedToday)}',
                         integer: summary.adsBlockedToday,
                         color: Colors.blue,
                         enableTrivia: enableTrivia,
@@ -63,7 +63,7 @@ class SummaryPageView extends StatelessWidget {
                       SummaryTile(
                         title: 'Percent Blocked',
                         subtitle:
-                            '${summary.adsPercentageToday.toStringAsFixed(2)}%',
+                        '${summary.adsPercentageToday.toStringAsFixed(2)}%',
                         integer: summary.adsPercentageToday.round(),
                         color: Colors.orange,
                         enableTrivia: enableTrivia,
@@ -71,7 +71,7 @@ class SummaryPageView extends StatelessWidget {
                       SummaryTile(
                         title: 'Domains on Blocklist',
                         subtitle:
-                            '${_numberFormat.format(summary.domainsBeingBlocked)}',
+                        '${_numberFormat.format(summary.domainsBeingBlocked)}',
                         color: Colors.red,
                         integer: summary.domainsBeingBlocked,
                         enableTrivia: enableTrivia,

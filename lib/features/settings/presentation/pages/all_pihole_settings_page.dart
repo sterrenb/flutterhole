@@ -1,8 +1,8 @@
 import 'package:animations/animations.dart';
-import 'package:flutterhole/features/settings/presentation/pages/add_pihole_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
+import 'package:flutterhole/features/settings/presentation/pages/add_pihole_page.dart';
 import 'package:flutterhole/features/settings/presentation/pages/single_pihole_settings_page.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_settings_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
@@ -25,8 +25,6 @@ class _PopupMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton<_PopupOption>(
       onSelected: (option) async {
-        print(option);
-
         switch (option) {
           case _PopupOption.createDefault:
             getIt<SettingsBloc>().add(SettingsEventCreate());

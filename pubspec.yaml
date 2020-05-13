@@ -34,6 +34,8 @@ dependencies:
   sailor: ^0.7.1
   # internationalization
   intl: ^0.16.1
+  # mockable time
+  clock: ^1.0.1
 
   # utilities
   supercharged: ^1.5.1

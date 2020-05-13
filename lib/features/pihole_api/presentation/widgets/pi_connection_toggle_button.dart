@@ -6,18 +6,20 @@ import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
+import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/widgets/layout/loading_indicators.dart';
 import 'package:flutterhole/widgets/layout/snackbars.dart';
 import 'package:flutterhole/widgets/layout/toasts.dart';
 
 class PiConnectionToggleButton extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PiConnectionBloc, PiConnectionState>(
       bloc: getIt<PiConnectionBloc>(),
       listener: (BuildContext context, PiConnectionState state) {
         state.maybeWhen(
-          active: (ToggleStatus toggleStatus) {
+          active: (settings, ToggleStatus toggleStatus) {
             switch (toggleStatus.status) {
               case PiStatusEnum.enabled:
                 showToast('Enabled');
@@ -44,13 +46,13 @@ class PiConnectionToggleButton extends StatelessWidget {
             onPressed: null,
           ),
           failure: (Failure failure) => IconButton(
-            tooltip: 'Try connecting',
+            tooltip: 'Try reconnecting',
             icon: Icon(KIcons.warning, color: KColors.warning),
             onPressed: () {
               getIt<PiConnectionBloc>().add(PiConnectionEvent.ping());
             },
           ),
-          active: (ToggleStatus toggleStatus) {
+          active: (settings, ToggleStatus toggleStatus) {
             switch (toggleStatus.status) {
               case PiStatusEnum.enabled:
                 return IconButton(
@@ -72,6 +74,16 @@ class PiConnectionToggleButton extends StatelessWidget {
               default:
                 return Container();
             }
+          },
+          sleeping:
+              (PiholeSettings settings, DateTime start, Duration duration) {
+            return IconButton(
+              tooltip: 'Wake up',
+              icon: Icon(KIcons.wake),
+              onPressed: () {
+                getIt<PiConnectionBloc>().add(PiConnectionEvent.enable());
+              },
+            );
           },
         );
       },

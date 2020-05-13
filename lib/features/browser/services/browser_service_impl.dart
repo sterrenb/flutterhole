@@ -33,7 +33,6 @@ class BrowserServiceImpl implements BrowserService {
 
   @override
   Future<String> fetchPrivacyReadmeText() async {
-    print('fetching');
     try {
       final Response response = await _dio.get(privacyUrl);
       return response.data.toString();

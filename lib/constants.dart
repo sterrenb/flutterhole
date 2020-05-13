@@ -16,6 +16,8 @@ class KIcons {
   static const IconData connectionStatus = Icons.brightness_1;
   static const IconData toggleEnable = Icons.play_arrow;
   static const IconData toggleDisable = Icons.pause;
+  static const IconData sleep = MaterialCommunityIcons.sleep;
+  static const IconData wake = MaterialCommunityIcons.bell_ring;
 
   static const IconData summary = Ionicons.md_stats;
 
@@ -88,6 +90,7 @@ class KColors {
 
   static const Color inactive = Colors.grey;
   static const Color loading = Colors.blue;
+  static const Color sleeping = Colors.lightBlue;
   static const Color summary = Colors.green;
   static const Color clients = Colors.blue;
   static const Color domains = Colors.orange;

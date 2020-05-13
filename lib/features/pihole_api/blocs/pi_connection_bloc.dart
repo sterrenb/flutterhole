@@ -18,10 +18,16 @@ abstract class PiConnectionState with _$PiConnectionState {
 
   const factory PiConnectionState.loading() = PiConnectionStateLoading;
 
-  const factory PiConnectionState.failure(Failure failure) = PiConnectionStateFailure;
+  const factory PiConnectionState.failure(Failure failure) =
+  PiConnectionStateFailure;
 
-  const factory PiConnectionState.active(ToggleStatus toggleStatus) =
+  const factory PiConnectionState.active(PiholeSettings settings,
+      ToggleStatus toggleStatus) =
       PiConnectionStateActive;
+
+  const factory PiConnectionState.sleeping(PiholeSettings settings,
+      DateTime start,
+      Duration duration,) = PiConnectionStateSleeping;
 }
 
 @freezed
@@ -31,6 +37,9 @@ abstract class PiConnectionEvent with _$PiConnectionEvent {
   const factory PiConnectionEvent.enable() = PiConnectionEventEnable;
 
   const factory PiConnectionEvent.disable() = PiConnectionEventDisable;
+
+  const factory PiConnectionEvent.sleep(Duration duration, DateTime now) =
+  PiConnectionEventSleep;
 }
 
 typedef Future<Either<Failure, ToggleStatus>> ConnectionFunction(
@@ -67,25 +76,58 @@ class PiConnectionBloc extends Bloc<PiConnectionEvent, PiConnectionState> {
       yield* statusResult.fold((Failure failure) async* {
         yield PiConnectionState.failure(failure);
       }, (status) async* {
-        yield PiConnectionState.active(status);
+        yield PiConnectionState.active(settings, status);
       });
     });
   }
 
   Stream<PiConnectionState> _ping() => _do(_connectionRepository.pingPihole);
 
-  Stream<PiConnectionState> _enable() => _do(_connectionRepository.enablePihole);
+  Stream<PiConnectionState> _enable() =>
+      _do(_connectionRepository.enablePihole);
 
   Stream<PiConnectionState> _disable() =>
       _do(_connectionRepository.disablePihole);
+
+  Stream<PiConnectionState> _sleep(Duration duration, DateTime now) async* {
+    yield PiConnectionState.loading();
+
+    final Either<Failure, PiholeSettings> active =
+    await _settingsRepository.fetchActivePiholeSettings();
+
+    yield* active.fold((Failure failure) async* {
+      yield PiConnectionState.failure(failure);
+    }, (PiholeSettings settings) async* {
+      final Either<Failure, ToggleStatus> statusResult =
+      await _connectionRepository.sleepPihole(settings, duration);
+
+      yield* statusResult.fold((Failure failure) async* {
+        yield PiConnectionState.failure(failure);
+      }, (status) async* {
+        yield PiConnectionState.sleeping(
+          settings,
+          now,
+          duration,
+        );
+
+        // TODO disabled for now, since the future.delayed
+        //  prevents any events from landing
+
+        // await Future.delayed(duration);
+        // // Optimistically guess that the timer elapsed
+        // yield PiConnectionStateActive(settings, ToggleStatus(PiStatusEnum.enabled));
+      });
+    });
+  }
 
   @override
   Stream<PiConnectionState> mapEventToState(
     PiConnectionEvent event,
   ) =>
-      event.map(
-        ping: (_) => _ping(),
-        enable: (_) => _enable(),
-        disable: (_) => _disable(),
+      event.when(
+        ping: () => _ping(),
+        enable: () => _enable(),
+        disable: () => _disable(),
+        sleep: (Duration duration, DateTime now) => _sleep(duration, now),
       );
 }

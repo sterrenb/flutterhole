@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:clock/clock.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/core/models/failures.dart';
@@ -19,7 +20,7 @@ class MockSettingsRepository extends Mock implements SettingsRepository {}
 void main() {
   setUpAllForTest();
 
-  PiholeSettings settings;
+  PiholeSettings settings = PiholeSettings(title: 'First');
   ConnectionRepository mockConnectionRepository;
   SettingsRepository mockSettingsRepository;
   PiConnectionBloc bloc;
@@ -48,7 +49,8 @@ void main() {
     expect: [],
   );
 
-  group('$PiConnectionEvent.ping()', () {
+  group('$PiConnectionEventPing', () {
+    final settings = PiholeSettings(title: 'First');
     final ToggleStatus toggleStatus = ToggleStatus(PiStatusEnum.enabled);
     final failure = Failure('test');
 
@@ -63,7 +65,10 @@ void main() {
         return bloc;
       },
       act: (PiConnectionBloc bloc) async => bloc.add(PiConnectionEvent.ping()),
-      expect: [PiConnectionState.loading(), PiConnectionState.active(toggleStatus)],
+      expect: [
+        PiConnectionState.loading(),
+        PiConnectionState.active(settings, toggleStatus)
+      ],
     );
 
     blocTest(
@@ -107,8 +112,12 @@ void main() {
 
         return bloc;
       },
-      act: (PiConnectionBloc bloc) async => bloc.add(PiConnectionEvent.enable()),
-      expect: [PiConnectionState.loading(), PiConnectionState.active(toggleStatus)],
+      act: (PiConnectionBloc bloc) async =>
+          bloc.add(PiConnectionEvent.enable()),
+      expect: [
+        PiConnectionState.loading(),
+        PiConnectionState.active(settings, toggleStatus)
+      ],
     );
 
     blocTest(
@@ -119,7 +128,8 @@ void main() {
 
         return bloc;
       },
-      act: (PiConnectionBloc bloc) async => bloc.add(PiConnectionEvent.enable()),
+      act: (PiConnectionBloc bloc) async =>
+          bloc.add(PiConnectionEvent.enable()),
       expect: [PiConnectionState.loading(), PiConnectionState.failure(failure)],
     );
 
@@ -133,7 +143,8 @@ void main() {
 
         return bloc;
       },
-      act: (PiConnectionBloc bloc) async => bloc.add(PiConnectionEvent.enable()),
+      act: (PiConnectionBloc bloc) async =>
+          bloc.add(PiConnectionEvent.enable()),
       expect: [PiConnectionState.loading(), PiConnectionState.failure(failure)],
     );
   });
@@ -152,8 +163,12 @@ void main() {
 
         return bloc;
       },
-      act: (PiConnectionBloc bloc) async => bloc.add(PiConnectionEvent.disable()),
-      expect: [PiConnectionState.loading(), PiConnectionState.active(toggleStatus)],
+      act: (PiConnectionBloc bloc) async =>
+          bloc.add(PiConnectionEvent.disable()),
+      expect: [
+        PiConnectionState.loading(),
+        PiConnectionState.active(settings, toggleStatus)
+      ],
     );
 
     blocTest(
@@ -164,7 +179,8 @@ void main() {
 
         return bloc;
       },
-      act: (PiConnectionBloc bloc) async => bloc.add(PiConnectionEvent.disable()),
+      act: (PiConnectionBloc bloc) async =>
+          bloc.add(PiConnectionEvent.disable()),
       expect: [PiConnectionState.loading(), PiConnectionState.failure(failure)],
     );
 
@@ -178,8 +194,58 @@ void main() {
 
         return bloc;
       },
-      act: (PiConnectionBloc bloc) async => bloc.add(PiConnectionEvent.disable()),
+      act: (PiConnectionBloc bloc) async =>
+          bloc.add(PiConnectionEvent.disable()),
       expect: [PiConnectionState.loading(), PiConnectionState.failure(failure)],
+    );
+  });
+
+  group('$PiConnectionEventSleep', () {
+    final settings = PiholeSettings(title: 'Sleepy pi');
+    final Duration tDuration = Duration(seconds: 1);
+    final ToggleStatus toggleStatus = ToggleStatus(PiStatusEnum.disabled);
+    final DateTime now = clock.now();
+    final tFailure = Failure('test #0');
+
+    blocTest(
+      'Emits [$PiConnectionStateLoading, $PiConnectionStateSleeping, $PiConnectionStateActive] when $PiConnectionEventSleep succeeds and finishes',
+      build: () async {
+        when(mockSettingsRepository.fetchActivePiholeSettings())
+            .thenAnswer((_) async => Right(settings));
+        when(mockConnectionRepository.sleepPihole(settings, tDuration))
+            .thenAnswer((_) async => Right(toggleStatus));
+
+        return bloc;
+      },
+      act: (PiConnectionBloc bloc) async =>
+          bloc.add(PiConnectionEventSleep(tDuration, now)),
+      wait: tDuration,
+      expect: [
+        PiConnectionStateLoading(),
+        PiConnectionStateSleeping(
+          settings,
+          now,
+          tDuration,
+        ),
+      ],
+    );
+
+    blocTest(
+      'Emits [$PiConnectionStateLoading, $PiConnectionStateFailure] when $PiConnectionEventSleep fails',
+      build: () async {
+        when(mockSettingsRepository.fetchActivePiholeSettings())
+            .thenAnswer((_) async => Right(settings));
+        when(mockConnectionRepository.sleepPihole(settings, tDuration))
+            .thenAnswer((_) async => Left(tFailure));
+
+        return bloc;
+      },
+      act: (PiConnectionBloc bloc) async =>
+          bloc.add(PiConnectionEventSleep(tDuration, now)),
+      expect: [
+        PiConnectionStateLoading(),
+        PiConnectionStateFailure(tFailure),
+      ],
     );
   });
 }

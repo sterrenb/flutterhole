@@ -1,6 +1,26 @@
 import 'package:fluttertoast/fluttertoast.dart';
 
-Future<void> showToast(String message) async {
+enum ToastPosition {
+  Top,
+  Bottom,
+}
+
+ToastGravity _ToastPositionToToastGravity(ToastPosition position) {
+  switch (position) {
+    case ToastPosition.Top:
+      return ToastGravity.TOP;
+    case ToastPosition.Bottom:
+    default:
+      return ToastGravity.BOTTOM;
+  }
+}
+
+Future<void> showToast(String message, {
+  ToastPosition position = ToastPosition.Bottom,
+}) async {
   await Fluttertoast.cancel();
-  Fluttertoast.showToast(msg: message ?? '');
+  Fluttertoast.showToast(
+    msg: message ?? '',
+    gravity: _ToastPositionToToastGravity(position),
+  );
 }

@@ -8,6 +8,7 @@ import 'package:flutterhole/features/home/presentation/pages/clients/clients_pag
 import 'package:flutterhole/features/home/presentation/pages/domains/domains_page_view.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/summary_page_view.dart';
 import 'package:flutterhole/features/numbers_api/blocs/number_trivia_bloc.dart';
+import 'package:flutterhole/features/pihole_api/presentation/widgets/pi_connection_sleep_button.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/pi_connection_toggle_button.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/active_pihole_title.dart';
@@ -94,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                 drawer: DefaultDrawer(),
                 appBar: AppBar(
                   elevation: 0.0,
-                  title: ActivePiholeTitle(),
+                  title: ActivePiholeTitle(interactive: true),
                   actions: <Widget>[
                     Visibility(
                       visible: false,
@@ -106,6 +107,7 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
+                    PiConnectionSleepButton(),
                     PiConnectionToggleButton(),
                   ],
                 ),
@@ -138,7 +140,7 @@ class _HomePageState extends State<HomePage> {
 //                  physics: const BouncingScrollPhysics(),
                   controller: _pageController,
                   onPageChanged: _onPageChanged,
-                  children: <Widget>[
+                  children: const <Widget>[
                     SummaryPageView(),
                     ClientsPageView(),
                     DomainsPageView(),
