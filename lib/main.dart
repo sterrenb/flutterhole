@@ -6,7 +6,6 @@ import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
 import 'package:flutterhole/features/routing/services/router_service.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:flutterhole/features/settings/presentation/notifiers/theme_mode_notifier.dart';
-import 'package:flutterhole/features/settings/services/preference_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:provider/provider.dart';
 
@@ -37,8 +36,6 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context,
             ThemeModeNotifier notifier,
             _,) {
-          print('consumer value: ${notifier.themeMode}');
-
           return MaterialApp(
             title: 'FlutterHole',
             navigatorKey: getIt<RouterService>().navigatorKey,
@@ -53,7 +50,7 @@ class MyApp extends StatelessWidget {
               brightness: Brightness.dark,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
-            themeMode: getIt<PreferenceService>().get(KPrefs.activeThemeMode),
+            themeMode: notifier.themeMode,
           );
         },
       ),

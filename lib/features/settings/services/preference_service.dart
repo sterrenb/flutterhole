@@ -67,8 +67,6 @@ class PreferenceService {
         return PrefService.getStringList(key);
       case PrefType.themeMode:
         final String value = PrefService.getString(key) ?? 'system';
-//        print('returning ${ThemeModeMapEnum[value]} for $key, $value');
-
         return ThemeModeMapEnum[value];
     }
   }

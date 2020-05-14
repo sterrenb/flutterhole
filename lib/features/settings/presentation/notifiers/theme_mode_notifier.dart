@@ -10,7 +10,6 @@ class ThemeModeNotifier extends ChangeNotifier {
 
   void update() {
     _themeMode = getIt<PreferenceService>().get(KPrefs.activeThemeMode);
-    print('returning $_themeMode');
     notifyListeners();
   }
 }
