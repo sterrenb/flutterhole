@@ -7,7 +7,7 @@ import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
 import 'package:supercharged/supercharged.dart';
 
 class PiConnectionSleepButton extends StatelessWidget {
-  Future<void> _showSleepDialog(BuildContext context) async {
+  Future<void> _showSleepPickerDialog(BuildContext context) async {
     final TimeOfDay result = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -46,7 +46,7 @@ class PiConnectionSleepButton extends StatelessWidget {
           icon: Icon(KIcons.sleep),
           onPressed: (state is PiConnectionStateActive)
               ? () async {
-                  _showSleepDialog(context);
+            _showSleepPickerDialog(context);
                 }
               : null,
         );

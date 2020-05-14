@@ -90,7 +90,7 @@ class KColors {
 
   static const Color inactive = Colors.grey;
   static const Color loading = Colors.blue;
-  static const Color sleeping = Colors.lightBlue;
+  static const Color sleeping = Colors.blue;
   static const Color summary = Colors.green;
   static const Color clients = Colors.blue;
   static const Color domains = Colors.orange;

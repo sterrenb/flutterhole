@@ -63,8 +63,8 @@ class PiConnectionStatusIcon extends StatelessWidget {
                 _SleepProgressIndicator(),
               ],
             ),
-            onPressed: interactive ? getIt<PiConnectionBloc>().state.when<
-                VoidCallback>(
+            onPressed: interactive
+                ? getIt<PiConnectionBloc>().state.when<VoidCallback>(
               initial: () => null,
               loading: () => null,
               failure: (failure) =>
@@ -78,14 +78,15 @@ class PiConnectionStatusIcon extends StatelessWidget {
                     '${settings.title} is ${_$PiStatusEnumEnumMap[toggleStatus
                         .status]}');
               },
-              sleeping: (settings, start, duration) =>
+              sleeping: (_, start, duration) =>
                   () {
                 final dateTime = start.add(duration);
                 showToast(
                     'Sleeping until ${dateTime.formattedTime} (${dateTime
                         .fromNow})');
               },
-            ) : null,
+            )
+                : null,
           );
         });
   }
@@ -121,7 +122,7 @@ class _SleepProgressIndicator extends StatelessWidget {
                       height: 16.0,
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation(KColors.sleeping),
-                        value: (percentage),
+                        value: (1 - percentage),
                       ),
                     );
                   },

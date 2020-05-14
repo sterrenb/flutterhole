@@ -110,12 +110,11 @@ class PiConnectionBloc extends Bloc<PiConnectionEvent, PiConnectionState> {
           duration,
         );
 
-        // TODO disabled for now, since the future.delayed
-        //  prevents any events from landing
-
-        // await Future.delayed(duration);
-        // // Optimistically guess that the timer elapsed
-        // yield PiConnectionStateActive(settings, ToggleStatus(PiStatusEnum.enabled));
+        // Thank you to felix <3
+        // https://github.com/felangel/bloc/issues/1171#issuecomment-628685175
+        Future.delayed(duration).whenComplete(() {
+          add(PiConnectionEvent.ping());
+        });
       });
     });
   }

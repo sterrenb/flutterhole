@@ -52,11 +52,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   HomeState get initialState => HomeStateInitial();
 
-  @override
-  Stream<HomeState> mapEventToState(HomeEvent event) async* {
-    if (event is HomeEventFetch) yield* _fetch();
-  }
-
   Stream<HomeState> _fetch() async* {
     yield HomeStateLoading();
 
@@ -120,5 +115,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
       },
     );
+  }
+
+  @override
+  Stream<HomeState> mapEventToState(HomeEvent event) async* {
+    if (event is HomeEventFetch) yield* _fetch();
   }
 }

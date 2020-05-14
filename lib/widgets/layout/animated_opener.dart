@@ -27,7 +27,6 @@ class AnimatedOpener extends StatelessWidget {
       ) {
         return Material(
           child: InkWell(
-//            splashColor: Theme.of(context).accentColor.withOpacity(.2),
             onTap: openContainer,
             onLongPress: onLongPress,
             child: closed(context),

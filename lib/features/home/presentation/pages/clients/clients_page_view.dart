@@ -4,7 +4,7 @@ import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder.dart';
-import 'package:flutterhole/features/home/presentation/widgets/home_bloc_overflow_refresher.dart';
+import 'package:flutterhole/features/home/presentation/widgets/home_page_overflow_refresher.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
@@ -44,7 +44,7 @@ class ClientsPageView extends StatelessWidget {
                   (summary) => summary.dnsQueriesToday,
                 );
 
-                return HomeBlocOverflowRefresher(
+                return HomePageOverflowRefresher(
                   child: ListView.builder(
                       itemCount: topSources.topSources.length,
                       itemBuilder: (context, index) {

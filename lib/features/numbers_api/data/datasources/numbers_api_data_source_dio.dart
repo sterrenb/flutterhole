@@ -38,6 +38,8 @@ class NumbersApiDataSourceDio implements NumbersApiDataSource {
 
   @override
   Future<Map<int, String>> fetchManyTrivia(List<int> integers) async {
+    // TODO perhaps fetch separate requests for each integer.
+    // This would allow for more robust caching.
     final response = await _dio.get(
       '${integers.join(',')}',
       options: buildCacheOptions(NumbersApiDataSource.maxAge),

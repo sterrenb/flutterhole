@@ -28,12 +28,7 @@ class AboutPage extends StatelessWidget {
               slivers: <Widget>[
                 SliverAppBar(
                   title: Text('About'),
-//                expandedHeight: kSliverAppBarHeight,
                   flexibleSpace: FlexibleSpaceBar(
-//                  background: SvgPicture.asset(
-//                    'assets/shared_workspace.svg',
-//                    fit: BoxFit.cover,
-//                  ),
                       ),
                 ),
                 SliverList(
@@ -52,14 +47,6 @@ class AboutPage extends StatelessWidget {
                                   .copyWith(
                                       color: Theme.of(context).accentColor),
                             ),
-//                          Padding(
-//                            padding:
-//                                const EdgeInsets.symmetric(horizontal: 8.0),
-//                            child: ShareQrButton(
-//                              tooltip: 'Share this app with QR',
-//                              data: kAppUrl,
-//                            ),
-//                          )
                           ],
                         ),
                         subtitle: Text(

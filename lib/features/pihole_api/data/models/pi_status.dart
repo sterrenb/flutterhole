@@ -3,7 +3,6 @@ import 'package:flutterhole/features/pihole_api/data/models/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'pi_status.freezed.dart';
-
 part 'pi_status.g.dart';
 
 enum PiStatusEnum {
@@ -17,8 +16,6 @@ abstract class PiStatus extends MapModel with _$PiStatus {
   const factory PiStatus({
     @JsonKey(
       name: 'status',
-//      fromJson: _valueToDnsQueryTypes,
-//      toJson: _dnsQueryTypesToValues,
     ) PiStatusEnum status,
   }) = _PiStatus;
 

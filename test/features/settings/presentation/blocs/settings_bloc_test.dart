@@ -65,8 +65,6 @@ void main() {
       build: () async {
         when(mockSettingsRepository.fetchAllPiholeSettings())
             .thenAnswer((_) async => Left(Failure()));
-//        when(mockSettingsRepository.fetchActivePiholeSettings())
-//            .thenAnswer((_) async => Right(active));
 
         return bloc;
       },

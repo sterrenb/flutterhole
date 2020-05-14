@@ -2,18 +2,17 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/constants.dart';
-import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/home/presentation/pages/clients/clients_page_view.dart';
 import 'package:flutterhole/features/home/presentation/pages/domains/domains_page_view.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/summary_page_view.dart';
+import 'package:flutterhole/features/home/presentation/widgets/home_trivia_fetcher.dart';
 import 'package:flutterhole/features/numbers_api/blocs/number_trivia_bloc.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/pi_connection_sleep_button.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/pi_connection_toggle_button.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/active_pihole_title.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
-import 'package:flutterhole/features/settings/services/preference_service.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -66,47 +65,13 @@ class _HomePageState extends State<HomePage> {
         ],
         child: Builder(
           builder: (context) {
-            return BlocListener<HomeBloc, HomeState>(
-              listener: (context, state) {
-                final bool enableTrivia =
-                    getIt<PreferenceService>().get(KPrefs.useNumbersApi) ??
-                        true;
-
-                if (enableTrivia) {
-                  state.maybeMap(
-                      success: (state) {
-                        state.summary.fold(
-                          (failure) {},
-                          (summary) {
-                            BlocProvider.of<NumberTriviaBloc>(context)
-                                .add(NumberTriviaEvent.fetchMany([
-                              summary.dnsQueriesToday,
-                              summary.adsBlockedToday,
-                              summary.adsPercentageToday.round(),
-                              summary.domainsBeingBlocked,
-                            ]));
-                          },
-                        );
-                      },
-                      orElse: () {});
-                }
-              },
+            return HomeTriviaFetcher(
               child: Scaffold(
                 drawer: DefaultDrawer(),
                 appBar: AppBar(
                   elevation: 0.0,
                   title: ActivePiholeTitle(interactive: true),
                   actions: <Widget>[
-                    Visibility(
-                      visible: false,
-                      child: IconButton(
-                        icon: Icon(Icons.refresh),
-                        onPressed: () {
-                          BlocProvider.of<HomeBloc>(context)
-                              .add(HomeEvent.fetch());
-                        },
-                      ),
-                    ),
                     PiConnectionSleepButton(),
                     PiConnectionToggleButton(),
                   ],
@@ -137,7 +102,6 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 body: PageView(
-//                  physics: const BouncingScrollPhysics(),
                   controller: _pageController,
                   onPageChanged: _onPageChanged,
                   children: const <Widget>[

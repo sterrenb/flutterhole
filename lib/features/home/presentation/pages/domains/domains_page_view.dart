@@ -4,7 +4,7 @@ import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder.dart';
-import 'package:flutterhole/features/home/presentation/widgets/home_bloc_overflow_refresher.dart';
+import 'package:flutterhole/features/home/presentation/widgets/home_page_overflow_refresher.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/presentation/pages/single_domain_page.dart';
 import 'package:flutterhole/widgets/layout/animated_opener.dart';
@@ -35,7 +35,7 @@ class DomainsPageView extends StatelessWidget {
             return topItemsResult.fold<Widget>(
               (failure) => CenteredFailureIndicator(failure),
               (topItems) {
-                return HomeBlocOverflowRefresher(
+                return HomePageOverflowRefresher(
                   child: CustomScrollView(
                     slivers: <Widget>[
                       TopQueriesListBuilder(topItems),

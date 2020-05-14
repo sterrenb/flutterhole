@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/home/blocs/home_bloc.dart';
+import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 typedef void OnRefreshCallback(BuildContext context);
 
-class HomeBlocOverflowRefresher extends StatefulWidget {
-  const HomeBlocOverflowRefresher({
+class HomePageOverflowRefresher extends StatefulWidget {
+  const HomePageOverflowRefresher({
     Key key,
     @required this.child,
   }) : super(key: key);
@@ -14,15 +16,20 @@ class HomeBlocOverflowRefresher extends StatefulWidget {
   final Widget child;
 
   @override
-  _HomeBlocOverflowRefresherState createState() =>
-      _HomeBlocOverflowRefresherState();
+  _HomePageOverflowRefresherState createState() =>
+      _HomePageOverflowRefresherState();
 }
 
-class _HomeBlocOverflowRefresherState extends State<HomeBlocOverflowRefresher> {
+class _HomePageOverflowRefresherState extends State<HomePageOverflowRefresher> {
   final RefreshController _refreshController = RefreshController();
 
   void _onRefresh() {
     BlocProvider.of<HomeBloc>(context).add(HomeEvent.fetch());
+
+    final connectionBloc = getIt<PiConnectionBloc>();
+    if (!(connectionBloc.state is PiConnectionStateSleeping)) {
+      connectionBloc.add(PiConnectionEvent.ping());
+    }
   }
 
   @override

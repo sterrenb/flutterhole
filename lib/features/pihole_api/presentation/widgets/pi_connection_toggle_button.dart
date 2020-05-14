@@ -9,7 +9,6 @@ import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/widgets/layout/loading_indicators.dart';
 import 'package:flutterhole/widgets/layout/snackbars.dart';
-import 'package:flutterhole/widgets/layout/toasts.dart';
 
 class PiConnectionToggleButton extends StatelessWidget {
 
@@ -19,19 +18,19 @@ class PiConnectionToggleButton extends StatelessWidget {
       bloc: getIt<PiConnectionBloc>(),
       listener: (BuildContext context, PiConnectionState state) {
         state.maybeWhen(
-          active: (settings, ToggleStatus toggleStatus) {
-            switch (toggleStatus.status) {
-              case PiStatusEnum.enabled:
-                showToast('Enabled');
-                break;
-              case PiStatusEnum.disabled:
-                showToast('Disabled');
-                break;
-              case PiStatusEnum.unknown:
-              default:
-                showToast('Unknown');
-            }
-          },
+//          active: (settings, ToggleStatus toggleStatus) {
+//            switch (toggleStatus.status) {
+//              case PiStatusEnum.enabled:
+//                showToast('Enabled');
+//                break;
+//              case PiStatusEnum.disabled:
+//                showToast('Disabled');
+//                break;
+//              case PiStatusEnum.unknown:
+//              default:
+//                showToast('Unknown');
+//            }
+//          },
           failure: (failure) {
             showErrorSnackBar(context, '${failure.toString()}');
           },

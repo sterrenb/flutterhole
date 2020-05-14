@@ -202,8 +202,9 @@ void main() {
 
   group('$PiConnectionEventSleep', () {
     final settings = PiholeSettings(title: 'Sleepy pi');
-    final Duration tDuration = Duration(seconds: 1);
-    final ToggleStatus toggleStatus = ToggleStatus(PiStatusEnum.disabled);
+    final Duration tDuration = Duration(milliseconds: 100);
+    final ToggleStatus afterSleep = ToggleStatus(PiStatusEnum.disabled);
+    final ToggleStatus afterWake = ToggleStatus(PiStatusEnum.enabled);
     final DateTime now = clock.now();
     final tFailure = Failure('test #0');
 
@@ -213,13 +214,15 @@ void main() {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockConnectionRepository.sleepPihole(settings, tDuration))
-            .thenAnswer((_) async => Right(toggleStatus));
+            .thenAnswer((_) async => Right(afterSleep));
+        when(mockConnectionRepository.pingPihole(settings))
+            .thenAnswer((_) async => Right(afterWake));
 
         return bloc;
       },
       act: (PiConnectionBloc bloc) async =>
           bloc.add(PiConnectionEventSleep(tDuration, now)),
-      wait: tDuration,
+      wait: tDuration * 2,
       expect: [
         PiConnectionStateLoading(),
         PiConnectionStateSleeping(
@@ -227,6 +230,8 @@ void main() {
           now,
           tDuration,
         ),
+        PiConnectionStateLoading(),
+        PiConnectionStateActive(settings, afterWake),
       ],
     );
 
