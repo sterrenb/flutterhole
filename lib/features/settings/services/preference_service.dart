@@ -1,24 +1,40 @@
+import 'package:flutter/material.dart';
 import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:injectable/injectable.dart';
 import 'package:preferences/preferences.dart';
 
-enum Pref {
+enum PrefType {
   string,
   bool,
   int,
   double,
   stringList,
+  themeMode,
 }
 
 class KPrefs {
   KPrefs._();
 
   static const String useNumbersApi = 'useNumbersApi';
+  static const String activeThemeMode = 'themeMode';
 
-  static const Map<String, Pref> prefs = {
-    useNumbersApi: Pref.bool,
+  static const Map<String, PrefType> prefs = {
+    useNumbersApi: PrefType.bool,
+    activeThemeMode: PrefType.themeMode,
   };
 }
+
+const ThemeModeEnumMap = {
+  ThemeMode.system: 'system',
+  ThemeMode.light: 'light',
+  ThemeMode.dark: 'dark',
+};
+
+const ThemeModeMapEnum = {
+  'system': ThemeMode.system,
+  'light': ThemeMode.light,
+  'dark': ThemeMode.dark,
+};
 
 @prod
 @preResolve
@@ -36,22 +52,24 @@ class PreferenceService {
     if (type == null) throw PiException.notFound();
 
     switch (type) {
-      case Pref.string:
+      case PrefType.string:
         return PrefService.getString(key);
-      case Pref.bool:
+      case PrefType.bool:
         return PrefService.getBool(key);
 
-      case Pref.int:
+      case PrefType.int:
         return PrefService.getInt(key);
 
-      case Pref.double:
+      case PrefType.double:
         return PrefService.getDouble(key);
 
-      case Pref.stringList:
+      case PrefType.stringList:
         return PrefService.getStringList(key);
+      case PrefType.themeMode:
+        final String value = PrefService.getString(key) ?? 'system';
+//        print('returning ${ThemeModeMapEnum[value]} for $key, $value');
 
-      default:
-        return PrefService.get(key);
+        return ThemeModeMapEnum[value];
     }
   }
 }

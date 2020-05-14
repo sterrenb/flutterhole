@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutterhole/features/pihole_api/data/models/convert.dart';
+import 'package:flutterhole/core/convert.dart';
 import 'package:flutterhole/features/pihole_api/data/models/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants.dart';
-import 'package:flutterhole/features/pihole_api/data/models/convert.dart';
+import 'package:flutterhole/core/convert.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 
 IconData _queryStatusToIconData(QueryStatus queryStatus) {

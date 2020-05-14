@@ -13,3 +13,17 @@ extension DateTimeWithRelative on DateTime {
 
   String get formattedTime => Jiffy(this).format('h:mm:ss a');
 }
+
+extension StringExtension on String {
+  String get capitalize {
+    if (this == null) {
+      throw ArgumentError("this: $this");
+    }
+
+    if (this.isEmpty) {
+      return this;
+    }
+
+    return this[0].toUpperCase() + this.substring(1);
+  }
+}

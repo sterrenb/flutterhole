@@ -7,6 +7,7 @@ import 'package:flutterhole/features/routing/presentation/pages/about_page.dart'
 import 'package:flutterhole/features/routing/services/router_service.dart';
 import 'package:flutterhole/features/settings/presentation/pages/all_pihole_settings_page.dart';
 import 'package:flutterhole/features/settings/presentation/pages/settings_page.dart';
+import 'package:flutterhole/features/settings/presentation/pages/user_preferences_page.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sailor/sailor.dart';
 
@@ -40,6 +41,11 @@ class RouterServiceSailor implements RouterService {
           name: RouterService.allPiholes,
           builder: (context, args, params) {
             return AllPiholeSettingsPage();
+          }),
+      SailorRoute(
+          name: RouterService.userPreferences,
+          builder: (context, args, params) {
+            return UserPreferencesPage();
           }),
       SailorRoute(
           name: RouterService.about,

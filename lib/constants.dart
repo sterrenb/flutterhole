@@ -19,12 +19,16 @@ class KIcons {
   static const IconData sleep = MaterialCommunityIcons.sleep;
   static const IconData wake = MaterialCommunityIcons.bell_ring;
 
-  static const IconData summary = Ionicons.md_stats;
+  static const IconData themeSystem = Feather.sunrise;
+  static const IconData themeLight = Feather.sun;
+  static const IconData themeDark = Feather.moon;
+
 
   static const IconData dashboard = MaterialCommunityIcons.view_dashboard;
   static const IconData clients = MaterialCommunityIcons.laptop_windows;
   static const IconData domains =
       MaterialCommunityIcons.checkbox_multiple_blank_circle_outline;
+  static const IconData summary = Ionicons.md_stats;
   static const IconData permittedDomains = Icons.check;
   static const IconData blockedDomains = Icons.close;
   static const IconData manyQueriesLive = MaterialIcons.view_stream;

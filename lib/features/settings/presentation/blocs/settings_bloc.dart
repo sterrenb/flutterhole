@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/data/repositories/settings_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -51,9 +52,13 @@ abstract class SettingsEvent with _$SettingsEvent {
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc([
     SettingsRepository settingsRepository,
-  ]) : _settingsRepository = settingsRepository ?? getIt<SettingsRepository>();
+    PiConnectionBloc piConnectionBloc,
+  ])
+      : _settingsRepository = settingsRepository ?? getIt<SettingsRepository>(),
+        _piConnectionBloc = piConnectionBloc ?? getIt<PiConnectionBloc>();
 
   final SettingsRepository _settingsRepository;
+  final PiConnectionBloc _piConnectionBloc;
 
   @override
   SettingsState get initialState => SettingsStateInitial();
@@ -133,6 +138,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         yield SettingsStateFailure(failure);
       },
       (success) async* {
+        _piConnectionBloc.add(PiConnectionEvent.ping());
         yield* _init();
       },
     );

@@ -2,6 +2,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/core/models/failures.dart';
+import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/data/repositories/settings_repository.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
@@ -11,15 +12,19 @@ import '../../../../test_dependency_injection.dart';
 
 class MockSettingsRepository extends Mock implements SettingsRepository {}
 
+class MockPiConnectionBloc extends Mock implements PiConnectionBloc {}
+
 void main() {
   setUpAllForTest();
 
   SettingsRepository mockSettingsRepository;
+  PiConnectionBloc mockPiConnectionBloc;
   SettingsBloc bloc;
 
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    bloc = SettingsBloc(mockSettingsRepository);
+    mockPiConnectionBloc = MockPiConnectionBloc();
+    bloc = SettingsBloc(mockSettingsRepository, mockPiConnectionBloc);
   });
 
   tearDown(() {
@@ -191,6 +196,9 @@ void main() {
           settings2,
         ], newActive)
       ],
+      verify: (bloc) async {
+        verify(mockPiConnectionBloc.add(PiConnectionEvent.ping()));
+      },
     );
   });
 

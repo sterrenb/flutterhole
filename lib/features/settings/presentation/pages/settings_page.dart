@@ -3,7 +3,6 @@ import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/routing/services/router_service.dart';
-import 'package:flutterhole/features/settings/presentation/pages/user_preferences_page.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -17,7 +16,7 @@ class SettingsPage extends StatelessWidget {
         ),
         body: ListView(
           children: <Widget>[
-            UserPreferencesListTile(),
+//            UserPreferencesListTile(),
             ListTile(
               title: Text('My Piholes'),
               leading: Icon(KIcons.pihole),
@@ -26,6 +25,15 @@ class SettingsPage extends StatelessWidget {
                 getIt<RouterService>().push(RouterService.allPiholes);
               },
             ),
+            ListTile(
+              title: Text('Preferences'),
+              leading: Icon(KIcons.preferences),
+              trailing: Icon(KIcons.open),
+              onTap: () {
+                getIt<RouterService>().push(RouterService.userPreferences);
+              },
+            ),
+
           ],
         ),
       ),
