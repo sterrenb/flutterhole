@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/notifiers/pie_chart_notifier.dart';
+import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:provider/provider.dart';
 import 'package:supercharged/supercharged.dart';
 

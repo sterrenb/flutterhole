@@ -22,7 +22,10 @@ class SingleDomainPage extends StatelessWidget {
       child: PiholeThemeBuilder(
         child: Scaffold(
           appBar: AppBar(
-            title: Text('$domain'),
+            title: Text(
+              '$domain',
+              overflow: TextOverflow.fade,
+            ),
           ),
           body: Center(
             child: Builder(

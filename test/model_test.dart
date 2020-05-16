@@ -75,7 +75,7 @@ void main() {
   testListModel<QueryData>(
       'query_data_single.json', (json) => QueryData.fromList(json));
   testMapModel<ManyQueryData>(
-      'get_all_queries_10.json', (json) => ManyQueryData.fromJson(json));
+      'get_all_queries_2.json', (json) => ManyQueryData.fromJson(json));
   testMapModel<ToggleStatus>(
       'status_enabled.json', (json) => ToggleStatus.fromJson(json));
   testMapModel<ToggleStatus>(

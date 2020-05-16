@@ -1,0 +1,5 @@
+* Feature: single queries can be expanded to show more data again.
+
+* Feature: Basic Authentication is back - thank you Joerg.
+
+* Fix: Tapping on the pie chart colors in Forward Destinations highlights the wrong category on the left - thank you Jeremy.

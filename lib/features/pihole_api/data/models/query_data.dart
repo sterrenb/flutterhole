@@ -75,7 +75,9 @@ abstract class QueryData extends ListModel implements _$QueryData {
     QueryStatus queryStatus,
     DnsSecStatus dnsSecStatus,
     int replyTextIndex,
-    int contentIndex,
+    Duration replyDuration,
+    String replyText,
+    String someString,
   }) = _QueryData;
 
   factory QueryData.fromJson(Map<String, dynamic> json) =>
@@ -89,7 +91,10 @@ abstract class QueryData extends ListModel implements _$QueryData {
         queryStatus: _stringToQueryStatus(list.elementAt(4)),
         dnsSecStatus: _stringToDnsSecStatus(list.elementAt(5)),
         replyTextIndex: int.tryParse(list.elementAt(6)),
-        contentIndex: int.tryParse(list.elementAt(7)),
+        replyDuration:
+            Duration(microseconds: int.tryParse(list.elementAt(7)) * 100),
+        replyText: list.elementAt(8) as String,
+        someString: list.elementAt(9) as String,
       );
 
   @override
@@ -101,6 +106,8 @@ abstract class QueryData extends ListModel implements _$QueryData {
         '${QueryStatus.values.indexOf(queryStatus) + 1}',
         '${DnsSecStatus.values.indexOf(dnsSecStatus)}',
         '$replyTextIndex',
-        '$contentIndex',
+    '${(replyDuration.inMicroseconds / 100).round()}',
+    replyText,
+    someString,
       ];
 }

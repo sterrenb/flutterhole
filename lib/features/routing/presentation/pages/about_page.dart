@@ -28,8 +28,7 @@ class AboutPage extends StatelessWidget {
               slivers: <Widget>[
                 SliverAppBar(
                   title: Text('About'),
-                  flexibleSpace: FlexibleSpaceBar(
-                      ),
+                  flexibleSpace: FlexibleSpaceBar(),
                 ),
                 SliverList(
                     delegate: SliverChildListDelegate([

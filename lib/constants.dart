@@ -44,6 +44,7 @@ class KIcons {
   static const IconData openInBrowser = MaterialIcons.open_in_browser;
   static const IconData copy = Icons.content_copy;
   static const IconData save = Icons.check;
+  static const IconData moreInfo = MaterialIcons.info_outline;
   static const IconData filter_active = MaterialCommunityIcons.filter;
   static const IconData filter_inactive = MaterialCommunityIcons.filter_outline;
 
@@ -73,6 +74,7 @@ class KIcons {
   static const IconData bugReport = Icons.bug_report;
 
   static const IconData queryStatus = Fontisto.direction_sign;
+  static const IconData queryType = MaterialIcons.merge_type;
   static const IconData timestamp = MaterialCommunityIcons.timelapse;
   static const IconData pingInterval = MaterialCommunityIcons.timer_sand;
   static const IconData resultWindowSize = MaterialCommunityIcons.view_array;

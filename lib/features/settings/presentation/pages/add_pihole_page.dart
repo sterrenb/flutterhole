@@ -12,6 +12,8 @@ import 'package:flutterhole/features/settings/presentation/widgets/form/api_path
 import 'package:flutterhole/features/settings/presentation/widgets/form/api_token_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/authentication_status_icon.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/base_url_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/basic_authentication_password_form_tile.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/form/basic_authentication_username_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/color_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/description_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/detected_versions_tile.dart';
@@ -119,7 +121,6 @@ class _AddPiholePageState extends State<AddPiholePage> {
               },
               builder: (BuildContext context, PiholeSettingsState state) {
                 return Stepper(
-                  physics: const NeverScrollableScrollPhysics(),
                   currentStep: currentStep,
                   onStepTapped: (int index) {
                     _validate(context);
@@ -200,6 +201,12 @@ class _AddPiholePageState extends State<AddPiholePage> {
                           ),
                           AllowSelfSignedCertificatesFormTile(
                               decoration: _decoration),
+                          BasicAuthenticationUsernameFormTile(
+                              decoration: _decoration),
+                          BasicAuthenticationPasswordFormTile(
+                            initialValue: _AddPiholePageState.initialValue,
+                            decoration: _decoration,
+                          ),
                         ]),
                         isActive: currentStep == 2),
                   ],
