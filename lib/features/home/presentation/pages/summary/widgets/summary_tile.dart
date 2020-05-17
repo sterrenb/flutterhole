@@ -22,12 +22,9 @@ class SummaryTile extends StatelessWidget {
   final int integer;
   final Color color;
 
-  bool get _useNumbersApi =>
-      getIt<PreferenceService>().get(KPrefs.useNumbersApi) ?? true;
-
   @override
   Widget build(BuildContext context) {
-    if (!_useNumbersApi) {
+    if (!getIt<PreferenceService>().useNumbersApi) {
       return Card(
         color: color,
         child: _Tile(title, subtitle),

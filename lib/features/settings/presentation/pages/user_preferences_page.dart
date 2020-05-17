@@ -31,7 +31,7 @@ class _UserPreferencesPageState extends State<UserPreferencesPage> {
             RadioPreference(
               '${ThemeModeEnumMap[ThemeMode.system].capitalize} theme',
               '${ThemeModeEnumMap[ThemeMode.system]}',
-              KPrefs.activeThemeMode,
+              KPrefs.themeMode,
               isDefault: true,
               onSelect: _onThemeSelect,
               leading: Icon(KIcons.themeSystem),
@@ -39,14 +39,14 @@ class _UserPreferencesPageState extends State<UserPreferencesPage> {
             RadioPreference(
               '${ThemeModeEnumMap[ThemeMode.light].capitalize} theme',
               '${ThemeModeEnumMap[ThemeMode.light]}',
-              KPrefs.activeThemeMode,
+              KPrefs.themeMode,
               onSelect: _onThemeSelect,
               leading: Icon(KIcons.themeLight),
             ),
             RadioPreference(
               '${ThemeModeEnumMap[ThemeMode.dark].capitalize} theme',
               '${ThemeModeEnumMap[ThemeMode.dark]}',
-              KPrefs.activeThemeMode,
+              KPrefs.themeMode,
               onSelect: _onThemeSelect,
               leading: Icon(KIcons.themeDark),
             ),
@@ -89,7 +89,7 @@ class _UserPreferencesListTileState extends State<UserPreferencesListTile> {
         RadioPreference(
           '${ThemeModeEnumMap[ThemeMode.system].capitalize} theme',
           '${ThemeModeEnumMap[ThemeMode.system]}',
-          KPrefs.activeThemeMode,
+          KPrefs.themeMode,
           isDefault: true,
           onSelect: _onThemeSelect,
           leading: Icon(KIcons.themeSystem),
@@ -97,14 +97,14 @@ class _UserPreferencesListTileState extends State<UserPreferencesListTile> {
         RadioPreference(
           '${ThemeModeEnumMap[ThemeMode.light].capitalize} theme',
           '${ThemeModeEnumMap[ThemeMode.light]}',
-          KPrefs.activeThemeMode,
+          KPrefs.themeMode,
           onSelect: _onThemeSelect,
           leading: Icon(KIcons.themeLight),
         ),
         RadioPreference(
           '${ThemeModeEnumMap[ThemeMode.dark].capitalize} theme',
           '${ThemeModeEnumMap[ThemeMode.dark]}',
-          KPrefs.activeThemeMode,
+          KPrefs.themeMode,
           onSelect: _onThemeSelect,
           leading: Icon(KIcons.themeDark),
         ),

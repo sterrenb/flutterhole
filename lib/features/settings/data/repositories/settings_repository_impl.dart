@@ -95,7 +95,11 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
       return Right(result);
     } on PiException catch (e) {
-      return Left(Failure('fetchAllPiholeSettings failed', e));
+      if (e is NotFoundPiException) {
+        return Right([]);
+      } else {
+        return Left(Failure('fetchAllPiholeSettings failed', e));
+      }
     }
   }
 
@@ -106,7 +110,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   ) async {
     try {
       final bool result =
-      await _settingsDataSource.updatePiholeSettings(original, update);
+          await _settingsDataSource.updatePiholeSettings(original, update);
       return Right(result);
     } on PiException catch (e) {
       return Left(Failure('updatePiholeSettings failed', e));

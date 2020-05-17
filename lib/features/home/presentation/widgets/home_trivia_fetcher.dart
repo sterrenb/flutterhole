@@ -19,10 +19,7 @@ class HomeTriviaFetcher extends StatelessWidget {
     return BlocListener<HomeBloc, HomeState>(
       child: child,
       listener: (context, state) {
-        final bool enableTrivia =
-            getIt<PreferenceService>().get(KPrefs.useNumbersApi) ?? true;
-
-        if (enableTrivia) {
+        if (getIt<PreferenceService>().useNumbersApi) {
           state.maybeMap(
               success: (state) {
                 state.summary.fold(
