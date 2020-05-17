@@ -22,7 +22,7 @@ class KIcons {
   static const IconData themeSystem = Feather.sunrise;
   static const IconData themeLight = Feather.sun;
   static const IconData themeDark = Feather.moon;
-
+  static const IconData welcome = MaterialCommunityIcons.message_text;
 
   static const IconData dashboard = MaterialCommunityIcons.view_dashboard;
   static const IconData clients = MaterialCommunityIcons.laptop_windows;

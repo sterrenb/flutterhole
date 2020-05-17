@@ -58,15 +58,6 @@ class PrServiceImpl implements PreferenceService {
   }
 
   @override
-  bool get useNumbersApi => _get<bool>(KPrefs.useNumbersApi) ?? true;
-
-  @override
-  ThemeMode get themeMode {
-    final String value = _get<String>(KPrefs.themeMode) ?? 'system';
-    return ThemeModeMapEnum[value];
-  }
-
-  @override
   bool checkFirstUse() {
     final bool result = _get<bool>(KPrefs.isFirstUse);
 
@@ -75,5 +66,19 @@ class PrServiceImpl implements PreferenceService {
     }
 
     return result ?? true;
+  }
+
+  @override
+  Future<void> reset() async {
+    PrefService.clear();
+  }
+
+  @override
+  bool get useNumbersApi => _get<bool>(KPrefs.useNumbersApi) ?? true;
+
+  @override
+  ThemeMode get themeMode {
+    final String value = _get<String>(KPrefs.themeMode) ?? 'system';
+    return ThemeModeMapEnum[value];
   }
 }

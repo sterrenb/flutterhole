@@ -23,6 +23,8 @@ const ThemeModeMapEnum = {
 abstract class PreferenceService {
   bool checkFirstUse();
 
+  Future<void> reset();
+
   bool get useNumbersApi;
 
   ThemeMode get themeMode;

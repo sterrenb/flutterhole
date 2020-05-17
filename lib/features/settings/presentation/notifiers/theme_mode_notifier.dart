@@ -9,7 +9,7 @@ class ThemeModeNotifier extends ChangeNotifier {
 
   ThemeMode get themeMode => _themeMode;
 
-  void update() {
+  Future<void> update() async {
     _themeMode = getIt<PreferenceService>().themeMode;
     notifyListeners();
   }

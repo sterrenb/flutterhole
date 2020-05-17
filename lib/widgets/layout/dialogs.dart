@@ -1,5 +1,39 @@
 import 'package:flutter/material.dart';
 
+Future<void> showWelcomeDialog(BuildContext context) {
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('FlutterHole V5'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(
+                  'Thank you for trying out FlutterHole, a third party Android application for the Pi-Hole® dashboard.\n'),
+              Text(
+                  'To make full use of this app, you need to enter an API token. You can find this in the dashboard of your Pi-hole. Check Settings > My Pi-holes to enter your token.\n'),
+              Text(
+                  'Note: some users experience issues when upgrading from version 2.x. Re-installing the app after clearing the cache works for some people.\n'),
+              Text(
+                  'If you have any issues, please report them on GitHub. Other users can share their own issues and solutions here.')
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Got it!'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 Future<bool> showConfirmationDialog(
   BuildContext context, {
   Widget title,
