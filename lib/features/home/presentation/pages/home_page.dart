@@ -2,6 +2,7 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/constants.dart';
+import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/home/presentation/pages/clients/clients_page_view.dart';
 import 'package:flutterhole/features/home/presentation/pages/domains/domains_page_view.dart';
@@ -13,6 +14,7 @@ import 'package:flutterhole/features/pihole_api/presentation/widgets/pi_connecti
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/active_pihole_title.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
+import 'package:flutterhole/features/settings/services/preference_service.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -72,6 +74,12 @@ class _HomePageState extends State<HomePage> {
                   elevation: 0.0,
                   title: ActivePiholeTitle(interactive: true),
                   actions: <Widget>[
+                    MaterialButton(
+                      onPressed: () {
+                        print(getIt<PreferenceService>().checkFirstUse());
+                      },
+                      child: Text('TODO'),
+                    ),
                     PiConnectionSleepButton(),
                     PiConnectionToggleButton(),
                   ],

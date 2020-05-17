@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' show ThemeMode;
 class KPrefs {
   KPrefs._();
 
+  static const String isFirstUse = 'isFirstUse';
   static const String useNumbersApi = 'useNumbersApi';
   static const String themeMode = 'themeMode';
 }
@@ -20,6 +21,8 @@ const ThemeModeMapEnum = {
 };
 
 abstract class PreferenceService {
+  bool checkFirstUse();
+
   bool get useNumbersApi;
 
   ThemeMode get themeMode;

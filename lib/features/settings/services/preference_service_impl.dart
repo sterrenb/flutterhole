@@ -37,6 +37,26 @@ class PrServiceImpl implements PreferenceService {
     }
   }
 
+  void _set(String key, dynamic value) {
+    switch (value.runtimeType) {
+      case String:
+        return PrefService.setString(key, value);
+      case bool:
+        return PrefService.setBool(key, value);
+
+      case int:
+        return PrefService.setInt(key, value);
+
+      case double:
+        return PrefService.setDouble(key, value);
+
+      case List:
+        return PrefService.setStringList(key, value);
+      default:
+        throw TypeError();
+    }
+  }
+
   @override
   bool get useNumbersApi => _get<bool>(KPrefs.useNumbersApi) ?? true;
 
@@ -44,5 +64,16 @@ class PrServiceImpl implements PreferenceService {
   ThemeMode get themeMode {
     final String value = _get<String>(KPrefs.themeMode) ?? 'system';
     return ThemeModeMapEnum[value];
+  }
+
+  @override
+  bool checkFirstUse() {
+    final bool result = _get<bool>(KPrefs.isFirstUse);
+
+    if (result == null) {
+      _set(KPrefs.isFirstUse, false);
+    }
+
+    return result ?? true;
   }
 }
