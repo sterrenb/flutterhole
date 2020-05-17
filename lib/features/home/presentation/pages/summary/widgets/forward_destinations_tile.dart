@@ -26,8 +26,7 @@ class ForwardDestinationsTile extends StatelessWidget {
               pieChart:
                   ForwardDestinationsPieChart(success.forwardDestinations),
               legendItems: success.forwardDestinations
-                  .map<int, Widget>(
-                      (ForwardDestination forwardDestination, percentage) {
+                  .map<int, Widget>((forwardDestination, percentage) {
                     final int index = success.forwardDestinations.keys
                         .toList()
                         .indexOf(forwardDestination);
@@ -38,10 +37,10 @@ class ForwardDestinationsTile extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
                         child: GraphLegendItem(
                           index: index,
-                          title: forwardDestination.titleOrIp,
+                          title: forwardDestination.title,
                           subtitle: '$percentage%',
                           color:
-                              ForwardDestinationsPieChart.colorAtIndex(index),
+                          ForwardDestinationsPieChart.colorAtIndex(index),
                         ),
                       ),
                     );
