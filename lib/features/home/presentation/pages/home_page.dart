@@ -14,6 +14,7 @@ import 'package:flutterhole/features/pihole_api/presentation/widgets/pi_connecti
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/active_pihole_title.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
+import 'package:flutterhole/widgets/layout/bottom_navy_bar_item_extension.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -83,19 +84,22 @@ class _HomePageState extends State<HomePage> {
                     onItemSelected: _onItemSelected,
                     curve: Curves.easeInOut,
                     items: [
-                      BottomNavyBarItem(
+                      BottomNavyBarItemExtension(
+                        key: Key('SummaryNavBarItem'),
                         icon: Icon(KIcons.summary),
                         title: Text('Summary'),
                         activeColor: KColors.summary,
                         textAlign: TextAlign.center,
                       ),
-                      BottomNavyBarItem(
+                      BottomNavyBarItemExtension(
+                        key: Key('ClientsNavBarItem'),
                         icon: Icon(KIcons.clients),
                         title: Text('Clients'),
                         activeColor: KColors.clients,
                         textAlign: TextAlign.center,
                       ),
-                      BottomNavyBarItem(
+                      BottomNavyBarItemExtension(
+                        key: Key('DomainsNavBarItem'),
                         icon: Icon(KIcons.domains),
                         title: Text('Domains'),
                         activeColor: KColors.domains,

@@ -5,7 +5,9 @@ import 'package:flutterhole/features/browser/services/browser_service.dart';
 import 'package:flutterhole/features/routing/presentation/pages/privacy_page.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
+import 'package:flutterhole/features/settings/services/package_info_service.dart';
 import 'package:flutterhole/widgets/layout/animated_opener.dart';
+import 'package:flutterhole/widgets/layout/dialogs.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
 import 'package:package_info/package_info.dart';
 import 'package:share/share.dart';
@@ -13,94 +15,55 @@ import 'package:share/share.dart';
 class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return PiholeThemeBuilder(
-      child: FutureBuilder<PackageInfo>(
-        future: PackageInfo.fromPlatform(),
-        builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-          PackageInfo packageInfo;
-          if (snapshot.hasData) {
-            packageInfo = snapshot.data;
-          }
+    final packageInfo = getIt<PackageInfoService>().packageInfo;
 
-          return Scaffold(
-            drawer: DefaultDrawer(),
-            body: CustomScrollView(
-              slivers: <Widget>[
-                SliverAppBar(
-                  title: Text('About'),
-                  flexibleSpace: FlexibleSpaceBar(),
-                ),
-                SliverList(
-                    delegate: SliverChildListDelegate([
-                  Column(
-                    children: <Widget>[
-                      ListTile(
-                        contentPadding: EdgeInsets.all(16),
-                        title: Row(
-                          children: <Widget>[
-                            Text(
-                              '${packageInfo?.appName}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  .copyWith(
-                                      color: Theme.of(context).accentColor),
-                            ),
-                          ],
-                        ),
-                        subtitle: Text(
-                          'Made by Sterrenburg',
-                          style: Theme.of(context).textTheme.caption,
-                        ),
-                      ),
-                      ListTile(
-                        leading: Icon(
-                          KIcons.version,
-                          color: KColors.success,
-                        ),
-                        trailing: FlatButton(
-                          onPressed: () {
-                            showAboutDialog(
-                              context: context,
-                              applicationName: '${packageInfo?.appName}',
-                              applicationVersion: '${packageInfo?.version}',
-                              applicationLegalese: 'Made by Sterrenburg',
-                              children: <Widget>[
-                                SizedBox(height: 24),
-                                RichText(
-                                  text: TextSpan(
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2,
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text:
-                                              'FlutterHole is a free third party Android application '
-                                              'for interacting with your Pi-Hole® server. '
-                                              '\n\n'
-                                              'FlutterHole is open source, which means anyone '
-                                              'can view the code that runs your app. '
-                                              'You can find the repository on Github.'),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                          child: Text('Details'),
-                        ),
-                        title: Text('Version'),
-                        subtitle: Text(
-                            '${packageInfo?.version} (build #${packageInfo?.buildNumber})'),
-                      ),
-                    ],
-                  ),
-                  Divider(),
-                  _AboutTiles(packageInfo: packageInfo),
-                ])),
-              ],
+    return PiholeThemeBuilder(
+      child: Scaffold(
+        drawer: DefaultDrawer(),
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              title: Text('About'),
+              flexibleSpace: FlexibleSpaceBar(),
             ),
-          );
-        },
+            SliverList(
+                delegate: SliverChildListDelegate([
+              Column(
+                children: <Widget>[
+                  ListTile(
+                    contentPadding: EdgeInsets.all(16),
+                    title: Row(
+                      children: <Widget>[
+                        Text('${packageInfo?.appName}',
+                            style: Theme.of(context).textTheme.headline4),
+                      ],
+                    ),
+                    subtitle: Text(
+                      'Made by Sterrenburg',
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      KIcons.version,
+                      color: KColors.success,
+                    ),
+                    trailing: FlatButton(
+                      onPressed: () {
+                        showAppDetailsDialog(context, packageInfo);
+                      },
+                      child: Text('Details'),
+                    ),
+                    title: Text('Version'),
+                    subtitle: Text('${packageInfo.versionAndBuildString}'),
+                  ),
+                ],
+              ),
+              Divider(),
+              _AboutTiles(packageInfo: packageInfo),
+            ])),
+          ],
+        ),
       ),
     );
   }
@@ -132,8 +95,8 @@ class _AboutTiles extends StatelessWidget {
         _AboutTile(
           KIcons.bugReport,
           text: 'Submit a bug report',
-          onTap: () => getIt<BrowserService>().launchUrl(
-              'https://github.com/sterrenburg/flutterhole/issues/new'),
+          onTap: () =>
+              getIt<BrowserService>().launchUrl(KStrings.githubIssuesUrl),
         ),
         Divider(),
         ListTitle('Support the developer'),
@@ -145,8 +108,8 @@ class _AboutTiles extends StatelessWidget {
         _AboutTile(
           KIcons.github,
           text: 'Star on GitHub',
-          onTap: () => getIt<BrowserService>()
-              .launchUrl('https://github.com/sterrenburg/flutterhole/'),
+          onTap: () =>
+              getIt<BrowserService>().launchUrl(KStrings.githubHomeUrl),
         ),
         Divider(),
         ListTitle('Other'),

@@ -62,8 +62,10 @@ class ApiDataSourceDio implements ApiDataSource {
     }
 
     try {
+      final url = '${settings.baseUrl}:${settings.apiPort}${settings.apiPath}';
+
       final Response response = await _dio.get(
-        '${settings.baseUrl}:${settings.apiPort}${settings.apiPath}',
+        url,
         queryParameters: queryParameters,
         options: Options(
           headers: headers,
@@ -75,11 +77,11 @@ class ApiDataSourceDio implements ApiDataSource {
       final data = response.data;
 
       if (data is String) {
-        if (data.isEmpty) throw EmptyResponsePiException();
+        if (data.isEmpty) throw EmptyResponsePiException(data);
       }
 
       if (data is List && data.isEmpty) {
-        throw EmptyResponsePiException();
+        throw EmptyResponsePiException(data);
       }
 
       return data;
@@ -88,17 +90,17 @@ class ApiDataSourceDio implements ApiDataSource {
         case DioErrorType.CONNECT_TIMEOUT:
         case DioErrorType.SEND_TIMEOUT:
         case DioErrorType.RECEIVE_TIMEOUT:
-          throw TimeOutPiException();
+          throw TimeOutPiException(e);
         case DioErrorType.RESPONSE:
-          throw NotFoundPiException();
+          throw NotFoundPiException(e);
         case DioErrorType.CANCEL:
         case DioErrorType.DEFAULT:
         default:
           switch (e.response?.statusCode ?? 0) {
             case 404:
-              throw NotFoundPiException();
+              throw NotFoundPiException(e);
             default:
-              throw MalformedResponsePiException();
+              throw MalformedResponsePiException(e);
           }
       }
     }
@@ -108,15 +110,22 @@ class ApiDataSourceDio implements ApiDataSource {
     PiholeSettings settings, {
     Map<String, dynamic> queryParameters = const {},
   }) async {
-    if (settings.apiToken.isEmpty) throw NotAuthenticatedPiException();
+    String apiToken = settings.apiToken;
 
-    queryParameters.addAll({'auth': settings.apiToken});
+    if (settings.apiTokenRequired) {
+      if (apiToken.isEmpty)
+        throw NotAuthenticatedPiException('API token is empty');
+    } else {
+      apiToken = kNoApiTokenNeeded;
+    }
+
+    queryParameters.addAll({'auth': apiToken});
 
     try {
       final result = await _get(settings, queryParameters: queryParameters);
       return result;
-    } on EmptyResponsePiException catch (_) {
-      throw NotAuthenticatedPiException();
+    } on EmptyResponsePiException catch (e) {
+      throw NotAuthenticatedPiException(e);
     }
   }
 
@@ -231,10 +240,12 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
-  Future<ManyQueryData> fetchQueryDataForClient(PiholeSettings settings,
-      PiClient client,) async {
+  Future<ManyQueryData> fetchQueryDataForClient(
+    PiholeSettings settings,
+    PiClient client,
+  ) async {
     final Map<String, dynamic> json =
-    await _getSecure(settings, queryParameters: {
+        await _getSecure(settings, queryParameters: {
       'getAllQueries': '',
       'client': (client.title != null && client.title.isNotEmpty)
           ? client.title.trim()
@@ -245,12 +256,25 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
-  Future<ManyQueryData> fetchQueryDataForDomain(PiholeSettings settings,
-      String domain,) async {
+  Future<ManyQueryData> fetchQueryDataForDomain(
+    PiholeSettings settings,
+    String domain,
+  ) async {
     final Map<String, dynamic> json =
     await _getSecure(settings, queryParameters: {
       'getAllQueries': '',
       'domain': '${domain?.trim()}',
+    });
+
+    return ManyQueryData.fromJson(json);
+  }
+
+  @override
+  Future<ManyQueryData> fetchManyQueryData(PiholeSettings settings,
+      [int maxResults]) async {
+    final Map<String, dynamic> json =
+    await _getSecure(settings, queryParameters: {
+      'getAllQueries': '${maxResults ?? ''}',
     });
 
     return ManyQueryData.fromJson(json);

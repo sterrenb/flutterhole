@@ -42,6 +42,8 @@ void main() async {
     dataSource = NumbersApiDataSourceDio(dio);
   });
 
+  final tError = PiException.emptyResponse(TypeError());
+
   group('fetchTrivia', () {
 //    test(
 //      'should return String on successful fetchTrivia',
@@ -60,8 +62,7 @@ void main() async {
       'should throw on failed fetchTrivia',
       () async {
         // arrange
-        when(httpClientAdapterMock.fetch(any, any, any))
-            .thenThrow(PiException.notFound());
+        when(httpClientAdapterMock.fetch(any, any, any)).thenThrow(tError);
         // act
         // assert
         expect(() => dataSource.fetchTrivia(42), throwsA(isA<DioError>()));
@@ -89,8 +90,7 @@ void main() async {
       'should throw on failed fetchManyTrivia',
       () async {
         // arrange
-        when(httpClientAdapterMock.fetch(any, any, any))
-            .thenThrow(PiException.notFound());
+        when(httpClientAdapterMock.fetch(any, any, any)).thenThrow(tError);
         // act
         // assert
         expect(() => dataSource.fetchManyTrivia([1, 2, 3]),

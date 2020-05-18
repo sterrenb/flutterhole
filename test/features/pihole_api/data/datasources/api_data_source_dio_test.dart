@@ -165,14 +165,14 @@ void main() async {
     );
 
     test(
-      'should throw $NotAuthenticatedPiException on enablePihole without apiToken',
+      'should throw $NotAuthenticatedPiException on enablePihole with empty apiToken',
       () async {
         // arrange
-        stubStringResponse('[]', 200);
+//        stubStringResponse('[]', 200);
         piholeSettings = piholeSettings.copyWith(apiToken: '');
         // assert
         expect(() => apiDataSourceDio.enablePihole(piholeSettings),
-            throwsA(isA<NotAuthenticatedPiException>()));
+            throwsA(NotAuthenticatedPiException('API token is empty')));
       },
     );
 
@@ -185,6 +185,23 @@ void main() async {
         // assert
         expect(() => apiDataSourceDio.enablePihole(piholeSettings),
             throwsA(isA<NotAuthenticatedPiException>()));
+      },
+    );
+
+    test(
+      'should return $ToggleStatus.enabled on successful enablePihole with apiTokenRequired=false',
+      () async {
+        // arrange
+        final json = stubFixtureResponse('status_enabled.json', 200);
+        piholeSettings = piholeSettings.copyWith(
+          apiToken: '',
+          apiTokenRequired: false,
+        );
+        // act
+        final ToggleStatus result =
+            await apiDataSourceDio.enablePihole(piholeSettings);
+        // assert
+        expect(result, equals(ToggleStatus.fromJson(json)));
       },
     );
   });
@@ -288,13 +305,13 @@ void main() async {
 
   test(
     'should return $PiVersions on successful fetchPiVersions',
-        () async {
+    () async {
       // arrange
       piholeSettings = piholeSettings.copyWith(apiToken: 'token');
       final json = stubFixtureResponse('get_versions.json', 200);
       // act
       final PiVersions result =
-      await apiDataSourceDio.fetchVersions(piholeSettings);
+          await apiDataSourceDio.fetchVersions(piholeSettings);
       // assert
       expect(result, equals(PiVersions.fromJson(json)));
     },
@@ -342,6 +359,34 @@ void main() async {
       // act
       final ManyQueryData result = await apiDataSourceDio
           .fetchQueryDataForDomain(piholeSettings, 'example.com');
+      // assert
+      expect(result, equals(ManyQueryData.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $ManyQueryData on successful fetchManyQueryData without maxResult',
+        () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('get_all_queries_10.json', 200);
+      // act
+      final ManyQueryData result =
+      await apiDataSourceDio.fetchManyQueryData(piholeSettings);
+      // assert
+      expect(result, equals(ManyQueryData.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $ManyQueryData on successful fetchManyQueryData with maxResult',
+        () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('get_all_queries_10.json', 200);
+      // act
+      final ManyQueryData result =
+      await apiDataSourceDio.fetchManyQueryData(piholeSettings, 123);
       // assert
       expect(result, equals(ManyQueryData.fromJson(json)));
     },

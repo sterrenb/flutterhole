@@ -8,11 +8,15 @@ part 'pihole_settings.freezed.dart';
 part 'pihole_settings.g.dart';
 
 @freezed
-abstract class PiholeSettings extends MapModel with _$PiholeSettings {
+abstract class PiholeSettings extends MapModel implements _$PiholeSettings {
+  const PiholeSettings._();
+
   const factory PiholeSettings({
     // annotation
-    @Default('Pihole') String title,
-    @Default('') String description,
+    @Default('Pihole')
+        String title,
+    @Default('')
+        String description,
     @Default(Color.fromRGBO(33, 150, 243, 1)) // i.e. `Colors.blue`
     @JsonKey(fromJson: colorFromHex, toJson: colorToHex)
         Color primaryColor,
@@ -26,10 +30,10 @@ abstract class PiholeSettings extends MapModel with _$PiholeSettings {
 
     // authentication
     @Default('') String apiToken,
+    @Default(true) bool apiTokenRequired,
     @Default(false) bool allowSelfSignedCertificates,
     @Default('') String basicAuthenticationUsername,
     @Default('') String basicAuthenticationPassword,
-
     // proxy
     @Default('') String proxyUrl,
     @Default(8080) int proxyPort,

@@ -9,14 +9,19 @@ import 'package:flutterhole/features/settings/presentation/notifiers/theme_mode_
 import 'package:injectable/injectable.dart';
 import 'package:provider/provider.dart';
 
-void main() async {
+void main([List<String> arguments = const [Environment.prod]]) async {
   // wait for flutter initialization
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Configure service injection
-  await configure(Environment.prod);
+  print('args: $arguments');
 
-  if (foundation.kReleaseMode) {} else {
+  // Configure service injection
+  List<String> args = List.from(arguments) ?? [];
+  if (args.isEmpty) args.add(Environment.prod);
+  await configure(args.first);
+
+  if (foundation.kReleaseMode) {
+  } else {
     enableBlocDelegate();
   }
 

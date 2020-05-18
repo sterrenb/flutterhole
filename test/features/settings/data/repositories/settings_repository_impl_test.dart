@@ -24,6 +24,8 @@ void main() async {
     settingsRepository = SettingsRepositoryImpl(mockSettingsDataSource);
   });
 
+  final tError = PiException.emptyResponse(TypeError());
+
   group('activatePiholeSettings', () {
     test(
       'should return true on successful activatePiholeSettings',
@@ -43,7 +45,6 @@ void main() async {
       'should return $Failure on failed activatePiholeSettings',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
         when(mockSettingsDataSource.activatePiholeSettings(any))
             .thenThrow(tError);
         // act
@@ -75,7 +76,6 @@ void main() async {
       'should return $Failure on failed createPiholeSettings',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
         when(mockSettingsDataSource.createPiholeSettings()).thenThrow(tError);
         // act
         final Either<Failure, PiholeSettings> result =
@@ -106,7 +106,6 @@ void main() async {
       'should return $Failure on failed addPiholeSettings',
           () async {
         // arrange
-        final tError = PiException.emptyResponse();
         when(mockSettingsDataSource.addPiholeSettings(piholeSettings)).thenThrow(tError);
         // act
         final Either<Failure, bool> result =
@@ -137,7 +136,6 @@ void main() async {
       'should return $Failure on failed deletePiholeSettings',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
         when(mockSettingsDataSource.deletePiholeSettings(any))
             .thenThrow(tError);
         // act
@@ -169,7 +167,6 @@ void main() async {
       'should return $Failure on failed deleteAllSettings',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
         when(mockSettingsDataSource.deleteAllSettings()).thenThrow(tError);
         // act
         final Either<Failure, bool> result =
@@ -237,7 +234,6 @@ void main() async {
       'should return $Failure on failed fetchAllPiholeSettings',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
         when(mockSettingsDataSource.fetchAllPiholeSettings()).thenThrow(tError);
         // act
         final Either<Failure, List<PiholeSettings>> result =
@@ -268,7 +264,6 @@ void main() async {
       'should return $Failure on failed updatePiholeSettings',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
         when(mockSettingsDataSource.updatePiholeSettings(any, any))
             .thenThrow(tError);
         // act
@@ -303,7 +298,6 @@ void main() async {
       'should return $Failure on failed fetchActivePiholeSettings',
       () async {
         // arrange
-        final tError = PiException.timeOut();
         when(mockSettingsDataSource.fetchActivePiholeSettings())
             .thenThrow(tError);
         // act

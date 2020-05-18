@@ -21,6 +21,8 @@ void main() async {
     numbersApiRepository = NumbersApiRepositoryImpl(mockNumbersApiDataSource);
   });
 
+  final tError = PiException.emptyResponse(TypeError());
+
   group('fetchTrivia', () {
     test(
       'should return String on successful fetchTrivia',
@@ -41,7 +43,6 @@ void main() async {
       'should return $Failure on failed fetchTrivia',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
         when(mockNumbersApiDataSource.fetchTrivia(2)).thenThrow(tError);
         // act
         final Either<Failure, String> result =
@@ -76,7 +77,6 @@ void main() async {
       'should return $Failure on failed fetchManyTrivia',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
         when(mockNumbersApiDataSource.fetchManyTrivia([1, 2, 3]))
             .thenThrow(tError);
         // act

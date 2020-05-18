@@ -4,7 +4,7 @@ import 'package:injectable/injectable.dart';
 
 Future<void> setUpAllForTest() async {
   setUpAll(() async {
-    await configure(Environment.test);
     TestWidgetsFlutterBinding.ensureInitialized();
+    await configure(Environment.test);
   });
 }

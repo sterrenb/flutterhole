@@ -6,8 +6,7 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 
-@prod
-@injectable
+@singleton
 @RegisterAs(SettingsDataSource)
 class SettingsDataSourceHive implements SettingsDataSource {
   SettingsDataSourceHive([HiveInterface hive])
@@ -72,7 +71,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
 
     final int index = all.indexOf(original);
     if (index < 0) {
-      throw PiException.notFound();
+      throw PiException.notFound(index);
     }
 
     await box.putAt(index, update.toJson());
@@ -116,7 +115,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
 
     final int index = all.indexOf(piholeSettings);
     if (index < 0) {
-      throw PiException.notFound();
+      throw PiException.notFound(index);
     }
 
     await _setActiveIndex(index);

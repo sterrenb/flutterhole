@@ -7,6 +7,10 @@ import 'package:flutterhole/features/routing/presentation/widgets/default_drawer
 import 'package:flutterhole/features/routing/presentation/widgets/drawer_menu.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/drawer_tile.dart';
 import 'package:flutterhole/features/routing/services/router_service.dart';
+import 'package:flutterhole/features/settings/services/package_info_service.dart';
+import 'package:flutterhole/features/settings/services/preference_service.dart';
+import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
 class DefaultDrawer extends StatelessWidget {
@@ -15,37 +19,81 @@ class DefaultDrawer extends StatelessWidget {
     return ChangeNotifierProvider<DrawerNotifier>(
       create: (BuildContext context) => DrawerNotifier(),
       child: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Stack(
           children: <Widget>[
-            DefaultDrawerHeader(),
-            DrawerMenu(),
-            DrawerTile(
-              routeName: RouterService.home,
-              title: Text('Dashboard'),
-              icon: Icon(KIcons.dashboard),
+            ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                DefaultDrawerHeader(),
+                DrawerMenu(),
+                DrawerTile(
+                  routeName: RouterService.home,
+                  title: Text('Dashboard'),
+                  icon: Icon(KIcons.dashboard),
+                ),
+                DrawerTile(
+                  routeName: RouterService.queryLog,
+                  title: Text('Query log'),
+                  icon: Icon(KIcons.queryLog),
+                ),
+                DrawerTile(
+                  routeName: RouterService.settings,
+                  title: Text('Settings'),
+                  icon: Icon(KIcons.settings),
+                ),
+                Divider(),
+                DrawerTile(
+                  routeName: RouterService.about,
+                  title: Text('About'),
+                  icon: Icon(KIcons.about),
+                ),
+                ListTile(
+                  title: Text('API Log'),
+                  leading: Icon(KIcons.apiLog),
+                  onTap: () {
+                    getIt<Alice>().showInspector();
+                  },
+                ),
+              ],
             ),
-            DrawerTile(
-              routeName: RouterService.settings,
-              title: Text('Settings'),
-              icon: Icon(KIcons.settings),
-            ),
-            Divider(),
-            DrawerTile(
-              routeName: RouterService.about,
-              title: Text('About'),
-              icon: Icon(KIcons.about),
-            ),
-            ListTile(
-              title: Text('API Log'),
-              leading: Icon(KIcons.log),
-              onTap: () {
-                getIt<Alice>().showInspector();
-              },
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _Footer(),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _Footer extends StatelessWidget {
+  const _Footer({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final String footerMessage = getIt<PreferenceService>().footerMessage;
+    final PackageInfo packageInfo = getIt<PackageInfoService>().packageInfo;
+
+    return ListTile(
+      title: Text(
+        '${packageInfo.appName} ${packageInfo.versionAndBuildString}',
+        style: Theme.of(context).textTheme.caption,
+      ),
+      subtitle: footerMessage.isEmpty
+          ? null
+          : Text(
+        '$footerMessage',
+        style: Theme
+            .of(context)
+            .textTheme
+            .caption,
+      ),
+      onLongPress: () {
+        showAppDetailsDialog(context, packageInfo);
+      },
     );
   }
 }

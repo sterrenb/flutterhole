@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 abstract class RouterService {
   static const String home = '/';
+  static const String queryLog = '/query-log';
   static const String settings = '/settings';
   static const String allPiholes = '/all-piholes';
   static const String userPreferences = '/user-preferences';

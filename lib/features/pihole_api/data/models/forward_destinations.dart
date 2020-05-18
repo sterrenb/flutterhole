@@ -18,7 +18,7 @@ abstract class ForwardDestination extends MapModel
   factory ForwardDestination.fromJson(Map<String, dynamic> json) =>
       _$ForwardDestinationFromJson(json);
 
-  String get titleOrIp => (title?.isEmpty ?? true) ? ip : '${ip} (${title})';
+  String get titleOrIp => (title?.isEmpty ?? true) ? ip : title;
 }
 
 Map<ForwardDestination, double> _valueToForwardDestinations(dynamic value) {
@@ -55,6 +55,7 @@ abstract class ForwardDestinationsResult extends MapModel
               Map<ForwardDestination, double> forwardDestinations}) =
       _ForwardDestinationsResult;
 
-  factory ForwardDestinationsResult.fromJson(Map<String, dynamic> json) =>
-      _$ForwardDestinationsResultFromJson(json);
+  factory ForwardDestinationsResult.fromJson(Map<String, dynamic> json) {
+    return _$ForwardDestinationsResultFromJson(json);
+  }
 }

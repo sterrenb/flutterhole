@@ -5,6 +5,7 @@ import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
@@ -32,6 +33,8 @@ void main() async {
     apiRepository = ApiRepositoryImpl(mockApiDataSource);
   });
 
+  final tError = PiException.emptyResponse(TypeError());
+
   group('fetchSummary', () {
     test(
       'should return $SummaryModel on successful fetchSummary',
@@ -52,7 +55,7 @@ void main() async {
       'should return $Failure on failed fetchSummary',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchSummary(piholeSettings)).thenThrow(tError);
         // act
         final Either<Failure, SummaryModel> result =
@@ -83,7 +86,7 @@ void main() async {
       'should return $Failure on failed fetchQueriesOverTime',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchQueriesOverTime(piholeSettings))
             .thenThrow(tError);
         // act
@@ -116,7 +119,7 @@ void main() async {
       'should return $Failure on failed fetchTopSources',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchTopSources(piholeSettings))
             .thenThrow(tError);
         // act
@@ -151,7 +154,7 @@ void main() async {
       'should return $Failure on failed fetchTopItems',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchTopItems(piholeSettings)).thenThrow(tError);
         // act
         final Either<Failure, TopItems> result =
@@ -183,7 +186,7 @@ void main() async {
       'should return $Failure on failed fetchForwardDestinations',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchForwardDestinations(piholeSettings))
             .thenThrow(tError);
         // act
@@ -216,7 +219,7 @@ void main() async {
       'should return $Failure on failed fetchQueryTypes',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchQueryTypes(piholeSettings))
             .thenThrow(tError);
         // act
@@ -231,30 +234,38 @@ void main() async {
   group('fetchQueryDataForClient', () {
     final PiClient client = PiClient(title: 'test.org');
 
-//    test(
-//      'should return reversed List<QueryData> on successful fetchQueriesForClient',
-//      () async {
-//        // arrange
-//        final ManyQueryData manyQueryData = ManyQueryData(
-//          data: [QueryData(clientName: client.title)],
-//        );
-//
-//        when(mockApiDataSource.fetchQueryDataForClient(piholeSettings, client))
-//            .thenAnswer((_) async => manyQueryData);
-//        // act
-//        final Either<Failure, List<QueryData>> result =
-//            await apiRepository.fetchQueriesForClient(piholeSettings, client);
-//        // assert
-//        expect(result,
-//            equals(Right<Failure, List<QueryData>>(manyQueryData.data.reversed.toList())));
-//      },
-//    );
+    test(
+      'should return reversed List<QueryData> on successful fetchQueriesForClient',
+      () async {
+        // arrange
+        final ManyQueryData manyQueryData = ManyQueryData(
+          data: [
+            QueryData(clientName: 'first'),
+            QueryData(clientName: 'second'),
+            QueryData(clientName: 'third'),
+          ],
+        );
+
+        when(mockApiDataSource.fetchQueryDataForClient(piholeSettings, client))
+            .thenAnswer((_) async => manyQueryData);
+        // act
+        final Either<Failure, List<QueryData>> result =
+            await apiRepository.fetchQueriesForClient(piholeSettings, client);
+        // assert
+        result.fold(
+          (failure) => fail('result should be Right'),
+          (list) {
+            expect(list, equals(manyQueryData.data.reversed.toList()));
+          },
+        );
+      },
+    );
 
     test(
       'should return $Failure on failed fetchQueriesForClient',
-          () async {
+      () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchQueryDataForClient(piholeSettings, client))
             .thenThrow(tError);
         // act
@@ -267,31 +278,35 @@ void main() async {
     );
   });
 
-  group('fetchQueryDataForDomain', () {
+  group('fetchQueriesForDomain', () {
     final String domain = 'test.org';
-//    test(
-//      'should return reversed List<QueryData> on successful fetchQueriesForDomain',
-//      () async {
-//        // arrange
-//        final ManyQueryData manyQueryData = ManyQueryData(
-//          data: [QueryData(domain: domain)],
-//        );
-//        when(mockApiDataSource.fetchQueryDataForDomain(piholeSettings, domain))
-//            .thenAnswer((_) async => manyQueryData);
-//        // act
-//        final Either<Failure, List<QueryData>> result =
-//            await apiRepository.fetchQueriesForDomain(piholeSettings, domain);
-//        // assert
-//        expect(result,
-//            equals(Right<Failure, List<QueryData>>(manyQueryData.data.reversed.toList())));
-//      },
-//    );
+    test(
+      'should return reversed List<QueryData> on successful fetchQueriesForDomain',
+          () async {
+        // arrange
+        final ManyQueryData manyQueryData = ManyQueryData(
+          data: [QueryData(domain: domain)],
+        );
+        when(mockApiDataSource.fetchQueryDataForDomain(piholeSettings, domain))
+            .thenAnswer((_) async => manyQueryData);
+        // act
+        final Either<Failure, List<QueryData>> result =
+        await apiRepository.fetchQueriesForDomain(piholeSettings, domain);
+        // assert
+        result.fold(
+              (failure) => fail('result should be Right'),
+              (list) {
+            expect(list, equals(manyQueryData.data.reversed.toList()));
+          },
+        );
+      },
+    );
 
     test(
       'should return $Failure on failed fetchQueriesForDomain',
           () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchQueryDataForDomain(piholeSettings, domain))
             .thenThrow(tError);
         // act
@@ -300,6 +315,77 @@ void main() async {
         // assert
         expect(result,
             equals(Left(Failure('fetchQueriesForDomain failed', tError))));
+      },
+    );
+  });
+
+  group('fetchManyQueryData', () {
+    test(
+      'should return reversed List<QueryData> on successful fetchManyQueryData without maxResults',
+          () async {
+        // arrange
+        final ManyQueryData manyQueryData = ManyQueryData(
+          data: [
+            QueryData(clientName: 'first'),
+            QueryData(clientName: 'second'),
+            QueryData(clientName: 'third'),
+          ],
+        );
+        when(mockApiDataSource.fetchManyQueryData(piholeSettings))
+            .thenAnswer((_) async => manyQueryData);
+        // act
+        final Either<Failure, List<QueryData>> result =
+        await apiRepository.fetchManyQueryData(piholeSettings);
+        // assert
+        result.fold(
+              (failure) => fail('result should be Right'),
+              (list) {
+            expect(list, equals(manyQueryData.data.reversed.toList()));
+          },
+        );
+      },
+    );
+
+    test(
+      'should return reversed List<QueryData> on successful fetchManyQueryData with maxResults',
+          () async {
+        // arrange
+        final int maxResults = 123;
+        final ManyQueryData manyQueryData = ManyQueryData(
+          data: [
+            QueryData(clientName: 'first'),
+            QueryData(clientName: 'second'),
+            QueryData(clientName: 'third'),
+          ],
+        );
+        when(mockApiDataSource.fetchManyQueryData(piholeSettings, maxResults))
+            .thenAnswer((_) async => manyQueryData);
+        // act
+        final Either<Failure, List<QueryData>> result =
+        await apiRepository.fetchManyQueryData(piholeSettings, maxResults);
+        // assert
+        result.fold(
+              (failure) => fail('result should be Right'),
+              (list) {
+            expect(list, equals(manyQueryData.data.reversed.toList()));
+          },
+        );
+      },
+    );
+
+    test(
+      'should return $Failure on failed fetchManyQueryData',
+          () async {
+        // arrange
+
+        when(mockApiDataSource.fetchManyQueryData(piholeSettings))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, List<QueryData>> result =
+        await apiRepository.fetchManyQueryData(piholeSettings);
+        // assert
+        expect(
+            result, equals(Left(Failure('fetchManyQueryData failed', tError))));
       },
     );
   });

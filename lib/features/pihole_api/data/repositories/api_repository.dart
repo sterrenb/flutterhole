@@ -32,4 +32,8 @@ abstract class ApiRepository {
 
   Future<Either<Failure, List<QueryData>>> fetchQueriesForDomain(
       PiholeSettings settings, String domain);
+
+  Future<Either<Failure, List<QueryData>>> fetchManyQueryData(
+      PiholeSettings settings,
+      [int maxResults]);
 }
