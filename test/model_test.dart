@@ -65,7 +65,7 @@ void main() {
   testMapModel<TopSourcesResult>(
       'get_query_sources.json', (json) => TopSourcesResult.fromJson(json));
   testMapModel<ForwardDestination>('single_forward_destination.json',
-          (json) => ForwardDestination.fromJson(json));
+      (json) => ForwardDestination.fromJson(json));
   testMapModel<ForwardDestinationsResult>('get_forward_destinations.json',
           (json) => ForwardDestinationsResult.fromJson(json));
   testListModel<Blacklist>(
