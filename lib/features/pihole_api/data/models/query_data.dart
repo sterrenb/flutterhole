@@ -56,7 +56,7 @@ QueryStatus _stringToQueryStatus(String json) {
     if (index > QueryStatus.values.length || index == 0)
       return QueryStatus.values.first;
 
-    return QueryStatus.values[index - 1];
+    return QueryStatus.values[index];
   } catch (e) {
     print('_stringToQueryStatus failed: $e');
     return QueryStatus.Unknown;
@@ -103,7 +103,7 @@ abstract class QueryData extends ListModel implements _$QueryData {
         _$QueryTypeEnumMap[queryType],
         domain,
         clientName,
-        '${QueryStatus.values.indexOf(queryStatus) + 1}',
+        '${QueryStatus.values.indexOf(queryStatus)}',
         '${DnsSecStatus.values.indexOf(dnsSecStatus)}',
         '$replyTextIndex',
     '${(replyDuration.inMicroseconds / 100).round()}',
