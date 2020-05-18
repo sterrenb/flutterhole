@@ -3,11 +3,13 @@ import 'package:flutterhole/features/pihole_api/data/models/model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'forward_destinations.freezed.dart';
-
 part 'forward_destinations.g.dart';
 
 @freezed
-abstract class ForwardDestination extends MapModel with _$ForwardDestination {
+abstract class ForwardDestination extends MapModel
+    implements _$ForwardDestination {
+  const ForwardDestination._();
+
   const factory ForwardDestination({
     String title,
     String ip,
@@ -15,6 +17,8 @@ abstract class ForwardDestination extends MapModel with _$ForwardDestination {
 
   factory ForwardDestination.fromJson(Map<String, dynamic> json) =>
       _$ForwardDestinationFromJson(json);
+
+  String get titleOrIp => (title?.isEmpty ?? true) ? ip : '${ip} (${title})';
 }
 
 Map<ForwardDestination, double> _valueToForwardDestinations(dynamic value) {

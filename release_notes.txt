@@ -1,3 +1,5 @@
+* Fix: forward destinations should show an IP instead of null when a title is not available.
+
 * Feature: a welcome message is shown on first use.
 
 * Feature: single queries can be expanded to show more data again.
