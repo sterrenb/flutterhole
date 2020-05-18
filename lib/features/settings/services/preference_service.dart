@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart' show ThemeMode;
 
+/// Constant preference keys for map-like storage implementations.
 class KPrefs {
   KPrefs._();
 
   static const String isFirstUse = 'isFirstUse';
   static const String useNumbersApi = 'useNumbersApi';
   static const String themeMode = 'themeMode';
+  static const String queryLogMaxResults = 'queryLogMaxResults';
 }
 
 const ThemeModeEnumMap = {
@@ -28,4 +30,8 @@ abstract class PreferenceService {
   bool get useNumbersApi;
 
   ThemeMode get themeMode;
+
+  int get queryLogMaxResults;
+
+  Future<void> setQueryLogMaxResults(int maxResults);
 }

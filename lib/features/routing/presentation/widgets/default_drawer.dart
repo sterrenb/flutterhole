@@ -26,6 +26,11 @@ class DefaultDrawer extends StatelessWidget {
               icon: Icon(KIcons.dashboard),
             ),
             DrawerTile(
+              routeName: RouterService.queryLog,
+              title: Text('Query log'),
+              icon: Icon(KIcons.queryLog),
+            ),
+            DrawerTile(
               routeName: RouterService.settings,
               title: Text('Settings'),
               icon: Icon(KIcons.settings),

@@ -231,8 +231,10 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
-  Future<ManyQueryData> fetchQueryDataForClient(PiholeSettings settings,
-      PiClient client,) async {
+  Future<ManyQueryData> fetchQueryDataForClient(
+    PiholeSettings settings,
+    PiClient client,
+  ) async {
     final Map<String, dynamic> json =
     await _getSecure(settings, queryParameters: {
       'getAllQueries': '',
@@ -251,6 +253,17 @@ class ApiDataSourceDio implements ApiDataSource {
     await _getSecure(settings, queryParameters: {
       'getAllQueries': '',
       'domain': '${domain?.trim()}',
+    });
+
+    return ManyQueryData.fromJson(json);
+  }
+
+  @override
+  Future<ManyQueryData> fetchManyQueryData(PiholeSettings settings,
+      [int maxResults]) async {
+    final Map<String, dynamic> json =
+    await _getSecure(settings, queryParameters: {
+      'getAllQueries': '${maxResults ?? ''}',
     });
 
     return ManyQueryData.fromJson(json);

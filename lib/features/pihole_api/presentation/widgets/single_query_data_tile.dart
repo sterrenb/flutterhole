@@ -115,8 +115,7 @@ class SingleQueryDataTile extends StatelessWidget {
   final QueryData query;
 
   String get _timeStamp =>
-      '${query.timestamp.formattedDate}\t${query.timestamp
-          .formattedTime} (${query.timestamp.fromNow})';
+      '${query.timestamp.formattedDate}\t${query.timestamp.formattedTime} (${query.timestamp.fromNow})';
 
   Icon _buildQueryStatusIcon() {
     return Icon(
@@ -175,8 +174,7 @@ class SingleQueryDataTile extends StatelessWidget {
                                     return ListTile(
                                       dense: true,
                                       title: Text('${type.toFullString}'),
-                                      subtitle:
-                                      Text('${type.toDescription}'),
+                                      subtitle: Text('${type.toDescription}'),
                                     );
                                   }),
                               OpenUrlTile(

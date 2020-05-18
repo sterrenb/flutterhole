@@ -81,4 +81,11 @@ class PrServiceImpl implements PreferenceService {
     final String value = _get<String>(KPrefs.themeMode) ?? 'system';
     return ThemeModeMapEnum[value];
   }
+
+  @override
+  int get queryLogMaxResults => _get<int>(KPrefs.queryLogMaxResults) ?? 100;
+
+  @override
+  Future<void> setQueryLogMaxResults(int maxResults) async =>
+      _set(KPrefs.queryLogMaxResults, maxResults);
 }

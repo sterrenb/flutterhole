@@ -288,7 +288,7 @@ void main() async {
 
   test(
     'should return $PiVersions on successful fetchPiVersions',
-        () async {
+    () async {
       // arrange
       piholeSettings = piholeSettings.copyWith(apiToken: 'token');
       final json = stubFixtureResponse('get_versions.json', 200);
@@ -342,6 +342,34 @@ void main() async {
       // act
       final ManyQueryData result = await apiDataSourceDio
           .fetchQueryDataForDomain(piholeSettings, 'example.com');
+      // assert
+      expect(result, equals(ManyQueryData.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $ManyQueryData on successful fetchManyQueryData without maxResult',
+        () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('get_all_queries_10.json', 200);
+      // act
+      final ManyQueryData result =
+      await apiDataSourceDio.fetchManyQueryData(piholeSettings);
+      // assert
+      expect(result, equals(ManyQueryData.fromJson(json)));
+    },
+  );
+
+  test(
+    'should return $ManyQueryData on successful fetchManyQueryData with maxResult',
+        () async {
+      // arrange
+      piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+      final json = stubFixtureResponse('get_all_queries_10.json', 200);
+      // act
+      final ManyQueryData result =
+      await apiDataSourceDio.fetchManyQueryData(piholeSettings, 123);
       // assert
       expect(result, equals(ManyQueryData.fromJson(json)));
     },

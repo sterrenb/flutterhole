@@ -34,9 +34,12 @@ abstract class ApiDataSource {
 
   Future<PiVersions> fetchVersions(PiholeSettings settings);
 
-  Future<ManyQueryData> fetchQueryDataForClient(PiholeSettings settings,
-      PiClient client);
+  Future<ManyQueryData> fetchQueryDataForClient(
+      PiholeSettings settings, PiClient client);
 
-  Future<ManyQueryData> fetchQueryDataForDomain(PiholeSettings settings,
-      String domain);
+  Future<ManyQueryData> fetchQueryDataForDomain(
+      PiholeSettings settings, String domain);
+
+  Future<ManyQueryData> fetchManyQueryData(PiholeSettings settings,
+      [int maxResults]);
 }

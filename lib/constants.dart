@@ -25,6 +25,7 @@ class KIcons {
   static const IconData welcome = MaterialCommunityIcons.message_text;
 
   static const IconData dashboard = MaterialCommunityIcons.view_dashboard;
+  static const IconData queryLog = MaterialCommunityIcons.file_document;
   static const IconData clients = MaterialCommunityIcons.laptop_windows;
   static const IconData domains =
       MaterialCommunityIcons.checkbox_multiple_blank_circle_outline;

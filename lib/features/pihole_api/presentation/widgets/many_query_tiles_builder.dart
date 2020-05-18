@@ -7,15 +7,18 @@ class ManyQueryTilesBuilder extends StatelessWidget {
   const ManyQueryTilesBuilder({
     Key key,
     @required this.queries,
+    this.shrinkWrap = false,
   }) : super(key: key);
 
   final List<QueryData> queries;
+  final bool shrinkWrap;
 
   @override
   Widget build(BuildContext context) {
     return AnimateOnBuild(
       child: Scrollbar(
         child: ListView.builder(
+            shrinkWrap: shrinkWrap,
             itemCount: queries.length,
             itemBuilder: (context, index) {
               final QueryData query = queries.elementAt(index);
