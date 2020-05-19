@@ -106,8 +106,8 @@ abstract class QueryData extends ListModel implements _$QueryData {
         '${QueryStatus.values.indexOf(queryStatus)}',
         '${DnsSecStatus.values.indexOf(dnsSecStatus)}',
         '$replyTextIndex',
-    '${(replyDuration.inMicroseconds / 100).round()}',
-    replyText,
-    someString,
+        '${(replyDuration.inMicroseconds / 100).round()}',
+        replyText,
+        someString,
       ];
 }

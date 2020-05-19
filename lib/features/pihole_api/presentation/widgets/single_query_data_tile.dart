@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/convert.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/widgets/layout/animated_opener.dart';
 import 'package:flutterhole/widgets/layout/open_url_tile.dart';
 
@@ -127,101 +128,100 @@ class SingleQueryDataTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedOpener(
-      closed: (context) =>
-          ListTile(
-            title: Text('${query.domain}'),
-            isThreeLine: true,
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('$_timeStamp'),
-                Text('${query.queryStatus.toFullString}',
-                    style: TextStyle(color: query.queryStatus.toColor)),
-              ],
-            ),
-            trailing: _buildQueryStatusIcon(),
+      closed: (context) => ListTile(
+        title: Text('${query.domain}'),
+        isThreeLine: true,
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('$_timeStamp'),
+            Text('${query.queryStatus.toFullString}',
+                style: TextStyle(color: query.queryStatus.toColor)),
+          ],
+        ),
+        trailing: _buildQueryStatusIcon(),
+      ),
+      opened: (context) => PiholeThemeBuilder(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Query data'),
           ),
-      opened: (context) =>
-          Scaffold(
-            appBar: AppBar(
-              title: Text('Query data'),
-            ),
-            body: ListView(
-              children: <Widget>[
-                ListTile(
-                  leading: Icon(KIcons.timestamp),
-                  title: Text('$_timeStamp'),
-                  subtitle: Text('Timestamp'),
+          body: ListView(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(KIcons.timestamp),
+                title: Text('$_timeStamp'),
+                subtitle: Text('Timestamp'),
+              ),
+              ListTile(
+                leading: Icon(KIcons.queryType),
+                title: Text('${query.queryType.toFullString}'),
+                subtitle: Text('DNS record type'),
+                trailing: IconButton(
+                  tooltip: 'Wat are DNS record types?',
+                  icon: Icon(KIcons.moreInfo),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return SimpleDialog(
+                          title: Text('Wat are DNS record types?'),
+                          children: <Widget>[
+                            ...List<Widget>.generate(QueryType.values.length,
+                                (index) {
+                              final QueryType type =
+                                  QueryType.values.elementAt(index);
+                              return ListTile(
+                                dense: true,
+                                title: Text('${type.toFullString}'),
+                                subtitle: Text('${type.toDescription}'),
+                              );
+                            }),
+                            OpenUrlTile(
+                              url: _wikipediaUrl,
+                              leading: Icon(KIcons.info),
+                              title: Row(
+                                children: <Widget>[
+                                  Text('Learn more on '),
+                                  Text(
+                                    'Wikipedia',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
-                ListTile(
-                  leading: Icon(KIcons.queryType),
-                  title: Text('${query.queryType.toFullString}'),
-                  subtitle: Text('DNS record type'),
-                  trailing: IconButton(
-                    tooltip: 'Wat are DNS record types?',
-                    icon: Icon(KIcons.moreInfo),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return SimpleDialog(
-                            title: Text('Wat are DNS record types?'),
-                            children: <Widget>[
-                              ...List<Widget>.generate(QueryType.values.length,
-                                      (index) {
-                                    final QueryType type =
-                                    QueryType.values.elementAt(index);
-                                    return ListTile(
-                                      dense: true,
-                                      title: Text('${type.toFullString}'),
-                                      subtitle: Text('${type.toDescription}'),
-                                    );
-                                  }),
-                              OpenUrlTile(
-                                url: _wikipediaUrl,
-                                leading: Icon(KIcons.info),
-                                title: Row(
-                                  children: <Widget>[
-                                    Text('Learn more on '),
-                                    Text(
-                                      'Wikipedia',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(KIcons.domains),
-                  title: Text('${query.domain}'),
-                  subtitle: Text('Domain'),
-                ),
-                ListTile(
-                  leading: Icon(KIcons.clients),
-                  title: Text('${query.clientName}'),
-                  subtitle: Text('Client'),
-                ),
-                ListTile(
-                  leading: Icon(KIcons.queryStatus),
-                  title: Text('${query.queryStatus.toFullString}'),
-                  subtitle: Text('Status'),
-                  trailing: _buildQueryStatusIcon(),
-                ),
-                ListTile(
-                  leading: Icon(KIcons.pingInterval),
-                  title: Text(
-                      '${query.replyDuration.inMicroseconds ~/ 100} ms'),
-                  subtitle: Text('Reply duration'),
-                ),
-              ],
-            ),
+              ),
+              ListTile(
+                leading: Icon(KIcons.domains),
+                title: Text('${query.domain}'),
+                subtitle: Text('Domain'),
+              ),
+              ListTile(
+                leading: Icon(KIcons.clients),
+                title: Text('${query.clientName}'),
+                subtitle: Text('Client'),
+              ),
+              ListTile(
+                leading: Icon(KIcons.queryStatus),
+                title: Text('${query.queryStatus.toFullString}'),
+                subtitle: Text('Status'),
+                trailing: _buildQueryStatusIcon(),
+              ),
+              ListTile(
+                leading: Icon(KIcons.pingInterval),
+                title: Text('${query.replyDuration.inMicroseconds ~/ 100} ms'),
+                subtitle: Text('Reply duration'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

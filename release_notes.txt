@@ -1,3 +1,7 @@
+* Feature: query logs are searchable and refreshable.
+
+* Feature: the query log is back. I intend to make some kind of live query viewer separately, this page does _not_ automatically listen for new data.
+
 * Feature: single queries can be expanded to show more data again.
 
 * Feature: Basic Authentication is back - thank you Joerg.

@@ -40,7 +40,9 @@ class KIcons {
   static const IconData log = AntDesign.codesquare;
 
   static const IconData open = MaterialIcons.keyboard_arrow_right;
+  static const IconData search = MaterialIcons.search;
   static const IconData close = Icons.close;
+  static const IconData back = Icons.arrow_back;
   static const IconData delete = MaterialCommunityIcons.delete_circle;
   static const IconData openInBrowser = MaterialIcons.open_in_browser;
   static const IconData copy = Icons.content_copy;

@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/pihole_api/blocs/query_log_bloc.dart';
-import 'package:flutterhole/features/pihole_api/presentation/widgets/many_query_tiles_builder.dart';
+import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
+import 'package:flutterhole/features/pihole_api/presentation/notifiers/queries_search_notifier.dart';
+import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_app_bar.dart';
+import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_list_builder.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/query_log_page_overflow_refresher.dart';
+import 'package:flutterhole/features/pihole_api/presentation/widgets/single_query_data_tile.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/features/settings/services/preference_service.dart';
 import 'package:flutterhole/widgets/layout/loading_indicators.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 final _numberFormat = NumberFormat();
 
@@ -25,7 +30,6 @@ class _PopupMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton<int>(
       tooltip: 'Set max results',
-//      initialValue: getIt<PreferenceService>().queryLogMaxResults,
       onSelected: (int value) async {
         getIt<PreferenceService>().setQueryLogMaxResults(value);
 
@@ -37,7 +41,6 @@ class _PopupMenu extends StatelessWidget {
         BlocProvider.of<QueryLogBloc>(context)
             .add(QueryLogEvent.fetchSome(value));
       },
-
       itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
         PopupMenuItem(
           child: Text('Max results'),
@@ -56,34 +59,51 @@ class _PopupMenu extends StatelessWidget {
 class QueryLogPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<QueryLogBloc>(
-      create: (_) =>
-      QueryLogBloc()
-        ..add(QueryLogEvent.fetchSome(
-            getIt<PreferenceService>().queryLogMaxResults)),
-      child: PiholeThemeBuilder(
-        child: Scaffold(
-          drawer: DefaultDrawer(),
-          appBar: AppBar(
-            title: Text('Query log'),
-            elevation: 0.0,
-            actions: <Widget>[
-              _PopupMenu(),
-            ],
-          ),
-          body: QueryLogPageOverflowRefresher(
-            child: BlocBuilder<QueryLogBloc, QueryLogState>(
-              builder: (BuildContext context, QueryLogState state) {
-                return state.maybeWhen<Widget>(
-                  success: (queries) {
-                    return ManyQueryTilesBuilder(queries: queries);
-                  },
-                  initial: () => Container(),
-                  orElse: () {
-                    return CenteredLoadingIndicator();
-                  },
-                );
-              },
+    return ChangeNotifierProvider<QueriesSearchNotifier>(
+      create: (BuildContext context) => QueriesSearchNotifier(),
+      child: BlocProvider<QueryLogBloc>(
+        create: (_) => QueryLogBloc()
+          ..add(QueryLogEvent.fetchSome(
+              getIt<PreferenceService>().queryLogMaxResults)),
+        child: PiholeThemeBuilder(
+          child: Scaffold(
+            drawer: DefaultDrawer(),
+            appBar: QueriesSearchAppBar(
+              title: Text('Query log'),
+              actions: <Widget>[
+                _PopupMenu(),
+              ],
+            ),
+            body: Scrollbar(
+              child: BlocBuilder<QueryLogBloc, QueryLogState>(
+                builder: (BuildContext context, QueryLogState state) {
+                  return state.maybeWhen<Widget>(
+                    success: (List<QueryData> queries) {
+                      return QueriesSearchListBuilder(
+                        initialData: queries,
+                        builder:
+                            (BuildContext context, List<QueryData> matches) {
+                          return QueryLogPageOverflowRefresher(
+                            child: ListView.builder(
+                              itemCount: matches.length,
+                              itemBuilder: (context, index) {
+                                final QueryData query =
+                                    matches.elementAt(index);
+
+                                return SingleQueryDataTile(query: query);
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    initial: () => Container(),
+                    orElse: () {
+                      return CenteredLoadingIndicator();
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ),
