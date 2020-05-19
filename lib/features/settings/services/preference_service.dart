@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show ThemeMode;
+import 'package:flutter/material.dart';
 
 /// Constant preference keys for map-like storage implementations.
 class KPrefs {
