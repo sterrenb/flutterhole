@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhole/core/models/failures.dart';
 
 Future<void> showWelcomeDialog(BuildContext context) {
   return showDialog(
@@ -61,4 +62,27 @@ Future<bool> showConfirmationDialog(
       });
 
   return result ?? false;
+}
+
+Future<void> showFailureDialog(
+  BuildContext context,
+  Failure failure, {
+  Widget title,
+}) async {
+  showDialog<void>(
+    context: context,
+    builder: (BuildContext dialogContext) {
+      return AlertDialog(
+        title: title,
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('${failure?.message ?? 'unknown failure'}'),
+              Text('${failure?.error?.toString() ?? ''}'),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

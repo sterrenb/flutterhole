@@ -79,7 +79,7 @@ class AboutPage extends StatelessWidget {
                                               '\n\n'
                                               'FlutterHole is open source, which means anyone '
                                               'can view the code that runs your app. '
-                                              'You can find the repository on Github.'),
+                                              'You can find the repository on GitHub.'),
                                     ],
                                   ),
                                 ),

@@ -5,7 +5,9 @@ import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/settings/blocs/pihole_settings_bloc.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
+import 'package:flutterhole/widgets/layout/failure_indicators.dart';
 import 'package:flutterhole/widgets/layout/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/snackbars.dart';
 
 class AuthenticationStatusIcon extends StatelessWidget {
   const AuthenticationStatusIcon({
@@ -22,23 +24,38 @@ class AuthenticationStatusIcon extends StatelessWidget {
               _,
               __,
               dartz.Either<Failure, bool> authenticatedStatus,
-                ___,
+              ___,
             ) {
               return authenticatedStatus.fold<Widget>(
-                (Failure failure) => Icon(
-                  KIcons.error,
-                  color: KColors.error,
+                    (Failure failure) =>
+                    FailureIconButton(
+                      failure: failure,
+                      title: Text('Authentication failed'),
                 ),
                 (bool isAuthenticated) {
-                  return Icon(
-                    isAuthenticated ? KIcons.success : KIcons.error,
-                    color: isAuthenticated ? KColors.success : KColors.error,
+                  return isAuthenticated
+                      ? IconButton(
+                    icon: Icon(
+                      KIcons.success,
+                      color: KColors.success,
+                    ),
+                    onPressed: () {
+                      showInfoSnackBar(
+                          context, 'Authentication successful');
+                    },
+                  )
+                      : FailureIconButton(
+                    failure: Failure('Is your API token correct?'),
+                    title: Text('Authentication failed'),
                   );
                 },
               );
             },
-            loading: () => LoadingIcon(),
-            orElse: () => Icon(KIcons.debug, color: Colors.transparent,));
+            orElse: () =>
+                IconButton(
+                  icon: LoadingIcon(),
+                  onPressed: null,
+                ));
       },
     );
   }

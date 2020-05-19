@@ -265,7 +265,6 @@ class _HostDetailsForm extends StatelessWidget {
           title: Row(
             children: <Widget>[
               Text('Host details'),
-              SizedBox(width: 8.0),
               HostDetailsStatusIcon(),
             ],
           ),
@@ -303,7 +302,6 @@ class _AuthenticationFormState extends State<AuthenticationForm> {
           title: Row(
             children: <Widget>[
               Text('Authentication'),
-              SizedBox(width: 8.0),
               AuthenticationStatusIcon(),
             ],
           ),
