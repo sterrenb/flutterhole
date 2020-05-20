@@ -8,6 +8,7 @@ class KPrefs {
   static const String useNumbersApi = 'useNumbersApi';
   static const String themeMode = 'themeMode';
   static const String queryLogMaxResults = 'queryLogMaxResults';
+  static const String footerMessage = 'footerMessage';
 }
 
 const ThemeModeEnumMap = {
@@ -34,4 +35,6 @@ abstract class PreferenceService {
   int get queryLogMaxResults;
 
   Future<void> setQueryLogMaxResults(int maxResults);
+
+  String get footerMessage;
 }

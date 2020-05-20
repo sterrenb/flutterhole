@@ -47,6 +47,8 @@ void main() async {
     connectionRepositoryDio = ConnectionRepositoryDio(dio, mockApiDataSource);
   });
 
+  final tError = PiException.emptyResponse(TypeError());
+
   group('fetchHostStatusCode', () {
     test(
       'should return 200 when host responds with 200 HTTP response',
@@ -108,7 +110,7 @@ void main() async {
       'should return $Failure on exception',
       () async {
         // arrange
-        final tError = PiException.timeOut();
+
         when(mockApiDataSource.pingPihole(settings)).thenThrow(tError);
         // act
         final result =
@@ -123,7 +125,7 @@ void main() async {
   group('fetchVersions', () {
     test(
       'should return $PiStatusEnum on successful fetchVersions',
-          () async {
+      () async {
         // arrange
         final versions = PiVersions(coreBranch: 'master', ftlBranch: 'testing');
         when(mockApiDataSource.fetchVersions(settings))
@@ -139,7 +141,7 @@ void main() async {
       'should return $Failure on exception',
           () async {
         // arrange
-        final tError = PiException.timeOut();
+
         when(mockApiDataSource.fetchVersions(settings)).thenThrow(tError);
         // act
         final result = await connectionRepositoryDio.fetchVersions(settings);
@@ -168,7 +170,7 @@ void main() async {
       'should return false on failed fetchQueryTypes',
       () async {
         // arrange
-        final tError = PiException.timeOut();
+
         when(mockApiDataSource.fetchQueryTypes(settings)).thenThrow(tError);
         // act
         final result =
@@ -199,7 +201,7 @@ void main() async {
       'should return $Failure on failed pingPihole',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.pingPihole(settings)).thenThrow(tError);
         // act
         final Either<Failure, ToggleStatus> result =
@@ -230,7 +232,7 @@ void main() async {
       'should return $Failure on failed enablePihole',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.enablePihole(settings)).thenThrow(tError);
         // act
         final Either<Failure, ToggleStatus> result =
@@ -261,7 +263,7 @@ void main() async {
       'should return $Failure on failed disablePihole',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.disablePihole(settings)).thenThrow(tError);
         // act
         final Either<Failure, ToggleStatus> result =
@@ -294,7 +296,7 @@ void main() async {
       () async {
         // arrange
         final duration = Duration(seconds: 10);
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.sleepPihole(settings, duration))
             .thenThrow(tError);
         // act

@@ -35,11 +35,10 @@ class QueriesSearchListBuilder extends StatelessWidget {
       List<QueryData> searchedQueries;
 
       if (notifier.isSearching && notifier.searchQuery.isNotEmpty) {
-        searchedQueries = initialData.where((element) {
-          final string = element.searchableString;
-          print('checking for "${notifier.searchQuery}" in "$string');
-          return string.contains(notifier.searchQuery);
-        }).toList();
+        searchedQueries = initialData
+            .where((QueryData queryData) =>
+                queryData.searchableString.contains(notifier.searchQuery))
+            .toList();
       }
 
       final List<QueryData> toUse = searchedQueries ?? initialData;

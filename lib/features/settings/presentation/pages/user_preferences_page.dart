@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
+import 'package:flutterhole/features/settings/presentation/widgets/preferences/footer_message_string_preference.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/preferences/theme_radio_preferences.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/preferences/use_numbers_api_switch_preference.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
@@ -23,6 +24,7 @@ class _UserPreferencesPageState extends State<UserPreferencesPage> {
           children: <Widget>[
             ListTitle('Customization'),
             ThemeRadioPreferences(),
+            FooterMessageStringPreference(),
             ListTitle('Data'),
             UseNumbersApiSwitchPreference(),
             ListTitle('Misc'),

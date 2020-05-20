@@ -6,10 +6,12 @@ import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/forward_destinations_tile.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/query_types_tile.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/summary_tile.dart';
+import 'package:flutterhole/features/home/presentation/pages/summary/widgets/total_queries_over_day_tile.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder.dart';
 import 'package:flutterhole/features/home/presentation/widgets/home_page_overflow_refresher.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/widgets/layout/failure_indicators.dart';
 import 'package:flutterhole/widgets/layout/loading_indicators.dart';
@@ -25,13 +27,15 @@ class SummaryPageView extends StatelessWidget {
     return HomeBlocBuilder(builder: (BuildContext context, HomeState state) {
       return state.maybeWhen<Widget>(
           failure: (failure) => CenteredFailureIndicator(failure),
-          success: (Either<Failure, SummaryModel> summaryResult,
-              _,
-              __,
-              ___,
-              Either<Failure, ForwardDestinationsResult>
-              forwardDestinationsResult,
-              Either<Failure, DnsQueryTypeResult> dnsQueryTypesResult,) =>
+          success: (
+            Either<Failure, SummaryModel> summaryResult,
+            Either<Failure, OverTimeData> queriesOverTimeResult,
+            _,
+            __,
+            Either<Failure, ForwardDestinationsResult>
+                forwardDestinationsResult,
+            Either<Failure, DnsQueryTypeResult> dnsQueryTypesResult,
+          ) =>
               summaryResult.fold<Widget>(
                     (failure) => CenteredFailureIndicator(failure),
                     (summary) =>
@@ -67,6 +71,7 @@ class SummaryPageView extends StatelessWidget {
                         color: Colors.red,
                         integer: summary.domainsBeingBlocked,
                       ),
+                      TotalQueriesOverDayTile(queriesOverTimeResult),
                       QueryTypesTile(dnsQueryTypesResult),
                       ForwardDestinationsTile(forwardDestinationsResult),
                     ],
@@ -75,6 +80,7 @@ class SummaryPageView extends StatelessWidget {
                       StaggeredTile.count(4, 1),
                       StaggeredTile.count(4, 1),
                       StaggeredTile.count(4, 1),
+                      StaggeredTile.count(4, 3),
                       StaggeredTile.count(4, 3),
                       StaggeredTile.count(4, 3),
                     ],

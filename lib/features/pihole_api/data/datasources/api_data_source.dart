@@ -10,6 +10,12 @@ import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 
+/// The string that counts as the API token on Pi-holes
+/// without authentication.
+///
+/// https://github.com/sterrenburg/flutterhole/issues/79
+const String kNoApiTokenNeeded = 'No password set';
+
 abstract class ApiDataSource {
   Future<SummaryModel> fetchSummary(PiholeSettings settings);
 

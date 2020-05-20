@@ -56,8 +56,6 @@ abstract class ForwardDestinationsResult extends MapModel
       _ForwardDestinationsResult;
 
   factory ForwardDestinationsResult.fromJson(Map<String, dynamic> json) {
-    print('json: $json');
-
     return _$ForwardDestinationsResultFromJson(json);
   }
 }

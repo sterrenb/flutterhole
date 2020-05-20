@@ -33,6 +33,8 @@ void main() async {
     apiRepository = ApiRepositoryImpl(mockApiDataSource);
   });
 
+  final tError = PiException.emptyResponse(TypeError());
+
   group('fetchSummary', () {
     test(
       'should return $SummaryModel on successful fetchSummary',
@@ -53,7 +55,7 @@ void main() async {
       'should return $Failure on failed fetchSummary',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchSummary(piholeSettings)).thenThrow(tError);
         // act
         final Either<Failure, SummaryModel> result =
@@ -84,7 +86,7 @@ void main() async {
       'should return $Failure on failed fetchQueriesOverTime',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchQueriesOverTime(piholeSettings))
             .thenThrow(tError);
         // act
@@ -117,7 +119,7 @@ void main() async {
       'should return $Failure on failed fetchTopSources',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchTopSources(piholeSettings))
             .thenThrow(tError);
         // act
@@ -152,7 +154,7 @@ void main() async {
       'should return $Failure on failed fetchTopItems',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchTopItems(piholeSettings)).thenThrow(tError);
         // act
         final Either<Failure, TopItems> result =
@@ -184,7 +186,7 @@ void main() async {
       'should return $Failure on failed fetchForwardDestinations',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchForwardDestinations(piholeSettings))
             .thenThrow(tError);
         // act
@@ -217,7 +219,7 @@ void main() async {
       'should return $Failure on failed fetchQueryTypes',
       () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchQueryTypes(piholeSettings))
             .thenThrow(tError);
         // act
@@ -261,9 +263,9 @@ void main() async {
 
     test(
       'should return $Failure on failed fetchQueriesForClient',
-          () async {
+      () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchQueryDataForClient(piholeSettings, client))
             .thenThrow(tError);
         // act
@@ -304,7 +306,7 @@ void main() async {
       'should return $Failure on failed fetchQueriesForDomain',
           () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchQueryDataForDomain(piholeSettings, domain))
             .thenThrow(tError);
         // act
@@ -375,7 +377,7 @@ void main() async {
       'should return $Failure on failed fetchManyQueryData',
           () async {
         // arrange
-        final tError = PiException.emptyResponse();
+
         when(mockApiDataSource.fetchManyQueryData(piholeSettings))
             .thenThrow(tError);
         // act

@@ -1,5 +1,13 @@
+import 'package:alice/alice.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/models/failures.dart';
+import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/browser/services/browser_service.dart';
+import 'package:flutterhole/widgets/layout/copy_button.dart';
+import 'package:flutterhole/widgets/layout/snackbars.dart';
+import 'package:package_info/package_info.dart';
 
 Future<void> showWelcomeDialog(BuildContext context) {
   return showDialog(
@@ -82,7 +90,60 @@ Future<void> showFailureDialog(
             ],
           ),
         ),
+        actions: <Widget>[
+          FlatButton.icon(
+            label: Text('API Log'),
+            icon: Icon(KIcons.apiLog),
+            onPressed: () {
+              getIt<Alice>().showInspector();
+            },
+          ),
+          CopyFlatButton(
+            '${failure.toJson()}',
+            onCopy: () {
+              Navigator.of(dialogContext).pop();
+              showInfoSnackBar(context, 'Copied failure to clipboard');
+            },
+          ),
+        ],
       );
     },
+  );
+}
+
+void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
+  return showAboutDialog(
+    context: context,
+    applicationName: '${packageInfo.appName}',
+    applicationVersion: '${packageInfo.version}',
+    applicationLegalese: 'Made by Sterrenburg',
+    children: <Widget>[
+      SizedBox(height: 24),
+      RichText(
+        text: TextSpan(
+          children: <TextSpan>[
+            TextSpan(
+                text: 'FlutterHole is a free third party Android application '
+                    'for interacting with your Pi-Hole® server. '
+                    '\n\n'
+                    'FlutterHole is open source, which means anyone '
+                    'can view the code that runs your app. '
+                    'You can find the repository on '),
+            TextSpan(
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText2
+                  .apply(color: KColors.link),
+              text: 'GitHub',
+              recognizer: TapGestureRecognizer()
+                ..onTap = () =>
+                    getIt<BrowserService>().launchUrl(KStrings.githubHomeUrl),
+            ),
+            TextSpan(text: '.'),
+          ],
+        ),
+      ),
+    ],
   );
 }

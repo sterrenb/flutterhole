@@ -13,12 +13,18 @@ class CenteredFailureIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text('${failure.message ?? 'unknown failure'}'),
-        Text('${failure.error?.toString()}'),
-      ],
+    return Center(
+      child: ListTile(
+        title: Text('${failure.message ?? 'Unknown failure'}'),
+        subtitle: Text('${failure.error?.runtimeType ?? 'Unknown error'}'),
+        trailing: Icon(
+          KIcons.warning,
+          color: KColors.warning,
+        ),
+        onTap: () {
+          showFailureDialog(context, failure);
+        },
+      ),
     );
   }
 }
