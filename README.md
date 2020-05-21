@@ -67,11 +67,23 @@ flutter pub get
 flutter pub run flutter_launcher_icons:main
 ```
 
-#### Generate code
+#### Generate code ####
+
+To generate `freezed` classes `injectable` injections etc.:
+
 ```shell script
 flutter pub run build_runner build --delete-conflicting-outputs  
 ```
+
 You can now build and run the app on either an emulator or a physical device using `flutter run`.
+
+### Testing ###
+
+To run the default integration test:
+
+```shell script
+flutter drive --target=test_driver/app.dart
+``` 
 
 ## API ##
 This application interacts with the [Pi-hole PHP API](https://discourse.pi-hole.net/t/pi-hole-api/1863).

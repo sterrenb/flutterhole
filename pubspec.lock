@@ -461,7 +461,7 @@ packages:
       name: freezed
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.8"
+    version: "0.10.9"
   freezed_annotation:
     dependency: "direct main"
     description:
@@ -670,13 +670,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.1"
-  modal_bottom_sheet:
-    dependency: "direct main"
-    description:
-      name: modal_bottom_sheet
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.5"
   multi_server_socket:
     dependency: transitive
     description:
@@ -726,6 +719,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
+  ozzie:
+    dependency: "direct dev"
+    description:
+      name: ozzie
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.3"
   package_config:
     dependency: transitive
     description:
@@ -949,7 +949,7 @@ packages:
       name: share
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.4+2"
+    version: "0.6.4+3"
   shared_preferences:
     dependency: transitive
     description:
@@ -1094,7 +1094,7 @@ packages:
       name: supercharged
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.1"
+    version: "1.6.0"
   sync_http:
     dependency: transitive
     description:
@@ -1157,7 +1157,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.4.7"
+    version: "5.4.10"
   url_launcher_macos:
     dependency: transitive
     description:
