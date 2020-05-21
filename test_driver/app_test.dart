@@ -1,18 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter_driver/flutter_driver.dart';
+import 'package:ozzie/ozzie.dart';
 import 'package:test/test.dart';
 
 main() {
   group('checking', () {
     FlutterDriver driver;
+    Ozzie ozzie;
 
-    // Connect to the Flutter driver before running any tests.
     setUpAll(() async {
       driver = await FlutterDriver.connect();
+      ozzie = Ozzie.initWith(driver, groupName: 'home');
     });
 
-    // Close the connection to the driver after the tests have completed.
     tearDownAll(() async {
       driver?.close();
+      ozzie?.generateHtmlReport();
     });
 
     test('Home page', () async {
@@ -20,22 +24,30 @@ main() {
 
       await driver.tap(find.text('Got it!'));
 
+      await ozzie.takeScreenshot('summary_0_top');
+
       await driver.tap(find.text('Total Queries'));
 
       expect(driver.getText(find.text('Powered by')), completes);
+
+      await ozzie.takeScreenshot('summary_1_numbers_wiki');
 
       await driver.tap(find.byTooltip('Back'));
 
       await driver.scrollIntoView(find.byType('QueryTypesTile'));
 
-      expect(driver.getText(find.text('AAAA (IPv6)')), completes);
+      await driver.waitFor(find.text('AAAA (IPv6)'));
+
+      await ozzie.takeScreenshot('summary_2_middle');
 
       await driver.scrollIntoView(find.byType('ForwardDestinationsTile'));
 
-      await Future.delayed(Duration(seconds: 2));
+      await ozzie.takeScreenshot('summary_3_bottom');
 
       await driver.scroll(find.byType('ForwardDestinationsTile'), -300, 0,
           Duration(milliseconds: 500));
+
+      await ozzie.takeScreenshot('clients_0_top');
 
 //      await Future.delayed(Duration(seconds: 2));
 
@@ -43,12 +55,18 @@ main() {
 
       await driver.tap(find.text('10.0.1.2 (openelec)'));
 
-      await driver.tap(PageBack());
+      await ozzie.takeScreenshot('clients_1_single');
 
-      await driver.scroll(
-          find.byType('FrequencyTile'), -300, 0, Duration(milliseconds: 500));
+      await driver.tap(find.byTooltip('Back'));
 
-      await Future.delayed(Duration(seconds: 2));
+      print('done with screenshots');
+
+      exit(0);
     });
   });
 }
+
+//      await driver.scroll(
+//          find.byType('FrequencyTile'), -300, 0, Duration(milliseconds: 500));
+//
+//      await Future.delayed(Duration(seconds: 2));

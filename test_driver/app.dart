@@ -3,7 +3,7 @@ import 'package:flutter_driver/driver_extension.dart';
 import 'package:flutterhole/main.dart' as app;
 import 'package:injectable/injectable.dart';
 
-main() {
+void main() {
   enableFlutterDriverExtension();
   WidgetsApp.debugAllowBannerOverride =
       false; // remove debug banner for screenshots

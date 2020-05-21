@@ -36,6 +36,7 @@ abstract class RegisterDevModule {
   @preResolve
   @singleton
   Future<HiveInterface> get hive async {
+    await Hive.deleteFromDisk();
     await Hive.initFlutter('dev');
     return Hive;
   }
@@ -185,9 +186,9 @@ class ApiDataSourceDev implements ApiDataSource {
   Future<SummaryModel> fetchSummary(PiholeSettings settings) async {
     return SummaryModel(
       domainsBeingBlocked: 128977,
-      dnsQueriesToday: 14773,
-      adsBlockedToday: 4875,
-      adsPercentageToday: 33.21,
+      dnsQueriesToday: 80085,
+      adsBlockedToday: 44875,
+      adsPercentageToday: 56.03,
       uniqueDomains: 10897,
       queriesForwarded: 13653,
       queriesCached: 1072,
@@ -290,8 +291,9 @@ class NumbersApiRepositoryDev implements NumbersApiRepository {
   @override
   Future<Either<Failure, Map<int, String>>> fetchManyTrivia(
       List<int> integers) async {
-    return Right(integers.asMap().map<int, String>(
-        (_, integer) => MapEntry(integer, 'Some cool info for $integer.')));
+    return Right(integers.asMap().map<int, String>((_, integer) => MapEntry(
+        integer,
+        '80,085 is an odd composite number composed of four prime numbers multiplied together.')));
   }
 
   @override

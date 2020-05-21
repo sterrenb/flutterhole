@@ -9,7 +9,7 @@ import 'package:flutterhole/features/settings/presentation/notifiers/theme_mode_
 import 'package:injectable/injectable.dart';
 import 'package:provider/provider.dart';
 
-void main([List<String> arguments = const [Environment.prod]]) async {
+void main([List<String> arguments = const [Environment.prod]]) {
   // wait for flutter initialization
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -18,18 +18,18 @@ void main([List<String> arguments = const [Environment.prod]]) async {
   // Configure service injection
   List<String> args = List.from(arguments) ?? [];
   if (args.isEmpty) args.add(Environment.prod);
-  await configure(args.first);
+  configure(args.first).then((_) {
+    if (foundation.kReleaseMode) {
+    } else {
+      enableBlocDelegate();
+    }
 
-  if (foundation.kReleaseMode) {
-  } else {
-    enableBlocDelegate();
-  }
+    getIt<RouterService>().createRoutes();
+    getIt<SettingsBloc>().add(SettingsEvent.init());
+    getIt<PiConnectionBloc>().add(PiConnectionEvent.ping());
 
-  getIt<RouterService>().createRoutes();
-  getIt<SettingsBloc>().add(SettingsEvent.init());
-  getIt<PiConnectionBloc>().add(PiConnectionEvent.ping());
-
-  runApp(MyApp());
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
