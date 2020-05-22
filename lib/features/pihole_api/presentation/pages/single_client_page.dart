@@ -31,7 +31,7 @@ class SingleClientPage extends StatelessWidget {
         child: PiholeThemeBuilder(
           child: Scaffold(
             appBar: QueriesSearchAppBar(
-              title: Text('${client.titleOrIp}'),
+              title: Text('${client.nameOrIp}'),
             ),
             body: Scrollbar(
               child: BlocBuilder<SingleClientBloc, SingleClientState>(

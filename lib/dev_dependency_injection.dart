@@ -118,7 +118,7 @@ class ApiDataSourceDev implements ApiDataSource {
         timestamp: DateTime.fromMillisecondsSinceEpoch(1590058147934),
         queryType: QueryType.A,
         domain: 'query.org',
-        clientName: '${client.titleOrIp}',
+        clientName: '${client.nameOrIp}',
         queryStatus: QueryStatus.Forwarded,
         dnsSecStatus: DnsSecStatus.Insecure,
         replyDuration: Duration(milliseconds: 123),
@@ -127,7 +127,7 @@ class ApiDataSourceDev implements ApiDataSource {
         timestamp: DateTime.fromMillisecondsSinceEpoch(15958147934),
         queryType: QueryType.PTR,
         domain: 'pointer.org',
-        clientName: '${client.titleOrIp}',
+        clientName: '${client.nameOrIp}',
         queryStatus: QueryStatus.Cached,
         dnsSecStatus: DnsSecStatus.Bogus,
         replyDuration: Duration(milliseconds: 321),
@@ -227,10 +227,10 @@ class ApiDataSourceDev implements ApiDataSource {
   Future<TopSourcesResult> fetchTopSources(PiholeSettings settings) async {
     return TopSourcesResult(
       topSources: {
-        PiClient(title: 'localhost', ip: '127.0.0.1'): 3204,
-        PiClient(title: 'openelec', ip: '10.0.1.2'): 324,
+        PiClient(name: 'localhost', ip: '127.0.0.1'): 3204,
+        PiClient(name: 'openelec', ip: '10.0.1.2'): 324,
         PiClient(ip: '10.0.1.3'): 216,
-        PiClient(title: 'laptop', ip: '10.0.1.4'): 96,
+        PiClient(name: 'laptop', ip: '10.0.1.4'): 96,
       },
     );
   }

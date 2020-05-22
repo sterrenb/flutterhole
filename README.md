@@ -75,6 +75,12 @@ To generate `freezed` classes `injectable` injections etc.:
 flutter pub run build_runner build --delete-conflicting-outputs  
 ```
 
+Or, build continuously:
+
+```shell script
+flutter pub run build_runner watch --delete-conflicting-outputs  
+```
+
 You can now build and run the app on either an emulator or a physical device using `flutter run`.
 
 ### Testing ###

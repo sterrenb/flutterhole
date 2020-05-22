@@ -232,7 +232,7 @@ void main() async {
   });
 
   group('fetchQueryDataForClient', () {
-    final PiClient client = PiClient(title: 'test.org');
+    final PiClient client = PiClient(name: 'test.org');
 
     test(
       'should return reversed List<QueryData> on successful fetchQueriesForClient',

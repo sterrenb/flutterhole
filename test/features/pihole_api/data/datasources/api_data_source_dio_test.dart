@@ -328,9 +328,9 @@ void main() async {
       await apiDataSourceDio.fetchQueryDataForClient(
           piholeSettings,
           PiClient(
-            title: 'client',
-            ip: '1.2.3.4',
-          ));
+                name: 'client',
+                ip: '1.2.3.4',
+              ));
       // assert
       expect(result, equals(ManyQueryData.fromJson(json)));
     },

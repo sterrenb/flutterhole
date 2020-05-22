@@ -54,9 +54,9 @@ class ClientsPageView extends StatelessWidget {
                         return AnimatedOpener(
                           closed: (context) =>
                               FrequencyTile(
-                                title: client.titleOrIp,
-                                requests: queryCount,
-                                totalRequests: totalQueryCount,
+                            title: client.nameOrIp,
+                            requests: queryCount,
+                            totalRequests: totalQueryCount,
                                 color: KColors.clients,
                               ),
                           opened: (context) => SingleClientPage(client: client),

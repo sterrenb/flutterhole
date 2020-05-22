@@ -247,8 +247,8 @@ class ApiDataSourceDio implements ApiDataSource {
     final Map<String, dynamic> json =
         await _getSecure(settings, queryParameters: {
       'getAllQueries': '',
-      'client': (client.title != null && client.title.isNotEmpty)
-          ? client.title.trim()
+      'client': (client.name != null && client.name.isNotEmpty)
+          ? client.name.trim()
           : client.ip,
     });
 
