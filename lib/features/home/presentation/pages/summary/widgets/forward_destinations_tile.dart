@@ -18,36 +18,32 @@ class ForwardDestinationsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Container(
-        child: forwardDestinationsResult.fold<Widget>(
-          (failure) => CenteredFailureIndicator(failure),
-          (success) => PieChartScaffold(
-              title: 'Forward destinations',
-              pieChart:
-                  ForwardDestinationsPieChart(success.forwardDestinations),
-              legendItems: success.forwardDestinations
-                  .map<int, Widget>((forwardDestination, percentage) {
-                    final int index = success.forwardDestinations.keys
-                        .toList()
-                        .indexOf(forwardDestination);
+      child: forwardDestinationsResult.fold<Widget>(
+        (failure) => CenteredFailureIndicator(failure),
+        (success) => PieChartScaffold(
+            title: 'Forward destinations',
+            pieChart: ForwardDestinationsPieChart(success.forwardDestinations),
+            legendItems: success.forwardDestinations
+                .map<int, Widget>((forwardDestination, percentage) {
+                  final int index = success.forwardDestinations.keys
+                      .toList()
+                      .indexOf(forwardDestination);
 
-                    return MapEntry(
-                      index,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: GraphLegendItem(
-                          index: index,
-                          title: forwardDestination.titleOrIp,
-                          subtitle: '$percentage%',
-                          color:
-                          ForwardDestinationsPieChart.colorAtIndex(index),
-                        ),
+                  return MapEntry(
+                    index,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: GraphLegendItem(
+                        index: index,
+                        title: forwardDestination.titleOrIp,
+                        subtitle: '$percentage%',
+                        color: ForwardDestinationsPieChart.colorAtIndex(index),
                       ),
-                    );
-                  })
-                  .values
-                  .toList()),
-        ),
+                    ),
+                  );
+                })
+                .values
+                .toList()),
       ),
     );
   }

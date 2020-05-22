@@ -89,7 +89,7 @@ To run the default integration test:
 
 ```shell script
 flutter drive --target=test_driver/app.dart
-``` 
+```
 
 ## API ##
 This application interacts with the [Pi-hole PHP API](https://discourse.pi-hole.net/t/pi-hole-api/1863).

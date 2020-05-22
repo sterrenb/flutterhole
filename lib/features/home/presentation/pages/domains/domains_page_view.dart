@@ -28,9 +28,10 @@ class DomainsPageView extends StatelessWidget {
             _,
             __,
             ___,
-            Either<Failure, TopItems> topItemsResult,
             ____,
+            Either<Failure, TopItems> topItemsResult,
             _____,
+              ______,
           ) {
             return topItemsResult.fold<Widget>(
               (failure) => CenteredFailureIndicator(failure),

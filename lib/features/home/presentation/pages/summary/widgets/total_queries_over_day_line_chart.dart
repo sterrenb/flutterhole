@@ -2,11 +2,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/convert.dart';
+import 'package:flutterhole/features/home/presentation/pages/summary/widgets/line_chart_scaffold.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
-
-const double _horizontalLineInterval = 100.0;
-const double _verticalLineInterval = 30.0;
-const double _lineWidth = 2.0;
 
 class TotalQueriesOverDayLineChart extends StatelessWidget {
   const TotalQueriesOverDayLineChart(
@@ -32,31 +29,23 @@ class TotalQueriesOverDayLineChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return LineChart(
       LineChartData(
-        titlesData: FlTitlesData(
-          leftTitles: SideTitles(
-            textStyle: Theme.of(context).textTheme.caption,
-            showTitles: true,
-            interval: _horizontalLineInterval,
-            getTitles: (double value) {
-              return '${value.round()}';
-            },
-          ),
-          bottomTitles: SideTitles(
-              showTitles: true,
-              interval: _verticalLineInterval,
-              textStyle: Theme.of(context).textTheme.caption,
-              getTitles: (double value) {
-                final dateTime =
-                    overTimeData.domainsOverTime.keys.elementAt(value.round());
+        titlesData: buildTitlesData(
+          context: context,
+          getLeftTitles: (double value) {
+            return '${value.round()}';
+          },
+          getBottomTitles: (double value) {
+            final dateTime =
+                overTimeData.domainsOverTime.keys.elementAt(value.round());
 
-                return '${dateTime.formattedTimeShort}';
-              }),
+            return '${dateTime.formattedTimeShort}';
+          },
         ),
         lineBarsData: <LineChartBarData>[
           LineChartBarData(
             colors: <Color>[KColors.success],
             spots: _spotsFromMap(overTimeData.domainsOverTime),
-            barWidth: _lineWidth,
+            barWidth: kLineWidth,
             dotData: FlDotData(
               show: false,
             ),
@@ -74,7 +63,7 @@ class TotalQueriesOverDayLineChart extends StatelessWidget {
           LineChartBarData(
             colors: <Color>[KColors.blocked],
             spots: _spotsFromMap(overTimeData.adsOverTime),
-            barWidth: _lineWidth,
+            barWidth: kLineWidth,
             dotData: FlDotData(
               show: false,
             ),
@@ -94,10 +83,10 @@ class TotalQueriesOverDayLineChart extends StatelessWidget {
           show: true,
           drawVerticalLine: true,
           checkToShowHorizontalLine: (double value) {
-            return value.round() % _horizontalLineInterval == 0;
+            return value.round() % kHorizontalLineInterval == 0;
           },
           checkToShowVerticalLine: (double value) {
-            return value.round() % _verticalLineInterval == 0;
+            return value.round() % kVerticalLineInterval == 0;
           },
         ),
         lineTouchData: LineTouchData(

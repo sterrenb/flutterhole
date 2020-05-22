@@ -26,10 +26,11 @@ class ClientsPageView extends StatelessWidget {
           success: (
             Either<Failure, SummaryModel> summaryResult,
             _,
-            Either<Failure, TopSourcesResult> topSourcesResult,
             __,
+            Either<Failure, TopSourcesResult> topSourcesResult,
             ___,
             ____,
+              _____,
           ) {
             return topSourcesResult.fold<Widget>(
               (failure) => CenteredFailureIndicator(failure),
