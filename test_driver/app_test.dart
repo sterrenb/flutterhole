@@ -30,38 +30,38 @@ main() {
 
       await driver.tap(find.text('Got it!'));
 
-      await ozzie.takeScreenshot('summary_0_top');
+      await ozzie.takeScreenshot('summary_top');
 
       await driver.tap(find.text('Total Queries'));
 
       expect(driver.getText(find.text('Powered by')), completes);
 
-      await ozzie.takeScreenshot('summary_1_numbers_wiki');
+      await ozzie.takeScreenshot('summary_numbers_wiki');
 
       await driver.tap(find.byTooltip('Back'));
+
+      await driver.scrollIntoView(find.byType('TotalQueriesOverDayTile'));
+
+      await ozzie.takeScreenshot('summary_middle_1');
 
       await driver.scrollIntoView(find.byType('QueryTypesTile'));
 
       await driver.waitFor(find.text('AAAA (IPv6)'));
 
-      await ozzie.takeScreenshot('summary_2_middle');
+      await ozzie.takeScreenshot('summary_middle_2');
 
       await driver.scrollIntoView(find.byType('ForwardDestinationsTile'));
 
-      await ozzie.takeScreenshot('summary_3_bottom');
+      await ozzie.takeScreenshot('summary_bottom');
 
       await driver.scroll(find.byType('ForwardDestinationsTile'), -300, 0,
           Duration(milliseconds: 500));
 
-      await ozzie.takeScreenshot('clients_0_top');
-
-//      await Future.delayed(Duration(seconds: 2));
-
-      print('tapping on openelec');
+      await ozzie.takeScreenshot('clients_all');
 
       await driver.tap(find.text('10.0.1.2 (openelec)'));
 
-      await ozzie.takeScreenshot('clients_1_single');
+      await ozzie.takeScreenshot('client_single');
 
       await driver.tap(find.byTooltip('Back'));
 

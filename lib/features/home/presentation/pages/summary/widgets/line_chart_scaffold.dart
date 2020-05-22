@@ -43,19 +43,76 @@ FlTitlesData buildTitlesData({
   @required BuildContext context,
   @required GetTitleFunction getLeftTitles,
   @required GetTitleFunction getBottomTitles,
+}) =>
+    FlTitlesData(
+      leftTitles: SideTitles(
+        textStyle: Theme.of(context).textTheme.caption,
+        showTitles: true,
+        interval: kHorizontalLineInterval,
+        getTitles: getLeftTitles,
+      ),
+      bottomTitles: SideTitles(
+        showTitles: true,
+        interval: kVerticalLineInterval,
+        textStyle: Theme.of(context).textTheme.caption,
+        getTitles: getBottomTitles,
+      ),
+    );
+
+FlGridData buildGridData() => FlGridData(
+      show: true,
+      drawVerticalLine: true,
+      checkToShowHorizontalLine: (double value) {
+        return value.round() % kHorizontalLineInterval == 0;
+      },
+      checkToShowVerticalLine: (double value) {
+        return value.round() % kVerticalLineInterval == 0;
+      },
+    );
+
+BarAreaData buildBarAreaData(Color color) => BarAreaData(
+      show: true,
+      colors: <Color>[
+        color.withOpacity(0.5),
+        color.withOpacity(0.25),
+      ],
+      gradientColorStops: [0.5, 1.0],
+      gradientFrom: const Offset(0, 0),
+      gradientTo: const Offset(0, 1),
+    );
+
+typedef String LineTooltipTextBuilder(int index, Color color, double y);
+
+List<LineTooltipItem> buildLineTooltipItems({
+  BuildContext context,
+  List<LineBarSpot> touchedSpots,
+  bool showTooltipWhenZero = true,
+  LineTooltipTextBuilder lineTooltipTextBuilder,
 }) {
-  return FlTitlesData(
-    leftTitles: SideTitles(
-      textStyle: Theme.of(context).textTheme.caption,
-      showTitles: true,
-      interval: kHorizontalLineInterval,
-      getTitles: getLeftTitles,
-    ),
-    bottomTitles: SideTitles(
-      showTitles: true,
-      interval: kVerticalLineInterval,
-      textStyle: Theme.of(context).textTheme.caption,
-      getTitles: getBottomTitles,
-    ),
-  );
+  if (touchedSpots == null) {
+    return null;
+  }
+
+  return touchedSpots.map((LineBarSpot touchedSpot) {
+    if (touchedSpot == null) {
+      return null;
+    }
+
+    final Color color = touchedSpot.bar.colors[0];
+
+    final text = lineTooltipTextBuilder(
+      touchedSpot.barIndex,
+      color,
+      touchedSpot.y,
+    );
+
+    if (!showTooltipWhenZero && touchedSpot.y == 0) return null;
+
+    return LineTooltipItem(
+      '$text',
+      Theme.of(context).textTheme.bodyText1.apply(
+            color: color,
+          ),
+    );
+  }).toList();
 }

@@ -5,7 +5,6 @@ import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'over_time_data_clients.freezed.dart';
-
 part 'over_time_data_clients.g.dart';
 
 Map<DateTime, List<int>> _valueToHitsOverTime(dynamic value) {

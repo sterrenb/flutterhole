@@ -40,14 +40,11 @@ class SummaryPageView extends StatelessWidget {
             Either<Failure, DnsQueryTypeResult> dnsQueryTypesResult,
           ) =>
               summaryResult.fold<Widget>(
-                    (failure) => CenteredFailureIndicator(failure),
-                    (summary) =>
-                    HomePageOverflowRefresher(
+                (failure) => CenteredFailureIndicator(failure),
+                (summary) => HomePageOverflowRefresher(
                   child: StaggeredGridView.count(
                     crossAxisCount: 4,
                     children: <Widget>[
-                      TotalQueriesOverDayTile(queriesOverTimeResult),
-                      ClientsOverDayTile(clientsOverTimeResult),
                       SummaryTile(
                         title: 'Total Queries',
                         subtitle:
@@ -76,16 +73,18 @@ class SummaryPageView extends StatelessWidget {
                         color: Colors.red,
                         integer: summary.domainsBeingBlocked,
                       ),
+                      TotalQueriesOverDayTile(queriesOverTimeResult),
+                      ClientsOverDayTile(clientsOverTimeResult),
                       QueryTypesTile(dnsQueryTypesResult),
                       ForwardDestinationsTile(forwardDestinationsResult),
                     ],
                     staggeredTiles: <StaggeredTile>[
+                      StaggeredTile.count(4, 1),
+                      StaggeredTile.count(4, 1),
+                      StaggeredTile.count(4, 1),
+                      StaggeredTile.count(4, 1),
                       StaggeredTile.count(4, 3),
                       StaggeredTile.count(4, 3),
-                      StaggeredTile.count(4, 1),
-                      StaggeredTile.count(4, 1),
-                      StaggeredTile.count(4, 1),
-                      StaggeredTile.count(4, 1),
                       StaggeredTile.count(4, 3),
                       StaggeredTile.count(4, 3),
                     ],

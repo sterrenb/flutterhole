@@ -36,6 +36,8 @@ class ApiRepositoryImpl implements ApiRepository {
       return Right(result);
     } on PiException catch (e) {
       return Left(Failure('$description failed', e));
+    } catch (e) {
+      return Left(Failure('$description failed with unexpected error', e));
     }
   }
 
@@ -119,7 +121,7 @@ class ApiRepositoryImpl implements ApiRepository {
       PiholeSettings settings, String domain) async {
     try {
       final ManyQueryData result =
-      await _apiDataSource.fetchQueryDataForDomain(settings, domain);
+          await _apiDataSource.fetchQueryDataForDomain(settings, domain);
       return Right(result.data.reversed.toList());
     } on PiException catch (e) {
       return Left(Failure('fetchQueriesForDomain failed', e));

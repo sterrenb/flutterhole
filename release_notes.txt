@@ -1,6 +1,6 @@
 * Fix: Pi-holes without a password and API token can now toggle off the API token requirement.
 
-* Feature: the queries over time chart is back.
+* Feature: the queries/clients over time charts are back.
 
 * Feature: errors are now more verbose.
 
