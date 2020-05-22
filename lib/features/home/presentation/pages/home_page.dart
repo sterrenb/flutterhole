@@ -14,7 +14,7 @@ import 'package:flutterhole/features/pihole_api/presentation/widgets/pi_connecti
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/active_pihole_title.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
-import 'package:flutterhole/widgets/layout/bottom_navy_bar_item_extension.dart';
+import 'package:flutterhole/features/home/presentation/widgets/bottom_navy_bar_item_extension.dart';
 
 class HomePage extends StatefulWidget {
   @override

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/total_queries_over_day_line_chart.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
-import 'package:flutterhole/widgets/layout/failure_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
 
 class TotalQueriesOverDayTile extends StatelessWidget {
   const TotalQueriesOverDayTile(

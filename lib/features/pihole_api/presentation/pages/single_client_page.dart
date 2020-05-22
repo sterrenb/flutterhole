@@ -9,8 +9,8 @@ import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_sea
 import 'package:flutterhole/features/pihole_api/presentation/widgets/single_client_page_overflow_refresher.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/single_query_data_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
-import 'package:flutterhole/widgets/layout/failure_indicators.dart';
-import 'package:flutterhole/widgets/layout/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
 import 'package:provider/provider.dart';
 
 class SingleClientPage extends StatelessWidget {

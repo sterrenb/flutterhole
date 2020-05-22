@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/settings/services/preference_service.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/layout/notifications/dialogs.dart';
 
 /// Calls [showWelcomeDialog] if this is the first time the app is launched.
 class WelcomeMessageChecker extends StatefulWidget {

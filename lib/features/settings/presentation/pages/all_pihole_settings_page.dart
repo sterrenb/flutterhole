@@ -7,9 +7,9 @@ import 'package:flutterhole/features/settings/presentation/pages/single_pihole_s
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_settings_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/settings_bloc_builder.dart';
-import 'package:flutterhole/widgets/layout/animated_opener.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
-import 'package:flutterhole/widgets/layout/snackbars.dart';
+import 'package:flutterhole/widgets/layout/animations/animated_opener.dart';
+import 'package:flutterhole/widgets/layout/notifications/dialogs.dart';
+import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
 
 // https://github.com/flutter/packages/blob/ed004de397e3823f2d986ac28a180baf683735ef/packages/animations/example/lib/container_transition.dart#L39
 const double _fabDimension = 56.0;

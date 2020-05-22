@@ -3,8 +3,8 @@ import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/convert.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
-import 'package:flutterhole/widgets/layout/animated_opener.dart';
-import 'package:flutterhole/widgets/layout/open_url_tile.dart';
+import 'package:flutterhole/widgets/layout/animations/animated_opener.dart';
+import 'package:flutterhole/widgets/layout/lists/open_url_tile.dart';
 
 const String _wikipediaUrl =
     'https://en.wikipedia.org/wiki/List_of_DNS_record_types';

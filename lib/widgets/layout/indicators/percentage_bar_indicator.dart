@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-class PercentageBox extends StatelessWidget {
+class PercentageBarIndicator extends StatelessWidget {
   final double width;
   final double fraction;
   final Color color;
 
-  const PercentageBox({Key key,
-    @required this.width,
+  const PercentageBarIndicator(
+      {Key key,
+      @required this.width,
     @required this.fraction,
     this.color = Colors.green})
       : super(key: key);

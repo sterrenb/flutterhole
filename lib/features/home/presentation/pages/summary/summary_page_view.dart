@@ -13,8 +13,8 @@ import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart'
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
-import 'package:flutterhole/widgets/layout/failure_indicators.dart';
-import 'package:flutterhole/widgets/layout/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
 import 'package:intl/intl.dart';
 
 final _numberFormat = NumberFormat();

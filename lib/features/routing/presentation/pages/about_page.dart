@@ -6,9 +6,9 @@ import 'package:flutterhole/features/routing/presentation/pages/privacy_page.dar
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/features/settings/services/package_info_service.dart';
-import 'package:flutterhole/widgets/layout/animated_opener.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
-import 'package:flutterhole/widgets/layout/list_title.dart';
+import 'package:flutterhole/widgets/layout/animations/animated_opener.dart';
+import 'package:flutterhole/widgets/layout/lists/list_title.dart';
+import 'package:flutterhole/widgets/layout/notifications/dialogs.dart';
 import 'package:package_info/package_info.dart';
 import 'package:share/share.dart';
 

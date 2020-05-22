@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants.dart';
-import 'package:flutterhole/widgets/layout/open_url_tile.dart';
+import 'package:flutterhole/widgets/layout/lists/open_url_tile.dart';
 
 const String _numbersApiHome = 'http://numbersapi.com/';
 

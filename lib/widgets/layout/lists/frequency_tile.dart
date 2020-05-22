@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole/widgets/layout/percentage_box.dart';
+import 'package:flutterhole/widgets/layout/indicators/percentage_bar_indicator.dart';
 import 'package:intl/intl.dart';
 
 final _numberFormat = NumberFormat();
@@ -58,7 +58,7 @@ class FrequencyTile extends StatelessWidget {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 2.0),
-                          child: PercentageBox(
+                          child: PercentageBarIndicator(
                             color: this.color,
                             width: 100,
                             fraction: _fraction,

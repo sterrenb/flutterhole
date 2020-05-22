@@ -7,11 +7,11 @@ import 'package:flutterhole/features/home/presentation/widgets/home_bloc_builder
 import 'package:flutterhole/features/home/presentation/widgets/home_page_overflow_refresher.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/presentation/pages/single_domain_page.dart';
-import 'package:flutterhole/widgets/layout/animated_opener.dart';
-import 'package:flutterhole/widgets/layout/failure_indicators.dart';
-import 'package:flutterhole/widgets/layout/frequency_tile.dart';
-import 'package:flutterhole/widgets/layout/list_with_header.dart';
-import 'package:flutterhole/widgets/layout/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/animations/animated_opener.dart';
+import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/lists/frequency_tile.dart';
+import 'package:flutterhole/widgets/layout/lists/list_with_header.dart';
 import 'package:supercharged/supercharged.dart';
 
 class DomainsPageView extends StatelessWidget {

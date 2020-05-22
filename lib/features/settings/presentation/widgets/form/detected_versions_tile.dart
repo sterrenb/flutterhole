@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/features/settings/blocs/pihole_settings_bloc.dart';
-import 'package:flutterhole/widgets/layout/failure_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
 
 class DetectedVersionsTile extends StatelessWidget {
   const DetectedVersionsTile({

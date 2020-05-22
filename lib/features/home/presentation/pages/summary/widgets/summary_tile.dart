@@ -5,8 +5,8 @@ import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/numbers_api/blocs/number_trivia_bloc.dart';
 import 'package:flutterhole/features/numbers_api/presentation/widgets/numbers_api_description_tile.dart';
 import 'package:flutterhole/features/settings/services/preference_service.dart';
-import 'package:flutterhole/widgets/layout/animate_on_build.dart';
-import 'package:flutterhole/widgets/layout/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/animations/animate_on_build.dart';
+import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
 
 class SummaryTile extends StatelessWidget {
   const SummaryTile({
@@ -96,8 +96,7 @@ class _SummaryTriviaPage extends StatelessWidget {
                           if (trivia.containsKey(integer)) {
                             return Text(
                               '${trivia[integer]}',
-                              style: Theme
-                                  .of(context)
+                              style: Theme.of(context)
                                   .textTheme
                                   .headline6
                                   .copyWith(color: Colors.white),

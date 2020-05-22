@@ -9,7 +9,7 @@ import 'package:flutterhole/features/routing/presentation/widgets/drawer_tile.da
 import 'package:flutterhole/features/routing/services/router_service.dart';
 import 'package:flutterhole/features/settings/services/package_info_service.dart';
 import 'package:flutterhole/features/settings/services/preference_service.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/layout/notifications/dialogs.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 

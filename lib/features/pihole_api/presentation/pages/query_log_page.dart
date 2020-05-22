@@ -11,8 +11,8 @@ import 'package:flutterhole/features/pihole_api/presentation/widgets/single_quer
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/features/settings/services/preference_service.dart';
-import 'package:flutterhole/widgets/layout/failure_indicators.dart';
-import 'package:flutterhole/widgets/layout/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 

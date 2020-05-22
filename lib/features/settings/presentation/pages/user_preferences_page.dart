@@ -4,8 +4,8 @@ import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_
 import 'package:flutterhole/features/settings/presentation/widgets/preferences/footer_message_string_preference.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/preferences/theme_radio_preferences.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/preferences/use_numbers_api_switch_preference.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
-import 'package:flutterhole/widgets/layout/list_title.dart';
+import 'package:flutterhole/widgets/layout/notifications/dialogs.dart';
+import 'package:flutterhole/widgets/layout/lists/list_title.dart';
 
 class UserPreferencesPage extends StatefulWidget {
   @override

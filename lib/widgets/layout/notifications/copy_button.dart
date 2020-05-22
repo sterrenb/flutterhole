@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterhole/constants.dart';
-import 'package:flutterhole/widgets/layout/snackbars.dart';
+import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
 
 const String _tooltip = 'Copy to clipboard';
 

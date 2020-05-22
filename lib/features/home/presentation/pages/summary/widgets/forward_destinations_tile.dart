@@ -5,7 +5,7 @@ import 'package:flutterhole/features/home/presentation/pages/summary/widgets/for
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/graph_legend_item.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/pie_chart_scaffold.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
-import 'package:flutterhole/widgets/layout/failure_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
 
 class ForwardDestinationsTile extends StatelessWidget {
   const ForwardDestinationsTile(

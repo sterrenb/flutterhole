@@ -19,7 +19,7 @@ import 'package:flutterhole/features/settings/presentation/widgets/form/detected
 import 'package:flutterhole/features/settings/presentation/widgets/form/host_details_status_icon.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/form/title_form_tile.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/layout/notifications/dialogs.dart';
 
 const InputDecoration _decoration = InputDecoration(
   border: const OutlineInputBorder(),
