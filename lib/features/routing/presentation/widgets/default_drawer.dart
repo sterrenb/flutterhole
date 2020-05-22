@@ -14,6 +14,8 @@ import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
 class DefaultDrawer extends StatelessWidget {
+  const DefaultDrawer();
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<DrawerNotifier>(

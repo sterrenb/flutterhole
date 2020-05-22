@@ -8,8 +8,8 @@ import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_sea
 import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_list_builder.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/query_log_page_overflow_refresher.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/single_query_data_tile.dart';
+import 'package:flutterhole/features/routing/presentation/pages/page_scaffold.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
-import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/features/settings/services/preference_service.dart';
 import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
 import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
@@ -66,46 +66,42 @@ class QueryLogPage extends StatelessWidget {
         create: (_) => QueryLogBloc()
           ..add(QueryLogEvent.fetchSome(
               getIt<PreferenceService>().queryLogMaxResults)),
-        child: PiholeThemeBuilder(
-          child: Scaffold(
-            drawer: DefaultDrawer(),
-            appBar: QueriesSearchAppBar(
-              title: Text('Query log'),
-              actions: <Widget>[
-                _PopupMenu(),
-              ],
-            ),
-            body: Scrollbar(
-              child: BlocBuilder<QueryLogBloc, QueryLogState>(
-                builder: (BuildContext context, QueryLogState state) {
-                  return state.maybeWhen<Widget>(
-                    success: (List<QueryData> queries) {
-                      return QueriesSearchListBuilder(
-                        initialData: queries,
-                        builder:
-                            (BuildContext context, List<QueryData> matches) {
-                          return QueryLogPageOverflowRefresher(
-                            child: ListView.builder(
-                              itemCount: matches.length,
-                              itemBuilder: (context, index) {
-                                final QueryData query =
-                                    matches.elementAt(index);
+        child: PageScaffold(
+          drawer: DefaultDrawer(),
+          appBar: QueriesSearchAppBar(
+            title: Text('Query log'),
+            actions: <Widget>[
+              _PopupMenu(),
+            ],
+          ),
+          body: Scrollbar(
+            child: BlocBuilder<QueryLogBloc, QueryLogState>(
+              builder: (BuildContext context, QueryLogState state) {
+                return state.maybeWhen<Widget>(
+                  success: (List<QueryData> queries) {
+                    return QueriesSearchListBuilder(
+                      initialData: queries,
+                      builder: (BuildContext context, List<QueryData> matches) {
+                        return QueryLogPageOverflowRefresher(
+                          child: ListView.builder(
+                            itemCount: matches.length,
+                            itemBuilder: (context, index) {
+                              final QueryData query = matches.elementAt(index);
 
-                                return SingleQueryDataTile(query: query);
-                              },
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    failure: (failure) => CenteredFailureIndicator(failure),
-                    initial: () => Container(),
-                    orElse: () {
-                      return CenteredLoadingIndicator();
-                    },
-                  );
-                },
-              ),
+                              return SingleQueryDataTile(query: query);
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  failure: (failure) => CenteredFailureIndicator(failure),
+                  initial: () => Container(),
+                  orElse: () {
+                    return CenteredLoadingIndicator();
+                  },
+                );
+              },
             ),
           ),
         ),

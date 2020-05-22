@@ -1,11 +1,11 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/routing/presentation/pages/page_scaffold.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
 import 'package:flutterhole/features/settings/presentation/pages/add_pihole_page.dart';
 import 'package:flutterhole/features/settings/presentation/pages/single_pihole_settings_page.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_settings_tile.dart';
-import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/settings_bloc_builder.dart';
 import 'package:flutterhole/widgets/layout/animations/animated_opener.dart';
 import 'package:flutterhole/widgets/layout/notifications/dialogs.dart';
@@ -71,11 +71,12 @@ class _PopupMenu extends StatelessWidget {
 class AllPiholeSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return PiholeThemeBuilder(child: SettingsBlocBuilder(
+    return SettingsBlocBuilder(
         builder: (BuildContext context, SettingsState state) {
-      return Scaffold(
+      return PageScaffold(
+        isNested: true,
         appBar: AppBar(
-          title: Text('My Piholes'),
+          title: Text('My Pi-holes'),
           actions: <Widget>[
             _PopupMenu(),
           ],
@@ -109,7 +110,7 @@ class AllPiholeSettingsPage extends StatelessWidget {
           },
         ),
       );
-    }));
+        });
   }
 }
 

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/browser/services/browser_service.dart';
+import 'package:flutterhole/features/routing/presentation/pages/page_scaffold.dart';
 import 'package:flutterhole/features/routing/presentation/pages/privacy_page.dart';
-import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
-import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/features/settings/services/package_info_service.dart';
 import 'package:flutterhole/widgets/layout/animations/animated_opener.dart';
 import 'package:flutterhole/widgets/layout/lists/list_title.dart';
@@ -17,53 +16,50 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final packageInfo = getIt<PackageInfoService>().packageInfo;
 
-    return PiholeThemeBuilder(
-      child: Scaffold(
-        drawer: DefaultDrawer(),
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              title: Text('About'),
-              flexibleSpace: FlexibleSpaceBar(),
+    return PageScaffold(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            title: Text('About'),
+            flexibleSpace: FlexibleSpaceBar(),
+          ),
+          SliverList(
+              delegate: SliverChildListDelegate([
+            Column(
+              children: <Widget>[
+                ListTile(
+                  contentPadding: EdgeInsets.all(16),
+                  title: Row(
+                    children: <Widget>[
+                      Text('${packageInfo?.appName}',
+                          style: Theme.of(context).textTheme.headline4),
+                    ],
+                  ),
+                  subtitle: Text(
+                    'Made by Sterrenburg',
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(
+                    KIcons.version,
+                    color: KColors.success,
+                  ),
+                  trailing: FlatButton(
+                    onPressed: () {
+                      showAppDetailsDialog(context, packageInfo);
+                    },
+                    child: Text('Details'),
+                  ),
+                  title: Text('Version'),
+                  subtitle: Text('${packageInfo.versionAndBuildString}'),
+                ),
+              ],
             ),
-            SliverList(
-                delegate: SliverChildListDelegate([
-              Column(
-                children: <Widget>[
-                  ListTile(
-                    contentPadding: EdgeInsets.all(16),
-                    title: Row(
-                      children: <Widget>[
-                        Text('${packageInfo?.appName}',
-                            style: Theme.of(context).textTheme.headline4),
-                      ],
-                    ),
-                    subtitle: Text(
-                      'Made by Sterrenburg',
-                      style: Theme.of(context).textTheme.caption,
-                    ),
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      KIcons.version,
-                      color: KColors.success,
-                    ),
-                    trailing: FlatButton(
-                      onPressed: () {
-                        showAppDetailsDialog(context, packageInfo);
-                      },
-                      child: Text('Details'),
-                    ),
-                    title: Text('Version'),
-                    subtitle: Text('${packageInfo.versionAndBuildString}'),
-                  ),
-                ],
-              ),
-              Divider(),
-              _AboutTiles(packageInfo: packageInfo),
-            ])),
-          ],
-        ),
+            Divider(),
+            _AboutTiles(packageInfo: packageInfo),
+          ])),
+        ],
       ),
     );
   }
