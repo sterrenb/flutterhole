@@ -16,7 +16,7 @@ import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 
-import 'fixture_reader.dart';
+import '../lib/core/debug/fixture_reader.dart';
 
 void testMapModel<T extends MapModel>(
     String fixtureName, Function1<Map<String, dynamic>, T> fromJson) {
@@ -67,7 +67,7 @@ void main() {
   testMapModel<ForwardDestination>('single_forward_destination.json',
       (json) => ForwardDestination.fromJson(json));
   testMapModel<ForwardDestinationsResult>('get_forward_destinations.json',
-          (json) => ForwardDestinationsResult.fromJson(json));
+      (json) => ForwardDestinationsResult.fromJson(json));
   testListModel<Blacklist>(
       'blacklist.json', (json) => Blacklist.fromList(json));
   testListModel<Whitelist>(

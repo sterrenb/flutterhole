@@ -18,7 +18,7 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:mockito/mockito.dart';
 import 'package:supercharged/supercharged.dart';
 
-import '../../../../fixture_reader.dart';
+import '../../../../../lib/core/debug/fixture_reader.dart';
 import '../../../../test_dependency_injection.dart';
 
 class MockHttpClientAdapter extends Mock implements HttpClientAdapter {}

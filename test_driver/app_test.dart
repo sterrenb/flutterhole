@@ -11,10 +11,16 @@ main() {
 
     setUpAll(() async {
       driver = await FlutterDriver.connect();
-      ozzie = Ozzie.initWith(driver, groupName: 'home');
+      ozzie = Ozzie.initWith(
+        driver,
+        groupName: 'home',
+        shouldTakeScreenshots: true,
+      );
     });
 
     tearDownAll(() async {
+      print('tearDownAll');
+
       driver?.close();
       ozzie?.generateHtmlReport();
     });
