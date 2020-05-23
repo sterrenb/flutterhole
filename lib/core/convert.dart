@@ -12,6 +12,8 @@ extension DateTimeWithRelative on DateTime {
   String get formattedDate => Jiffy(this).format('yyyy-MM-d');
 
   String get formattedTime => Jiffy(this).format('h:mm:ss a');
+
+  String get formattedTimeShort => Jiffy(this).format('hh:mm');
 }
 
 extension StringExtension on String {

@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/navigator.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/home/presentation/pages/home_page.dart';
+import 'package:flutterhole/features/pihole_api/presentation/pages/query_log_page.dart';
 import 'package:flutterhole/features/routing/presentation/pages/about_page.dart';
 import 'package:flutterhole/features/routing/services/router_service.dart';
 import 'package:flutterhole/features/settings/presentation/pages/all_pihole_settings_page.dart';
@@ -31,6 +32,11 @@ class RouterServiceSailor implements RouterService {
           name: RouterService.home,
           builder: (context, args, params) {
             return HomePage();
+          }),
+      SailorRoute(
+          name: RouterService.queryLog,
+          builder: (context, args, params) {
+            return QueryLogPage();
           }),
       SailorRoute(
           name: RouterService.settings,

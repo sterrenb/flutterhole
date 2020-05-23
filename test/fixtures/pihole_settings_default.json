@@ -3,6 +3,7 @@
   "description": "",
   "baseUrl": "http://pi.hole",
   "apiPath": "/admin/api.php",
+  "apiTokenRequired": true,
   "apiPort": 80,
   "apiToken": "",
   "allowSelfSignedCertificates": false,

@@ -16,7 +16,7 @@ class PrServiceImpl implements PreferenceService {
   }
 
   dynamic _get<T>(String key) {
-    if (T == null) throw PiException.notFound();
+    if (T == null) throw PiException.notFound(TypeError());
 
     switch (T) {
       case String:
@@ -33,7 +33,7 @@ class PrServiceImpl implements PreferenceService {
       case List:
         return PrefService.getStringList(key);
       default:
-        throw TypeError();
+        throw PiException.emptyResponse(TypeError());
     }
   }
 
@@ -81,4 +81,15 @@ class PrServiceImpl implements PreferenceService {
     final String value = _get<String>(KPrefs.themeMode) ?? 'system';
     return ThemeModeMapEnum[value];
   }
+
+  @override
+  int get queryLogMaxResults => _get<int>(KPrefs.queryLogMaxResults) ?? 100;
+
+  @override
+  Future<void> setQueryLogMaxResults(int maxResults) async =>
+      _set(KPrefs.queryLogMaxResults, maxResults);
+
+  @override
+  String get footerMessage =>
+      _get<String>(KPrefs.footerMessage) ?? 'Made with ♡ by Sterrenburg';
 }

@@ -98,7 +98,7 @@ class ApiRepositoryImpl implements ApiRepository {
       PiholeSettings settings, PiClient client) async {
     try {
       final ManyQueryData result =
-      await _apiDataSource.fetchQueryDataForClient(settings, client);
+          await _apiDataSource.fetchQueryDataForClient(settings, client);
       return Right(result.data.reversed.toList());
     } on PiException catch (e) {
       return Left(Failure('fetchQueriesForClient failed', e));
@@ -114,6 +114,19 @@ class ApiRepositoryImpl implements ApiRepository {
       return Right(result.data.reversed.toList());
     } on PiException catch (e) {
       return Left(Failure('fetchQueriesForDomain failed', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<QueryData>>> fetchManyQueryData(
+      PiholeSettings settings,
+      [int maxResults]) async {
+    try {
+      final ManyQueryData result =
+      await _apiDataSource.fetchManyQueryData(settings, maxResults);
+      return Right(result.data.reversed.toList());
+    } on PiException catch (e) {
+      return Left(Failure('fetchManyQueryData failed', e));
     }
   }
 }

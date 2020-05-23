@@ -20,42 +20,56 @@ class DetectedVersionsTile extends StatelessWidget {
         return true;
       },
       builder: (BuildContext context, PiholeSettingsState state) {
-        return state.maybeMap<Widget>(
-          validated: (state) {
-            return state.versions.fold(
-              (failure) => CenteredFailureIndicator(failure),
-              (versions) => Column(
-                children: <Widget>[
-                  ListTile(
-                    title: Text('Detected versions'),
-                    leading: Icon(
-                      KIcons.version,
-                      color: Theme.of(context).accentColor,
-                    ),
-                  ),
-                  _ListTile(
-                    title: 'Pi-hole Version',
-                    currentVersion: versions.currentCoreVersion,
-                    latestVersion: versions.latestCoreVersion,
-                    branch: versions.coreBranch,
-                  ),
-                  _ListTile(
-                    title: 'Web Interface Version',
-                    currentVersion: versions.currentWebVersion,
-                    latestVersion: versions.latestWebVersion,
-                    branch: versions.webBranch,
-                  ),
-                  _ListTile(
-                    title: 'FTL Version',
-                    currentVersion: versions.currentFtlVersion,
-                    latestVersion: versions.latestFtlVersion,
-                    branch: versions.ftlBranch,
-                  ),
-                ],
+        return Column(
+          children: <Widget>[
+            ListTile(
+              title: Text('Detected versions'),
+              leading: Icon(
+                KIcons.version,
+                color: Theme.of(context).accentColor,
               ),
-            );
-          },
-          orElse: () => Container(),
+            ),
+            state.maybeMap<Widget>(
+              validated: (state) {
+                return state.versions.fold(
+                  (failure) => CenteredFailureIndicator(failure),
+                  (versions) => Column(
+                    children: <Widget>[
+                      _ListTile(
+                        title: 'Pi-hole Version',
+                        currentVersion: versions.currentCoreVersion,
+                        latestVersion: versions.latestCoreVersion,
+                        branch: versions.coreBranch,
+                      ),
+                      _ListTile(
+                        title: 'Web Interface Version',
+                        currentVersion: versions.currentWebVersion,
+                        latestVersion: versions.latestWebVersion,
+                        branch: versions.webBranch,
+                      ),
+                      _ListTile(
+                        title: 'FTL Version',
+                        currentVersion: versions.currentFtlVersion,
+                        latestVersion: versions.latestFtlVersion,
+                        branch: versions.ftlBranch,
+                      ),
+                    ],
+                  ),
+                );
+              },
+              // Filling in some empty space in an inelegant fashion
+              loading: (_) => Column(
+                children: List.generate(
+                  3,
+                  (index) => ListTile(
+                    title: Text(''),
+                    subtitle: Text(''),
+                  ),
+                ),
+              ),
+              orElse: () => Container(),
+            ),
+          ],
         );
       },
     );

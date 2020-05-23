@@ -72,7 +72,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
 
     final int index = all.indexOf(original);
     if (index < 0) {
-      throw PiException.notFound();
+      throw PiException.notFound(index);
     }
 
     await box.putAt(index, update.toJson());
@@ -116,7 +116,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
 
     final int index = all.indexOf(piholeSettings);
     if (index < 0) {
-      throw PiException.notFound();
+      throw PiException.notFound(index);
     }
 
     await _setActiveIndex(index);

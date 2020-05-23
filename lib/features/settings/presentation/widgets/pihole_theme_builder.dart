@@ -21,7 +21,7 @@ Map<int, Color> _materialColorMap = {
 class PiholeThemeBuilder extends StatelessWidget {
   /// Applies theme data from the active [PiholeSettings].
   ///
-  /// Optionally applies theme data from [settings].
+  /// Optionally overrides theme data from [settings].
   const PiholeThemeBuilder({
     Key key,
     @required this.child,
@@ -54,11 +54,14 @@ class PiholeThemeBuilder extends StatelessWidget {
   }
 
   ThemeData _buildTheme(BuildContext context, PiholeSettings settings) {
+    final MaterialColor color = MaterialColor(
+      settings.primaryColor.value,
+      _materialColorMap,
+    );
+
     return Theme.of(context).copyWith(
-      accentColor: MaterialColor(
-        settings.primaryColor.value,
-        _materialColorMap,
-      ),
+      accentColor: color,
+      toggleableActiveColor: color,
     );
   }
 }

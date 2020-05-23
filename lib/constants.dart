@@ -8,6 +8,10 @@ class KStrings {
   static const String piholeSettingsActive = 'active';
   static const String playStoreUrl =
       'https://play.google.com/store/apps/details?id=sterrenburg.github.flutterhole';
+  static const String githubHomeUrl =
+      'https://github.com/sterrenburg/flutterhole/';
+  static const String githubIssuesUrl =
+      'https://github.com/sterrenburg/flutterhole/issues/new/choose';
 }
 
 class KIcons {
@@ -25,6 +29,7 @@ class KIcons {
   static const IconData welcome = MaterialCommunityIcons.message_text;
 
   static const IconData dashboard = MaterialCommunityIcons.view_dashboard;
+  static const IconData queryLog = MaterialCommunityIcons.file_document;
   static const IconData clients = MaterialCommunityIcons.laptop_windows;
   static const IconData domains =
       MaterialCommunityIcons.checkbox_multiple_blank_circle_outline;
@@ -36,10 +41,12 @@ class KIcons {
   static const IconData settings = MaterialIcons.settings;
   static const IconData preferences = MaterialIcons.format_paint;
   static const IconData about = MaterialCommunityIcons.heart;
-  static const IconData log = AntDesign.codesquare;
+  static const IconData apiLog = AntDesign.codesquare;
 
   static const IconData open = MaterialIcons.keyboard_arrow_right;
+  static const IconData search = MaterialIcons.search;
   static const IconData close = Icons.close;
+  static const IconData back = Icons.arrow_back;
   static const IconData delete = MaterialCommunityIcons.delete_circle;
   static const IconData openInBrowser = MaterialIcons.open_in_browser;
   static const IconData copy = Icons.content_copy;
@@ -105,6 +112,7 @@ class KColors {
   static const Color queryStatus = Colors.brown;
   static const Color dnsSec = Colors.blueGrey;
   static const Color timestamp = Colors.amber;
+  static const Color link = Colors.blue;
 
   static const Color info = Colors.blue;
   static const Color debug = Colors.brown;

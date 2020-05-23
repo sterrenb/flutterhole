@@ -1,5 +1,9 @@
-* Feature: single queries can be expanded to show more data again.
+* Fix: Pi-holes without a password and API token can now toggle off the API token requirement.
 
-* Feature: Basic Authentication is back - thank you Joerg.
+* Feature: the queries over time chart is back.
 
-* Fix: Tapping on the pie chart colors in Forward Destinations highlights the wrong category on the left - thank you Jeremy.
+* Feature: errors are now more verbose.
+
+* Feature: query logs are searchable and refreshable.
+
+* Feature: the query log is back. I intend to make some kind of live query viewer separately, this page does _not_ automatically listen for new data.
