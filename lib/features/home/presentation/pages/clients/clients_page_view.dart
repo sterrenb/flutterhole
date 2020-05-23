@@ -67,6 +67,7 @@ class ClientsPageView extends StatelessWidget {
               },
             );
           },
+          failure: (failure) => CenteredFailureIndicator(failure),
           orElse: () => CenteredLoadingIndicator());
     });
   }

@@ -108,9 +108,8 @@ class ClientsOverDayLineChart extends StatelessWidget {
                       Color color,
                       double y,) {
                     return '${overTimeData.clients
-                        .elementAt(index)
-                        .nameOrIp}: $y';
-                  },
+                        .elementAt(index).nameOrIp}: ${y.round()}';
+              },
                 ),
           ),
         ),
