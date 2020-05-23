@@ -96,9 +96,7 @@ class ClientsOverDayLineChart extends StatelessWidget {
         ),
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
-            tooltipBgColor: Theme
-                .of(context)
-                .cardColor,
+            tooltipBgColor: Theme.of(context).cardColor,
             getTooltipItems: (List<LineBarSpot> touchedSpots) =>
                 buildLineTooltipItems(
                   context: context,
@@ -108,7 +106,8 @@ class ClientsOverDayLineChart extends StatelessWidget {
                       Color color,
                       double y,) {
                     return '${overTimeData.clients
-                        .elementAt(index).nameOrIp}: ${y.round()}';
+                        .elementAt(index)
+                        .nameOrIp}: ${y.round()}';
               },
                 ),
           ),

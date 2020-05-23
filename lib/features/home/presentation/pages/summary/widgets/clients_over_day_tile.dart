@@ -16,19 +16,6 @@ class ClientsOverDayTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    return RaisedButton(
-//      onPressed: () {
-//        //
-//
-//        clientsOverTimeResult.fold(
-//          (Failure l) {},
-//          (OverTimeDataClients overTimeData) {
-//            _buildClientHitsMap(overTimeData);
-//          },
-//        );
-//      },
-//      child: Text('hlelo'),
-//    );
     return Card(
       child: LineChartScaffold(
         title: 'Total queries over last 24 hours',
