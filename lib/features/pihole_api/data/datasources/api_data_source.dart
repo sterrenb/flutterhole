@@ -2,6 +2,7 @@ import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart'
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
+import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
@@ -28,6 +29,8 @@ abstract class ApiDataSource {
   Future<ToggleStatus> sleepPihole(PiholeSettings settings, Duration duration);
 
   Future<OverTimeData> fetchQueriesOverTime(PiholeSettings settings);
+
+  Future<OverTimeDataClients> fetchClientsOverTime(PiholeSettings settings);
 
   Future<TopSourcesResult> fetchTopSources(PiholeSettings settings);
 

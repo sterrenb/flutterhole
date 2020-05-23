@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/browser/services/browser_service.dart';
+import 'package:flutterhole/features/routing/presentation/pages/page_scaffold.dart';
 import 'package:flutterhole/features/routing/presentation/pages/privacy_page.dart';
-import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/features/settings/services/package_info_service.dart';
-import 'package:flutterhole/widgets/layout/animated_opener.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
-import 'package:flutterhole/widgets/layout/list_title.dart';
+import 'package:flutterhole/widgets/layout/animations/animated_opener.dart';
+import 'package:flutterhole/widgets/layout/lists/list_title.dart';
+import 'package:flutterhole/widgets/layout/notifications/dialogs.dart';
 import 'package:package_info/package_info.dart';
 import 'package:share/share.dart';
 
@@ -16,8 +16,7 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final packageInfo = getIt<PackageInfoService>().packageInfo;
 
-    return Scaffold(
-      drawer: DefaultDrawer(),
+    return PageScaffold(
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
@@ -32,13 +31,8 @@ class AboutPage extends StatelessWidget {
                   contentPadding: EdgeInsets.all(16),
                   title: Row(
                     children: <Widget>[
-                      Text(
-                        '${packageInfo?.appName}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline4
-                            .copyWith(color: Theme.of(context).accentColor),
-                      ),
+                      Text('${packageInfo?.appName}',
+                          style: Theme.of(context).textTheme.headline4),
                     ],
                   ),
                   subtitle: Text(

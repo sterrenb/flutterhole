@@ -5,8 +5,8 @@ import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/browser/services/browser_service.dart';
-import 'package:flutterhole/widgets/layout/copy_button.dart';
-import 'package:flutterhole/widgets/layout/snackbars.dart';
+import 'package:flutterhole/widgets/layout/notifications/copy_button.dart';
+import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
 import 'package:package_info/package_info.dart';
 
 Future<void> showWelcomeDialog(BuildContext context) {

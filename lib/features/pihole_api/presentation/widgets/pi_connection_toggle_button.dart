@@ -7,8 +7,8 @@ import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
-import 'package:flutterhole/widgets/layout/loading_indicators.dart';
-import 'package:flutterhole/widgets/layout/snackbars.dart';
+import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
 
 class PiConnectionToggleButton extends StatelessWidget {
 

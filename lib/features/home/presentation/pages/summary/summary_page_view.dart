@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/home/blocs/home_bloc.dart';
+import 'package:flutterhole/features/home/presentation/pages/summary/widgets/clients_over_day_tile.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/forward_destinations_tile.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/query_types_tile.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/summary_tile.dart';
@@ -12,9 +13,10 @@ import 'package:flutterhole/features/home/presentation/widgets/home_page_overflo
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
+import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
-import 'package:flutterhole/widgets/layout/failure_indicators.dart';
-import 'package:flutterhole/widgets/layout/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
 import 'package:intl/intl.dart';
 
 final _numberFormat = NumberFormat();
@@ -30,6 +32,7 @@ class SummaryPageView extends StatelessWidget {
           success: (
             Either<Failure, SummaryModel> summaryResult,
             Either<Failure, OverTimeData> queriesOverTimeResult,
+            Either<Failure, OverTimeDataClients> clientsOverTimeResult,
             _,
             __,
             Either<Failure, ForwardDestinationsResult>
@@ -37,9 +40,8 @@ class SummaryPageView extends StatelessWidget {
             Either<Failure, DnsQueryTypeResult> dnsQueryTypesResult,
           ) =>
               summaryResult.fold<Widget>(
-                    (failure) => CenteredFailureIndicator(failure),
-                    (summary) =>
-                    HomePageOverflowRefresher(
+                (failure) => CenteredFailureIndicator(failure),
+                (summary) => HomePageOverflowRefresher(
                   child: StaggeredGridView.count(
                     crossAxisCount: 4,
                     children: <Widget>[
@@ -72,6 +74,7 @@ class SummaryPageView extends StatelessWidget {
                         integer: summary.domainsBeingBlocked,
                       ),
                       TotalQueriesOverDayTile(queriesOverTimeResult),
+                      ClientsOverDayTile(clientsOverTimeResult),
                       QueryTypesTile(dnsQueryTypesResult),
                       ForwardDestinationsTile(forwardDestinationsResult),
                     ],
@@ -80,6 +83,7 @@ class SummaryPageView extends StatelessWidget {
                       StaggeredTile.count(4, 1),
                       StaggeredTile.count(4, 1),
                       StaggeredTile.count(4, 1),
+                      StaggeredTile.count(4, 3),
                       StaggeredTile.count(4, 3),
                       StaggeredTile.count(4, 3),
                       StaggeredTile.count(4, 3),

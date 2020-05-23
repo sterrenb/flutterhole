@@ -11,6 +11,7 @@ import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart'
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
+import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
@@ -188,6 +189,18 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
+  Future<OverTimeDataClients> fetchClientsOverTime(
+      PiholeSettings settings) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'getClientNames': '',
+      'overTimeDataClients': '',
+    });
+
+    return OverTimeDataClients.fromJson(json);
+  }
+
+  @override
   Future<TopSourcesResult> fetchTopSources(PiholeSettings settings) async {
     final Map<String, dynamic> json =
         await _getSecure(settings, queryParameters: {
@@ -247,8 +260,8 @@ class ApiDataSourceDio implements ApiDataSource {
     final Map<String, dynamic> json =
         await _getSecure(settings, queryParameters: {
       'getAllQueries': '',
-      'client': (client.title != null && client.title.isNotEmpty)
-          ? client.title.trim()
+      'client': (client.name != null && client.name.isNotEmpty)
+          ? client.name.trim()
           : client.ip,
     });
 

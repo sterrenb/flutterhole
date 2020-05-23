@@ -49,7 +49,7 @@ void main() {
   );
 
   group('$SingleClientEventFetchQueries', () {
-    final PiClient client = PiClient(title: 'test');
+    final PiClient client = PiClient(name: 'test');
     final List<QueryData> queries = [QueryData(clientName: 'test')];
     final tFailure = Failure();
 

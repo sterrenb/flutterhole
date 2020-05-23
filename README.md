@@ -17,10 +17,10 @@ FlutterHole is a free third party Android application for interacting with your 
 - **Quick enable/disable:** Toggle your Pi-hole from your home screen with a single tap.
 - **Multiple configurations:** Easily switch between every Pi-hole that you have access to.
 - **Summary overview:** View top clients and the top used domains.
+- **Query log:** Inspect & search your Pi-hole queries.
 
 ## Roadmap/missing features ##
 - **Manage your blacklist & whitelist:** Blocking issues. See [issue #76](https://github.com/sterrenburg/flutterhole/issues/76) for progress.
-- **Query log:** Coming soon for V5!
 - **Proxy support:** Coming soon for V5!
 
 ## Development ##
@@ -67,11 +67,29 @@ flutter pub get
 flutter pub run flutter_launcher_icons:main
 ```
 
-#### Generate code
+#### Generate code ####
+
+To generate `freezed` classes `injectable` injections etc.:
+
 ```shell script
 flutter pub run build_runner build --delete-conflicting-outputs  
 ```
+
+Or, build continuously:
+
+```shell script
+flutter pub run build_runner watch --delete-conflicting-outputs  
+```
+
 You can now build and run the app on either an emulator or a physical device using `flutter run`.
+
+### Testing ###
+
+To run the default integration test:
+
+```shell script
+flutter drive --target=test_driver/app.dart
+```
 
 ## API ##
 This application interacts with the [Pi-hole PHP API](https://discourse.pi-hole.net/t/pi-hole-api/1863).

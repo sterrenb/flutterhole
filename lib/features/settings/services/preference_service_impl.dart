@@ -8,11 +8,11 @@ import 'package:preferences/preferences.dart';
 @preResolve
 @singleton
 @RegisterAs(PreferenceService)
-class PrServiceImpl implements PreferenceService {
+class PreferenceServiceImpl implements PreferenceService {
   @factoryMethod
-  static Future<PrServiceImpl> create() async {
+  static Future<PreferenceServiceImpl> create() async {
     await PrefService.init();
-    return PrServiceImpl();
+    return PreferenceServiceImpl();
   }
 
   dynamic _get<T>(String key) {

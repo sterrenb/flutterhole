@@ -6,6 +6,7 @@ import 'package:flutterhole/features/pihole_api/data/models/forward_destinations
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/model.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
+import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
@@ -16,7 +17,7 @@ import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 
-import 'fixture_reader.dart';
+import '../lib/core/debug/fixture_reader.dart';
 
 void testMapModel<T extends MapModel>(
     String fixtureName, Function1<Map<String, dynamic>, T> fromJson) {
@@ -59,6 +60,8 @@ void main() {
       'get_query_types.json', (json) => DnsQueryTypeResult.fromJson(json));
   testMapModel<OverTimeData>(
       'over_time_data_10mins.json', (json) => OverTimeData.fromJson(json));
+  testMapModel<OverTimeDataClients>('over_time_data_clients.json',
+      (json) => OverTimeDataClients.fromJson(json));
   testMapModel<TopItems>('top_items.json', (json) => TopItems.fromJson(json));
   testMapModel<PiClient>(
       'single_pi_client.json', (json) => PiClient.fromJson(json));
@@ -67,7 +70,7 @@ void main() {
   testMapModel<ForwardDestination>('single_forward_destination.json',
       (json) => ForwardDestination.fromJson(json));
   testMapModel<ForwardDestinationsResult>('get_forward_destinations.json',
-          (json) => ForwardDestinationsResult.fromJson(json));
+      (json) => ForwardDestinationsResult.fromJson(json));
   testListModel<Blacklist>(
       'blacklist.json', (json) => Blacklist.fromList(json));
   testListModel<Whitelist>(
@@ -82,7 +85,6 @@ void main() {
       'status_disabled.json', (json) => ToggleStatus.fromJson(json));
   testMapModel<PiVersions>(
       'get_versions.json', (json) => PiVersions.fromJson(json));
-
   testMapModel<PiholeSettings>(
       'pihole_settings_default.json', (json) => PiholeSettings.fromJson(json));
 }

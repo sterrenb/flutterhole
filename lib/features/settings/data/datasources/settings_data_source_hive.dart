@@ -6,8 +6,7 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 
-@prod
-@injectable
+@singleton
 @RegisterAs(SettingsDataSource)
 class SettingsDataSourceHive implements SettingsDataSource {
   SettingsDataSourceHive([HiveInterface hive])

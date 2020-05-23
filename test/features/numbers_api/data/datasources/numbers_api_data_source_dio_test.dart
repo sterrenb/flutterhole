@@ -6,7 +6,7 @@ import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/features/numbers_api/data/datasources/numbers_api_data_source_dio.dart';
 import 'package:mockito/mockito.dart';
 
-import '../../../../fixture_reader.dart';
+import '../../../../../lib/core/debug/fixture_reader.dart';
 import '../../../../test_dependency_injection.dart';
 
 class MockHttpClientAdapter extends Mock implements HttpClientAdapter {}

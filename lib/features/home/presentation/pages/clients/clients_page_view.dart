@@ -9,10 +9,10 @@ import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/pihole_api/presentation/pages/single_client_page.dart';
-import 'package:flutterhole/widgets/layout/animated_opener.dart';
-import 'package:flutterhole/widgets/layout/failure_indicators.dart';
-import 'package:flutterhole/widgets/layout/frequency_tile.dart';
-import 'package:flutterhole/widgets/layout/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/animations/animated_opener.dart';
+import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
+import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/lists/frequency_tile.dart';
 
 class ClientsPageView extends StatelessWidget {
   const ClientsPageView({
@@ -26,10 +26,11 @@ class ClientsPageView extends StatelessWidget {
           success: (
             Either<Failure, SummaryModel> summaryResult,
             _,
-            Either<Failure, TopSourcesResult> topSourcesResult,
             __,
+            Either<Failure, TopSourcesResult> topSourcesResult,
             ___,
             ____,
+              _____,
           ) {
             return topSourcesResult.fold<Widget>(
               (failure) => CenteredFailureIndicator(failure),
@@ -54,9 +55,9 @@ class ClientsPageView extends StatelessWidget {
                         return AnimatedOpener(
                           closed: (context) =>
                               FrequencyTile(
-                                title: client.titleOrIp,
-                                requests: queryCount,
-                                totalRequests: totalQueryCount,
+                            title: client.nameOrIp,
+                            requests: queryCount,
+                            totalRequests: totalQueryCount,
                                 color: KColors.clients,
                               ),
                           opened: (context) => SingleClientPage(client: client),
@@ -66,6 +67,7 @@ class ClientsPageView extends StatelessWidget {
               },
             );
           },
+          failure: (failure) => CenteredFailureIndicator(failure),
           orElse: () => CenteredLoadingIndicator());
     });
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/models/failures.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/layout/notifications/dialogs.dart';
 
 class CenteredFailureIndicator extends StatelessWidget {
   const CenteredFailureIndicator(

@@ -18,7 +18,7 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:mockito/mockito.dart';
 import 'package:supercharged/supercharged.dart';
 
-import '../../../../fixture_reader.dart';
+import '../../../../../lib/core/debug/fixture_reader.dart';
 import '../../../../test_dependency_injection.dart';
 
 class MockHttpClientAdapter extends Mock implements HttpClientAdapter {}
@@ -328,9 +328,9 @@ void main() async {
       await apiDataSourceDio.fetchQueryDataForClient(
           piholeSettings,
           PiClient(
-            title: 'client',
-            ip: '1.2.3.4',
-          ));
+                name: 'client',
+                ip: '1.2.3.4',
+              ));
       // assert
       expect(result, equals(ManyQueryData.fromJson(json)));
     },

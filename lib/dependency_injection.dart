@@ -15,7 +15,7 @@ Future<void> configure(String environment) async {
 }
 
 @registerModule
-abstract class RegisterModule {
+abstract class RegisterProdModule {
   @prod
   @injectable
   Dio get dio => Dio();
@@ -32,12 +32,14 @@ abstract class RegisterModule {
   @singleton
   Sailor get sailor => Sailor(
           options: SailorOptions(
-        isLoggingEnabled: true,
+        isLoggingEnabled: false,
       ));
 
+  @prod
   @singleton
   Alice get alice => Alice(
-        showNotification: false,
-        darkTheme: true,
-      );
+    showNotification: false,
+    darkTheme: true,
+  );
 }
+

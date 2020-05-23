@@ -20,7 +20,7 @@ class ThemeRadioPreferences extends StatelessWidget {
             '${ThemeModeEnumMap[ThemeMode.system].capitalize} theme',
             '${ThemeModeEnumMap[ThemeMode.system]}',
             KPrefs.themeMode,
-            isDefault: true,
+//            isDefault: true,
             onSelect: () => notifier.update(),
             leading: Icon(KIcons.themeSystem),
           ),

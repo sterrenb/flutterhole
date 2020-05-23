@@ -20,7 +20,7 @@ dependencies:
   injectable: ^0.3.0
   # state management
   bloc: ^4.0.0
-  provider: ^4.1.1
+  provider: ^4.1.2
   # http client
   dio: ^3.0.9
   dio_http_cache: ^0.2.6
@@ -38,9 +38,9 @@ dependencies:
   clock: ^1.0.1
 
   # utilities
-  supercharged: ^1.5.1
+  supercharged: ^1.6.0
   flutter_bloc: ^4.0.0
-  flutter_form_builder: ^3.9.0
+  flutter_form_builder: ^3.10.1
   barcode_scan: ^3.0.1
   preferences: ^5.2.0
   jiffy: ^3.0.1
@@ -50,11 +50,10 @@ dependencies:
   flutter_vector_icons: ^0.2.1
   flutter_staggered_grid_view: ^0.3.0
   animations: ^1.0.0+5
-  modal_bottom_sheet: ^0.1.5
   flutter_spinkit: ^4.1.2+1
   fl_chart: ^0.9.4
   flutter_sticky_header: ^0.4.2
-  flushbar: ^1.10.2
+  flushbar: ^1.10.4
   fluttertoast: ^4.0.1
   pull_to_refresh: ^1.5.8
 
@@ -64,18 +63,21 @@ dependencies:
   # about page
   package_info: ^0.4.0+18
   qr_flutter: ^3.2.0
-  share: ^0.6.4+2
+  share: ^0.6.4+3
   launch_review: ^2.0.0
-  url_launcher: ^5.4.7
-  flutter_markdown: ^0.3.5
+  url_launcher: ^5.4.10
+  flutter_markdown: 0.3.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
+  test: any
   # code generation
   build_runner: ^1.10.0
   # data model & sealed union code generation
-  freezed: ^0.10.8
+  freezed: ^0.10.9
   # generators
   injectable_generator: ^0.3.5
   # toJson/fromJson generator
@@ -88,6 +90,8 @@ dev_dependencies:
   fake_async: ^1.1.0
   # icon generation
   flutter_launcher_icons: ^0.7.5
+  # flutter_driver extras
+  ozzie: ^2.2.3
 
 flutter:
   uses-material-design: true

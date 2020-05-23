@@ -3,7 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/browser/services/browser_service.dart';
-import 'package:flutterhole/widgets/layout/animate_on_build.dart';
+import 'package:flutterhole/widgets/layout/animations/animate_on_build.dart';
 
 class PrivacyPage extends StatelessWidget {
   const PrivacyPage({
