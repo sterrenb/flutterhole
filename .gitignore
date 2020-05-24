@@ -54,3 +54,4 @@ android/app/upload_certificate.pem
 /ios/Runner/Assets.xcassets/AppIcon.appiconset/
 android/key.properties
 /ozzie/
+/gradle.properties
