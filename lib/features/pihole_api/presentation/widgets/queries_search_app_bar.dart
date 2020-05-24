@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/features/pihole_api/presentation/notifiers/queries_search_notifier.dart';
-import 'package:flutterhole/widgets/layout/animate_on_build.dart';
+import 'package:flutterhole/widgets/layout/animations/animate_on_build.dart';
 import 'package:provider/provider.dart';
 
 class QueriesSearchAppBar extends StatefulWidget

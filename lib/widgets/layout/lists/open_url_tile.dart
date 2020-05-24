@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/browser/services/browser_service.dart';
-import 'package:flutterhole/widgets/layout/snackbars.dart';
+import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
 
 class OpenUrlTile extends StatelessWidget {
   const OpenUrlTile({

@@ -47,7 +47,6 @@ abstract class SettingsEvent with _$SettingsEvent {
   ) = SettingsEventUpdate;
 }
 
-@prod
 @singleton
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc([

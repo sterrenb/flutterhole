@@ -45,7 +45,6 @@ abstract class PiConnectionEvent with _$PiConnectionEvent {
 typedef Future<Either<Failure, ToggleStatus>> ConnectionFunction(
     PiholeSettings piholeSettings);
 
-@prod
 @singleton
 class PiConnectionBloc extends Bloc<PiConnectionEvent, PiConnectionState> {
   PiConnectionBloc([

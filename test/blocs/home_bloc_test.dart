@@ -6,6 +6,7 @@ import 'package:flutterhole/features/home/blocs/home_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
+import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
@@ -55,6 +56,10 @@ void main() {
     final SummaryModel tSummary = SummaryModel(domainsBeingBlocked: 123);
     final OverTimeData tOverTimeData =
         OverTimeData(domainsOverTime: {}, adsOverTime: {});
+    final OverTimeDataClients tOverTimeDataClients = OverTimeDataClients(
+      clients: [],
+      data: {},
+    );
     final TopSourcesResult tTopSources = TopSourcesResult(topSources: {});
     final TopItems tTopItems = TopItems(topQueries: {
       'a': 5,
@@ -75,6 +80,8 @@ void main() {
             .thenAnswer((_) async => Right(tSummary));
         when(mockApiRepository.fetchQueriesOverTime(any))
             .thenAnswer((_) async => Right(tOverTimeData));
+        when(mockApiRepository.fetchClientsOverTime(any))
+            .thenAnswer((_) async => Right(tOverTimeDataClients));
         when(mockApiRepository.fetchTopSources(any))
             .thenAnswer((_) async => Right(tTopSources));
         when(mockApiRepository.fetchTopItems(any))
@@ -92,6 +99,7 @@ void main() {
         HomeStateSuccess(
           Right(tSummary),
           Right(tOverTimeData),
+          Right(tOverTimeDataClients),
           Right(tTopSources),
           Right(tTopItems),
           Right(tForwardDestinations),
@@ -109,6 +117,8 @@ void main() {
             .thenAnswer((_) async => Right(tSummary));
         when(mockApiRepository.fetchQueriesOverTime(any))
             .thenAnswer((_) async => Right(tOverTimeData));
+        when(mockApiRepository.fetchClientsOverTime(any))
+            .thenAnswer((_) async => Right(tOverTimeDataClients));
         when(mockApiRepository.fetchTopSources(any))
             .thenAnswer((_) async => Left(Failure()));
         when(mockApiRepository.fetchTopItems(any))
@@ -126,6 +136,7 @@ void main() {
         HomeStateSuccess(
           Right(tSummary),
           Right(tOverTimeData),
+          Right(tOverTimeDataClients),
           Left(Failure()),
           Left(Failure()),
           Left(Failure()),
@@ -140,6 +151,7 @@ void main() {
     final tFailure3 = Failure('test #3');
     final tFailure4 = Failure('test #4');
     final tFailure5 = Failure('test #5');
+    final tFailure6 = Failure('test #6');
 
     blocTest(
       'Emits [$HomeStateLoading, $HomeStateFailure] when $HomeEventFetch fails',
@@ -150,14 +162,16 @@ void main() {
             .thenAnswer((_) async => Left(tFailure0));
         when(mockApiRepository.fetchQueriesOverTime(any))
             .thenAnswer((_) async => Left(tFailure1));
-        when(mockApiRepository.fetchTopSources(any))
+        when(mockApiRepository.fetchClientsOverTime(any))
             .thenAnswer((_) async => Left(tFailure2));
-        when(mockApiRepository.fetchTopItems(any))
+        when(mockApiRepository.fetchTopSources(any))
             .thenAnswer((_) async => Left(tFailure3));
-        when(mockApiRepository.fetchForwardDestinations(any))
+        when(mockApiRepository.fetchTopItems(any))
             .thenAnswer((_) async => Left(tFailure4));
-        when(mockApiRepository.fetchQueryTypes(any))
+        when(mockApiRepository.fetchForwardDestinations(any))
             .thenAnswer((_) async => Left(tFailure5));
+        when(mockApiRepository.fetchQueryTypes(any))
+            .thenAnswer((_) async => Left(tFailure6));
 
         return bloc;
       },
@@ -171,6 +185,7 @@ void main() {
           tFailure3,
           tFailure4,
           tFailure5,
+          tFailure6,
         ])),
       ],
     );

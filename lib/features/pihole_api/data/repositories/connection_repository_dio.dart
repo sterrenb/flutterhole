@@ -12,7 +12,6 @@ import 'package:flutterhole/features/pihole_api/data/repositories/connection_rep
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:injectable/injectable.dart';
 
-@prod
 @singleton
 @RegisterAs(ConnectionRepository)
 class ConnectionRepositoryDio implements ConnectionRepository {

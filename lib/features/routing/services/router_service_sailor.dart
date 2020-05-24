@@ -12,7 +12,6 @@ import 'package:flutterhole/features/settings/presentation/pages/user_preference
 import 'package:injectable/injectable.dart';
 import 'package:sailor/sailor.dart';
 
-@prod
 @singleton
 @RegisterAs(RouterService)
 class RouterServiceSailor implements RouterService {

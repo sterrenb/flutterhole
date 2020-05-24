@@ -7,6 +7,7 @@ import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart'
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
+import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
@@ -16,7 +17,6 @@ import 'package:flutterhole/features/pihole_api/data/repositories/api_repository
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:injectable/injectable.dart';
 
-@prod
 @singleton
 @RegisterAs(ApiRepository)
 class ApiRepositoryImpl implements ApiRepository {
@@ -36,6 +36,8 @@ class ApiRepositoryImpl implements ApiRepository {
       return Right(result);
     } on PiException catch (e) {
       return Left(Failure('$description failed', e));
+    } catch (e) {
+      return Left(Failure('$description failed with unexpected error', e));
     }
   }
 
@@ -55,6 +57,15 @@ class ApiRepositoryImpl implements ApiRepository {
         settings,
         _apiDataSource.fetchQueriesOverTime,
         'fetchQueriesOverTime',
+      );
+
+  @override
+  Future<Either<Failure, OverTimeDataClients>> fetchClientsOverTime(
+          PiholeSettings settings) async =>
+      fetchOrFailure<OverTimeDataClients>(
+        settings,
+        _apiDataSource.fetchClientsOverTime,
+        'fetchClientsOverTime',
       );
 
   @override
@@ -110,7 +121,7 @@ class ApiRepositoryImpl implements ApiRepository {
       PiholeSettings settings, String domain) async {
     try {
       final ManyQueryData result =
-      await _apiDataSource.fetchQueryDataForDomain(settings, domain);
+          await _apiDataSource.fetchQueryDataForDomain(settings, domain);
       return Right(result.data.reversed.toList());
     } on PiException catch (e) {
       return Left(Failure('fetchQueriesForDomain failed', e));

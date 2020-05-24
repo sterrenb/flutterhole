@@ -7,8 +7,8 @@ import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
-import 'package:flutterhole/widgets/layout/timer_builder.dart';
-import 'package:flutterhole/widgets/layout/toasts.dart';
+import 'package:flutterhole/widgets/layout/animations/timer_builder.dart';
+import 'package:flutterhole/widgets/layout/notifications/toasts.dart';
 import 'package:supercharged/supercharged.dart';
 
 const _$PiStatusEnumEnumMap = {

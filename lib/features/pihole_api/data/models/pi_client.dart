@@ -10,12 +10,12 @@ abstract class PiClient extends MapModel implements _$PiClient {
   const PiClient._();
 
   const factory PiClient({
-    String title,
+    String name,
     String ip,
   }) = _PiClient;
 
   factory PiClient.fromJson(Map<String, dynamic> json) =>
       _$PiClientFromJson(json);
 
-  String get titleOrIp => (title?.isEmpty ?? true) ? ip : '${ip} (${title})';
+  String get nameOrIp => (name?.isEmpty ?? true) ? ip : '${ip} (${name})';
 }
