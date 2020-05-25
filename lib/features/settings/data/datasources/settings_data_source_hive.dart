@@ -128,7 +128,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
     final box = await _piholeBox;
     final index = await _activeIndex;
 
-    if (index < 0 || box.isEmpty) {
+    if (index < 0 || (box?.isEmpty ?? true)) {
       print('no active pihole found in storage, returning default');
       return PiholeSettings();
     }

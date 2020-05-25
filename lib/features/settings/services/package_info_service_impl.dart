@@ -2,6 +2,8 @@ import 'package:flutterhole/features/settings/services/package_info_service.dart
 import 'package:injectable/injectable.dart';
 import 'package:package_info/package_info.dart';
 
+@Environment(Environment.prod)
+@Environment(Environment.dev)
 @singleton
 @RegisterAs(PackageInfoService)
 class PackageInfoServiceImpl implements PackageInfoService {
