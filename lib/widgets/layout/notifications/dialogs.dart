@@ -130,8 +130,7 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
                     'can view the code that runs your app. '
                     'You can find the repository on '),
             TextSpan(
-              style: Theme
-                  .of(context)
+              style: Theme.of(context)
                   .textTheme
                   .bodyText2
                   .apply(color: KColors.link),
@@ -140,10 +139,42 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
                 ..onTap = () =>
                     getIt<BrowserService>().launchUrl(KStrings.githubHomeUrl),
             ),
-            TextSpan(text: '.'),
+            TextSpan(
+                text: '.'
+                    '\n\n'
+                    'Logo design by '),
+            TextSpan(
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText2
+                  .apply(color: KColors.link),
+              text: 'Mathijs Sterrenburg',
+              recognizer: TapGestureRecognizer()
+                ..onTap = () =>
+                    getIt<BrowserService>().launchUrl(KStrings.logoDesignerUrl),
+            ),
+            TextSpan(text: ', an amazing designer.'),
           ],
         ),
       ),
     ],
   );
+}
+
+class ImageDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+//        width: 200,
+//        height: 200,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+              image: ExactAssetImage('assets/icon/icon.png'),
+              fit: BoxFit.cover,
+            )),
+      ),
+    );
+  }
 }

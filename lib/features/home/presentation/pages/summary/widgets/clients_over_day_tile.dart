@@ -18,7 +18,7 @@ class ClientsOverDayTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: LineChartScaffold(
-        title: 'Total queries over last 24 hours',
+        title: 'Client activity over last 24 hours',
         lineChart: clientsOverTimeResult.fold<Widget>(
           (failure) => CenteredFailureIndicator(failure),
           (overTimeData) {

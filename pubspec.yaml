@@ -91,12 +91,15 @@ dev_dependencies:
   # icon generation
   flutter_launcher_icons: ^0.7.5
   # flutter_driver extras
-  ozzie: ^2.2.3
+  # TODO fixed version until this pull merges:
+  # https://github.com/bmw-tech/ozzie.flutter/pull/49/commits/88685857e966ea6743fac3134c50b071f740dd67
+  ozzie: 2.2.3
 
 flutter:
   uses-material-design: true
 
-flutter_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/icon/icon.png"
+  assets:
+    - assets/icon/icon.png
+    - assets/icon/old_icon.png
+    - assets/icon/logo.png
+    - assets/images/logos.jpeg

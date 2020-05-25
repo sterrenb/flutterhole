@@ -12,6 +12,7 @@ class KStrings {
       'https://github.com/sterrenburg/flutterhole/';
   static const String githubIssuesUrl =
       'https://github.com/sterrenburg/flutterhole/issues/new/choose';
+  static const String logoDesignerUrl = 'https://mathijssterrenburg.com/';
 }
 
 class KIcons {
