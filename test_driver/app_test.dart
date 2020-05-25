@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:ozzie/ozzie.dart';
 import 'package:test/test.dart';
@@ -42,13 +40,13 @@ main() {
 
       await driver.scrollIntoView(find.byType('TotalQueriesOverDayTile'));
 
+      await driver.scrollIntoView(find.byType('ClientsOverDayTile'));
+
       await ozzie.takeScreenshot('summary_middle_1');
 
       await driver.scrollIntoView(find.byType('QueryTypesTile'));
 
       await driver.waitFor(find.text('AAAA (IPv6)'));
-
-      await ozzie.takeScreenshot('summary_middle_2');
 
       await driver.scrollIntoView(find.byType('ForwardDestinationsTile'));
 
@@ -59,15 +57,21 @@ main() {
 
       await ozzie.takeScreenshot('clients_all');
 
-      await driver.tap(find.text('10.0.1.2 (openelec)'));
+      await driver.tap(find.text('127.0.1.2 (openelec)'));
 
       await ozzie.takeScreenshot('client_single');
 
       await driver.tap(find.byTooltip('Back'));
 
+      await driver.tap(find.byTooltip('Open navigation menu'));
+
+      await ozzie.takeScreenshot('navigation_menu');
+
+      await driver.tap(find.pageBack());
+
       print('done with screenshots');
 
-      exit(0);
+//      exit(0);
     });
   });
 }

@@ -10,7 +10,7 @@ import 'package:flutterhole/features/settings/presentation/notifiers/theme_mode_
 import 'package:injectable/injectable.dart';
 import 'package:provider/provider.dart';
 
-void main([List<String> arguments = const [Environment.prod]]) {
+void main([List<String> arguments = const []]) {
   // wait for flutter initialization
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -18,6 +18,7 @@ void main([List<String> arguments = const [Environment.prod]]) {
 
   // Configure service injection
   List<String> args = List.from(arguments) ?? [];
+
   if (args.isEmpty) args.add(Environment.prod);
   configure(args.first).then((_) {
     if (foundation.kReleaseMode) {

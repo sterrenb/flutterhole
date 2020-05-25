@@ -1,9 +1,21 @@
-* Fix: Pi-holes without a password and API token can now toggle off the API token requirement.
+* Adding new logo with an easter egg 🥚
 
-* Feature: the queries/clients over time charts are back.
+* Adding apiTokenRequired field, fixes #79
 
-* Feature: errors are now more verbose.
+* Remove index shift from QueryStatus toJson/fromJson, fixes #82
 
-* Feature: query logs are searchable and refreshable.
+* Adding query log page
 
-* Feature: the query log is back. I intend to make some kind of live query viewer separately, this page does _not_ automatically listen for new data.
+* Adding queries over time chart
+
+* Adding clients over time chart
+
+* Searchable & refreshable query log/client/domain pages
+
+* Status indicators in Pi-hole forms can be tapped to show error details
+
+* More verbose error logging
+
+* Adding drawer footer and better about dialog
+
+* Adding DoubleBackToClose

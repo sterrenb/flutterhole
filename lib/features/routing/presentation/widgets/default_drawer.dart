@@ -79,19 +79,24 @@ class _Footer extends StatelessWidget {
     final String footerMessage = getIt<PreferenceService>().footerMessage;
     final PackageInfo packageInfo = getIt<PackageInfoService>().packageInfo;
 
+    final textStyle = Theme.of(context).textTheme.caption;
+
     return ListTile(
       title: Text(
         '${packageInfo.appName} ${packageInfo.versionAndBuildString}',
-        style: Theme.of(context).textTheme.caption,
+        style: textStyle,
+      ),
+      leading: Image(
+        image: AssetImage('assets/icon/logo.png'),
+        width: 50,
+        height: 50,
+        color: textStyle.color,
       ),
       subtitle: footerMessage.isEmpty
           ? null
           : Text(
         '$footerMessage',
-        style: Theme
-            .of(context)
-            .textTheme
-            .caption,
+        style: textStyle,
       ),
       onLongPress: () {
         showAppDetailsDialog(context, packageInfo);
