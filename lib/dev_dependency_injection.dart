@@ -26,7 +26,7 @@ import 'package:injectable/injectable.dart';
 import 'package:preferences/preferences.dart';
 import 'package:sailor/sailor.dart';
 
-@registerModule
+@module
 abstract class RegisterDevModule {
   @dev
   @injectable
@@ -57,8 +57,7 @@ abstract class RegisterDevModule {
 }
 
 @dev
-@injectable
-@RegisterAs(ApiDataSource)
+@Injectable(as: ApiDataSource)
 class ApiDataSourceDev implements ApiDataSource {
   @override
   Future<ToggleStatus> disablePihole(PiholeSettings settings) async {
@@ -274,8 +273,7 @@ class ApiDataSourceDev implements ApiDataSource {
 
 @dev
 @preResolve
-@singleton
-@RegisterAs(PreferenceService)
+@Singleton(as: PreferenceService)
 class PreferenceServiceDev extends PreferenceServiceImpl {
   @factoryMethod
   static Future<PreferenceServiceImpl> create() async {
@@ -285,8 +283,7 @@ class PreferenceServiceDev extends PreferenceServiceImpl {
 }
 
 @dev
-@singleton
-@RegisterAs(NumbersApiRepository)
+@Singleton(as: NumbersApiRepository)
 class NumbersApiRepositoryDev implements NumbersApiRepository {
   @override
   Future<Either<Failure, Map<int, String>>> fetchManyTrivia(

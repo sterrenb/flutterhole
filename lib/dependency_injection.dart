@@ -14,7 +14,7 @@ Future<void> configure(String environment) async {
   await $initGetIt(getIt, environment: environment);
 }
 
-@registerModule
+@module
 abstract class RegisterProdModule {
   @prod
   @injectable
@@ -38,8 +38,7 @@ abstract class RegisterProdModule {
   @prod
   @singleton
   Alice get alice => Alice(
-    showNotification: false,
-    darkTheme: true,
-  );
+        showNotification: false,
+        darkTheme: true,
+      );
 }
-

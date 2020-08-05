@@ -22,8 +22,7 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:injectable/injectable.dart';
 
 @prod
-@injectable
-@RegisterAs(ApiDataSource)
+@Injectable(as: ApiDataSource)
 class ApiDataSourceDio implements ApiDataSource {
   ApiDataSourceDio([Dio dio, Alice alice])
       : _dio = dio ?? getIt<Dio>(),

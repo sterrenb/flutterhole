@@ -6,8 +6,7 @@ import 'package:preferences/preferences.dart';
 
 @prod
 @preResolve
-@singleton
-@RegisterAs(PreferenceService)
+@Singleton(as: PreferenceService)
 class PreferenceServiceImpl implements PreferenceService {
   @factoryMethod
   static Future<PreferenceServiceImpl> create() async {

@@ -6,8 +6,7 @@ import 'package:launch_review/launch_review.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 @prod
-@singleton
-@RegisterAs(BrowserService)
+@Singleton(as: BrowserService)
 class BrowserServiceImpl implements BrowserService {
   BrowserServiceImpl([Dio dio]) : _dio = dio ?? getIt<Dio>();
 

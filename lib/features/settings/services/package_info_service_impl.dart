@@ -4,8 +4,7 @@ import 'package:package_info/package_info.dart';
 
 @Environment(Environment.prod)
 @Environment(Environment.dev)
-@singleton
-@RegisterAs(PackageInfoService)
+@Singleton(as: PackageInfoService)
 class PackageInfoServiceImpl implements PackageInfoService {
   PackageInfoServiceImpl._(this._info);
 

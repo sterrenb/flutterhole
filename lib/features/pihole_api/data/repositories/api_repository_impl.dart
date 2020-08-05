@@ -17,8 +17,7 @@ import 'package:flutterhole/features/pihole_api/data/repositories/api_repository
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:injectable/injectable.dart';
 
-@singleton
-@RegisterAs(ApiRepository)
+@Singleton(as: ApiRepository)
 class ApiRepositoryImpl implements ApiRepository {
   ApiRepositoryImpl([ApiDataSource apiDataSource])
       : _apiDataSource = apiDataSource ?? getIt<ApiDataSource>();
@@ -134,7 +133,7 @@ class ApiRepositoryImpl implements ApiRepository {
       [int maxResults]) async {
     try {
       final ManyQueryData result =
-      await _apiDataSource.fetchManyQueryData(settings, maxResults);
+          await _apiDataSource.fetchManyQueryData(settings, maxResults);
       return Right(result.data.reversed.toList());
     } on PiException catch (e) {
       return Left(Failure('fetchManyQueryData failed', e));

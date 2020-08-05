@@ -12,8 +12,7 @@ import 'package:flutterhole/features/settings/presentation/pages/user_preference
 import 'package:injectable/injectable.dart';
 import 'package:sailor/sailor.dart';
 
-@singleton
-@RegisterAs(RouterService)
+@Singleton(as: RouterService)
 class RouterServiceSailor implements RouterService {
   RouterServiceSailor([Sailor sailor, Alice alice])
       : _sailor = sailor ?? getIt<Sailor>(),
