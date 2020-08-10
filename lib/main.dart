@@ -23,7 +23,7 @@ void main([List<String> arguments = const []]) {
   configure(args.first).then((_) {
     if (foundation.kReleaseMode) {
     } else {
-      enableBlocDelegate();
+      enableBlocObserver();
     }
 
     getIt<RouterService>().createRoutes();

@@ -218,10 +218,7 @@ class AboutPage extends StatelessWidget {
                               context: context,
                               builder: (sheetContext) {
                                 final screenWidth =
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width;
+                                    MediaQuery.of(context).size.width;
 
                                 return LogoInspector(screenWidth: screenWidth);
                               });

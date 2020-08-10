@@ -96,7 +96,7 @@ class PiConnectionSleepButton extends StatelessWidget {
     if (result != null) {
       final DateTime now = clock.now();
       final selectedDuration =
-      Duration(hours: result.hour, minutes: result.minute);
+          Duration(hours: result.hour, minutes: result.minute);
       final currentDayDuration = Duration(hours: now.hour, minutes: now.minute);
       final difference = selectedDuration - currentDayDuration;
 
@@ -119,7 +119,7 @@ class PiConnectionSleepButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PiConnectionBloc, PiConnectionState>(
-      bloc: getIt<PiConnectionBloc>(),
+      cubit: getIt<PiConnectionBloc>(),
       builder: (BuildContext context, PiConnectionState state) {
         return IconButton(
           tooltip: 'Sleep',

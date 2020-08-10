@@ -14,8 +14,8 @@ class SettingsBlocBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SettingsBloc, SettingsState>(
-      bloc: getIt<SettingsBloc>(),
-      condition: (SettingsState previous, SettingsState next) {
+      cubit: getIt<SettingsBloc>(),
+      buildWhen: (SettingsState previous, SettingsState next) {
         if (previous is SettingsStateSuccess) return false;
 
         return true;

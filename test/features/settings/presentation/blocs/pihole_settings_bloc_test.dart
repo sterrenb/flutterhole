@@ -33,26 +33,17 @@ void main() {
     bloc.close();
   });
 
-  blocTest(
-    'Initially emits InitialPiholeSettingsState',
-    build: () async => bloc,
-    skip: 0,
-    expect: [PiholeSettingsStateInitial()],
-  );
-
-  blocTest(
+  blocTest<PiholeSettingsBloc, PiholeSettingsState>(
     'Emits [] when nothing is added',
-    build: () async => bloc,
+    build: () => bloc,
     expect: [],
   );
 
   group('$PiholeSettingsEventValidate', () {
     final PiholeSettings settings = PiholeSettings();
-    blocTest(
+    blocTest<PiholeSettingsBloc, PiholeSettingsState>(
       'Emits [$PiholeSettingsStateLoading, $PiholeSettingsStateValidated] when $PiholeSettingsEventValidate succeeds',
-      build: () async {
-        return bloc;
-      },
+      build: () => bloc,
       act: (PiholeSettingsBloc bloc) async {
         when(mockConnectionRepository.fetchHostStatusCode(settings))
             .thenAnswer((_) async => Right(200));
@@ -76,11 +67,9 @@ void main() {
       ],
     );
 
-    blocTest(
+    blocTest<PiholeSettingsBloc, PiholeSettingsState>(
       'Emits [$PiholeSettingsStateLoading, $PiholeSettingsStateValidated] when $PiholeSettingsEventValidate partially succeeds',
-      build: () async {
-        return bloc;
-      },
+      build: () => bloc,
       act: (PiholeSettingsBloc bloc) async {
         when(mockConnectionRepository.fetchHostStatusCode(settings))
             .thenAnswer((_) async => Right(200));
@@ -104,11 +93,9 @@ void main() {
       ],
     );
 
-    blocTest(
+    blocTest<PiholeSettingsBloc, PiholeSettingsState>(
       'Emits [$PiholeSettingsStateLoading, $PiholeSettingsStateValidated] when all calls fail',
-      build: () async {
-        return bloc;
-      },
+      build: () => bloc,
       act: (PiholeSettingsBloc bloc) async {
         when(mockConnectionRepository.fetchHostStatusCode(settings))
             .thenAnswer((_) async => Left(Failure()));

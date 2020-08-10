@@ -28,7 +28,7 @@ class PiConnectionStatusIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PiConnectionBloc, PiConnectionState>(
-        bloc: getIt<PiConnectionBloc>(),
+        cubit: getIt<PiConnectionBloc>(),
         builder: (BuildContext context, state) {
           final Color color = state.when(
             initial: () => KColors.inactive,
@@ -45,10 +45,12 @@ class PiConnectionStatusIcon extends StatelessWidget {
                   return KColors.unknown;
               }
             },
-            sleeping: (_,
-                __,
-                ___,) =>
-            KColors.sleeping,
+            sleeping: (
+              _,
+              __,
+              ___,
+            ) =>
+                KColors.sleeping,
           );
 
           return IconButton(
@@ -100,7 +102,7 @@ class _SleepProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PiConnectionBloc, PiConnectionState>(
-        bloc: getIt<PiConnectionBloc>(),
+        cubit: getIt<PiConnectionBloc>(),
         builder: (BuildContext context, state) {
           return state.maybeWhen<Widget>(
               sleeping: (_, DateTime start, Duration duration) {

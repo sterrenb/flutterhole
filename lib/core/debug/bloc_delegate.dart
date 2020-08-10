@@ -1,13 +1,18 @@
 import 'package:bloc/bloc.dart';
 
-class _SimpleBlocDelegate extends BlocDelegate {
+class _BlocObserver extends BlocObserver {
   @override
-  void onTransition(Bloc bloc, Transition transition) {
-    super.onTransition(bloc, transition);
-    print(transition);
+  void onChange(Cubit cubit, Change change) {
+    print(change);
+    super.onChange(cubit, change);
+  }
+
+  @override
+  void onError(Cubit cubit, Object error, StackTrace stackTrace) {
+    print('$error, $stackTrace');
+    super.onError(cubit, error, stackTrace);
   }
 }
 
 /// Print bloc transitions to stdout.
-void enableBlocDelegate() =>
-    BlocSupervisor.delegate = _SimpleBlocDelegate();
+void enableBlocObserver() => Bloc.observer = _BlocObserver();

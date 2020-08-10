@@ -31,16 +31,9 @@ void main() {
     bloc.close();
   });
 
-  blocTest(
-    'Initially emits InitialSettingsState',
-    build: () async => bloc,
-    skip: 0,
-    expect: [SettingsStateInitial()],
-  );
-
-  blocTest(
+  blocTest<SettingsBloc, SettingsState>(
     'Emits [] when nothing is added',
-    build: () async => bloc,
+    build: () => bloc,
     expect: [],
   );
 
@@ -51,9 +44,9 @@ void main() {
     ];
     final active = all.first;
 
-    blocTest(
+    blocTest<SettingsBloc, SettingsState>(
       'Emits [$SettingsStateLoading, $SettingsStateSuccess] when $SettingsEventInit succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchAllPiholeSettings())
             .thenAnswer((_) async => Right(all));
         when(mockSettingsRepository.fetchActivePiholeSettings())
@@ -65,9 +58,9 @@ void main() {
       expect: [SettingsStateLoading(), SettingsStateSuccess(all, active)],
     );
 
-    blocTest(
+    blocTest<SettingsBloc, SettingsState>(
       'Emits [$SettingsStateLoading, $SettingsStateFailure] when fetchAllPiholeSettings fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchAllPiholeSettings())
             .thenAnswer((_) async => Left(Failure()));
 
@@ -77,9 +70,9 @@ void main() {
       expect: [SettingsStateLoading(), SettingsStateFailure(Failure())],
     );
 
-    blocTest(
+    blocTest<SettingsBloc, SettingsState>(
       'Emits [$SettingsStateLoading, $SettingsStateFailure] when fetchActivePiholeSettings fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchAllPiholeSettings())
             .thenAnswer((_) async => Right(all));
         when(mockSettingsRepository.fetchActivePiholeSettings())
@@ -96,9 +89,9 @@ void main() {
     final all = <PiholeSettings>[];
     final active = PiholeSettings();
 
-    blocTest(
+    blocTest<SettingsBloc, SettingsState>(
       'Emits [$SettingsStateLoading, $SettingsStateSuccess] when $SettingsEventReset succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.deleteAllSettings())
             .thenAnswer((_) async => Right(true));
         when(mockSettingsRepository.fetchAllPiholeSettings())
@@ -121,9 +114,9 @@ void main() {
 
     final added = PiholeSettings(title: 'Add me');
 
-    blocTest(
+    blocTest<SettingsBloc, SettingsState>(
       'Emits [$SettingsStateLoading, $SettingsStateSuccess] when $SettingsEventCreate succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.createPiholeSettings())
             .thenAnswer((_) async => Right(added));
         when(mockSettingsRepository.fetchAllPiholeSettings())
@@ -147,9 +140,9 @@ void main() {
       added,
     ];
 
-    blocTest(
+    blocTest<SettingsBloc, SettingsState>(
       'Emits [$SettingsStateLoading, $SettingsStateSuccess] when $SettingsEventAdd succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.addPiholeSettings(added))
             .thenAnswer((_) async => Right(true));
         when(mockSettingsRepository.fetchAllPiholeSettings())
@@ -171,9 +164,9 @@ void main() {
 
     final newActive = settings1;
 
-    blocTest(
+    blocTest<SettingsBloc, SettingsState>(
       'Emits [$SettingsStateLoading, $SettingsStateSuccess] when $SettingsEventActivate succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.activatePiholeSettings(newActive))
             .thenAnswer((_) async => Right(true));
         when(mockSettingsRepository.fetchAllPiholeSettings())
@@ -209,17 +202,18 @@ void main() {
 
     final deleteMe = settings1;
 
-    blocTest(
+    blocTest<SettingsBloc, SettingsState>(
       'Emits [$SettingsStateLoading, $SettingsStateSuccess] when $SettingsEventDelete succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.deletePiholeSettings(deleteMe))
             .thenAnswer((_) async => Right(true));
         when(mockSettingsRepository.fetchAllPiholeSettings())
-            .thenAnswer((_) async => Right([
-                  deleteMe,
-                  settings0,
-                  settings2,
-                ]));
+            .thenAnswer((_) async =>
+            Right([
+              deleteMe,
+              settings0,
+              settings2,
+            ]));
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(deleteMe));
         return bloc;
@@ -244,17 +238,18 @@ void main() {
 
     final updated = settings0.copyWith(title: 'Updated');
 
-    blocTest(
+    blocTest<SettingsBloc, SettingsState>(
       'Emits [$SettingsStateLoading, $SettingsStateSuccess] when $SettingsEventUpdate succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.updatePiholeSettings(settings0, updated))
             .thenAnswer((_) async => Right(true));
         when(mockSettingsRepository.fetchAllPiholeSettings())
-            .thenAnswer((_) async => Right([
-                  updated,
-                  settings1,
-                  settings2,
-                ]));
+            .thenAnswer((_) async =>
+            Right([
+              updated,
+              settings1,
+              settings2,
+            ]));
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings2));
         return bloc;

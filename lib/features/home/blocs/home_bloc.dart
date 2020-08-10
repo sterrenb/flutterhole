@@ -46,13 +46,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     ApiRepository apiRepository,
     SettingsRepository settingsRepository,
   ])  : _apiRepository = apiRepository ?? getIt<ApiRepository>(),
-        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>();
+        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>(),
+        super(HomeStateInitial());
 
   final ApiRepository _apiRepository;
   final SettingsRepository _settingsRepository;
-
-  @override
-  HomeState get initialState => HomeStateInitial();
 
   Stream<HomeState> _fetch() async* {
     yield HomeStateLoading();
@@ -82,10 +80,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final Either<Failure, OverTimeDataClients> overTimeDataClients =
         results.elementAt(2);
         final Either<Failure, TopSourcesResult> topSources =
-            results.elementAt(3);
+        results.elementAt(3);
         final Either<Failure, TopItems> topItems = results.elementAt(4);
         final Either<Failure, ForwardDestinationsResult> forwardDestinations =
-            results.elementAt(5);
+        results.elementAt(5);
         final Either<Failure, DnsQueryTypeResult> dnsQueryTypes =
         results.elementAt(6);
 

@@ -25,16 +25,9 @@ void main() {
     bloc.close();
   });
 
-  blocTest(
-    'Initially emits NumberTriviaStateInitial',
-    build: () async => bloc,
-    skip: 0,
-    expect: [NumberTriviaState.initial()],
-  );
-
-  blocTest(
+  blocTest<NumberTriviaBloc, NumberTriviaState>(
     'Emits [] when nothing is added',
-    build: () async => bloc,
+    build: () => bloc,
     expect: [],
   );
 
@@ -45,9 +38,9 @@ void main() {
       3: 'three',
     };
 
-    blocTest(
+    blocTest<NumberTriviaBloc, NumberTriviaState>(
       'Emits [$NumberTriviaStateLoading, $NumberTriviaStateSuccess] when $NumberTriviaEventFetchMany succeeds',
-      build: () async {
+      build: () {
         when(mockNumbersApiRepository.fetchManyTrivia([1, 2, 3]))
             .thenAnswer((_) async => Right(tTrivia));
 
@@ -63,9 +56,9 @@ void main() {
 
     final tFailure = Failure('test');
 
-    blocTest(
+    blocTest<NumberTriviaBloc, NumberTriviaState>(
       'Emits [$NumberTriviaStateLoading, $NumberTriviaStateFailure] when $NumberTriviaEventFetchMany fails',
-      build: () async {
+      build: () {
         when(mockNumbersApiRepository.fetchManyTrivia([1, 2, 3]))
             .thenAnswer((_) async => Left(tFailure));
 

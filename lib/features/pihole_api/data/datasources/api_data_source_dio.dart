@@ -273,7 +273,7 @@ class ApiDataSourceDio implements ApiDataSource {
     String domain,
   ) async {
     final Map<String, dynamic> json =
-    await _getSecure(settings, queryParameters: {
+        await _getSecure(settings, queryParameters: {
       'getAllQueries': '',
       'domain': '${domain?.trim()}',
     });

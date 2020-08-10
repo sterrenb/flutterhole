@@ -24,7 +24,7 @@ abstract class PiholeSettingsState with _$PiholeSettingsState {
     Either<Failure, int> hostStatusCode,
     Either<Failure, PiStatusEnum> piholeStatus,
     Either<Failure, bool> authenticatedStatus,
-      Either<Failure, PiVersions> versions,
+    Either<Failure, PiVersions> versions,
   ) = PiholeSettingsStateValidated;
 
   const factory PiholeSettingsState.failure(Failure failure) =
@@ -41,12 +41,10 @@ class PiholeSettingsBloc
     extends Bloc<PiholeSettingsEvent, PiholeSettingsState> {
   PiholeSettingsBloc([ConnectionRepository connectionRepository])
       : _connectionRepository =
-            connectionRepository ?? getIt<ConnectionRepository>();
+            connectionRepository ?? getIt<ConnectionRepository>(),
+        super(PiholeSettingsStateInitial());
 
   final ConnectionRepository _connectionRepository;
-
-  @override
-  PiholeSettingsState get initialState => PiholeSettingsStateInitial();
 
   final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
 

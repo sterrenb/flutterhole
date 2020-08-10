@@ -19,15 +19,17 @@ abstract class PiConnectionState with _$PiConnectionState {
   const factory PiConnectionState.loading() = PiConnectionStateLoading;
 
   const factory PiConnectionState.failure(Failure failure) =
-  PiConnectionStateFailure;
+      PiConnectionStateFailure;
 
-  const factory PiConnectionState.active(PiholeSettings settings,
-      ToggleStatus toggleStatus) =
+  const factory PiConnectionState.active(
+          PiholeSettings settings, ToggleStatus toggleStatus) =
       PiConnectionStateActive;
 
-  const factory PiConnectionState.sleeping(PiholeSettings settings,
-      DateTime start,
-      Duration duration,) = PiConnectionStateSleeping;
+  const factory PiConnectionState.sleeping(
+    PiholeSettings settings,
+    DateTime start,
+    Duration duration,
+  ) = PiConnectionStateSleeping;
 }
 
 @freezed
@@ -50,15 +52,14 @@ class PiConnectionBloc extends Bloc<PiConnectionEvent, PiConnectionState> {
   PiConnectionBloc([
     ConnectionRepository connectionRepository,
     SettingsRepository settingsRepository,
-  ])  : _connectionRepository =
-            connectionRepository ?? getIt<ConnectionRepository>(),
-        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>();
+  ])
+      : _connectionRepository =
+      connectionRepository ?? getIt<ConnectionRepository>(),
+        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>(),
+        super(PiConnectionState.initial());
 
   final ConnectionRepository _connectionRepository;
   final SettingsRepository _settingsRepository;
-
-  @override
-  PiConnectionState get initialState => PiConnectionState.initial();
 
   /// Wrapper for accessing [ConnectionRepository] methods with known signature.
   Stream<PiConnectionState> _do(ConnectionFunction f) async* {

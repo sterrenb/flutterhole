@@ -45,7 +45,7 @@ class _ApiTokenFormTileState extends State<ApiTokenFormTile> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PiholeSettingsBloc, PiholeSettingsState>(
-        condition: (previous, next) {
+        buildWhen: (previous, next) {
       if (previous is PiholeSettingsStateValidated) {
         return false;
       }

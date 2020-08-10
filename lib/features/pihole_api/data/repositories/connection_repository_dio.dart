@@ -98,7 +98,7 @@ class ConnectionRepositoryDio implements ConnectionRepository {
 
   @override
   Future<Either<Failure, ToggleStatus>> pingPihole(
-      PiholeSettings settings) async =>
+          PiholeSettings settings) async =>
       fetchOrFailure<ToggleStatus>(
         settings,
         _apiDataSource.pingPihole,
