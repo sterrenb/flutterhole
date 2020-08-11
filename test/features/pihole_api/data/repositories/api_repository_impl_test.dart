@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist_item.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
@@ -12,6 +14,8 @@ import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist_item.dart';
 import 'package:flutterhole/features/pihole_api/data/repositories/api_repository_impl.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:mockito/mockito.dart';
@@ -270,7 +274,7 @@ void main() async {
             .thenThrow(tError);
         // act
         final Either<Failure, List<QueryData>> result =
-        await apiRepository.fetchQueriesForClient(piholeSettings, client);
+            await apiRepository.fetchQueriesForClient(piholeSettings, client);
         // assert
         expect(result,
             equals(Left(Failure('fetchQueriesForClient failed', tError))));
@@ -282,7 +286,7 @@ void main() async {
     final String domain = 'test.org';
     test(
       'should return reversed List<QueryData> on successful fetchQueriesForDomain',
-          () async {
+      () async {
         // arrange
         final ManyQueryData manyQueryData = ManyQueryData(
           data: [QueryData(domain: domain)],
@@ -291,11 +295,11 @@ void main() async {
             .thenAnswer((_) async => manyQueryData);
         // act
         final Either<Failure, List<QueryData>> result =
-        await apiRepository.fetchQueriesForDomain(piholeSettings, domain);
+            await apiRepository.fetchQueriesForDomain(piholeSettings, domain);
         // assert
         result.fold(
-              (failure) => fail('result should be Right'),
-              (list) {
+          (failure) => fail('result should be Right'),
+          (list) {
             expect(list, equals(manyQueryData.data.reversed.toList()));
           },
         );
@@ -304,14 +308,14 @@ void main() async {
 
     test(
       'should return $Failure on failed fetchQueriesForDomain',
-          () async {
+      () async {
         // arrange
 
         when(mockApiDataSource.fetchQueryDataForDomain(piholeSettings, domain))
             .thenThrow(tError);
         // act
         final Either<Failure, List<QueryData>> result =
-        await apiRepository.fetchQueriesForDomain(piholeSettings, domain);
+            await apiRepository.fetchQueriesForDomain(piholeSettings, domain);
         // assert
         expect(result,
             equals(Left(Failure('fetchQueriesForDomain failed', tError))));
@@ -322,7 +326,7 @@ void main() async {
   group('fetchManyQueryData', () {
     test(
       'should return reversed List<QueryData> on successful fetchManyQueryData without maxResults',
-          () async {
+      () async {
         // arrange
         final ManyQueryData manyQueryData = ManyQueryData(
           data: [
@@ -335,11 +339,11 @@ void main() async {
             .thenAnswer((_) async => manyQueryData);
         // act
         final Either<Failure, List<QueryData>> result =
-        await apiRepository.fetchManyQueryData(piholeSettings);
+            await apiRepository.fetchManyQueryData(piholeSettings);
         // assert
         result.fold(
-              (failure) => fail('result should be Right'),
-              (list) {
+          (failure) => fail('result should be Right'),
+          (list) {
             expect(list, equals(manyQueryData.data.reversed.toList()));
           },
         );
@@ -348,7 +352,7 @@ void main() async {
 
     test(
       'should return reversed List<QueryData> on successful fetchManyQueryData with maxResults',
-          () async {
+      () async {
         // arrange
         final int maxResults = 123;
         final ManyQueryData manyQueryData = ManyQueryData(
@@ -362,11 +366,11 @@ void main() async {
             .thenAnswer((_) async => manyQueryData);
         // act
         final Either<Failure, List<QueryData>> result =
-        await apiRepository.fetchManyQueryData(piholeSettings, maxResults);
+            await apiRepository.fetchManyQueryData(piholeSettings, maxResults);
         // assert
         result.fold(
-              (failure) => fail('result should be Right'),
-              (list) {
+          (failure) => fail('result should be Right'),
+          (list) {
             expect(list, equals(manyQueryData.data.reversed.toList()));
           },
         );
@@ -375,17 +379,97 @@ void main() async {
 
     test(
       'should return $Failure on failed fetchManyQueryData',
-          () async {
+      () async {
         // arrange
 
         when(mockApiDataSource.fetchManyQueryData(piholeSettings))
             .thenThrow(tError);
         // act
         final Either<Failure, List<QueryData>> result =
-        await apiRepository.fetchManyQueryData(piholeSettings);
+            await apiRepository.fetchManyQueryData(piholeSettings);
         // assert
         expect(
             result, equals(Left(Failure('fetchManyQueryData failed', tError))));
+      },
+    );
+  });
+
+  group('fetchWhitelist', () {
+    test(
+      'should return $Whitelist on successful fetchWhitelist',
+      () async {
+        // arrange
+        final whitelist =
+            Whitelist(data: [WhitelistItem(id: 2, comment: 'hi')]);
+        when(mockApiDataSource.fetchWhitelist(piholeSettings))
+            .thenAnswer((_) async => whitelist);
+        when(mockApiDataSource.fetchRegexWhitelist(piholeSettings))
+            .thenAnswer((_) async => whitelist);
+        // act
+        final Either<Failure, Whitelist> result =
+            await apiRepository.fetchWhitelist(piholeSettings);
+        // assert
+        expect(
+            result,
+            equals(Right(Whitelist(data: [
+              ...whitelist.data,
+              ...whitelist.data,
+            ]))));
+      },
+    );
+
+    test(
+      'should return $Failure on failed fetchWhitelist',
+      () async {
+        // arrange
+
+        when(mockApiDataSource.fetchWhitelist(piholeSettings))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, Whitelist> result =
+            await apiRepository.fetchWhitelist(piholeSettings);
+        // assert
+        expect(result, equals(Left(Failure('fetchWhitelist failed', tError))));
+      },
+    );
+  });
+
+  group('fetchBlacklist', () {
+    test(
+      'should return $Blacklist on successful fetchBlacklist',
+      () async {
+        // arrange
+        final blacklist =
+            Blacklist(data: [BlacklistItem(id: 2, comment: 'hi')]);
+        when(mockApiDataSource.fetchBlacklist(piholeSettings))
+            .thenAnswer((_) async => blacklist);
+        when(mockApiDataSource.fetchRegexBlacklist(piholeSettings))
+            .thenAnswer((_) async => blacklist);
+        // act
+        final Either<Failure, Blacklist> result =
+            await apiRepository.fetchBlacklist(piholeSettings);
+        // assert
+        expect(
+            result,
+            equals(Right(Blacklist(data: [
+              ...blacklist.data,
+              ...blacklist.data,
+            ]))));
+      },
+    );
+
+    test(
+      'should return $Failure on failed fetchBlacklist',
+      () async {
+        // arrange
+
+        when(mockApiDataSource.fetchBlacklist(piholeSettings))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, Blacklist> result =
+            await apiRepository.fetchBlacklist(piholeSettings);
+        // assert
+        expect(result, equals(Left(Failure('fetchBlacklist failed', tError))));
       },
     );
   });

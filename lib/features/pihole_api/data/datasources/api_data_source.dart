@@ -1,3 +1,4 @@
+import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
@@ -9,6 +10,7 @@ import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 
 /// The string that counts as the API token on Pi-holes
@@ -51,4 +53,12 @@ abstract class ApiDataSource {
 
   Future<ManyQueryData> fetchManyQueryData(PiholeSettings settings,
       [int maxResults]);
+
+  Future<Blacklist> fetchBlacklist(PiholeSettings settings);
+
+  Future<Blacklist> fetchRegexBlacklist(PiholeSettings settings);
+
+  Future<Whitelist> fetchWhitelist(PiholeSettings settings);
+
+  Future<Whitelist> fetchRegexWhitelist(PiholeSettings settings);
 }

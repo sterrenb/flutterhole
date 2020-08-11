@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/numbers_api/data/repositories/numbers_api_repository.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
@@ -17,6 +18,7 @@ import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/services/preference_service.dart';
 import 'package:flutterhole/features/settings/services/preference_service_impl.dart';
@@ -268,6 +270,26 @@ class ApiDataSourceDev implements ApiDataSource {
   Future<ToggleStatus> sleepPihole(
       PiholeSettings settings, Duration duration) async {
     return ToggleStatus(PiStatusEnum.disabled);
+  }
+
+  @override
+  Future<Blacklist> fetchBlacklist(PiholeSettings settings) async {
+    return Blacklist(data: []);
+  }
+
+  @override
+  Future<Blacklist> fetchRegexBlacklist(PiholeSettings settings) async {
+    return Blacklist(data: []);
+  }
+
+  @override
+  Future<Whitelist> fetchRegexWhitelist(PiholeSettings settings) async {
+    return Whitelist(data: []);
+  }
+
+  @override
+  Future<Whitelist> fetchWhitelist(PiholeSettings settings) async {
+    return Whitelist(data: []);
   }
 }
 

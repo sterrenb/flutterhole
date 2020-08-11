@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutterhole/core/models/failures.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
@@ -9,6 +10,7 @@ import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 
 abstract class ApiRepository {
@@ -40,4 +42,8 @@ abstract class ApiRepository {
   Future<Either<Failure, List<QueryData>>> fetchManyQueryData(
       PiholeSettings settings,
       [int maxResults]);
+
+  Future<Either<Failure, Whitelist>> fetchWhitelist(PiholeSettings settings);
+
+  Future<Either<Failure, Blacklist>> fetchBlacklist(PiholeSettings settings);
 }
