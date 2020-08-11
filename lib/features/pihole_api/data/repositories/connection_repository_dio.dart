@@ -107,7 +107,7 @@ class ConnectionRepositoryDio implements ConnectionRepository {
 
   @override
   Future<Either<Failure, ToggleStatus>> enablePihole(
-      PiholeSettings settings) async =>
+          PiholeSettings settings) async =>
       fetchOrFailure<ToggleStatus>(
         settings,
         _apiDataSource.enablePihole,
@@ -116,7 +116,7 @@ class ConnectionRepositoryDio implements ConnectionRepository {
 
   @override
   Future<Either<Failure, ToggleStatus>> disablePihole(
-      PiholeSettings settings) async =>
+          PiholeSettings settings) async =>
       fetchOrFailure<ToggleStatus>(
         settings,
         _apiDataSource.disablePihole,
@@ -128,7 +128,7 @@ class ConnectionRepositoryDio implements ConnectionRepository {
       PiholeSettings settings, Duration duration) async {
     try {
       final ToggleStatus result =
-      await _apiDataSource.sleepPihole(settings, duration);
+          await _apiDataSource.sleepPihole(settings, duration);
       return Right(result);
     } on PiException catch (e) {
       return Left(Failure('sleepPihole failed', e));

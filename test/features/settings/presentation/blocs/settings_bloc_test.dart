@@ -208,12 +208,11 @@ void main() {
         when(mockSettingsRepository.deletePiholeSettings(deleteMe))
             .thenAnswer((_) async => Right(true));
         when(mockSettingsRepository.fetchAllPiholeSettings())
-            .thenAnswer((_) async =>
-            Right([
-              deleteMe,
-              settings0,
-              settings2,
-            ]));
+            .thenAnswer((_) async => Right([
+                  deleteMe,
+                  settings0,
+                  settings2,
+                ]));
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(deleteMe));
         return bloc;
@@ -244,12 +243,11 @@ void main() {
         when(mockSettingsRepository.updatePiholeSettings(settings0, updated))
             .thenAnswer((_) async => Right(true));
         when(mockSettingsRepository.fetchAllPiholeSettings())
-            .thenAnswer((_) async =>
-            Right([
-              updated,
-              settings1,
-              settings2,
-            ]));
+            .thenAnswer((_) async => Right([
+                  updated,
+                  settings1,
+                  settings2,
+                ]));
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings2));
         return bloc;

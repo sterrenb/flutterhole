@@ -41,7 +41,7 @@ abstract class PiConnectionEvent with _$PiConnectionEvent {
   const factory PiConnectionEvent.disable() = PiConnectionEventDisable;
 
   const factory PiConnectionEvent.sleep(Duration duration, DateTime now) =
-  PiConnectionEventSleep;
+      PiConnectionEventSleep;
 }
 
 typedef Future<Either<Failure, ToggleStatus>> ConnectionFunction(
@@ -52,9 +52,8 @@ class PiConnectionBloc extends Bloc<PiConnectionEvent, PiConnectionState> {
   PiConnectionBloc([
     ConnectionRepository connectionRepository,
     SettingsRepository settingsRepository,
-  ])
-      : _connectionRepository =
-      connectionRepository ?? getIt<ConnectionRepository>(),
+  ])  : _connectionRepository =
+            connectionRepository ?? getIt<ConnectionRepository>(),
         _settingsRepository = settingsRepository ?? getIt<SettingsRepository>(),
         super(PiConnectionState.initial());
 
@@ -93,13 +92,13 @@ class PiConnectionBloc extends Bloc<PiConnectionEvent, PiConnectionState> {
     yield PiConnectionState.loading();
 
     final Either<Failure, PiholeSettings> active =
-    await _settingsRepository.fetchActivePiholeSettings();
+        await _settingsRepository.fetchActivePiholeSettings();
 
     yield* active.fold((Failure failure) async* {
       yield PiConnectionState.failure(failure);
     }, (PiholeSettings settings) async* {
       final Either<Failure, ToggleStatus> statusResult =
-      await _connectionRepository.sleepPihole(settings, duration);
+          await _connectionRepository.sleepPihole(settings, duration);
 
       yield* statusResult.fold((Failure failure) async* {
         yield PiConnectionState.failure(failure);

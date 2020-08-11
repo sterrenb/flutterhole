@@ -127,8 +127,8 @@ class PiConnectionSleepButton extends StatelessWidget {
           onPressed: (state is PiConnectionStateActive)
               ? () async {
 //            _showSleepPickerDialog(context);
-            _showSleepSelectDialog(context);
-          }
+                  _showSleepSelectDialog(context);
+                }
               : null,
         );
       },

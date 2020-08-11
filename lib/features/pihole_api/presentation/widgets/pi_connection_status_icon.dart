@@ -67,27 +67,22 @@ class PiConnectionStatusIcon extends StatelessWidget {
             ),
             onPressed: interactive
                 ? getIt<PiConnectionBloc>().state.when<VoidCallback>(
-              initial: () => null,
-              loading: () => null,
-              failure: (failure) =>
-                  () {
-                showToast(
-                    '${failure.message}: ${failure.error?.toString()}');
-              },
-              active: (settings, toggleStatus) =>
-                  () {
-                showToast(
-                    '${settings.title} is ${_$PiStatusEnumEnumMap[toggleStatus
-                        .status]}');
-              },
-              sleeping: (_, start, duration) =>
-                  () {
-                final dateTime = start.add(duration);
-                showToast(
-                    'Sleeping until ${dateTime.formattedTime} (${dateTime
-                        .fromNow})');
-              },
-            )
+                      initial: () => null,
+                      loading: () => null,
+                      failure: (failure) => () {
+                        showToast(
+                            '${failure.message}: ${failure.error?.toString()}');
+                      },
+                      active: (settings, toggleStatus) => () {
+                        showToast(
+                            '${settings.title} is ${_$PiStatusEnumEnumMap[toggleStatus.status]}');
+                      },
+                      sleeping: (_, start, duration) => () {
+                        final dateTime = start.add(duration);
+                        showToast(
+                            'Sleeping until ${dateTime.formattedTime} (${dateTime.fromNow})');
+                      },
+                    )
                 : null,
           );
         });
