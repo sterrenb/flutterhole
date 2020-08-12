@@ -10,6 +10,7 @@ import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source
 import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
@@ -315,6 +316,33 @@ class ApiDataSourceDio implements ApiDataSource {
   }
 
   @override
+  Future<ListResponse> addToWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': isWildcard ? 'regex_white' : 'white',
+      'add': '$domain',
+    });
+
+    return ListResponse.fromJson(json);
+  }
+
+  @override
+  Future<ListResponse> removeFromWhitelist(
+    PiholeSettings settings,
+    String domain,
+    bool isWildcard,
+  ) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': isWildcard ? 'regex_white' : 'white',
+      'sub': '$domain',
+    });
+
+    return ListResponse.fromJson(json);
+  }
+
+  @override
   Future<Blacklist> fetchBlacklist(PiholeSettings settings) async {
     final Map<String, dynamic> json =
         await _getSecure(settings, queryParameters: {
@@ -332,5 +360,32 @@ class ApiDataSourceDio implements ApiDataSource {
     });
 
     return Blacklist.fromJson(json);
+  }
+
+  @override
+  Future<ListResponse> addToBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': isWildcard ? 'regex_black' : 'black',
+      'add': '$domain',
+    });
+
+    return ListResponse.fromJson(json);
+  }
+
+  @override
+  Future<ListResponse> removeFromBlacklist(
+    PiholeSettings settings,
+    String domain,
+    bool isWildcard,
+  ) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': isWildcard ? 'regex_black' : 'black',
+      'sub': '$domain',
+    });
+
+    return ListResponse.fromJson(json);
   }
 }

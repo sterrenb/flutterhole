@@ -7,6 +7,7 @@ import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source
 import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
@@ -290,6 +291,30 @@ class ApiDataSourceDev implements ApiDataSource {
   @override
   Future<Whitelist> fetchWhitelist(PiholeSettings settings) async {
     return Whitelist(data: []);
+  }
+
+  @override
+  Future<ListResponse> addToWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
+  }
+
+  @override
+  Future<ListResponse> addToBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
+  }
+
+  @override
+  Future<ListResponse> removeFromBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
+  }
+
+  @override
+  Future<ListResponse> removeFromWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
   }
 }
 

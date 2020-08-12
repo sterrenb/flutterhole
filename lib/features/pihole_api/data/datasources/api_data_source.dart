@@ -1,6 +1,7 @@
 import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
@@ -54,11 +55,23 @@ abstract class ApiDataSource {
   Future<ManyQueryData> fetchManyQueryData(PiholeSettings settings,
       [int maxResults]);
 
+  Future<Whitelist> fetchWhitelist(PiholeSettings settings);
+
+  Future<Whitelist> fetchRegexWhitelist(PiholeSettings settings);
+
+  Future<ListResponse> addToWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard);
+
+  Future<ListResponse> removeFromWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard);
+
   Future<Blacklist> fetchBlacklist(PiholeSettings settings);
 
   Future<Blacklist> fetchRegexBlacklist(PiholeSettings settings);
 
-  Future<Whitelist> fetchWhitelist(PiholeSettings settings);
+  Future<ListResponse> addToBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard);
 
-  Future<Whitelist> fetchRegexWhitelist(PiholeSettings settings);
+  Future<ListResponse> removeFromBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard);
 }

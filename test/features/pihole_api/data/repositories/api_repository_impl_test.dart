@@ -7,6 +7,7 @@ import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/blacklist_item.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
@@ -469,7 +470,158 @@ void main() async {
         final Either<Failure, Blacklist> result =
             await apiRepository.fetchBlacklist(piholeSettings);
         // assert
-        expect(result, equals(Left(Failure('fetchBlacklist failed', tError))));
+        expect(
+            result,
+            equals(Left<Failure, Blacklist>(
+                Failure('fetchBlacklist failed', tError))));
+      },
+    );
+  });
+
+  group('addToWhitelist', () {
+    test(
+      'should return $ListResponse on successful addToWhitelist',
+      () async {
+        // arrange
+        final ListResponse response = ListResponse(success: true);
+        final String domain = 'domain';
+        when(mockApiDataSource.addToWhitelist(piholeSettings, domain, false))
+            .thenAnswer((_) async => response);
+        // act
+        final Either<Failure, ListResponse> result =
+            await apiRepository.addToWhitelist(piholeSettings, domain, false);
+        // assert
+        expect(result, equals(Right<Failure, ListResponse>(response)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed addToWhitelist',
+      () async {
+        // arrange
+        final String domain = 'domain';
+        when(mockApiDataSource.addToWhitelist(piholeSettings, domain, false))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, ListResponse> result =
+            await apiRepository.addToWhitelist(piholeSettings, domain, false);
+        // assert
+        expect(
+            result,
+            equals(Left<Failure, ListResponse>(
+                Failure('addToWhitelist failed', tError))));
+      },
+    );
+  });
+
+  group('addToBlacklist', () {
+    test(
+      'should return $ListResponse on successful addToBlacklist',
+      () async {
+        // arrange
+        final ListResponse response = ListResponse(success: true);
+        final String domain = 'domain';
+        when(mockApiDataSource.addToBlacklist(piholeSettings, domain, false))
+            .thenAnswer((_) async => response);
+        // act
+        final Either<Failure, ListResponse> result =
+            await apiRepository.addToBlacklist(piholeSettings, domain, false);
+        // assert
+        expect(result, equals(Right<Failure, ListResponse>(response)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed addToBlacklist',
+      () async {
+        // arrange
+        final String domain = 'domain';
+        when(mockApiDataSource.addToBlacklist(piholeSettings, domain, false))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, ListResponse> result =
+            await apiRepository.addToBlacklist(piholeSettings, domain, false);
+        // assert
+        expect(
+            result,
+            equals(Left<Failure, ListResponse>(
+                Failure('addToBlacklist failed', tError))));
+      },
+    );
+  });
+
+  group('removeFromWhitelist', () {
+    test(
+      'should return $ListResponse on successful removeFromWhitelist',
+      () async {
+        // arrange
+        final ListResponse response = ListResponse(success: true);
+        final String domain = 'domain';
+        when(mockApiDataSource.removeFromWhitelist(
+                piholeSettings, domain, false))
+            .thenAnswer((_) async => response);
+        // act
+        final Either<Failure, ListResponse> result = await apiRepository
+            .removeFromWhitelist(piholeSettings, domain, false);
+        // assert
+        expect(result, equals(Right<Failure, ListResponse>(response)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed removeFromWhitelist',
+      () async {
+        // arrange
+        final String domain = 'domain';
+        when(mockApiDataSource.removeFromWhitelist(
+                piholeSettings, domain, false))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, ListResponse> result = await apiRepository
+            .removeFromWhitelist(piholeSettings, domain, false);
+        // assert
+        expect(
+            result,
+            equals(Left<Failure, ListResponse>(
+                Failure('removeFromWhitelist failed', tError))));
+      },
+    );
+  });
+
+  group('removeFromBlacklist', () {
+    test(
+      'should return $ListResponse on successful removeFromBlacklist',
+      () async {
+        // arrange
+        final ListResponse response = ListResponse(success: true);
+        final String domain = 'domain';
+        when(mockApiDataSource.removeFromBlacklist(
+                piholeSettings, domain, false))
+            .thenAnswer((_) async => response);
+        // act
+        final Either<Failure, ListResponse> result = await apiRepository
+            .removeFromBlacklist(piholeSettings, domain, false);
+        // assert
+        expect(result, equals(Right<Failure, ListResponse>(response)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed removeFromBlacklist',
+      () async {
+        // arrange
+        final String domain = 'domain';
+        when(mockApiDataSource.removeFromBlacklist(
+                piholeSettings, domain, false))
+            .thenThrow(tError);
+        // act
+        final Either<Failure, ListResponse> result = await apiRepository
+            .removeFromBlacklist(piholeSettings, domain, false);
+        // assert
+        expect(
+            result,
+            equals(Left<Failure, ListResponse>(
+                Failure('removeFromBlacklist failed', tError))));
       },
     );
   });

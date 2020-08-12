@@ -7,6 +7,7 @@ import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source
 import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
@@ -449,4 +450,117 @@ void main() async {
       expect(result, equals(Blacklist.fromJson(json)));
     },
   );
+
+  group('list edits', () {
+    test(
+      'should return $ListResponse on successful addToWhitelist',
+      () async {
+        // arrange
+        piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+        final json = stubFixtureResponse('list_response.json', 200);
+        // act
+        final ListResponse result = await apiDataSourceDio.addToWhitelist(
+            piholeSettings, 'domain', false);
+        // assert
+        expect(result, equals(ListResponse.fromJson(json)));
+      },
+    );
+
+    test(
+      'should return $ListResponse on successful removeFromWhitelist',
+      () async {
+        // arrange
+        piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+        final json = stubFixtureResponse('list_response.json', 200);
+        // act
+        final ListResponse result = await apiDataSourceDio.removeFromWhitelist(
+            piholeSettings, 'domain', false);
+        // assert
+        expect(result, equals(ListResponse.fromJson(json)));
+      },
+    );
+
+    test(
+      'should return $ListResponse on successful addToRegexWhitelist',
+      () async {
+        // arrange
+        piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+        final json = stubFixtureResponse('list_response.json', 200);
+        // act
+        final ListResponse result = await apiDataSourceDio.addToWhitelist(
+            piholeSettings, 'domain', true);
+        // assert
+        expect(result, equals(ListResponse.fromJson(json)));
+      },
+    );
+
+    test(
+      'should return $ListResponse on successful removeFromRegexWhitelist',
+      () async {
+        // arrange
+        piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+        final json = stubFixtureResponse('list_response.json', 200);
+        // act
+        final ListResponse result = await apiDataSourceDio.removeFromWhitelist(
+            piholeSettings, 'domain', true);
+        // assert
+        expect(result, equals(ListResponse.fromJson(json)));
+      },
+    );
+
+    test(
+      'should return $ListResponse on successful addToBlacklist',
+      () async {
+        // arrange
+        piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+        final json = stubFixtureResponse('list_response.json', 200);
+        // act
+        final ListResponse result = await apiDataSourceDio.addToBlacklist(
+            piholeSettings, 'domain', false);
+        // assert
+        expect(result, equals(ListResponse.fromJson(json)));
+      },
+    );
+
+    test(
+      'should return $ListResponse on successful removeFromBlacklist',
+      () async {
+        // arrange
+        piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+        final json = stubFixtureResponse('list_response.json', 200);
+        // act
+        final ListResponse result = await apiDataSourceDio.removeFromBlacklist(
+            piholeSettings, 'domain', false);
+        // assert
+        expect(result, equals(ListResponse.fromJson(json)));
+      },
+    );
+    test(
+      'should return $ListResponse on successful addToRegexBlacklist',
+      () async {
+        // arrange
+        piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+        final json = stubFixtureResponse('list_response.json', 200);
+        // act
+        final ListResponse result = await apiDataSourceDio.addToBlacklist(
+            piholeSettings, 'domain', true);
+        // assert
+        expect(result, equals(ListResponse.fromJson(json)));
+      },
+    );
+
+    test(
+      'should return $ListResponse on successful removeFromRegexBlacklist',
+      () async {
+        // arrange
+        piholeSettings = piholeSettings.copyWith(apiToken: 'token');
+        final json = stubFixtureResponse('list_response.json', 200);
+        // act
+        final ListResponse result = await apiDataSourceDio.removeFromBlacklist(
+            piholeSettings, 'domain', true);
+        // assert
+        expect(result, equals(ListResponse.fromJson(json)));
+      },
+    );
+  });
 }

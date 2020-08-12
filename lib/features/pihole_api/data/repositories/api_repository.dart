@@ -3,6 +3,7 @@ import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
@@ -45,5 +46,17 @@ abstract class ApiRepository {
 
   Future<Either<Failure, Whitelist>> fetchWhitelist(PiholeSettings settings);
 
+  Future<Either<Failure, ListResponse>> addToWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard);
+
+  Future<Either<Failure, ListResponse>> removeFromWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard);
+
   Future<Either<Failure, Blacklist>> fetchBlacklist(PiholeSettings settings);
+
+  Future<Either<Failure, ListResponse>> addToBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard);
+
+  Future<Either<Failure, ListResponse>> removeFromBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard);
 }

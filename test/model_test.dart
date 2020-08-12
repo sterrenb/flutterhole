@@ -4,6 +4,7 @@ import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/blacklist_item.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/model.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
@@ -79,6 +80,8 @@ void main() {
   testMapModel<WhitelistItem>(
       'whitelist_item.json', (json) => WhitelistItem.fromJson(json));
   testMapModel<Whitelist>('whitelist.json', (json) => Whitelist.fromJson(json));
+  testMapModel<ListResponse>(
+      'list_response.json', (json) => ListResponse.fromJson(json));
   testListModel<QueryData>(
       'query_data_single.json', (json) => QueryData.fromList(json));
   testMapModel<ManyQueryData>(
