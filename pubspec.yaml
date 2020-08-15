@@ -53,7 +53,8 @@ dependencies:
   flutter_staggered_grid_view: ^0.3.2
   animations: ^1.1.2
   flutter_spinkit: ^4.1.2+1
-  fl_chart: ^0.11.0
+  # TODO anything higher breaks the touch animation
+  fl_chart: 0.9.4
   flutter_sticky_header: ^0.4.5
   flushbar: ^1.10.4
   fluttertoast: ^7.0.2
