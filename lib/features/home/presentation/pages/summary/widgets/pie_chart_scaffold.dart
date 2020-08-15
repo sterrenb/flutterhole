@@ -30,9 +30,8 @@ class PieChartScaffold extends StatelessWidget {
           children: <Widget>[
             Flexible(
               flex: 2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              child: ListView(
+                shrinkWrap: true,
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
@@ -45,7 +44,7 @@ class PieChartScaffold extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 12.0),
+            SizedBox(width: 8.0),
             Flexible(flex: 3, child: pieChart),
           ],
         ),

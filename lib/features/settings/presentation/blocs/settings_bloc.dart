@@ -52,15 +52,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc([
     SettingsRepository settingsRepository,
     PiConnectionBloc piConnectionBloc,
-  ])
-      : _settingsRepository = settingsRepository ?? getIt<SettingsRepository>(),
-        _piConnectionBloc = piConnectionBloc ?? getIt<PiConnectionBloc>();
+  ])  : _settingsRepository = settingsRepository ?? getIt<SettingsRepository>(),
+        _piConnectionBloc = piConnectionBloc ?? getIt<PiConnectionBloc>(),
+        super(SettingsStateInitial());
 
   final SettingsRepository _settingsRepository;
   final PiConnectionBloc _piConnectionBloc;
-
-  @override
-  SettingsState get initialState => SettingsStateInitial();
 
   Stream<SettingsState> _init() async* {
     yield SettingsStateLoading();

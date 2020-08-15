@@ -7,8 +7,7 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/data/repositories/settings_repository.dart';
 import 'package:injectable/injectable.dart';
 
-@singleton
-@RegisterAs(SettingsRepository)
+@Singleton(as: SettingsRepository)
 class SettingsRepositoryImpl implements SettingsRepository {
   SettingsRepositoryImpl([SettingsDataSource settingsDataSource])
       : _settingsDataSource = settingsDataSource ?? getIt<SettingsDataSource>();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class QueriesSearchNotifier extends ChangeNotifier {
+class StringSearchNotifier extends ChangeNotifier {
   bool _isSearching = false;
   String _searchQuery = '';
 

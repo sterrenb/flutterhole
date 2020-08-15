@@ -29,12 +29,10 @@ abstract class NumberTriviaEvent with _$NumberTriviaEvent {
 class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
   NumberTriviaBloc([NumbersApiRepository numbersApiRepository])
       : _numbersApiRepository =
-            numbersApiRepository ?? getIt<NumbersApiRepository>();
+            numbersApiRepository ?? getIt<NumbersApiRepository>(),
+        super(NumberTriviaState.initial());
 
   final NumbersApiRepository _numbersApiRepository;
-
-  @override
-  NumberTriviaState get initialState => NumberTriviaState.initial();
 
   Stream<NumberTriviaState> _fetchMany(List<int> integers) async* {
     yield NumberTriviaState.loading();

@@ -1,6 +1,6 @@
 import 'package:alice/alice.dart';
 import 'package:dio/dio.dart';
-import 'package:flutterhole/dependency_injection.iconfig.dart';
+import 'package:flutterhole/dependency_injection.config.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -14,7 +14,7 @@ Future<void> configure(String environment) async {
   await $initGetIt(getIt, environment: environment);
 }
 
-@registerModule
+@module
 abstract class RegisterProdModule {
   @prod
   @injectable
@@ -38,8 +38,7 @@ abstract class RegisterProdModule {
   @prod
   @singleton
   Alice get alice => Alice(
-    showNotification: false,
-    darkTheme: true,
-  );
+        showNotification: false,
+        darkTheme: true,
+      );
 }
-

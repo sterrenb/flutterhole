@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -112,7 +111,7 @@ class _AddPiholePageState extends State<AddPiholePage> {
               ],
             ),
             body: BlocBuilder<PiholeSettingsBloc, PiholeSettingsState>(
-              condition: (previous, next) {
+              buildWhen: (previous, next) {
                 if (previous is PiholeSettingsStateValidated) {
                   return false;
                 }

@@ -89,7 +89,6 @@ class _SummaryTriviaPage extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: BlocBuilder<NumberTriviaBloc, NumberTriviaState>(
-                    bloc: BlocProvider.of<NumberTriviaBloc>(context),
                     builder: (BuildContext context, NumberTriviaState state) {
                       return state.maybeWhen(
                         success: (trivia) {
@@ -106,17 +105,15 @@ class _SummaryTriviaPage extends StatelessWidget {
 
                           return Text(
                             'No data for ${integer} in $trivia',
-                            style: Theme
-                                .of(context)
+                            style: Theme.of(context)
                                 .textTheme
                                 .bodyText1
                                 .apply(color: Colors.white),
                           );
                         },
-                        loading: () =>
-                            CenteredLoadingIndicator(
-                              color: Colors.white,
-                            ),
+                        loading: () => CenteredLoadingIndicator(
+                          color: Colors.white,
+                        ),
                         orElse: () => Container(),
                       );
                     },

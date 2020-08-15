@@ -2,9 +2,9 @@ import 'package:flutterhole/features/settings/services/package_info_service.dart
 import 'package:injectable/injectable.dart';
 import 'package:package_info/package_info.dart';
 
-@prod
-@singleton
-@RegisterAs(PackageInfoService)
+@Environment(Environment.prod)
+@Environment(Environment.dev)
+@Singleton(as: PackageInfoService)
 class PackageInfoServiceImpl implements PackageInfoService {
   PackageInfoServiceImpl._(this._info);
 

@@ -19,12 +19,18 @@ Future<void> showWelcomeDialog(BuildContext context) {
         content: SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text('👋'),
+                ),
+              ),
               Text(
-                  'Thank you for trying out FlutterHole, a third party Android application for the Pi-Hole® dashboard.\n'),
+                  'Thank you for trying out FlutterHole, a third party Android application for the Pi-hole® dashboard.\n'),
               Text(
                   'To make full use of this app, you need to enter an API token. You can find this in the dashboard of your Pi-hole. Check Settings > My Pi-holes to enter your token.\n'),
               Text(
-                  'Note: some users experience issues when upgrading from version 2.x. Re-installing the app after clearing the cache works for some people.\n'),
+                  'Always make sure your Pi-hole is on the latest version (this app is tested on v5.1.2).\n'),
               Text(
                   'If you have any issues, please report them on GitHub. Other users can share their own issues and solutions here.')
             ],
@@ -121,6 +127,7 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
       SizedBox(height: 24),
       RichText(
         text: TextSpan(
+          style: Theme.of(context).textTheme.bodyText2,
           children: <TextSpan>[
             TextSpan(
                 text: 'FlutterHole is a free third party Android application '
@@ -130,8 +137,7 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
                     'can view the code that runs your app. '
                     'You can find the repository on '),
             TextSpan(
-              style: Theme
-                  .of(context)
+              style: Theme.of(context)
                   .textTheme
                   .bodyText2
                   .apply(color: KColors.link),
@@ -140,10 +146,41 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
                 ..onTap = () =>
                     getIt<BrowserService>().launchUrl(KStrings.githubHomeUrl),
             ),
-            TextSpan(text: '.'),
+            TextSpan(
+                text: '.'
+                    '\n\n'
+                    'Logo design by '),
+            TextSpan(
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  .apply(color: KColors.link),
+              text: 'Mathijs Sterrenburg',
+              recognizer: TapGestureRecognizer()
+                ..onTap = () =>
+                    getIt<BrowserService>().launchUrl(KStrings.logoDesignerUrl),
+            ),
+            TextSpan(text: ', an amazing designer.'),
           ],
         ),
       ),
     ],
   );
+}
+
+class ImageDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+//        width: 200,
+//        height: 200,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+          image: ExactAssetImage('assets/icon/icon.png'),
+          fit: BoxFit.cover,
+        )),
+      ),
+    );
+  }
 }

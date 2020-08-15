@@ -36,13 +36,11 @@ class QueryLogBloc extends Bloc<QueryLogEvent, QueryLogState> {
     ApiRepository apiRepository,
     SettingsRepository settingsRepository,
   ])  : _apiRepository = apiRepository ?? getIt<ApiRepository>(),
-        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>();
+        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>(),
+        super(QueryLogState.initial());
 
   final ApiRepository _apiRepository;
   final SettingsRepository _settingsRepository;
-
-  @override
-  QueryLogState get initialState => QueryLogState.initial();
 
   Stream<QueryLogState> _fetch([int maxResults]) async* {
     yield QueryLogStateLoading();

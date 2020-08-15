@@ -35,16 +35,9 @@ void main() {
     bloc.close();
   });
 
-  blocTest(
-    'Initially emits SingleClientStateInitial',
-    build: () async => bloc,
-    skip: 0,
-    expect: [SingleClientStateInitial()],
-  );
-
-  blocTest(
+  blocTest<SingleClientBloc, SingleClientState>(
     'Emits [] when nothing is added',
-    build: () async => bloc,
+    build: () => bloc,
     expect: [],
   );
 
@@ -53,9 +46,9 @@ void main() {
     final List<QueryData> queries = [QueryData(clientName: 'test')];
     final tFailure = Failure();
 
-    blocTest(
+    blocTest<SingleClientBloc, SingleClientState>(
       'Emits [$SingleClientStateLoading, $SingleClientStateSuccess] when $SingleClientEventFetchQueries succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockApiRepository.fetchQueriesForClient(settings, client))
@@ -71,9 +64,9 @@ void main() {
       ],
     );
 
-    blocTest(
+    blocTest<SingleClientBloc, SingleClientState>(
       'Emits [$SingleClientStateLoading, $SingleClientStateFailure] when $SingleClientEventFetchQueries fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Left(tFailure));
 

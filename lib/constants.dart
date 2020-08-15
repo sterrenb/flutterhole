@@ -12,6 +12,7 @@ class KStrings {
       'https://github.com/sterrenburg/flutterhole/';
   static const String githubIssuesUrl =
       'https://github.com/sterrenburg/flutterhole/issues/new/choose';
+  static const String logoDesignerUrl = 'https://mathijssterrenburg.com/';
 }
 
 class KIcons {
@@ -38,6 +39,8 @@ class KIcons {
   static const IconData blockedDomains = Icons.close;
   static const IconData manyQueriesLive = MaterialIcons.view_stream;
   static const IconData manyQueriesLiveOptions = Ionicons.md_options;
+  static const IconData whitelist = MaterialCommunityIcons.check_circle;
+  static const IconData blacklist = MaterialCommunityIcons.close_circle;
   static const IconData settings = MaterialIcons.settings;
   static const IconData preferences = MaterialIcons.format_paint;
   static const IconData about = MaterialCommunityIcons.heart;
@@ -73,6 +76,7 @@ class KIcons {
   static const IconData branch = MaterialCommunityIcons.source_branch;
   static const IconData color = Icons.brightness_1;
 
+  static const IconData add = Icons.add;
   static const IconData share = MaterialIcons.share;
   static const IconData rate = Icons.star;
   static const IconData github = AntDesign.github;

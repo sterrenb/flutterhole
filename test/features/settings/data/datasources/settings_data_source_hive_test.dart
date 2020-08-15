@@ -236,6 +236,7 @@ void main() async {
         // arrange
         final PiholeSettings active = PiholeSettings(title: 'First');
         when(mockPiBox.isOpen).thenReturn(true);
+        when(mockPiBox.isEmpty).thenReturn(false);
         when(mockPiBox.getAt(2)).thenReturn(active.toJson());
         when(mockActiveBox.isOpen).thenReturn(true);
         when(mockActiveBox.get(KStrings.piholeSettingsActive, defaultValue: -1))

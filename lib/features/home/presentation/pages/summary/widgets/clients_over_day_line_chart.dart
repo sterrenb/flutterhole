@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhole/core/convert.dart';
 import 'package:flutterhole/features/home/presentation/pages/summary/widgets/line_chart_scaffold.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
@@ -91,7 +92,9 @@ class ClientsOverDayLineChart extends StatelessWidget {
             return '${value.round()}';
           },
           getBottomTitles: (double value) {
-            return '';
+            final dateTime = overTimeData.data.keys.elementAt(value.round());
+
+            return '${dateTime.formattedTimeShort}';
           },
         ),
         lineTouchData: LineTouchData(
@@ -99,17 +102,17 @@ class ClientsOverDayLineChart extends StatelessWidget {
             tooltipBgColor: Theme.of(context).cardColor,
             getTooltipItems: (List<LineBarSpot> touchedSpots) =>
                 buildLineTooltipItems(
-                  context: context,
-                  showTooltipWhenZero: false,
-                  touchedSpots: touchedSpots,
-                  lineTooltipTextBuilder: (int index,
-                      Color color,
-                      double y,) {
-                    return '${overTimeData.clients
-                        .elementAt(index)
-                        .nameOrIp}: ${y.round()}';
+              context: context,
+              showTooltipWhenZero: false,
+              touchedSpots: touchedSpots,
+              lineTooltipTextBuilder: (
+                int index,
+                Color color,
+                double y,
+              ) {
+                return '${overTimeData.clients.elementAt(index).nameOrIp}: ${y.round()}';
               },
-                ),
+            ),
           ),
         ),
         lineBarsData: _buildLineChartBarData(),

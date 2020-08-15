@@ -33,6 +33,7 @@
 # Generated files
 *.g.dart
 *.freezed.dart
+*.config.dart
 *.iconfig.dart
 /coverage
 

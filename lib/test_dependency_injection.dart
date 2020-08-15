@@ -8,18 +8,16 @@ import 'package:mockito/mockito.dart';
 import 'package:sailor/sailor.dart';
 
 @Environment(Environment.test)
-@injectable
-@RegisterAs(ApiDataSource)
+@Injectable(as: ApiDataSource)
 class MockApiDataSource extends Mock implements ApiDataSource {}
 
 @Environment(Environment.test)
-@injectable
-@RegisterAs(PackageInfoService)
+@Injectable(as: PackageInfoService)
 class MockPackageInfoService extends Mock implements PackageInfoService {}
 
 class MockHive extends Mock implements HiveInterface {}
 
-@registerModule
+@module
 abstract class RegisterTestModule {
   @test
   @injectable

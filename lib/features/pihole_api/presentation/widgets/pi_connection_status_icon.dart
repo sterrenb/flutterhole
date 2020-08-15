@@ -28,7 +28,7 @@ class PiConnectionStatusIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PiConnectionBloc, PiConnectionState>(
-        bloc: getIt<PiConnectionBloc>(),
+        cubit: getIt<PiConnectionBloc>(),
         builder: (BuildContext context, state) {
           final Color color = state.when(
             initial: () => KColors.inactive,
@@ -45,10 +45,12 @@ class PiConnectionStatusIcon extends StatelessWidget {
                   return KColors.unknown;
               }
             },
-            sleeping: (_,
-                __,
-                ___,) =>
-            KColors.sleeping,
+            sleeping: (
+              _,
+              __,
+              ___,
+            ) =>
+                KColors.sleeping,
           );
 
           return IconButton(
@@ -65,27 +67,22 @@ class PiConnectionStatusIcon extends StatelessWidget {
             ),
             onPressed: interactive
                 ? getIt<PiConnectionBloc>().state.when<VoidCallback>(
-              initial: () => null,
-              loading: () => null,
-              failure: (failure) =>
-                  () {
-                showToast(
-                    '${failure.message}: ${failure.error?.toString()}');
-              },
-              active: (settings, toggleStatus) =>
-                  () {
-                showToast(
-                    '${settings.title} is ${_$PiStatusEnumEnumMap[toggleStatus
-                        .status]}');
-              },
-              sleeping: (_, start, duration) =>
-                  () {
-                final dateTime = start.add(duration);
-                showToast(
-                    'Sleeping until ${dateTime.formattedTime} (${dateTime
-                        .fromNow})');
-              },
-            )
+                      initial: () => null,
+                      loading: () => null,
+                      failure: (failure) => () {
+                        showToast(
+                            '${failure.message}: ${failure.error?.toString()}');
+                      },
+                      active: (settings, toggleStatus) => () {
+                        showToast(
+                            '${settings.title} is ${_$PiStatusEnumEnumMap[toggleStatus.status]}');
+                      },
+                      sleeping: (_, start, duration) => () {
+                        final dateTime = start.add(duration);
+                        showToast(
+                            'Sleeping until ${dateTime.formattedTime} (${dateTime.fromNow})');
+                      },
+                    )
                 : null,
           );
         });
@@ -100,7 +97,7 @@ class _SleepProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PiConnectionBloc, PiConnectionState>(
-        bloc: getIt<PiConnectionBloc>(),
+        cubit: getIt<PiConnectionBloc>(),
         builder: (BuildContext context, state) {
           return state.maybeWhen<Widget>(
               sleeping: (_, DateTime start, Duration duration) {
