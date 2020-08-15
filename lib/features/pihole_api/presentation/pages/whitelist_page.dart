@@ -11,6 +11,7 @@ import 'package:flutterhole/features/routing/presentation/pages/page_scaffold.da
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer.dart';
 import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
 import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
+import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
 import 'package:provider/provider.dart';
 
 class WhitelistPage extends StatelessWidget {
@@ -53,6 +54,9 @@ class WhitelistPage extends StatelessWidget {
                               color: KColors.blocked,
                               icon: KIcons.delete,
                               onTap: () {
+                                showInfoSnackBar(context,
+                                    'Deleting ${whitelistItem.domain}...');
+
                                 BlocProvider.of<ListBloc>(context).add(
                                     ListBlocEvent.removeFromWhitelist(
                                         whitelistItem));
@@ -158,13 +162,15 @@ class __AddToWhitelistButtonState extends State<_AddToWhitelistButton> {
                                     autofocus: true,
                                     keyboardType: TextInputType.url,
                                     onSubmitted: (String value) {
+                                      final String domain = isWildcard
+                                          ? '$wildcardPrefix$value$wildcardSuffix'
+                                          : value;
                                       BlocProvider.of<ListBloc>(context).add(
                                           ListBlocEvent.addToWhitelist(
-                                              isWildcard
-                                                  ? '$wildcardPrefix$value$wildcardSuffix'
-                                                  : value,
-                                              isWildcard));
+                                              domain, isWildcard));
                                       Navigator.pop(context);
+                                      showInfoSnackBar(
+                                          context, 'Adding ${domain}...');
                                     },
                                     decoration: InputDecoration(
                                       prefixText:

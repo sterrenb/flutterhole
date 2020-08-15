@@ -27,7 +27,9 @@ class ListBlocListener extends StatelessWidget {
         state.responseOption.fold(
           () {},
           (ListResponse r) {
-            showInfoSnackBar(context, '${r.message ?? r.success ?? r}');
+            final String message =
+                r.message ?? (r.success ? 'Success!' : 'Something went wrong.');
+            showInfoSnackBar(context, '$message');
           },
         );
       },
