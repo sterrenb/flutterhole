@@ -41,7 +41,12 @@ class DefaultDrawer extends StatelessWidget {
                 DrawerTile(
                   routeName: RouterService.whitelist,
                   title: Text('Whitelist'),
-                  icon: Icon(KIcons.whitelistSingleQuery),
+                  icon: Icon(KIcons.whitelist),
+                ),
+                DrawerTile(
+                  routeName: RouterService.blacklist,
+                  title: Text('Blacklist'),
+                  icon: Icon(KIcons.blacklist),
                 ),
                 DrawerTile(
                   routeName: RouterService.settings,

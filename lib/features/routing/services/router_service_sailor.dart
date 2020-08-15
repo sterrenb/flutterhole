@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/navigator.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/home/presentation/pages/home_page.dart';
 import 'package:flutterhole/features/pihole_api/blocs/list_bloc.dart';
+import 'package:flutterhole/features/pihole_api/presentation/pages/blacklist_page.dart';
 import 'package:flutterhole/features/pihole_api/presentation/pages/query_log_page.dart';
 import 'package:flutterhole/features/pihole_api/presentation/pages/whitelist_page.dart';
 import 'package:flutterhole/features/routing/presentation/pages/about_page.dart';
@@ -43,6 +44,12 @@ class RouterServiceSailor implements RouterService {
           builder: (context, args, params) {
             getIt<ListBloc>().add(ListBlocEvent.fetchLists());
             return WhitelistPage();
+          }),
+      SailorRoute(
+          name: RouterService.blacklist,
+          builder: (context, args, params) {
+            getIt<ListBloc>().add(ListBlocEvent.fetchLists());
+            return BlacklistPage();
           }),
       SailorRoute(
           name: RouterService.settings,

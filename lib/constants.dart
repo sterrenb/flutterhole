@@ -39,10 +39,8 @@ class KIcons {
   static const IconData blockedDomains = Icons.close;
   static const IconData manyQueriesLive = MaterialIcons.view_stream;
   static const IconData manyQueriesLiveOptions = Ionicons.md_options;
-  static const IconData whitelistSingleQuery =
-      MaterialCommunityIcons.check_circle;
-  static const IconData blacklistSingleQuery =
-      MaterialCommunityIcons.close_circle;
+  static const IconData whitelist = MaterialCommunityIcons.check_circle;
+  static const IconData blacklist = MaterialCommunityIcons.close_circle;
   static const IconData settings = MaterialIcons.settings;
   static const IconData preferences = MaterialIcons.format_paint;
   static const IconData about = MaterialCommunityIcons.heart;

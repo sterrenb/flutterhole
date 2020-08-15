@@ -1,14 +1,14 @@
 import 'package:flutterhole/core/convert.dart';
 import 'package:flutterhole/features/pihole_api/data/models/model.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist_item.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'blacklist_item.freezed.dart';
-
 part 'blacklist_item.g.dart';
 
 @freezed
 abstract class BlacklistItem extends MapModel with _$BlacklistItem {
-  const factory BlacklistItem({
+  factory BlacklistItem({
     int id,
     int type,
     String domain,
@@ -31,4 +31,10 @@ abstract class BlacklistItem extends MapModel with _$BlacklistItem {
 
   factory BlacklistItem.fromJson(Map<String, dynamic> json) =>
       _$BlacklistItemFromJson(json);
+
+  @late
+  bool get isEnabled => enabled == 1;
+
+  @late
+  bool get isWildcard => domain.startsWith(wildcardPrefix);
 }

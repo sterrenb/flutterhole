@@ -4,6 +4,7 @@ abstract class RouterService {
   static const String home = '/';
   static const String queryLog = '/query-log';
   static const String whitelist = '/whitelist';
+  static const String blacklist = '/blacklist';
   static const String settings = '/settings';
   static const String allPiholes = '/all-piholes';
   static const String userPreferences = '/user-preferences';

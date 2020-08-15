@@ -8,6 +8,7 @@ import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/widgets/layout/animations/animated_opener.dart';
 import 'package:flutterhole/widgets/layout/lists/open_url_tile.dart';
+import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
 
 const String _wikipediaUrl =
     'https://en.wikipedia.org/wiki/List_of_DNS_record_types';
@@ -137,9 +138,9 @@ class SingleQueryDataTile extends StatelessWidget {
           IconSlideAction(
             caption: 'Whitelist',
             color: KColors.enabled,
-            icon: KIcons.whitelistSingleQuery,
+            icon: KIcons.whitelist,
             onTap: () {
-              print('whitelisting ${BlocProvider.of<ListBloc>(context)}');
+              showInfoSnackBar(context, 'Adding ${query.domain}...');
               BlocProvider.of<ListBloc>(context)
                   .add(ListBlocEvent.addToWhitelist(query.domain, false));
             },
@@ -149,10 +150,9 @@ class SingleQueryDataTile extends StatelessWidget {
           IconSlideAction(
             caption: 'Blacklist',
             color: KColors.blocked,
-            icon: KIcons.blacklistSingleQuery,
+            icon: KIcons.blacklist,
             onTap: () {
-              print(
-                  'blacklisting ${query.domain} with ${BlocProvider.of<ListBloc>(context)}');
+              showInfoSnackBar(context, 'Adding ${query.domain}...');
               BlocProvider.of<ListBloc>(context)
                   .add(ListBlocEvent.addToBlacklist(query.domain, false));
             },

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/features/pihole_api/blocs/list_bloc.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist_item.dart';
 import 'package:flutterhole/features/pihole_api/data/models/whitelist_item.dart';
 import 'package:flutterhole/features/pihole_api/presentation/notifiers/string_search_notifier.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/list_bloc_listener.dart';
@@ -14,7 +15,7 @@ import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
 import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
 import 'package:provider/provider.dart';
 
-class WhitelistPage extends StatelessWidget {
+class BlacklistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<StringSearchNotifier>(
@@ -22,10 +23,10 @@ class WhitelistPage extends StatelessWidget {
       child: PageScaffold(
         drawer: DefaultDrawer(),
         appBar: AppBar(
-          title: Text('Whitelist'),
+          title: Text('Blacklist'),
           elevation: 0.0,
           actions: [
-            _AddToWhitelistButton(),
+            _AddToBlacklistButton(),
           ],
         ),
         body: ListBlocListener(
@@ -39,41 +40,42 @@ class WhitelistPage extends StatelessWidget {
                         state.failureOption.fold(() => null, (a) => a));
                   }
 
-                  if (state.whitelist != null) {
+                  if (state.blacklist != null) {
                     return ListView.builder(
-                      itemCount: state.whitelist.data.length,
+                      itemCount: state.blacklist.data.length,
                       itemBuilder: (context, index) {
-                        final WhitelistItem whitelistItem =
-                            state.whitelist.data.elementAt(index);
+                        final BlacklistItem blacklistItem =
+                            state.blacklist.data.elementAt(index);
                         return Slidable(
-                          key: Key(whitelistItem.domain),
+                          key: Key(blacklistItem.domain),
                           actionPane: const SlidableDrawerActionPane(),
                           secondaryActions: [
                             IconSlideAction(
                               caption: 'Delete',
                               color: KColors.blocked,
                               icon: KIcons.delete,
+                              onTap: () {
+                                showInfoSnackBar(context,
+                                    'Deleting ${blacklistItem.domain}...');
+
+                                BlocProvider.of<ListBloc>(context).add(
+                                    ListBlocEvent.removeFromBlacklist(
+                                        blacklistItem));
+                              },
                             )
                           ],
                           child: ListTile(
-                            title: Text('${whitelistItem.domain}'),
-                            subtitle: whitelistItem.comment != null
-                                ? Text('${whitelistItem.comment}')
+                            title: Text('${blacklistItem.domain}'),
+                            subtitle: blacklistItem.comment != null
+                                ? Text('${blacklistItem.comment}')
                                 : null,
                             trailing: Icon(
                               KIcons.connectionStatus,
                               size: 8.0,
-                              color: whitelistItem.isEnabled
+                              color: blacklistItem.isEnabled
                                   ? KColors.success
                                   : KColors.blocked,
                             ),
-                            onTap: () {
-                              final x = whitelistItem.domain
-                                  .startsWith(wildcardPrefix);
-                              print(
-                                  '${whitelistItem.domain}.startsWith(`$wildcardPrefix`) = $x');
-                              print(whitelistItem.isWildcard);
-                            },
                           ),
                         );
                       },
@@ -90,16 +92,16 @@ class WhitelistPage extends StatelessWidget {
   }
 }
 
-class _AddToWhitelistButton extends StatefulWidget {
-  const _AddToWhitelistButton({
+class _AddToBlacklistButton extends StatefulWidget {
+  const _AddToBlacklistButton({
     Key key,
   }) : super(key: key);
 
   @override
-  __AddToWhitelistButtonState createState() => __AddToWhitelistButtonState();
+  __AddToBlacklistButtonState createState() => __AddToBlacklistButtonState();
 }
 
-class __AddToWhitelistButtonState extends State<_AddToWhitelistButton> {
+class __AddToBlacklistButtonState extends State<_AddToBlacklistButton> {
   TextEditingController _searchEditingController;
   PersistentBottomSheetController _persistentBottomSheetController;
   bool _isWildcard = false;
@@ -130,7 +132,7 @@ class __AddToWhitelistButtonState extends State<_AddToWhitelistButton> {
       _,
     ) {
       return IconButton(
-        tooltip: 'Add to whitelist',
+        tooltip: 'Add to blacklist',
         icon: Icon(KIcons.add),
         onPressed: () {
           setState(() {
@@ -158,7 +160,7 @@ class __AddToWhitelistButtonState extends State<_AddToWhitelistButton> {
                                           ? '$wildcardPrefix$value$wildcardSuffix'
                                           : value;
                                       BlocProvider.of<ListBloc>(context).add(
-                                          ListBlocEvent.addToWhitelist(
+                                          ListBlocEvent.addToBlacklist(
                                               domain, _isWildcard));
                                       Navigator.pop(context);
                                       showInfoSnackBar(
@@ -170,7 +172,7 @@ class __AddToWhitelistButtonState extends State<_AddToWhitelistButton> {
                                       suffixText:
                                           _isWildcard ? wildcardSuffix : null,
                                       border: InputBorder.none,
-                                      hintText: 'Add to whitelist',
+                                      hintText: 'Add to blacklist',
                                     ),
                                   ),
                                 ),

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist_item.dart';
 import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/whitelist_item.dart';
@@ -37,7 +38,7 @@ abstract class ListBlocEvent with _$ListBlocEvent {
   const factory ListBlocEvent.addToBlacklist(String domain, bool isWildcard) =
       _AddToBlacklist;
 
-  const factory ListBlocEvent.removeFromBlacklist(WhitelistItem item) =
+  const factory ListBlocEvent.removeFromBlacklist(BlacklistItem item) =
       _RemoveFromBlacklist;
 }
 
@@ -101,7 +102,9 @@ class ListBloc extends Bloc<ListBlocEvent, ListBlocState> {
           whitelist: Whitelist(
               data: List<WhitelistItem>.from(whitelist.data)
                 ..sort((a, b) => b.dateAdded.compareTo(a.dateAdded))),
-          blacklist: blacklist,
+          blacklist: Blacklist(
+              data: List<BlacklistItem>.from(blacklist.data)
+                ..sort((a, b) => b.dateAdded.compareTo(a.dateAdded))),
         );
       } else {
         yield state.copyWith(
@@ -191,7 +194,7 @@ class ListBloc extends Bloc<ListBlocEvent, ListBlocState> {
           }
         },
       ),
-      removeFromBlacklist: (WhitelistItem item) => _doEdit(
+      removeFromBlacklist: (BlacklistItem item) => _doEdit(
         item.domain,
         item.isWildcard,
         _apiRepository.removeFromBlacklist,

@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/pihole_api/blocs/list_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist_item.dart';
 import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/whitelist_item.dart';
@@ -198,7 +199,7 @@ void main() {
   group('removeFromBlacklist', () {
     final piholeSettings = PiholeSettings(baseUrl: 'http://example.com');
     final String domain = 'domain';
-    final WhitelistItem item = WhitelistItem(domain: domain);
+    final BlacklistItem item = BlacklistItem(domain: domain);
     final ListResponse response = ListResponse(success: true);
 
     blocTest(
