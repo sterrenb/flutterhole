@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/features/pihole_api/blocs/single_client_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
-import 'package:flutterhole/features/pihole_api/presentation/notifiers/queries_search_notifier.dart';
+import 'package:flutterhole/features/pihole_api/presentation/notifiers/string_search_notifier.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/list_bloc_listener.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_app_bar.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_list_builder.dart';
@@ -24,8 +24,8 @@ class SingleClientPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<QueriesSearchNotifier>(
-      create: (BuildContext context) => QueriesSearchNotifier(),
+    return ChangeNotifierProvider<StringSearchNotifier>(
+      create: (_) => StringSearchNotifier(),
       child: MultiBlocProvider(
         providers: [
           BlocProvider<SingleClientBloc>(

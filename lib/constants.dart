@@ -78,6 +78,7 @@ class KIcons {
   static const IconData branch = MaterialCommunityIcons.source_branch;
   static const IconData color = Icons.brightness_1;
 
+  static const IconData add = Icons.add;
   static const IconData share = MaterialIcons.share;
   static const IconData rate = Icons.star;
   static const IconData github = AntDesign.github;

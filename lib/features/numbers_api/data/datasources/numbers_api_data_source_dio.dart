@@ -7,7 +7,6 @@ import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/numbers_api/data/datasources/numbers_api_data_source.dart';
 import 'package:injectable/injectable.dart';
 
-@prod
 @Singleton(as: NumbersApiDataSource)
 class NumbersApiDataSourceDio implements NumbersApiDataSource {
   NumbersApiDataSourceDio([

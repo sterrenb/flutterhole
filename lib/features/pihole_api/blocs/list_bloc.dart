@@ -31,14 +31,14 @@ abstract class ListBlocEvent with _$ListBlocEvent {
   const factory ListBlocEvent.addToWhitelist(String domain, bool isWildcard) =
       _AddToWhitelist;
 
-  const factory ListBlocEvent.removeFromWhitelist(
-      String domain, bool isWildcard) = _RemoveFromWhitelist;
+  const factory ListBlocEvent.removeFromWhitelist(WhitelistItem item) =
+      _RemoveFromWhitelist;
 
   const factory ListBlocEvent.addToBlacklist(String domain, bool isWildcard) =
       _AddToBlacklist;
 
-  const factory ListBlocEvent.removeFromBlacklist(
-      String domain, bool isWildcard) = _RemoveFromBlacklist;
+  const factory ListBlocEvent.removeFromBlacklist(WhitelistItem item) =
+      _RemoveFromBlacklist;
 }
 
 typedef Future<Either<Failure, ListResponse>> ListFunction(
@@ -120,7 +120,7 @@ class ListBloc extends Bloc<ListBlocEvent, ListBlocState> {
     AfterEditSuccess afterEditSuccess,
   ) async* {
     yield state.copyWith(
-      loading: false,
+      loading: true,
       responseOption: none(),
       failureOption: none(),
     );
@@ -163,17 +163,21 @@ class ListBloc extends Bloc<ListBlocEvent, ListBlocState> {
         domain,
         isWildcard,
         _apiRepository.addToWhitelist,
-        (response) async* {},
+        (response) async* {
+          if (response.success && state.whitelist != null) {
+            add(ListBlocEvent.fetchLists());
+          }
+        },
       ),
-      removeFromWhitelist: (String domain, bool isWildcard) => _doEdit(
-        domain,
-        isWildcard,
+      removeFromWhitelist: (WhitelistItem item) => _doEdit(
+        item.domain,
+        item.isWildcard,
         _apiRepository.removeFromWhitelist,
         (response) async* {
-          if (response.success) {
-//            yield state.copyWith(
-//              whitelist:
-//            );
+          if (response.success && state.whitelist != null) {
+            yield state.copyWith(
+                whitelist: Whitelist(
+                    data: List.from(state.whitelist.data)..remove(item)));
           }
         },
       ),
@@ -181,13 +185,21 @@ class ListBloc extends Bloc<ListBlocEvent, ListBlocState> {
         domain,
         isWildcard,
         _apiRepository.addToBlacklist,
-        (response) async* {},
+        (response) async* {
+          if (response.success && state.blacklist != null) {
+            add(ListBlocEvent.fetchLists());
+          }
+        },
       ),
-      removeFromBlacklist: (String domain, bool isWildcard) => _doEdit(
-        domain,
-        isWildcard,
+      removeFromBlacklist: (WhitelistItem item) => _doEdit(
+        item.domain,
+        item.isWildcard,
         _apiRepository.removeFromBlacklist,
-        (response) async* {},
+        (response) async* {
+          if (response.success && state.blacklist != null) {
+            add(ListBlocEvent.fetchLists());
+          }
+        },
       ),
     );
   }

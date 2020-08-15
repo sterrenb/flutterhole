@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants.dart';
-import 'package:flutterhole/features/pihole_api/presentation/notifiers/queries_search_notifier.dart';
+import 'package:flutterhole/features/pihole_api/presentation/notifiers/string_search_notifier.dart';
 import 'package:flutterhole/widgets/layout/animations/animate_on_build.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +31,7 @@ class _QueriesSearchAppBarState extends State<QueriesSearchAppBar> {
     _searchEditingController = TextEditingController();
     _searchEditingController.addListener(() {
       setState(() {
-        Provider.of<QueriesSearchNotifier>(context, listen: false).searchQuery =
+        Provider.of<StringSearchNotifier>(context, listen: false).searchQuery =
             _searchEditingController.text;
       });
     });
@@ -45,10 +45,10 @@ class _QueriesSearchAppBarState extends State<QueriesSearchAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<QueriesSearchNotifier>(
+    return Consumer<StringSearchNotifier>(
       builder: (
         BuildContext context,
-        QueriesSearchNotifier notifier,
+        StringSearchNotifier notifier,
         _,
       ) {
         return AppBar(

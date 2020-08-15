@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/pihole_api/blocs/list_bloc.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
 
 class ListBlocListener extends StatelessWidget {
@@ -17,14 +19,14 @@ class ListBlocListener extends StatelessWidget {
       listener: (context, state) {
         state.failureOption.fold(
           () {},
-          (f) {
+          (Failure f) {
             showErrorSnackBar(context, '${f.message ?? f}');
           },
         );
 
         state.responseOption.fold(
           () {},
-          (r) {
+          (ListResponse r) {
             showInfoSnackBar(context, '${r.message ?? r.success ?? r}');
           },
         );

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/pihole_api/blocs/query_log_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
-import 'package:flutterhole/features/pihole_api/presentation/notifiers/queries_search_notifier.dart';
+import 'package:flutterhole/features/pihole_api/presentation/notifiers/string_search_notifier.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/list_bloc_listener.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_app_bar.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_list_builder.dart';
@@ -22,8 +22,8 @@ final _numberFormat = NumberFormat();
 class QueryLogPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<QueriesSearchNotifier>(
-      create: (BuildContext context) => QueriesSearchNotifier(),
+    return ChangeNotifierProvider<StringSearchNotifier>(
+      create: (BuildContext context) => StringSearchNotifier(),
       child: MultiBlocProvider(
         providers: [
           BlocProvider<QueryLogBloc>(

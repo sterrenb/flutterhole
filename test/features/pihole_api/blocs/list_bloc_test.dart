@@ -6,6 +6,7 @@ import 'package:flutterhole/features/pihole_api/blocs/list_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist_item.dart';
 import 'package:flutterhole/features/pihole_api/data/repositories/api_repository.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/data/repositories/settings_repository.dart';
@@ -92,11 +93,10 @@ void main() {
           failureOption: none(),
         ),
         ListBlocState(
-            loading: false,
-            responseOption: none(),
-            failureOption: some(Failure('fetchLists failed', [Failure()])),
-            whitelist: whitelist,
-            blacklist: blacklist),
+          loading: false,
+          responseOption: none(),
+          failureOption: some(Failure('fetchLists failed', [Failure()])),
+        ),
       ],
     );
   });
@@ -166,6 +166,7 @@ void main() {
   group('addToWhitelist', () {
     final piholeSettings = PiholeSettings(baseUrl: 'http://example.com');
     final String domain = 'domain';
+    final WhitelistItem item = WhitelistItem(domain: domain);
     final ListResponse response = ListResponse(success: true);
 
     blocTest(
@@ -178,7 +179,7 @@ void main() {
         return bloc;
       },
       act: (ListBloc bloc) async =>
-          bloc.add(ListBlocEvent.removeFromWhitelist(domain, false)),
+          bloc.add(ListBlocEvent.removeFromWhitelist(item)),
       expect: [
         ListBlocState(
           loading: true,
@@ -197,6 +198,7 @@ void main() {
   group('removeFromBlacklist', () {
     final piholeSettings = PiholeSettings(baseUrl: 'http://example.com');
     final String domain = 'domain';
+    final WhitelistItem item = WhitelistItem(domain: domain);
     final ListResponse response = ListResponse(success: true);
 
     blocTest(
@@ -209,7 +211,7 @@ void main() {
         return bloc;
       },
       act: (ListBloc bloc) async =>
-          bloc.add(ListBlocEvent.removeFromBlacklist(domain, false)),
+          bloc.add(ListBlocEvent.removeFromBlacklist(item)),
       expect: [
         ListBlocState(
           loading: true,
