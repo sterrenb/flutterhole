@@ -1,21 +1,7 @@
-* Adding new logo with an easter egg 🥚
+* Feature: whitelist/blacklist page
 
-* Adding apiTokenRequired field, fixes #79
+* Feature: whitelist & blacklist queries from the query log by sliding
 
-* Remove index shift from QueryStatus toJson/fromJson, fixes #82
+* Fix: query types graph legend overflow
 
-* Adding query log page
-
-* Adding queries over time chart
-
-* Adding clients over time chart
-
-* Searchable & refreshable query log/client/domain pages
-
-* Status indicators in Pi-hole forms can be tapped to show error details
-
-* More verbose error logging
-
-* Adding drawer footer and better about dialog
-
-* Adding DoubleBackToClose
+* Fix: client activity graph time missing

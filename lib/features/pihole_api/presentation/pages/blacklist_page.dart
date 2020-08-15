@@ -13,6 +13,7 @@ import 'package:flutterhole/features/routing/presentation/widgets/default_drawer
 import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
 import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
 import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class BlacklistPage extends StatelessWidget {
@@ -76,6 +77,11 @@ class BlacklistPage extends StatelessWidget {
                                   ? KColors.success
                                   : KColors.blocked,
                             ),
+                            onTap: () {
+                              Fluttertoast.showToast(
+                                  msg:
+                                      '${blacklistItem.domain}: ${blacklistItem.isEnabled ? 'enabled' : 'disabled'}');
+                            },
                           ),
                         );
                       },
@@ -172,7 +178,8 @@ class __AddToBlacklistButtonState extends State<_AddToBlacklistButton> {
                                       suffixText:
                                           _isWildcard ? wildcardSuffix : null,
                                       border: InputBorder.none,
-                                      hintText: 'Add to blacklist',
+                                      hintText:
+                                          'Add to blacklist (space-separated)',
                                     ),
                                   ),
                                 ),

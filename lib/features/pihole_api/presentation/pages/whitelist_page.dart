@@ -12,6 +12,7 @@ import 'package:flutterhole/features/routing/presentation/widgets/default_drawer
 import 'package:flutterhole/widgets/layout/indicators/failure_indicators.dart';
 import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
 import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class WhitelistPage extends StatelessWidget {
@@ -68,11 +69,9 @@ class WhitelistPage extends StatelessWidget {
                                   : KColors.blocked,
                             ),
                             onTap: () {
-                              final x = whitelistItem.domain
-                                  .startsWith(wildcardPrefix);
-                              print(
-                                  '${whitelistItem.domain}.startsWith(`$wildcardPrefix`) = $x');
-                              print(whitelistItem.isWildcard);
+                              Fluttertoast.showToast(
+                                  msg:
+                                      '${whitelistItem.domain}: ${whitelistItem.isEnabled ? 'enabled' : 'disabled'}');
                             },
                           ),
                         );
@@ -170,7 +169,8 @@ class __AddToWhitelistButtonState extends State<_AddToWhitelistButton> {
                                       suffixText:
                                           _isWildcard ? wildcardSuffix : null,
                                       border: InputBorder.none,
-                                      hintText: 'Add to whitelist',
+                                      hintText:
+                                          'Add to whitelist (space-separated)',
                                     ),
                                   ),
                                 ),

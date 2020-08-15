@@ -1,7 +1,7 @@
 
 # FlutterHole #
 
-[![Codemagic build status](https://api.codemagic.io/apps/5c659ea9c49a5000198d45f9/5c659ea9c49a5000198d45f8/status_badge.svg)](https://codemagic.io/apps/5c659ea9c49a5000198d45f9/5c659ea9c49a5000198d45f8/latest_build)
+[![Codemagic build status](https://api.codemagic.io/apps/5c659ea9c49a5000198d45f9/5eca30b4261f343c0e2417c4/status_badge.svg)](https://codemagic.io/apps/5c659ea9c49a5000198d45f9/5eca30b4261f343c0e2417c4/latest_build)
 [![Coverage Status](https://coveralls.io/repos/github/sterrenburg/flutterhole/badge.svg?branch=master)](https://coveralls.io/github/sterrenburg/flutterhole?branch=master)
 [![MIT Licenced](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Platform](https://img.shields.io/badge/Platform-Flutter-yellow.svg)](https://flutter.io)
