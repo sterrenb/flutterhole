@@ -4,6 +4,7 @@ import 'package:flutterhole/features/pihole_api/blocs/single_client_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/presentation/notifiers/queries_search_notifier.dart';
+import 'package:flutterhole/features/pihole_api/presentation/widgets/list_bloc_listener.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_app_bar.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_list_builder.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/single_client_page_overflow_refresher.dart';
@@ -25,38 +26,44 @@ class SingleClientPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<QueriesSearchNotifier>(
       create: (BuildContext context) => QueriesSearchNotifier(),
-      child: BlocProvider<SingleClientBloc>(
-        create: (_) =>
-            SingleClientBloc()..add(SingleClientEvent.fetchQueries(client)),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<SingleClientBloc>(
+            create: (_) =>
+                SingleClientBloc()..add(SingleClientEvent.fetchQueries(client)),
+          ),
+        ],
         child: PiholeThemeBuilder(
           child: Scaffold(
             appBar: QueriesSearchAppBar(
               title: Text('${client.nameOrIp}'),
             ),
-            body: Scrollbar(
-              child: BlocBuilder<SingleClientBloc, SingleClientState>(
-                builder: (BuildContext context, SingleClientState state) {
-                  return state.maybeWhen(
-                    success: (client, queries) => QueriesSearchListBuilder(
-                        initialData: queries,
-                        builder: (context, matches) {
-                          return SingleClientPageOverflowRefresher(
-                            client: client,
-                            child: ListView.builder(
-                              itemCount: matches.length,
-                              itemBuilder: (context, index) {
-                                final QueryData query =
-                                    matches.elementAt(index);
+            body: ListBlocListener(
+              child: Scrollbar(
+                child: BlocBuilder<SingleClientBloc, SingleClientState>(
+                  builder: (BuildContext context, SingleClientState state) {
+                    return state.maybeWhen(
+                      success: (client, queries) => QueriesSearchListBuilder(
+                          initialData: queries,
+                          builder: (context, matches) {
+                            return SingleClientPageOverflowRefresher(
+                              client: client,
+                              child: ListView.builder(
+                                itemCount: matches.length,
+                                itemBuilder: (context, index) {
+                                  final QueryData query =
+                                      matches.elementAt(index);
 
-                                return SingleQueryDataTile(query: query);
-                              },
-                            ),
-                          );
-                        }),
-                    failure: (failure) => CenteredFailureIndicator(failure),
-                    orElse: () => CenteredLoadingIndicator(),
-                  );
-                },
+                                  return SingleQueryDataTile(query: query);
+                                },
+                              ),
+                            );
+                          }),
+                      failure: (failure) => CenteredFailureIndicator(failure),
+                      orElse: () => CenteredLoadingIndicator(),
+                    );
+                  },
+                ),
               ),
             ),
           ),

@@ -58,8 +58,18 @@ void main() {
       },
       act: (ListBloc bloc) async => bloc.add(ListBlocEvent.fetchLists()),
       expect: [
-        ListBlocState.loading(),
-        ListBlocState.loaded(whitelist, blacklist),
+        ListBlocState(
+          loading: true,
+          responseOption: none(),
+          failureOption: none(),
+        ),
+        ListBlocState(
+          loading: false,
+          responseOption: none(),
+          failureOption: none(),
+          whitelist: whitelist,
+          blacklist: blacklist,
+        ),
       ],
     );
 
@@ -76,8 +86,17 @@ void main() {
       },
       act: (ListBloc bloc) async => bloc.add(ListBlocEvent.fetchLists()),
       expect: [
-        ListBlocState.loading(),
-        ListBlocState.failure(Failure('fetchLists failed', [Failure()])),
+        ListBlocState(
+          loading: true,
+          responseOption: none(),
+          failureOption: none(),
+        ),
+        ListBlocState(
+            loading: false,
+            responseOption: none(),
+            failureOption: some(Failure('fetchLists failed', [Failure()])),
+            whitelist: whitelist,
+            blacklist: blacklist),
       ],
     );
   });
@@ -99,8 +118,16 @@ void main() {
       act: (ListBloc bloc) async =>
           bloc.add(ListBlocEvent.addToWhitelist(domain, false)),
       expect: [
-        ListBlocState.loading(),
-        ListBlocState.editSuccess(response),
+        ListBlocState(
+          loading: true,
+          responseOption: none(),
+          failureOption: none(),
+        ),
+        ListBlocState(
+          loading: false,
+          responseOption: some(response),
+          failureOption: none(),
+        ),
       ],
     );
   });
@@ -122,8 +149,16 @@ void main() {
       act: (ListBloc bloc) async =>
           bloc.add(ListBlocEvent.addToBlacklist(domain, false)),
       expect: [
-        ListBlocState.loading(),
-        ListBlocState.editSuccess(response),
+        ListBlocState(
+          loading: true,
+          responseOption: none(),
+          failureOption: none(),
+        ),
+        ListBlocState(
+          loading: false,
+          responseOption: some(response),
+          failureOption: none(),
+        ),
       ],
     );
   });
@@ -145,8 +180,16 @@ void main() {
       act: (ListBloc bloc) async =>
           bloc.add(ListBlocEvent.removeFromWhitelist(domain, false)),
       expect: [
-        ListBlocState.loading(),
-        ListBlocState.editSuccess(response),
+        ListBlocState(
+          loading: true,
+          responseOption: none(),
+          failureOption: none(),
+        ),
+        ListBlocState(
+          loading: false,
+          responseOption: some(response),
+          failureOption: none(),
+        ),
       ],
     );
   });
@@ -168,8 +211,16 @@ void main() {
       act: (ListBloc bloc) async =>
           bloc.add(ListBlocEvent.removeFromBlacklist(domain, false)),
       expect: [
-        ListBlocState.loading(),
-        ListBlocState.editSuccess(response),
+        ListBlocState(
+          loading: true,
+          responseOption: none(),
+          failureOption: none(),
+        ),
+        ListBlocState(
+          loading: false,
+          responseOption: some(response),
+          failureOption: none(),
+        ),
       ],
     );
   });

@@ -8,8 +8,6 @@
 
 FlutterHole is a free third party Android application for interacting with your Pi-Hole® server.    
 
-> Note: an unstable build for Pihole v5.0 will be available on the Google Play beta channel. If you want to track the progress, take a look at [issue #69](https://github.com/sterrenburg/flutterhole/issues/69).
-
  [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"    
       alt="Get it on Google Play"    
       height="80">](https://play.google.com/store/apps/details?id=sterrenburg.github.flutterhole)    
@@ -18,10 +16,6 @@ FlutterHole is a free third party Android application for interacting with your 
 - **Multiple configurations:** Easily switch between every Pi-hole that you have access to.
 - **Summary overview:** View top clients and the top used domains.
 - **Query log:** Inspect & search your Pi-hole queries.
-
-## Roadmap/missing features ##
-- **Manage your blacklist & whitelist:** Blocking issues. See [issue #76](https://github.com/sterrenburg/flutterhole/issues/76) for progress.
-- **Proxy support:** Coming soon for V5!
 
 ## Development ##
 FlutterHole is developed using [Android Studio](https://developer.android.com/studio), which offers a complete, integrated IDE experience for Flutter.
@@ -69,7 +63,7 @@ flutter pub run flutter_launcher_icons:main
 
 #### Generate code ####
 
-To generate `freezed` classes `injectable` injections etc.:
+To generate `freezed` classes, `injectable` injections etc.:
 
 ```shell script
 flutter pub run build_runner build --delete-conflicting-outputs  
@@ -93,7 +87,5 @@ flutter drive --target=test_driver/app.dart
 
 ## API ##
 This application interacts with the [Pi-hole PHP API](https://discourse.pi-hole.net/t/pi-hole-api/1863).
-
-~~A [new official API](https://github.com/pi-hole/api) is being built in Rust, but has no official release yet. Once the new API documentation becomes available, new cool features can be implemented!~~
 
 A new API is in the works from the Pi-hole team. For progress, check the [pull request on GitHub](https://github.com/pi-hole/FTL/pull/659).

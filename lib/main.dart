@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/core/debug/bloc_delegate.dart';
 import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/pihole_api/blocs/list_bloc.dart';
 import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/double_back_to_close_app.dart';
 import 'package:flutterhole/features/routing/services/router_service.dart';
@@ -23,7 +25,7 @@ void main([List<String> arguments = const []]) {
   configure(args.first).then((_) {
     if (foundation.kReleaseMode) {
     } else {
-      enableBlocObserver();
+      if (true && true) enableBlocObserver();
     }
 
     getIt<RouterService>().createRoutes();
@@ -39,13 +41,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ThemeModeNotifier>(
       create: (_) => ThemeModeNotifier(),
-      child: Consumer<ThemeModeNotifier>(
-        builder: (
-          BuildContext context,
-          ThemeModeNotifier notifier,
-          _,
-        ) {
-          return DoubleBackToCloseApp(
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<ListBloc>(
+            create: (_) =>
+                getIt<ListBloc>()..add(const ListBlocEvent.fetchLists()),
+          ),
+        ],
+        child: Consumer<ThemeModeNotifier>(
+          builder: (
+            BuildContext context,
+            ThemeModeNotifier notifier,
+            _,
+          ) =>
+              DoubleBackToCloseApp(
             child: MaterialApp(
               title: 'FlutterHole',
               navigatorKey: getIt<RouterService>().navigatorKey,
@@ -62,8 +71,8 @@ class MyApp extends StatelessWidget {
               ),
               themeMode: notifier.themeMode,
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

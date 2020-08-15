@@ -39,6 +39,11 @@ class DefaultDrawer extends StatelessWidget {
                   icon: Icon(KIcons.queryLog),
                 ),
                 DrawerTile(
+                  routeName: RouterService.whitelist,
+                  title: Text('Whitelist'),
+                  icon: Icon(KIcons.whitelistSingleQuery),
+                ),
+                DrawerTile(
                   routeName: RouterService.settings,
                   title: Text('Settings'),
                   icon: Icon(KIcons.settings),
@@ -95,9 +100,9 @@ class _Footer extends StatelessWidget {
       subtitle: footerMessage.isEmpty
           ? null
           : Text(
-        '$footerMessage',
-        style: textStyle,
-      ),
+              '$footerMessage',
+              style: textStyle,
+            ),
       onLongPress: () {
         showAppDetailsDialog(context, packageInfo);
       },

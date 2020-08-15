@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/features/pihole_api/blocs/single_domain_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/presentation/notifiers/queries_search_notifier.dart';
+import 'package:flutterhole/features/pihole_api/presentation/widgets/list_bloc_listener.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_app_bar.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_list_builder.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/single_domain_page_overflow_refresher.dart';
@@ -24,9 +25,13 @@ class SingleDomainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<QueriesSearchNotifier>(
       create: (BuildContext context) => QueriesSearchNotifier(),
-      child: BlocProvider<SingleDomainBloc>(
-        create: (_) =>
-            SingleDomainBloc()..add(SingleDomainEvent.fetchQueries(domain)),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<SingleDomainBloc>(
+            create: (_) =>
+                SingleDomainBloc()..add(SingleDomainEvent.fetchQueries(domain)),
+          ),
+        ],
         child: PiholeThemeBuilder(
           child: Scaffold(
             appBar: QueriesSearchAppBar(
@@ -35,30 +40,32 @@ class SingleDomainPage extends StatelessWidget {
                 overflow: TextOverflow.fade,
               ),
             ),
-            body: Scrollbar(
-              child: BlocBuilder<SingleDomainBloc, SingleDomainState>(
-                builder: (BuildContext context, SingleDomainState state) {
-                  return state.maybeWhen(
-                    success: (domain, queries) => QueriesSearchListBuilder(
-                        initialData: queries,
-                        builder: (context, matches) {
-                          return SingleDomainPageOverflowRefresher(
-                            domain: domain,
-                            child: ListView.builder(
-                              itemCount: matches.length,
-                              itemBuilder: (context, index) {
-                                final QueryData query =
-                                    matches.elementAt(index);
+            body: ListBlocListener(
+              child: Scrollbar(
+                child: BlocBuilder<SingleDomainBloc, SingleDomainState>(
+                  builder: (BuildContext context, SingleDomainState state) {
+                    return state.maybeWhen(
+                      success: (domain, queries) => QueriesSearchListBuilder(
+                          initialData: queries,
+                          builder: (context, matches) {
+                            return SingleDomainPageOverflowRefresher(
+                              domain: domain,
+                              child: ListView.builder(
+                                itemCount: matches.length,
+                                itemBuilder: (context, index) {
+                                  final QueryData query =
+                                      matches.elementAt(index);
 
-                                return SingleQueryDataTile(query: query);
-                              },
-                            ),
-                          );
-                        }),
-                    failure: (failure) => CenteredFailureIndicator(failure),
-                    orElse: () => CenteredLoadingIndicator(),
-                  );
-                },
+                                  return SingleQueryDataTile(query: query);
+                                },
+                              ),
+                            );
+                          }),
+                      failure: (failure) => CenteredFailureIndicator(failure),
+                      orElse: () => CenteredLoadingIndicator(),
+                    );
+                  },
+                ),
               ),
             ),
           ),

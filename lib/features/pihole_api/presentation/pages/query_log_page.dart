@@ -4,6 +4,7 @@ import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/pihole_api/blocs/query_log_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/presentation/notifiers/queries_search_notifier.dart';
+import 'package:flutterhole/features/pihole_api/presentation/widgets/list_bloc_listener.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_app_bar.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/queries_search_list_builder.dart';
 import 'package:flutterhole/features/pihole_api/presentation/widgets/query_log_page_overflow_refresher.dart';
@@ -17,6 +18,69 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 final _numberFormat = NumberFormat();
+
+class QueryLogPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<QueriesSearchNotifier>(
+      create: (BuildContext context) => QueriesSearchNotifier(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<QueryLogBloc>(
+            create: (_) => QueryLogBloc()
+              ..add(QueryLogEvent.fetchSome(
+                  getIt<PreferenceService>().queryLogMaxResults)),
+          ),
+        ],
+        child: Builder(
+          builder: (context) => PageScaffold(
+            drawer: DefaultDrawer(),
+            appBar: QueriesSearchAppBar(
+              title: Text('Query log'),
+              actions: <Widget>[
+                _PopupMenu(),
+              ],
+            ),
+            body: ListBlocListener(
+              child: Scrollbar(
+                child: BlocBuilder<QueryLogBloc, QueryLogState>(
+                  builder: (BuildContext context, QueryLogState state) {
+                    return state.maybeWhen<Widget>(
+                      success: (List<QueryData> queries) {
+                        return QueriesSearchListBuilder(
+                          initialData: queries,
+                          builder:
+                              (BuildContext context, List<QueryData> matches) {
+                            return QueryLogPageOverflowRefresher(
+                              child: ListView.builder(
+                                itemCount: matches.length,
+                                itemBuilder: (context, index) {
+                                  final QueryData query =
+                                      matches.elementAt(index);
+
+                                  return SingleQueryDataTile(query: query);
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      failure: (failure) => CenteredFailureIndicator(failure),
+                      initial: () => Container(),
+                      orElse: () {
+                        return CenteredLoadingIndicator();
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class _PopupMenu extends StatelessWidget {
   PopupMenuItem<int> _buildPopupMenuItem(int value) {
@@ -53,59 +117,6 @@ class _PopupMenu extends StatelessWidget {
         _buildPopupMenuItem(1000),
         _buildPopupMenuItem(10000),
       ],
-    );
-  }
-}
-
-class QueryLogPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<QueriesSearchNotifier>(
-      create: (BuildContext context) => QueriesSearchNotifier(),
-      child: BlocProvider<QueryLogBloc>(
-        create: (_) => QueryLogBloc()
-          ..add(QueryLogEvent.fetchSome(
-              getIt<PreferenceService>().queryLogMaxResults)),
-        child: PageScaffold(
-          drawer: DefaultDrawer(),
-          appBar: QueriesSearchAppBar(
-            title: Text('Query log'),
-            actions: <Widget>[
-              _PopupMenu(),
-            ],
-          ),
-          body: Scrollbar(
-            child: BlocBuilder<QueryLogBloc, QueryLogState>(
-              builder: (BuildContext context, QueryLogState state) {
-                return state.maybeWhen<Widget>(
-                  success: (List<QueryData> queries) {
-                    return QueriesSearchListBuilder(
-                      initialData: queries,
-                      builder: (BuildContext context, List<QueryData> matches) {
-                        return QueryLogPageOverflowRefresher(
-                          child: ListView.builder(
-                            itemCount: matches.length,
-                            itemBuilder: (context, index) {
-                              final QueryData query = matches.elementAt(index);
-
-                              return SingleQueryDataTile(query: query);
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  failure: (failure) => CenteredFailureIndicator(failure),
-                  initial: () => Container(),
-                  orElse: () {
-                    return CenteredLoadingIndicator();
-                  },
-                );
-              },
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

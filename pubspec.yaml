@@ -37,13 +37,15 @@ dependencies:
   # mockable time
   clock: ^1.0.1
 
+
   # utilities
-  supercharged: ^1.8.2
+  supercharged: ^1.9.0
   flutter_bloc: ^6.0.1
-  flutter_form_builder: ^3.13.1
+  flutter_form_builder: ^3.13.2
   barcode_scan: ^3.0.1
   preferences: ^5.2.0
   jiffy: ^3.0.1
+  path_provider: ^1.6.11
 
   # ui sugar
   bottom_navy_bar: ^5.5.0
@@ -67,6 +69,7 @@ dependencies:
   launch_review: ^2.0.0
   url_launcher: ^5.5.0
   flutter_markdown: 0.3.5
+  flutter_slidable: ^0.5.5
 
 dev_dependencies:
   flutter_test:
@@ -82,7 +85,7 @@ dev_dependencies:
   # generators
   injectable_generator: ^1.0.4
   # toJson/fromJson generator
-  json_serializable: ^3.3.0
+  json_serializable: ^3.4.0
   # test stubbing
   mockito: ^4.1.1
   # bloc stubs & mocks
