@@ -100,6 +100,10 @@ dev_dependencies:
   # https://github.com/bmw-tech/ozzie.flutter/pull/49/commits/88685857e966ea6743fac3134c50b071f740dd67
   ozzie: 2.2.3
 
+flutter_icons:
+  image_path: "assets/icon/icon.png"
+  android: true
+
 flutter:
   uses-material-design: true
 
