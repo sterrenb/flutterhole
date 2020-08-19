@@ -6,8 +6,7 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:hive/hive.dart';
 import 'package:injectable/injectable.dart';
 
-@singleton
-@RegisterAs(SettingsDataSource)
+@Singleton(as: SettingsDataSource)
 class SettingsDataSourceHive implements SettingsDataSource {
   SettingsDataSourceHive([HiveInterface hive])
       : _hive = hive ?? getIt<HiveInterface>();
@@ -128,7 +127,7 @@ class SettingsDataSourceHive implements SettingsDataSource {
     final box = await _piholeBox;
     final index = await _activeIndex;
 
-    if (index < 0) {
+    if (index < 0 || (box?.isEmpty ?? true)) {
       print('no active pihole found in storage, returning default');
       return PiholeSettings();
     }

@@ -3,8 +3,10 @@ import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
@@ -13,12 +15,12 @@ import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/pihole_api/data/repositories/api_repository.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:injectable/injectable.dart';
 
-@singleton
-@RegisterAs(ApiRepository)
+@Singleton(as: ApiRepository)
 class ApiRepositoryImpl implements ApiRepository {
   ApiRepositoryImpl([ApiDataSource apiDataSource])
       : _apiDataSource = apiDataSource ?? getIt<ApiDataSource>();
@@ -134,10 +136,114 @@ class ApiRepositoryImpl implements ApiRepository {
       [int maxResults]) async {
     try {
       final ManyQueryData result =
-      await _apiDataSource.fetchManyQueryData(settings, maxResults);
+          await _apiDataSource.fetchManyQueryData(settings, maxResults);
       return Right(result.data.reversed.toList());
     } on PiException catch (e) {
       return Left(Failure('fetchManyQueryData failed', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Whitelist>> fetchWhitelist(
+      PiholeSettings settings) async {
+    try {
+      final List<Future<Whitelist>> futures = [
+        _apiDataSource.fetchWhitelist(settings),
+        _apiDataSource.fetchRegexWhitelist(settings),
+      ];
+
+      final List<Whitelist> responses = await Future.wait(futures);
+
+      final Whitelist whitelist = responses.elementAt(0);
+      final Whitelist regex = responses.elementAt(1);
+      return Right(Whitelist(data: [
+        ...whitelist.data,
+        ...regex.data,
+      ]));
+    } on PiException catch (e) {
+      return Left(Failure('fetchWhitelist failed', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Blacklist>> fetchBlacklist(
+      PiholeSettings settings) async {
+    try {
+      final List<Future<Blacklist>> futures = [
+        _apiDataSource.fetchBlacklist(settings),
+        _apiDataSource.fetchRegexBlacklist(settings),
+      ];
+
+      final List<Blacklist> responses = await Future.wait(futures);
+
+      final Blacklist blacklist = responses.elementAt(0);
+      final Blacklist regex = responses.elementAt(1);
+      return Right(Blacklist(data: [
+        ...blacklist.data,
+        ...regex.data,
+      ]));
+    } on PiException catch (e) {
+      return Left(Failure('fetchBlacklist failed', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ListResponse>> addToWhitelist(
+    PiholeSettings settings,
+    String domain,
+    bool isWildcard,
+  ) async {
+    try {
+      final ListResponse response =
+          await _apiDataSource.addToWhitelist(settings, domain, isWildcard);
+      return Right(response);
+    } on PiException catch (e) {
+      return Left(Failure('addToWhitelist failed', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ListResponse>> removeFromWhitelist(
+    PiholeSettings settings,
+    String domain,
+    bool isWildcard,
+  ) async {
+    try {
+      final ListResponse response = await _apiDataSource.removeFromWhitelist(
+          settings, domain, isWildcard);
+      return Right(response);
+    } on PiException catch (e) {
+      return Left(Failure('removeFromWhitelist failed', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ListResponse>> addToBlacklist(
+    PiholeSettings settings,
+    String domain,
+    bool isWildcard,
+  ) async {
+    try {
+      final ListResponse response =
+          await _apiDataSource.addToBlacklist(settings, domain, isWildcard);
+      return Right(response);
+    } on PiException catch (e) {
+      return Left(Failure('addToBlacklist failed', e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ListResponse>> removeFromBlacklist(
+    PiholeSettings settings,
+    String domain,
+    bool isWildcard,
+  ) async {
+    try {
+      final ListResponse response = await _apiDataSource.removeFromBlacklist(
+          settings, domain, isWildcard);
+      return Right(response);
+    } on PiException catch (e) {
+      return Left(Failure('removeFromBlacklist failed', e));
     }
   }
 }

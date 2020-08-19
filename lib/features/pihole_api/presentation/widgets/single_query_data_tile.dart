@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/core/convert.dart';
+import 'package:flutterhole/features/pihole_api/blocs/list_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/settings/presentation/widgets/pihole_theme_builder.dart';
 import 'package:flutterhole/widgets/layout/animations/animated_opener.dart';
 import 'package:flutterhole/widgets/layout/lists/open_url_tile.dart';
+import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
 
 const String _wikipediaUrl =
     'https://en.wikipedia.org/wiki/List_of_DNS_record_types';
@@ -128,18 +132,45 @@ class SingleQueryDataTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedOpener(
-      closed: (context) => ListTile(
-        title: Text('${query.domain}'),
-        isThreeLine: true,
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text('$_timeStamp'),
-            Text('${query.queryStatus.toFullString}',
-                style: TextStyle(color: query.queryStatus.toColor)),
-          ],
+      closed: (context) => Slidable(
+        actionPane: const SlidableDrawerActionPane(),
+        actions: [
+          IconSlideAction(
+            caption: 'Whitelist',
+            color: KColors.enabled,
+            icon: KIcons.whitelist,
+            onTap: () {
+              showInfoSnackBar(context, 'Adding ${query.domain}...');
+              BlocProvider.of<ListBloc>(context)
+                  .add(ListBlocEvent.addToWhitelist(query.domain, false));
+            },
+          )
+        ],
+        secondaryActions: [
+          IconSlideAction(
+            caption: 'Blacklist',
+            color: KColors.blocked,
+            icon: KIcons.blacklist,
+            onTap: () {
+              showInfoSnackBar(context, 'Adding ${query.domain}...');
+              BlocProvider.of<ListBloc>(context)
+                  .add(ListBlocEvent.addToBlacklist(query.domain, false));
+            },
+          )
+        ],
+        child: ListTile(
+          title: Text('${query.domain}'),
+          isThreeLine: true,
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('$_timeStamp'),
+              Text('${query.queryStatus.toFullString}',
+                  style: TextStyle(color: query.queryStatus.toColor)),
+            ],
+          ),
+          trailing: _buildQueryStatusIcon(),
         ),
-        trailing: _buildQueryStatusIcon(),
       ),
       opened: (context) => PiholeThemeBuilder(
         child: Scaffold(

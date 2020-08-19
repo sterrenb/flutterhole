@@ -12,7 +12,7 @@ class DetectedVersionsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PiholeSettingsBloc, PiholeSettingsState>(
-      condition: (previous, next) {
+      buildWhen: (previous, next) {
         if (previous is PiholeSettingsStateValidated) {
           return false;
         }

@@ -36,16 +36,9 @@ void main() {
     bloc.close();
   });
 
-  blocTest(
-    'Initially emits PiConnectionState.initial',
-    build: () async => bloc,
-    skip: 0,
-    expect: [PiConnectionState.initial()],
-  );
-
-  blocTest(
+  blocTest<PiConnectionBloc, PiConnectionState>(
     'Emits [] when nothing is added',
-    build: () async => bloc,
+    build: () => bloc,
     expect: [],
   );
 
@@ -54,9 +47,9 @@ void main() {
     final ToggleStatus toggleStatus = ToggleStatus(PiStatusEnum.enabled);
     final failure = Failure('test');
 
-    blocTest(
+    blocTest<PiConnectionBloc, PiConnectionState>(
       'Emits [$PiConnectionState.loading(), $PiConnectionState.active(toggleStatus)] when $PiConnectionEvent.ping() succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockConnectionRepository.pingPihole(settings))
@@ -71,9 +64,9 @@ void main() {
       ],
     );
 
-    blocTest(
+    blocTest<PiConnectionBloc, PiConnectionState>(
       'Emits [$PiConnectionState.loading(), $PiConnectionState.failure] when fetchActivePiholeSettings fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Left(failure));
 
@@ -83,9 +76,9 @@ void main() {
       expect: [PiConnectionState.loading(), PiConnectionState.failure(failure)],
     );
 
-    blocTest(
+    blocTest<PiConnectionBloc, PiConnectionState>(
       'Emits [$PiConnectionState.loading(), $PiConnectionState.failure] when pingPihole fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockConnectionRepository.pingPihole(settings))
@@ -102,9 +95,9 @@ void main() {
     final ToggleStatus toggleStatus = ToggleStatus(PiStatusEnum.enabled);
     final failure = Failure('test');
 
-    blocTest(
+    blocTest<PiConnectionBloc, PiConnectionState>(
       'Emits [$PiConnectionState.loading(), $PiConnectionState.active(toggleStatus)] when $PiConnectionEvent.enable() succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockConnectionRepository.enablePihole(settings))
@@ -120,9 +113,9 @@ void main() {
       ],
     );
 
-    blocTest(
+    blocTest<PiConnectionBloc, PiConnectionState>(
       'Emits [$PiConnectionState.loading(), $PiConnectionState.failure] when fetchActivePiholeSettings fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Left(failure));
 
@@ -133,9 +126,9 @@ void main() {
       expect: [PiConnectionState.loading(), PiConnectionState.failure(failure)],
     );
 
-    blocTest(
+    blocTest<PiConnectionBloc, PiConnectionState>(
       'Emits [$PiConnectionState.loading(), $PiConnectionState.failure] when enablePihole fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockConnectionRepository.enablePihole(settings))
@@ -153,9 +146,9 @@ void main() {
     final ToggleStatus toggleStatus = ToggleStatus(PiStatusEnum.disabled);
     final failure = Failure('test');
 
-    blocTest(
+    blocTest<PiConnectionBloc, PiConnectionState>(
       'Emits [$PiConnectionState.loading(), $PiConnectionState.active(toggleStatus)] when $PiConnectionEvent.disable() succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockConnectionRepository.disablePihole(settings))
@@ -171,9 +164,9 @@ void main() {
       ],
     );
 
-    blocTest(
+    blocTest<PiConnectionBloc, PiConnectionState>(
       'Emits [$PiConnectionState.loading(), $PiConnectionState.failure] when fetchActivePiholeSettings fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Left(failure));
 
@@ -184,9 +177,9 @@ void main() {
       expect: [PiConnectionState.loading(), PiConnectionState.failure(failure)],
     );
 
-    blocTest(
+    blocTest<PiConnectionBloc, PiConnectionState>(
       'Emits [$PiConnectionState.loading(), $PiConnectionState.failure] when disablePihole fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockConnectionRepository.disablePihole(settings))
@@ -208,9 +201,9 @@ void main() {
     final DateTime now = clock.now();
     final tFailure = Failure('test #0');
 
-    blocTest(
+    blocTest<PiConnectionBloc, PiConnectionState>(
       'Emits [$PiConnectionStateLoading, $PiConnectionStateSleeping, $PiConnectionStateActive] when $PiConnectionEventSleep succeeds and finishes',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockConnectionRepository.sleepPihole(settings, tDuration))
@@ -235,9 +228,9 @@ void main() {
       ],
     );
 
-    blocTest(
+    blocTest<PiConnectionBloc, PiConnectionState>(
       'Emits [$PiConnectionStateLoading, $PiConnectionStateFailure] when $PiConnectionEventSleep fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockConnectionRepository.sleepPihole(settings, tDuration))

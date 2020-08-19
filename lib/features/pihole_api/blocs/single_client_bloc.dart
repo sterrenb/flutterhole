@@ -38,13 +38,11 @@ class SingleClientBloc extends Bloc<SingleClientEvent, SingleClientState> {
     ApiRepository apiRepository,
     SettingsRepository settingsRepository,
   ])  : _apiRepository = apiRepository ?? getIt<ApiRepository>(),
-        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>();
+        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>(),
+        super(SingleClientState.initial());
 
   final ApiRepository _apiRepository;
   final SettingsRepository _settingsRepository;
-
-  @override
-  SingleClientState get initialState => SingleClientState.initial();
 
   Stream<SingleClientState> _fetchQueries(PiClient client) async* {
     yield SingleClientStateLoading();

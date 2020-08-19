@@ -34,16 +34,9 @@ void main() {
     bloc.close();
   });
 
-  blocTest(
-    'Initially emits QueryLogStateInitial',
-    build: () async => bloc,
-    skip: 0,
-    expect: [QueryLogStateInitial()],
-  );
-
-  blocTest(
+  blocTest<QueryLogBloc, QueryLogState>(
     'Emits [] when nothing is added',
-    build: () async => bloc,
+    build: () => bloc,
     expect: [],
   );
 
@@ -55,9 +48,9 @@ void main() {
     ];
     final tFailure = Failure();
 
-    blocTest(
+    blocTest<QueryLogBloc, QueryLogState>(
       'Emits [$QueryLogStateLoading, $QueryLogStateSuccess] when $QueryLogEventFetchAll succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockApiRepository.fetchManyQueryData(settings))
@@ -69,9 +62,9 @@ void main() {
       expect: [QueryLogStateLoading(), QueryLogStateSuccess(queries)],
     );
 
-    blocTest(
+    blocTest<QueryLogBloc, QueryLogState>(
       'Emits [$QueryLogStateLoading, $QueryLogStateFailure] when $QueryLogEventFetchAll fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockApiRepository.fetchManyQueryData(settings))
@@ -93,9 +86,9 @@ void main() {
     final tFailure = Failure();
     final maxResults = 123;
 
-    blocTest(
+    blocTest<QueryLogBloc, QueryLogState>(
       'Emits [$QueryLogStateLoading, $QueryLogStateSuccess] when $QueryLogEventFetchSome succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockApiRepository.fetchManyQueryData(settings, maxResults))
@@ -108,9 +101,9 @@ void main() {
       expect: [QueryLogStateLoading(), QueryLogStateSuccess(queries)],
     );
 
-    blocTest(
+    blocTest<QueryLogBloc, QueryLogState>(
       'Emits [$QueryLogStateLoading, $QueryLogStateFailure] when $QueryLogEventFetchSome fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(settings));
         when(mockApiRepository.fetchManyQueryData(settings, maxResults))

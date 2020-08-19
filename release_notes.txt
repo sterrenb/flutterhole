@@ -1,9 +1,7 @@
-* Fix: Pi-holes without a password and API token can now toggle off the API token requirement.
+* Feature: whitelist/blacklist page
 
-* Feature: the queries/clients over time charts are back.
+* Feature: whitelist & blacklist queries from the query log by sliding
 
-* Feature: errors are now more verbose.
+* Fix: query types graph legend overflow
 
-* Feature: query logs are searchable and refreshable.
-
-* Feature: the query log is back. I intend to make some kind of live query viewer separately, this page does _not_ automatically listen for new data.
+* Fix: client activity graph time missing

@@ -4,8 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/numbers_api/data/repositories/numbers_api_repository.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
@@ -17,6 +19,7 @@ import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/services/preference_service.dart';
 import 'package:flutterhole/features/settings/services/preference_service_impl.dart';
@@ -26,7 +29,7 @@ import 'package:injectable/injectable.dart';
 import 'package:preferences/preferences.dart';
 import 'package:sailor/sailor.dart';
 
-@registerModule
+@module
 abstract class RegisterDevModule {
   @dev
   @injectable
@@ -57,8 +60,7 @@ abstract class RegisterDevModule {
 }
 
 @dev
-@injectable
-@RegisterAs(ApiDataSource)
+@Injectable(as: ApiDataSource)
 class ApiDataSourceDev implements ApiDataSource {
   @override
   Future<ToggleStatus> disablePihole(PiholeSettings settings) async {
@@ -114,8 +116,7 @@ class ApiDataSourceDev implements ApiDataSource {
   @override
   Future<OverTimeDataClients> fetchClientsOverTime(
       PiholeSettings settings) async {
-    // TODO implement
-    throw UnimplementedError();
+    return _overTimeDataClientsFromJson();
   }
 
   @override
@@ -236,9 +237,9 @@ class ApiDataSourceDev implements ApiDataSource {
     return TopSourcesResult(
       topSources: {
         PiClient(name: 'localhost', ip: '127.0.0.1'): 3204,
-        PiClient(name: 'openelec', ip: '10.0.1.2'): 324,
-        PiClient(ip: '10.0.1.3'): 216,
-        PiClient(name: 'laptop', ip: '10.0.1.4'): 96,
+        PiClient(name: 'openelec', ip: '127.0.1.2'): 324,
+        PiClient(ip: '127.0.1.3'): 216,
+        PiClient(name: 'laptop', ip: '127.0.1.4'): 96,
       },
     );
   }
@@ -271,12 +272,55 @@ class ApiDataSourceDev implements ApiDataSource {
       PiholeSettings settings, Duration duration) async {
     return ToggleStatus(PiStatusEnum.disabled);
   }
+
+  @override
+  Future<Blacklist> fetchBlacklist(PiholeSettings settings) async {
+    return Blacklist(data: []);
+  }
+
+  @override
+  Future<Blacklist> fetchRegexBlacklist(PiholeSettings settings) async {
+    return Blacklist(data: []);
+  }
+
+  @override
+  Future<Whitelist> fetchRegexWhitelist(PiholeSettings settings) async {
+    return Whitelist(data: []);
+  }
+
+  @override
+  Future<Whitelist> fetchWhitelist(PiholeSettings settings) async {
+    return Whitelist(data: []);
+  }
+
+  @override
+  Future<ListResponse> addToWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
+  }
+
+  @override
+  Future<ListResponse> addToBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
+  }
+
+  @override
+  Future<ListResponse> removeFromBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
+  }
+
+  @override
+  Future<ListResponse> removeFromWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
+  }
 }
 
 @dev
 @preResolve
-@singleton
-@RegisterAs(PreferenceService)
+@Singleton(as: PreferenceService)
 class PreferenceServiceDev extends PreferenceServiceImpl {
   @factoryMethod
   static Future<PreferenceServiceImpl> create() async {
@@ -286,8 +330,7 @@ class PreferenceServiceDev extends PreferenceServiceImpl {
 }
 
 @dev
-@singleton
-@RegisterAs(NumbersApiRepository)
+@Singleton(as: NumbersApiRepository)
 class NumbersApiRepositoryDev implements NumbersApiRepository {
   @override
   Future<Either<Failure, Map<int, String>>> fetchManyTrivia(
@@ -359,7 +402,7 @@ OverTimeData _overTimeDataFromJson() {
       "1588227900": 250,
       "1588228500": 40,
       "1588229100": 745,
-      "1588229700": 1151,
+      "1588229700": 851,
       "1588230300": 210,
       "1588230900": 229,
       "1588231500": 243,
@@ -501,17 +544,17 @@ OverTimeData _overTimeDataFromJson() {
       "1588227300": 0,
       "1588227900": 0,
       "1588228500": 0,
-      "1588229100": 0,
-      "1588229700": 0,
-      "1588230300": 0,
-      "1588230900": 0,
-      "1588231500": 0,
-      "1588232100": 0,
-      "1588232700": 0,
-      "1588233300": 0,
-      "1588233900": 0,
-      "1588234500": 0,
-      "1588235100": 0,
+      "1588229100": 400,
+      "1588229700": 550,
+      "1588230300": 561,
+      "1588230900": 212,
+      "1588231500": 218,
+      "1588232100": 56,
+      "1588232700": 123,
+      "1588233300": 145,
+      "1588233900": 156,
+      "1588234500": 130,
+      "1588235100": 53,
       "1588235700": 0,
       "1588236300": 0,
       "1588236900": 0,
@@ -594,4 +637,166 @@ OverTimeData _overTimeDataFromJson() {
   };
 
   return OverTimeData.fromJson(json);
+}
+
+OverTimeDataClients _overTimeDataClientsFromJson() {
+  final Map<String, Object> json = {
+    "clients": [
+      {"name": "", "ip": "127.0.1.12"},
+      {"name": "", "ip": "127.0.1.2"},
+      {"name": "hello", "ip": "127.0.1.15"},
+      {"name": "", "ip": "127.0.1.1"},
+      {"name": "", "ip": "127.0.1.17"},
+      {"name": "localhost", "ip": "127.0.0.1"},
+      {"name": "", "ip": "1.2.3.4"},
+      {"name": "", "ip": "127.0.1.7"},
+      {"name": "", "ip": "127.0.1.18"},
+      {"name": "", "ip": "127.0.1.6"},
+      {"name": "", "ip": "127.0.1.9"},
+      {"name": "and finally", "ip": "127.0.1.13"}
+    ],
+    "over_time": {
+      "1590084300": [9, 90, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0],
+      "1590084900": [96, 73, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0],
+      "1590085500": [30, 49, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0],
+      "1590086100": [19, 58, 0, 0, 0, 0, 0, 0, 17, 0, 0, 0],
+      "1590086700": [86, 36, 0, 0, 0, 0, 0, 0, 17, 0, 0, 0],
+      "1590087300": [51, 21, 0, 4, 0, 0, 0, 0, 42, 0, 0, 0],
+      "1590087900": [12, 8, 0, 0, 0, 0, 0, 0, 17, 0, 0, 0],
+      "1590088500": [79, 37, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0],
+      "1590089100": [141, 124, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+      "1590089700": [27, 27, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      "1590090300": [92, 38, 0, 0, 0, 0, 3, 0, 6, 0, 0, 0],
+      "1590090900": [94, 31, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0],
+      "1590091500": [52, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590092100": [61, 39, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0],
+      "1590092700": [50, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590093300": [58, 34, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0],
+      "1590093900": [34, 53, 0, 0, 0, 0, 1, 0, 17, 0, 0, 0],
+      "1590094500": [63, 89, 0, 4, 0, 0, 0, 0, 18, 0, 0, 0],
+      "1590095100": [64, 50, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0],
+      "1590095700": [32, 84, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0],
+      "1590096300": [58, 74, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0],
+      "1590096900": [45, 42, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0],
+      "1590097500": [51, 50, 0, 0, 0, 0, 0, 0, 13, 0, 0, 0],
+      "1590098100": [81, 7, 0, 4, 0, 0, 0, 0, 6, 0, 0, 0],
+      "1590098700": [38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590099300": [37, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0],
+      "1590099900": [1, 0, 0, 0, 0, 0, 0, 0, 30, 0, 0, 0],
+      "1590100500": [5, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 0],
+      "1590101100": [1, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0],
+      "1590101700": [110, 0, 0, 4, 0, 0, 0, 0, 16, 0, 0, 0],
+      "1590102300": [119, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0],
+      "1590102900": [25, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0],
+      "1590103500": [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590104100": [3, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0],
+      "1590104700": [3, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0],
+      "1590105300": [24, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590105900": [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590106500": [21, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+      "1590107100": [0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0],
+      "1590107700": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590108300": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590108900": [0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590109500": [0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0],
+      "1590110100": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590110700": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590111300": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590111900": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590112500": [0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590113100": [0, 0, 0, 0, 0, 0, 0, 0, 18, 0, 0, 0],
+      "1590113700": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590114300": [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      "1590114900": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590115500": [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+      "1590116100": [0, 0, 0, 4, 0, 0, 1, 0, 1, 0, 0, 0],
+      "1590116700": [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+      "1590117300": [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      "1590117900": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590118500": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590119100": [15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590119700": [2, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590120300": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590120900": [1, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0],
+      "1590121500": [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590122100": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590122700": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590123300": [0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590123900": [5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+      "1590124500": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590125100": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590125700": [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      "1590126300": [0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0],
+      "1590126900": [4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590127500": [2, 0, 0, 0, 0, 0, 0, 0, 19, 0, 0, 0],
+      "1590128100": [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590128700": [15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590129300": [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590129900": [0, 0, 0, 0, 0, 0, 0, 0, 57, 0, 0, 0],
+      "1590130500": [2, 0, 0, 4, 0, 0, 0, 0, 54, 0, 0, 0],
+      "1590131100": [1, 0, 0, 0, 0, 0, 0, 0, 81, 0, 0, 0],
+      "1590131700": [3, 0, 0, 0, 0, 0, 0, 0, 84, 2, 0, 0],
+      "1590132300": [3, 57, 0, 0, 0, 0, 2, 0, 19, 0, 0, 0],
+      "1590132900": [88, 93, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0],
+      "1590133500": [62, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590134100": [48, 19, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0],
+      "1590134700": [72, 70, 0, 0, 0, 26, 1, 0, 1, 0, 0, 0],
+      "1590135300": [74, 24, 0, 0, 0, 0, 0, 0, 20, 0, 0, 0],
+      "1590135900": [82, 31, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0],
+      "1590136500": [28, 14, 0, 0, 0, 0, 0, 0, 23, 0, 0, 0],
+      "1590137100": [15, 23, 0, 0, 0, 0, 4, 0, 6, 0, 0, 0],
+      "1590137700": [5, 8, 0, 4, 0, 0, 0, 0, 6, 0, 0, 0],
+      "1590138300": [30, 8, 0, 0, 0, 0, 0, 0, 22, 0, 0, 0],
+      "1590138900": [19, 14, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0],
+      "1590139500": [75, 34, 0, 0, 0, 0, 0, 0, 21, 0, 0, 0],
+      "1590140100": [82, 17, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0],
+      "1590140700": [29, 13, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0],
+      "1590141300": [3, 12, 0, 4, 0, 0, 0, 0, 1, 0, 0, 0],
+      "1590141900": [5, 10, 0, 0, 0, 0, 0, 0, 42, 0, 0, 0],
+      "1590142500": [16, 7, 0, 0, 0, 0, 0, 0, 86, 0, 0, 0],
+      "1590143100": [7, 18, 0, 0, 0, 0, 0, 0, 78, 0, 0, 0],
+      "1590143700": [23, 3, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0],
+      "1590144300": [48, 0, 0, 0, 0, 0, 0, 0, 29, 0, 0, 0],
+      "1590144900": [30, 0, 0, 4, 0, 0, 0, 0, 5, 0, 0, 0],
+      "1590145500": [88, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0],
+      "1590146100": [56, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0],
+      "1590146700": [69, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0],
+      "1590147300": [34, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0],
+      "1590147900": [25, 0, 0, 0, 0, 0, 1, 0, 53, 0, 0, 0],
+      "1590148500": [99, 0, 0, 4, 0, 0, 0, 0, 35, 0, 0, 0],
+      "1590149100": [47, 0, 0, 0, 0, 0, 0, 0, 61, 0, 0, 0],
+      "1590149700": [10, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0],
+      "1590150300": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590150900": [32, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+      "1590151500": [0, 81, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0],
+      "1590152100": [0, 62, 0, 4, 0, 0, 0, 0, 9, 0, 0, 0],
+      "1590152700": [0, 14, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0],
+      "1590153300": [0, 38, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0],
+      "1590153900": [0, 41, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0],
+      "1590154500": [0, 31, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0],
+      "1590155100": [0, 15, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0],
+      "1590155700": [0, 28, 0, 4, 0, 0, 0, 0, 5, 0, 0, 0],
+      "1590156300": [0, 13, 0, 0, 0, 0, 5, 0, 11, 0, 0, 0],
+      "1590156900": [0, 12, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0],
+      "1590157500": [0, 17, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      "1590158100": [0, 23, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0],
+      "1590158700": [0, 17, 0, 0, 0, 0, 1, 0, 4, 0, 0, 0],
+      "1590159300": [0, 38, 0, 4, 0, 0, 0, 0, 4, 0, 0, 0],
+      "1590159900": [0, 9, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0],
+      "1590160500": [0, 22, 0, 0, 0, 6, 0, 0, 2, 0, 0, 0],
+      "1590161100": [0, 16, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      "1590161700": [0, 9, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0],
+      "1590162300": [0, 16, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0],
+      "1590162900": [0, 18, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590163500": [0, 7, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0],
+      "1590164100": [0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590164700": [0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "1590165300": [0, 7, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      "1590165900": [0, 12, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0],
+      "1590166500": [0, 28, 0, 4, 0, 0, 0, 0, 6, 0, 0, 0],
+      "1590167100": [0, 20, 0, 0, 0, 0, 2, 0, 5, 0, 0, 0]
+    }
+  };
+
+  return OverTimeDataClients.fromJson(json);
 }

@@ -6,6 +6,11 @@ DateTime dateTimeFromPiholeString(String key) =>
 String piholeStringFromDateTime(DateTime key) =>
     '${key.millisecondsSinceEpoch ~/ 1000}';
 
+DateTime dateTimeFromPiholeInt(int key) =>
+    DateTime.fromMillisecondsSinceEpoch(key * 1000);
+
+int piholeIntFromDateTime(DateTime key) => key.millisecondsSinceEpoch ~/ 1000;
+
 extension DateTimeWithRelative on DateTime {
   String get fromNow => Jiffy(this).fromNow();
 

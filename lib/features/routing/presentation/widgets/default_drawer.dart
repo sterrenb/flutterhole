@@ -39,6 +39,16 @@ class DefaultDrawer extends StatelessWidget {
                   icon: Icon(KIcons.queryLog),
                 ),
                 DrawerTile(
+                  routeName: RouterService.whitelist,
+                  title: Text('Whitelist'),
+                  icon: Icon(KIcons.whitelist),
+                ),
+                DrawerTile(
+                  routeName: RouterService.blacklist,
+                  title: Text('Blacklist'),
+                  icon: Icon(KIcons.blacklist),
+                ),
+                DrawerTile(
                   routeName: RouterService.settings,
                   title: Text('Settings'),
                   icon: Icon(KIcons.settings),
@@ -79,20 +89,25 @@ class _Footer extends StatelessWidget {
     final String footerMessage = getIt<PreferenceService>().footerMessage;
     final PackageInfo packageInfo = getIt<PackageInfoService>().packageInfo;
 
+    final textStyle = Theme.of(context).textTheme.caption;
+
     return ListTile(
       title: Text(
         '${packageInfo.appName} ${packageInfo.versionAndBuildString}',
-        style: Theme.of(context).textTheme.caption,
+        style: textStyle,
+      ),
+      leading: Image(
+        image: AssetImage('assets/icon/logo.png'),
+        width: 50,
+        height: 50,
+        color: textStyle.color,
       ),
       subtitle: footerMessage.isEmpty
           ? null
           : Text(
-        '$footerMessage',
-        style: Theme
-            .of(context)
-            .textTheme
-            .caption,
-      ),
+              '$footerMessage',
+              style: textStyle,
+            ),
       onLongPress: () {
         showAppDetailsDialog(context, packageInfo);
       },

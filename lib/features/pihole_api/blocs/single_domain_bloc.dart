@@ -37,13 +37,11 @@ class SingleDomainBloc extends Bloc<SingleDomainEvent, SingleDomainState> {
     ApiRepository apiRepository,
     SettingsRepository settingsRepository,
   ])  : _apiRepository = apiRepository ?? getIt<ApiRepository>(),
-        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>();
+        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>(),
+        super(SingleDomainState.initial());
 
   final ApiRepository _apiRepository;
   final SettingsRepository _settingsRepository;
-
-  @override
-  SingleDomainState get initialState => SingleDomainState.initial();
 
   Stream<SingleDomainState> _fetchQueries(String domain) async* {
     yield SingleDomainStateLoading();

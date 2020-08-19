@@ -1,0 +1,12 @@
+{
+  "id": 3,
+  "type": 3,
+  "domain": "(^|\\.)wildcard.co$",
+  "enabled": 1,
+  "date_added": 1589292006,
+  "date_modified": 1589292006,
+  "comment": "Migrated from \/etc\/pihole\/regex.list",
+  "groups": [
+    0
+  ]
+}

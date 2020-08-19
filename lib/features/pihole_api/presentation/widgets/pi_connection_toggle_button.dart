@@ -11,11 +11,10 @@ import 'package:flutterhole/widgets/layout/indicators/loading_indicators.dart';
 import 'package:flutterhole/widgets/layout/notifications/snackbars.dart';
 
 class PiConnectionToggleButton extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PiConnectionBloc, PiConnectionState>(
-      bloc: getIt<PiConnectionBloc>(),
+      cubit: getIt<PiConnectionBloc>(),
       listener: (BuildContext context, PiConnectionState state) {
         state.maybeWhen(
 //          active: (settings, ToggleStatus toggleStatus) {
