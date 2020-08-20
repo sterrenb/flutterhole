@@ -22,6 +22,7 @@ class ThemeRadioPreferences extends StatelessWidget {
             KPrefs.themeMode,
 //            isDefault: true,
             onSelect: () => notifier.update(),
+            isDefault: true,
             leading: Icon(KIcons.themeSystem),
           ),
           RadioPreference(

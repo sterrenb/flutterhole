@@ -24,6 +24,10 @@ class KIcons {
   static const IconData sleep = MaterialCommunityIcons.sleep;
   static const IconData wake = MaterialCommunityIcons.bell_ring;
 
+  static const IconData temperature = MaterialCommunityIcons.fire;
+  static const IconData cpuLoad = MaterialCommunityIcons.server;
+  static const IconData memoryUsage = MaterialCommunityIcons.memory;
+
   static const IconData themeSystem = Feather.sunrise;
   static const IconData themeLight = Feather.sun;
   static const IconData themeDark = Feather.moon;

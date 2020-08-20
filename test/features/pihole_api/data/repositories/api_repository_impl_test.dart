@@ -11,6 +11,7 @@ import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_extras.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
@@ -67,6 +68,45 @@ void main() async {
             await apiRepository.fetchSummary(piholeSettings);
         // assert
         expect(result, equals(Left(Failure('fetchSummary failed', tError))));
+      },
+    );
+  });
+
+  group('fetchExtras', () {
+    test(
+      'should return $PiExtras on successful fetchExtras',
+      () async {
+        // arrange
+        final tExtras = PiExtras(
+          temperature: 12.23,
+          load: [
+            1,
+            2,
+            3,
+          ],
+          memoryUsage: 45.67,
+        );
+        when(mockApiDataSource.fetchExtras(piholeSettings))
+            .thenAnswer((_) async => tExtras);
+        // act
+        final Either<Failure, PiExtras> result =
+            await apiRepository.fetchExtras(piholeSettings);
+        // assert
+        expect(result, equals(Right(tExtras)));
+      },
+    );
+
+    test(
+      'should return $Failure on failed fetchExtras',
+      () async {
+        // arrange
+
+        when(mockApiDataSource.fetchExtras(piholeSettings)).thenThrow(tError);
+        // act
+        final Either<Failure, PiExtras> result =
+            await apiRepository.fetchExtras(piholeSettings);
+        // assert
+        expect(result, equals(Left(Failure('fetchExtras failed', tError))));
       },
     );
   });

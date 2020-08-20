@@ -17,15 +17,15 @@ class ActivePiholeTitle extends StatelessWidget {
       children: <Widget>[
         SettingsBlocBuilder(
             builder: (BuildContext context, SettingsState state) {
-              return state.maybeWhen<Widget>(
-                success: (all, active) {
-                  return Text('${active.title}');
-                },
-                orElse: () {
-                  return Text('FlutterHole');
-                },
-              );
-            }),
+          return state.maybeWhen<Widget>(
+            success: (all, active) {
+              return Text('${active.title}');
+            },
+            orElse: () {
+              return Text('FlutterHole');
+            },
+          );
+        }),
         PiConnectionStatusIcon(interactive: interactive),
       ],
     );

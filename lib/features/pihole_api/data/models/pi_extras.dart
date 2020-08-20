@@ -4,11 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'pi_extras.freezed.dart';
 part 'pi_extras.g.dart';
 
-enum TemperatureType {
-  celsius,
-  fahrenheit,
-}
-
 @freezed
 abstract class PiExtras with _$PiExtras {
   const factory PiExtras({
