@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutterhole/core/convert.dart';
 
 import 'package:alice/alice.dart';
 import 'package:dio/adapter.dart';
@@ -15,6 +16,7 @@ import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_extras.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
@@ -22,7 +24,10 @@ import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
 import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
+import 'package:html/dom.dart';
+import 'package:html/parser.dart';
 import 'package:injectable/injectable.dart';
+import 'package:supercharged/supercharged.dart';
 
 @prod
 @Injectable(as: ApiDataSource)
@@ -36,10 +41,7 @@ class ApiDataSourceDio implements ApiDataSource {
   final Dio _dio;
   final Alice _alice;
 
-  Future<dynamic> _get(
-    PiholeSettings settings, {
-    Map<String, dynamic> queryParameters = const {},
-  }) async {
+  void _checkAllowSelfSignedCertificates(PiholeSettings settings) {
     if (settings.allowSelfSignedCertificates) {
       // https://github.com/flutterchina/dio/issues/32#issuecomment-487401443
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -49,12 +51,10 @@ class ApiDataSourceDio implements ApiDataSource {
         return client;
       };
     }
+  }
 
-    Map<String, String> headers = {
-      HttpHeaders.userAgentHeader: "flutterhole",
-      HttpHeaders.contentTypeHeader: Headers.jsonContentType,
-    };
-
+  void _addBasicAuthHeaders(
+      PiholeSettings settings, Map<String, String> headers) {
     if (settings.basicAuthenticationUsername.isNotEmpty ||
         settings.basicAuthenticationPassword.isNotEmpty) {
       String basicAuth = 'Basic ' +
@@ -63,6 +63,39 @@ class ApiDataSourceDio implements ApiDataSource {
 
       headers.putIfAbsent(HttpHeaders.authorizationHeader, () => basicAuth);
     }
+  }
+
+  void _parseDioError(DioError e) {
+    switch (e.type) {
+      case DioErrorType.CONNECT_TIMEOUT:
+      case DioErrorType.SEND_TIMEOUT:
+      case DioErrorType.RECEIVE_TIMEOUT:
+        throw TimeOutPiException(e);
+      case DioErrorType.RESPONSE:
+        throw NotFoundPiException(e);
+      case DioErrorType.CANCEL:
+      case DioErrorType.DEFAULT:
+      default:
+        switch (e.response?.statusCode ?? 0) {
+          case 404:
+            throw NotFoundPiException(e);
+          default:
+            throw MalformedResponsePiException(e);
+        }
+    }
+  }
+
+  Future<dynamic> _get(
+    PiholeSettings settings, {
+    Map<String, dynamic> queryParameters = const {},
+  }) async {
+    Map<String, String> headers = {
+      HttpHeaders.userAgentHeader: "flutterhole",
+      HttpHeaders.contentTypeHeader: Headers.jsonContentType,
+    };
+
+    _checkAllowSelfSignedCertificates(settings);
+    _addBasicAuthHeaders(settings, headers);
 
     try {
       final url = '${settings.baseUrl}:${settings.apiPort}${settings.apiPath}';
@@ -89,23 +122,7 @@ class ApiDataSourceDio implements ApiDataSource {
 
       return data;
     } on DioError catch (e) {
-      switch (e.type) {
-        case DioErrorType.CONNECT_TIMEOUT:
-        case DioErrorType.SEND_TIMEOUT:
-        case DioErrorType.RECEIVE_TIMEOUT:
-          throw TimeOutPiException(e);
-        case DioErrorType.RESPONSE:
-          throw NotFoundPiException(e);
-        case DioErrorType.CANCEL:
-        case DioErrorType.DEFAULT:
-        default:
-          switch (e.response?.statusCode ?? 0) {
-            case 404:
-              throw NotFoundPiException(e);
-            default:
-              throw MalformedResponsePiException(e);
-          }
-      }
+      _parseDioError(e);
     }
   }
 
@@ -139,6 +156,54 @@ class ApiDataSourceDio implements ApiDataSource {
     });
 
     return SummaryModel.fromJson(json);
+  }
+
+  @override
+  Future<PiExtras> fetchExtras(PiholeSettings settings) async {
+    Map<String, String> headers = {
+      HttpHeaders.userAgentHeader: "flutterhole",
+    };
+
+    _checkAllowSelfSignedCertificates(settings);
+    _addBasicAuthHeaders(settings, headers);
+
+    try {
+      final url = '${settings.baseUrl}:${settings.apiPort}/admin/';
+
+      final Response response = await _dio.get(
+        url,
+        options: Options(
+          headers: headers,
+          responseType: ResponseType.plain,
+        ),
+      );
+
+      if (response.data is String) {
+        if (response.data.isEmpty)
+          throw EmptyResponsePiException(response?.toString() ?? '');
+      }
+
+      final Document document = parse(response.data);
+
+      PiExtras extras = PiExtras(
+          temperature:
+              double.tryParse(document.getElementById('rawtemp').innerHtml));
+
+      final List<Element> info =
+          document.getElementsByClassName('fa fa-circle text-green-light');
+
+      if (info.length >= 3) {
+        extras = extras.copyWith(
+          load: info.elementAt(1).parent.innerHtml.getNumbers(),
+          memoryUsage:
+              info.elementAt(2).parent.innerHtml.getNumbers().firstOrNull(),
+        );
+      }
+
+      return extras;
+    } on DioError catch (e) {
+      _parseDioError(e);
+    }
   }
 
   @override
