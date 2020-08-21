@@ -1,7 +1,9 @@
 import 'package:alice/alice.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/constants.dart';
 import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/pihole_api/blocs/extras_bloc.dart';
 import 'package:flutterhole/features/routing/presentation/notifiers/drawer_notifier.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/default_drawer_header.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/drawer_menu.dart';
@@ -88,29 +90,102 @@ class _Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     final String footerMessage = getIt<PreferenceService>().footerMessage;
     final PackageInfo packageInfo = getIt<PackageInfoService>().packageInfo;
+    final String temperatureType = getIt<PreferenceService>().temperatureType;
 
     final textStyle = Theme.of(context).textTheme.caption;
 
-    return ListTile(
-      title: Text(
-        '${packageInfo.appName} ${packageInfo.versionAndBuildString}',
-        style: textStyle,
-      ),
-      leading: Image(
-        image: AssetImage('assets/icon/logo.png'),
-        width: 50,
-        height: 50,
-        color: textStyle.color,
-      ),
-      subtitle: footerMessage.isEmpty
-          ? null
-          : Text(
-              '$footerMessage',
-              style: textStyle,
-            ),
-      onLongPress: () {
-        showAppDetailsDialog(context, packageInfo);
-      },
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        BlocBuilder<ExtrasBloc, ExtrasState>(
+          buildWhen: (previous, next) {
+            if (previous is ExtrasStateSuccess) return false;
+
+            return true;
+          },
+          builder: (BuildContext context, ExtrasState state) {
+            return state.when<Widget>(
+              initial: () => Container(),
+              loading: () => Container(),
+              success: (extras) => Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: [
+                        IconButton(
+                          tooltip: 'Temperature',
+                          icon: Icon(KIcons.temperature),
+                          onPressed: null,
+                        ),
+                        Text(
+                          '${extras.temperature?.toStringAsFixed(2)} ${temperatureType == 'fahrenheit' ? '°F' : '°C'}',
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        IconButton(
+                          tooltip: 'Load',
+                          icon: Icon(KIcons.cpuLoad),
+                          onPressed: null,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: Center(
+                            child: Text(
+                              '${extras.load?.map<String>((load) => '${load.toStringAsPrecision(2)}')?.join(' ')}',
+                              style: Theme.of(context).textTheme.caption,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        IconButton(
+                          tooltip: 'Memory usage',
+                          icon: Icon(KIcons.memoryUsage),
+                          onPressed: null,
+                        ),
+                        Text(
+                          '${extras.memoryUsage?.toStringAsFixed(2)}%',
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              failure: (failure) => Container(),
+            );
+          },
+        ),
+        ListTile(
+          title: Text(
+            '${packageInfo.appName} ${packageInfo.versionAndBuildString}',
+            style: textStyle,
+          ),
+          leading: Image(
+            image: AssetImage('assets/icon/logo.png'),
+            width: 50,
+            height: 50,
+            color: textStyle.color,
+          ),
+          subtitle: footerMessage.isEmpty
+              ? null
+              : Text(
+                  '$footerMessage',
+                  style: textStyle,
+                ),
+          onLongPress: () {
+            showAppDetailsDialog(context, packageInfo);
+          },
+        ),
+      ],
     );
   }
 }

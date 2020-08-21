@@ -11,6 +11,7 @@ import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_extras.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
@@ -50,6 +51,15 @@ class ApiRepositoryImpl implements ApiRepository {
         settings,
         _apiDataSource.fetchSummary,
         'fetchSummary',
+      );
+
+  @override
+  Future<Either<Failure, PiExtras>> fetchExtras(
+          PiholeSettings settings) async =>
+      fetchOrFailure<PiExtras>(
+        settings,
+        _apiDataSource.fetchExtras,
+        'fetchExtras',
       );
 
   @override

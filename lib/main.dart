@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterhole/core/debug/bloc_delegate.dart';
 import 'package:flutterhole/dependency_injection.dart';
+import 'package:flutterhole/features/pihole_api/blocs/extras_bloc.dart';
 import 'package:flutterhole/features/pihole_api/blocs/list_bloc.dart';
 import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
+import 'package:flutterhole/features/pihole_api/presentation/widgets/extras_bloc_manager.dart';
 import 'package:flutterhole/features/routing/presentation/widgets/double_back_to_close_app.dart';
 import 'package:flutterhole/features/routing/services/router_service.dart';
 import 'package:flutterhole/features/settings/presentation/blocs/settings_bloc.dart';
@@ -47,29 +49,34 @@ class MyApp extends StatelessWidget {
             create: (_) =>
                 getIt<ListBloc>()..add(const ListBlocEvent.fetchLists()),
           ),
+          BlocProvider<ExtrasBloc>(
+            create: (_) => getIt<ExtrasBloc>()..add(ExtrasEvent.start()),
+          ),
         ],
-        child: Consumer<ThemeModeNotifier>(
-          builder: (
-            BuildContext context,
-            ThemeModeNotifier notifier,
-            _,
-          ) =>
-              DoubleBackToCloseApp(
-            child: MaterialApp(
-              title: 'FlutterHole',
-              navigatorKey: getIt<RouterService>().navigatorKey,
-              onGenerateRoute: getIt<RouterService>().onGenerateRoute,
-              initialRoute: RouterService.home,
-              theme: ThemeData(
-                brightness: Brightness.light,
-                primaryColor: Colors.red,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
+        child: ExtrasBlocManager(
+          child: Consumer<ThemeModeNotifier>(
+            builder: (
+              BuildContext context,
+              ThemeModeNotifier notifier,
+              _,
+            ) =>
+                DoubleBackToCloseApp(
+              child: MaterialApp(
+                title: 'FlutterHole',
+                navigatorKey: getIt<RouterService>().navigatorKey,
+                onGenerateRoute: getIt<RouterService>().onGenerateRoute,
+                initialRoute: RouterService.home,
+                theme: ThemeData(
+                  brightness: Brightness.light,
+                  primaryColor: Colors.red,
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                ),
+                darkTheme: ThemeData(
+                  brightness: Brightness.dark,
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                ),
+                themeMode: notifier.themeMode,
               ),
-              darkTheme: ThemeData(
-                brightness: Brightness.dark,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-              ),
-              themeMode: notifier.themeMode,
             ),
           ),
         ),

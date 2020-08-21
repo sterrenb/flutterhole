@@ -21,6 +21,8 @@ extension DateTimeWithRelative on DateTime {
   String get formattedTimeShort => Jiffy(this).format('hh:mm');
 }
 
+final RegExp _regex = RegExp(r'\d+.\d+');
+
 extension StringExtension on String {
   String get capitalize {
     if (this == null) {
@@ -32,5 +34,15 @@ extension StringExtension on String {
     }
 
     return this[0].toUpperCase() + this.substring(1);
+  }
+
+  List<num> getNumbers() {
+    if (_regex.hasMatch(this))
+      return _regex
+          .allMatches(this)
+          .map((RegExpMatch match) => num.tryParse(match.group(0)))
+          .toList();
+    else
+      return [];
   }
 }

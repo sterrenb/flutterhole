@@ -7,6 +7,7 @@ import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_extras.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
@@ -16,6 +17,8 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 
 abstract class ApiRepository {
   Future<Either<Failure, SummaryModel>> fetchSummary(PiholeSettings settings);
+
+  Future<Either<Failure, PiExtras>> fetchExtras(PiholeSettings settings);
 
   Future<Either<Failure, OverTimeData>> fetchQueriesOverTime(
       PiholeSettings settings);

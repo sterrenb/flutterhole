@@ -91,4 +91,8 @@ class PreferenceServiceImpl implements PreferenceService {
   @override
   String get footerMessage =>
       _get<String>(KPrefs.footerMessage) ?? 'Made with ♡ by Sterrenburg';
+
+  @override
+  String get temperatureType =>
+      _get<String>(KPrefs.temperatureType) ?? 'celsius';
 }
