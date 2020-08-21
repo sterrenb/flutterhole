@@ -27,6 +27,8 @@ abstract class ExtrasState with _$ExtrasState {
 abstract class ExtrasEvent with _$ExtrasEvent {
   const factory ExtrasEvent.start() = _Start;
 
+  const factory ExtrasEvent.stop() = _Stop;
+
   const factory ExtrasEvent.fetch() = _Fetch;
 }
 
@@ -58,6 +60,10 @@ class ExtrasBloc extends Bloc<ExtrasEvent, ExtrasState> {
         _timer = Timer.periodic(Duration(seconds: 5), (_) {
           add(ExtrasEvent.fetch());
         });
+      },
+      stop: () async* {
+        print('stopping $_timer');
+        _timer?.cancel();
       },
       fetch: () async* {
         yield ExtrasState.loading();

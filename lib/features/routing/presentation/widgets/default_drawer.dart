@@ -136,7 +136,7 @@ class _Footer extends StatelessWidget {
                           width: MediaQuery.of(context).size.width / 3,
                           child: Center(
                             child: Text(
-                              '${extras.load?.map<String>((load) => '${load.toStringAsPrecision(2)}').join(' ')}',
+                              '${extras.load?.map<String>((load) => '${load.toStringAsPrecision(2)}')?.join(' ')}',
                               style: Theme.of(context).textTheme.caption,
                               overflow: TextOverflow.ellipsis,
                             ),
