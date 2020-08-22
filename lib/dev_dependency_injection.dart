@@ -12,6 +12,7 @@ import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_extras.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
@@ -315,6 +316,19 @@ class ApiDataSourceDev implements ApiDataSource {
   Future<ListResponse> removeFromWhitelist(
       PiholeSettings settings, String domain, bool isWildcard) async {
     return ListResponse();
+  }
+
+  @override
+  Future<PiExtras> fetchExtras(PiholeSettings settings) async {
+    return PiExtras(
+      temperature: 34.5,
+      memoryUsage: 18.8,
+      load: [
+        0.12,
+        0.34,
+        0.56,
+      ],
+    );
   }
 }
 

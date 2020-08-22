@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutterhole/core/debug/fixture_reader.dart';
 import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source_dio.dart';
 import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
@@ -11,6 +12,7 @@ import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_extras.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
@@ -21,7 +23,6 @@ import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:mockito/mockito.dart';
 import 'package:supercharged/supercharged.dart';
 
-import '../../../../../lib/core/debug/fixture_reader.dart';
 import '../../../../test_dependency_injection.dart';
 
 class MockHttpClientAdapter extends Mock implements HttpClientAdapter {}
@@ -56,10 +57,10 @@ void main() async {
     httpClientAdapterMock = MockHttpClientAdapter();
     dio = Dio();
     dio.options.baseUrl = 'http://example.com';
-    dio.interceptors.add(LogInterceptor(
-      requestHeader: false,
-      responseBody: true,
-    ));
+//    dio.interceptors.add(LogInterceptor(
+//      requestHeader: false,
+//      responseBody: true,
+//    ));
     piholeSettings = PiholeSettings(baseUrl: 'http://example.com');
     dio.httpClientAdapter = httpClientAdapterMock;
     apiDataSourceDio = ApiDataSourceDio(dio);
@@ -122,6 +123,33 @@ void main() async {
             throwsA(isA<MalformedResponsePiException>()));
       },
     );
+  });
+
+  group('fetchExtras', () {
+    test('should return PiExtras on success', () async {
+      // arrange
+      final string = loadFileAsString('home.txt');
+      stubStringResponse(string, 200);
+      final expected = PiExtras(
+        temperature: 51.002,
+        load: [0.35, 0.45, 0.38],
+        memoryUsage: 18.1,
+      );
+      // act
+      final PiExtras result =
+          await apiDataSourceDio.fetchExtras(piholeSettings);
+      // assert
+      expect(result, equals(expected));
+    });
+
+    test('should throw on empty response', () async {
+      // arrange
+      stubStringResponse('', 200);
+      // act
+      // assert
+      expect(() => apiDataSourceDio.fetchExtras(piholeSettings),
+          throwsA(EmptyResponsePiException('')));
+    });
   });
 
   group('pingPihole', () {

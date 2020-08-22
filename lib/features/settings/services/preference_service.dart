@@ -8,6 +8,7 @@ class KPrefs {
   static const String useNumbersApi = 'useNumbersApi';
   static const String themeMode = 'themeMode';
   static const String queryLogMaxResults = 'queryLogMaxResults';
+  static const String temperatureType = 'temperatureType';
   static const String footerMessage = 'footerMessage';
 }
 
@@ -35,6 +36,8 @@ abstract class PreferenceService {
   int get queryLogMaxResults;
 
   Future<void> setQueryLogMaxResults(int maxResults);
+
+  String get temperatureType;
 
   String get footerMessage;
 }

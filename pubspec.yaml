@@ -24,6 +24,8 @@ dependencies:
   # http client
   dio: ^3.0.10
   dio_http_cache: ^0.2.8
+  # html parsing
+  html: ^0.14.0+3
   # storage
   hive: ^1.4.3
   hive_flutter: ^0.3.1

@@ -6,6 +6,7 @@ import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_extras.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
@@ -22,6 +23,8 @@ const String kNoApiTokenNeeded = 'No password set';
 
 abstract class ApiDataSource {
   Future<SummaryModel> fetchSummary(PiholeSettings settings);
+
+  Future<PiExtras> fetchExtras(PiholeSettings settings);
 
   Future<ToggleStatus> pingPihole(PiholeSettings settings);
 

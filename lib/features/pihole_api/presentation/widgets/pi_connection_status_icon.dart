@@ -8,7 +8,7 @@ import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/widgets/layout/animations/timer_builder.dart';
-import 'package:flutterhole/widgets/layout/notifications/toasts.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supercharged/supercharged.dart';
 
 const _$PiStatusEnumEnumMap = {
@@ -70,17 +70,23 @@ class PiConnectionStatusIcon extends StatelessWidget {
                       initial: () => null,
                       loading: () => null,
                       failure: (failure) => () {
-                        showToast(
-                            '${failure.message}: ${failure.error?.toString()}');
+                        Fluttertoast.showToast(
+                            msg:
+                                '${failure.message}: ${failure.error?.toString()}');
                       },
                       active: (settings, toggleStatus) => () {
-                        showToast(
-                            '${settings.title} is ${_$PiStatusEnumEnumMap[toggleStatus.status]}');
+                        Fluttertoast.showToast(
+                            msg:
+                            '${settings
+                                .title} is ${_$PiStatusEnumEnumMap[toggleStatus
+                                .status]}');
                       },
                       sleeping: (_, start, duration) => () {
                         final dateTime = start.add(duration);
-                        showToast(
-                            'Sleeping until ${dateTime.formattedTime} (${dateTime.fromNow})');
+                        Fluttertoast.showToast(
+                            msg:
+                            'Sleeping until ${dateTime
+                                .formattedTime} (${dateTime.fromNow})');
                       },
                     )
                 : null,

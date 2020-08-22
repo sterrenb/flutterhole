@@ -17,11 +17,11 @@ ToastGravity _ToastPositionToToastGravity(ToastPosition position) {
 
 Future<void> cancelToast() => Fluttertoast?.cancel();
 
-Future<void> showToast(
+Future<void> ssshowToast(
   String message, {
   ToastPosition position = ToastPosition.Bottom,
 }) async {
-  await Fluttertoast?.cancel();
+  Fluttertoast?.cancel();
   Fluttertoast.showToast(
     msg: message ?? '',
     gravity: _ToastPositionToToastGravity(position),
