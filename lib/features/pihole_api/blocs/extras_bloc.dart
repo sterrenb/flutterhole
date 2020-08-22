@@ -62,7 +62,6 @@ class ExtrasBloc extends Bloc<ExtrasEvent, ExtrasState> {
         });
       },
       stop: () async* {
-        print('stopping $_timer');
         _timer?.cancel();
       },
       fetch: () async* {

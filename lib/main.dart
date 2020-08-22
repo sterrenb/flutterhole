@@ -18,8 +18,6 @@ void main([List<String> arguments = const []]) {
   // wait for flutter initialization
   WidgetsFlutterBinding.ensureInitialized();
 
-  print('args: $arguments');
-
   // Configure service injection
   List<String> args = List.from(arguments) ?? [];
 

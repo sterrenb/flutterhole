@@ -22,7 +22,6 @@ class _ListPageOverflowRefresherState extends State<ListPageOverflowRefresher> {
   final RefreshController _refreshController = RefreshController();
 
   void _onRefresh() {
-    print('fetching lists');
     BlocProvider.of<ListBloc>(context).add(ListBlocEvent.fetchLists());
   }
 

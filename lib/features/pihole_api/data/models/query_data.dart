@@ -58,8 +58,6 @@ QueryStatus _stringToQueryStatus(String json) {
 
     return QueryStatus.values[index];
   } catch (e) {
-    print('_stringToQueryStatus failed: $e');
-    print('string: $json');
     return QueryStatus.Unknown;
   }
 }
