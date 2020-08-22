@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
-import 'package:flutterhole/features/pihole_api/presentation/notifiers/queries_search_notifier.dart';
+import 'package:flutterhole/features/pihole_api/presentation/notifiers/string_search_notifier.dart';
 import 'package:provider/provider.dart';
 
 extension QueryDataSearchable on QueryData {
@@ -27,9 +27,9 @@ class QueriesSearchListBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<QueriesSearchNotifier>(builder: (
+    return Consumer<StringSearchNotifier>(builder: (
       BuildContext context,
-      QueriesSearchNotifier notifier,
+      StringSearchNotifier notifier,
       _,
     ) {
       List<QueryData> searchedQueries;

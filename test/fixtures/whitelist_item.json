@@ -1,0 +1,12 @@
+{
+  "id": 9,
+  "type": 0,
+  "domain": "whitelisted.com",
+  "enabled": 1,
+  "date_added": 1597061946,
+  "date_modified": 1597061946,
+  "comment": null,
+  "groups": [
+    0
+  ]
+}

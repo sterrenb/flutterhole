@@ -47,7 +47,7 @@ class _LegendIndicatorState extends State<_LegendIndicator>
           height: widget.size,
           decoration: BoxDecoration(
             shape:
-            widget.isSquare || false ? BoxShape.rectangle : BoxShape.circle,
+                widget.isSquare || false ? BoxShape.rectangle : BoxShape.circle,
             color: widget.color,
           ),
         ),
@@ -84,10 +84,7 @@ class GraphLegendItem extends StatelessWidget {
           title: Expanded(
             child: Text(
               '$title',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .subtitle1,
+              style: Theme.of(context).textTheme.subtitle1,
               maxLines: 1,
             ),
           ),
@@ -95,10 +92,7 @@ class GraphLegendItem extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Text(
               '$subtitle',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .caption,
+              style: Theme.of(context).textTheme.caption,
               textAlign: TextAlign.center,
               maxLines: 1,
             ),

@@ -111,7 +111,7 @@ class _AddPiholePageState extends State<AddPiholePage> {
               ],
             ),
             body: BlocBuilder<PiholeSettingsBloc, PiholeSettingsState>(
-              condition: (previous, next) {
+              buildWhen: (previous, next) {
                 if (previous is PiholeSettingsStateValidated) {
                   return false;
                 }

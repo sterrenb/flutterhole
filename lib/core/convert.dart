@@ -6,6 +6,11 @@ DateTime dateTimeFromPiholeString(String key) =>
 String piholeStringFromDateTime(DateTime key) =>
     '${key.millisecondsSinceEpoch ~/ 1000}';
 
+DateTime dateTimeFromPiholeInt(int key) =>
+    DateTime.fromMillisecondsSinceEpoch(key * 1000);
+
+int piholeIntFromDateTime(DateTime key) => key.millisecondsSinceEpoch ~/ 1000;
+
 extension DateTimeWithRelative on DateTime {
   String get fromNow => Jiffy(this).fromNow();
 
@@ -15,6 +20,8 @@ extension DateTimeWithRelative on DateTime {
 
   String get formattedTimeShort => Jiffy(this).format('hh:mm');
 }
+
+final RegExp _regex = RegExp(r'\d+.\d+');
 
 extension StringExtension on String {
   String get capitalize {
@@ -27,5 +34,15 @@ extension StringExtension on String {
     }
 
     return this[0].toUpperCase() + this.substring(1);
+  }
+
+  List<num> getNumbers() {
+    if (_regex.hasMatch(this))
+      return _regex
+          .allMatches(this)
+          .map((RegExpMatch match) => num.tryParse(match.group(0)))
+          .toList();
+    else
+      return [];
   }
 }

@@ -70,7 +70,7 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PiholeSettingsBloc, PiholeSettingsState>(
-      condition: (previous, next) {
+      buildWhen: (previous, next) {
         return previous.maybeMap<bool>(
           validated: (_) => false,
           orElse: () => true,
@@ -185,7 +185,7 @@ class _SinglePiholeSettingsPageState extends State<SinglePiholeSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<SettingsBloc, SettingsState>(
-      bloc: getIt<SettingsBloc>(),
+      cubit: getIt<SettingsBloc>(),
       listener: (BuildContext context, SettingsState state) {
         if (state is SettingsStateSuccess) {
           Navigator.of(context).pop();
@@ -236,10 +236,6 @@ class _AnnotationForm extends StatelessWidget {
           initialValue: initialValue,
           decoration: _decoration,
         ),
-//        AccentColorFormTile(
-//          initialValue: initialValue,
-//          decoration: _decoration,
-//        ),
       ],
     );
   }

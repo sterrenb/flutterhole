@@ -1,18 +1,24 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutterhole/core/models/failures.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_extras.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 
 abstract class ApiRepository {
   Future<Either<Failure, SummaryModel>> fetchSummary(PiholeSettings settings);
+
+  Future<Either<Failure, PiExtras>> fetchExtras(PiholeSettings settings);
 
   Future<Either<Failure, OverTimeData>> fetchQueriesOverTime(
       PiholeSettings settings);
@@ -40,4 +46,20 @@ abstract class ApiRepository {
   Future<Either<Failure, List<QueryData>>> fetchManyQueryData(
       PiholeSettings settings,
       [int maxResults]);
+
+  Future<Either<Failure, Whitelist>> fetchWhitelist(PiholeSettings settings);
+
+  Future<Either<Failure, ListResponse>> addToWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard);
+
+  Future<Either<Failure, ListResponse>> removeFromWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard);
+
+  Future<Either<Failure, Blacklist>> fetchBlacklist(PiholeSettings settings);
+
+  Future<Either<Failure, ListResponse>> addToBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard);
+
+  Future<Either<Failure, ListResponse>> removeFromBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard);
 }

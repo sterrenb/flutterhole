@@ -4,12 +4,15 @@ import 'package:dio/dio.dart';
 import 'package:flutterhole/core/models/failures.dart';
 import 'package:flutterhole/features/numbers_api/data/repositories/numbers_api_repository.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_extras.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/query_data.dart';
@@ -17,6 +20,7 @@ import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
 import 'package:flutterhole/features/settings/services/preference_service.dart';
 import 'package:flutterhole/features/settings/services/preference_service_impl.dart';
@@ -26,7 +30,7 @@ import 'package:injectable/injectable.dart';
 import 'package:preferences/preferences.dart';
 import 'package:sailor/sailor.dart';
 
-@registerModule
+@module
 abstract class RegisterDevModule {
   @dev
   @injectable
@@ -57,8 +61,7 @@ abstract class RegisterDevModule {
 }
 
 @dev
-@injectable
-@RegisterAs(ApiDataSource)
+@Injectable(as: ApiDataSource)
 class ApiDataSourceDev implements ApiDataSource {
   @override
   Future<ToggleStatus> disablePihole(PiholeSettings settings) async {
@@ -270,12 +273,68 @@ class ApiDataSourceDev implements ApiDataSource {
       PiholeSettings settings, Duration duration) async {
     return ToggleStatus(PiStatusEnum.disabled);
   }
+
+  @override
+  Future<Blacklist> fetchBlacklist(PiholeSettings settings) async {
+    return Blacklist(data: []);
+  }
+
+  @override
+  Future<Blacklist> fetchRegexBlacklist(PiholeSettings settings) async {
+    return Blacklist(data: []);
+  }
+
+  @override
+  Future<Whitelist> fetchRegexWhitelist(PiholeSettings settings) async {
+    return Whitelist(data: []);
+  }
+
+  @override
+  Future<Whitelist> fetchWhitelist(PiholeSettings settings) async {
+    return Whitelist(data: []);
+  }
+
+  @override
+  Future<ListResponse> addToWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
+  }
+
+  @override
+  Future<ListResponse> addToBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
+  }
+
+  @override
+  Future<ListResponse> removeFromBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
+  }
+
+  @override
+  Future<ListResponse> removeFromWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    return ListResponse();
+  }
+
+  @override
+  Future<PiExtras> fetchExtras(PiholeSettings settings) async {
+    return PiExtras(
+      temperature: 34.5,
+      memoryUsage: 18.8,
+      load: [
+        0.12,
+        0.34,
+        0.56,
+      ],
+    );
+  }
 }
 
 @dev
 @preResolve
-@singleton
-@RegisterAs(PreferenceService)
+@Singleton(as: PreferenceService)
 class PreferenceServiceDev extends PreferenceServiceImpl {
   @factoryMethod
   static Future<PreferenceServiceImpl> create() async {
@@ -285,8 +344,7 @@ class PreferenceServiceDev extends PreferenceServiceImpl {
 }
 
 @dev
-@singleton
-@RegisterAs(NumbersApiRepository)
+@Singleton(as: NumbersApiRepository)
 class NumbersApiRepositoryDev implements NumbersApiRepository {
   @override
   Future<Either<Failure, Map<int, String>>> fetchManyTrivia(

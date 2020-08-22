@@ -24,6 +24,10 @@ class KIcons {
   static const IconData sleep = MaterialCommunityIcons.sleep;
   static const IconData wake = MaterialCommunityIcons.bell_ring;
 
+  static const IconData temperature = MaterialCommunityIcons.fire;
+  static const IconData cpuLoad = MaterialCommunityIcons.server;
+  static const IconData memoryUsage = MaterialCommunityIcons.memory;
+
   static const IconData themeSystem = Feather.sunrise;
   static const IconData themeLight = Feather.sun;
   static const IconData themeDark = Feather.moon;
@@ -39,6 +43,8 @@ class KIcons {
   static const IconData blockedDomains = Icons.close;
   static const IconData manyQueriesLive = MaterialIcons.view_stream;
   static const IconData manyQueriesLiveOptions = Ionicons.md_options;
+  static const IconData whitelist = MaterialCommunityIcons.check_circle;
+  static const IconData blacklist = MaterialCommunityIcons.close_circle;
   static const IconData settings = MaterialIcons.settings;
   static const IconData preferences = MaterialIcons.format_paint;
   static const IconData about = MaterialCommunityIcons.heart;
@@ -74,6 +80,7 @@ class KIcons {
   static const IconData branch = MaterialCommunityIcons.source_branch;
   static const IconData color = Icons.brightness_1;
 
+  static const IconData add = Icons.add;
   static const IconData share = MaterialIcons.share;
   static const IconData rate = Icons.star;
   static const IconData github = AntDesign.github;

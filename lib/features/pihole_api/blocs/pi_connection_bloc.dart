@@ -19,15 +19,17 @@ abstract class PiConnectionState with _$PiConnectionState {
   const factory PiConnectionState.loading() = PiConnectionStateLoading;
 
   const factory PiConnectionState.failure(Failure failure) =
-  PiConnectionStateFailure;
+      PiConnectionStateFailure;
 
-  const factory PiConnectionState.active(PiholeSettings settings,
-      ToggleStatus toggleStatus) =
+  const factory PiConnectionState.active(
+          PiholeSettings settings, ToggleStatus toggleStatus) =
       PiConnectionStateActive;
 
-  const factory PiConnectionState.sleeping(PiholeSettings settings,
-      DateTime start,
-      Duration duration,) = PiConnectionStateSleeping;
+  const factory PiConnectionState.sleeping(
+    PiholeSettings settings,
+    DateTime start,
+    Duration duration,
+  ) = PiConnectionStateSleeping;
 }
 
 @freezed
@@ -39,7 +41,7 @@ abstract class PiConnectionEvent with _$PiConnectionEvent {
   const factory PiConnectionEvent.disable() = PiConnectionEventDisable;
 
   const factory PiConnectionEvent.sleep(Duration duration, DateTime now) =
-  PiConnectionEventSleep;
+      PiConnectionEventSleep;
 }
 
 typedef Future<Either<Failure, ToggleStatus>> ConnectionFunction(
@@ -52,13 +54,11 @@ class PiConnectionBloc extends Bloc<PiConnectionEvent, PiConnectionState> {
     SettingsRepository settingsRepository,
   ])  : _connectionRepository =
             connectionRepository ?? getIt<ConnectionRepository>(),
-        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>();
+        _settingsRepository = settingsRepository ?? getIt<SettingsRepository>(),
+        super(PiConnectionState.initial());
 
   final ConnectionRepository _connectionRepository;
   final SettingsRepository _settingsRepository;
-
-  @override
-  PiConnectionState get initialState => PiConnectionState.initial();
 
   /// Wrapper for accessing [ConnectionRepository] methods with known signature.
   Stream<PiConnectionState> _do(ConnectionFunction f) async* {
@@ -92,13 +92,13 @@ class PiConnectionBloc extends Bloc<PiConnectionEvent, PiConnectionState> {
     yield PiConnectionState.loading();
 
     final Either<Failure, PiholeSettings> active =
-    await _settingsRepository.fetchActivePiholeSettings();
+        await _settingsRepository.fetchActivePiholeSettings();
 
     yield* active.fold((Failure failure) async* {
       yield PiConnectionState.failure(failure);
     }, (PiholeSettings settings) async* {
       final Either<Failure, ToggleStatus> statusResult =
-      await _connectionRepository.sleepPihole(settings, duration);
+          await _connectionRepository.sleepPihole(settings, duration);
 
       yield* statusResult.fold((Failure failure) async* {
         yield PiConnectionState.failure(failure);

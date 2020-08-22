@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutterhole/core/convert.dart';
 
 import 'package:alice/alice.dart';
 import 'package:dio/adapter.dart';
@@ -7,23 +8,29 @@ import 'package:dio/dio.dart';
 import 'package:flutterhole/core/models/exceptions.dart';
 import 'package:flutterhole/dependency_injection.dart';
 import 'package:flutterhole/features/pihole_api/data/datasources/api_data_source.dart';
+import 'package:flutterhole/features/pihole_api/data/models/blacklist.dart';
 import 'package:flutterhole/features/pihole_api/data/models/dns_query_type.dart';
 import 'package:flutterhole/features/pihole_api/data/models/forward_destinations.dart';
+import 'package:flutterhole/features/pihole_api/data/models/list_response.dart';
 import 'package:flutterhole/features/pihole_api/data/models/many_query_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data.dart';
 import 'package:flutterhole/features/pihole_api/data/models/over_time_data_clients.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_client.dart';
+import 'package:flutterhole/features/pihole_api/data/models/pi_extras.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_versions.dart';
 import 'package:flutterhole/features/pihole_api/data/models/summary.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_items.dart';
 import 'package:flutterhole/features/pihole_api/data/models/top_sources.dart';
+import 'package:flutterhole/features/pihole_api/data/models/whitelist.dart';
 import 'package:flutterhole/features/settings/data/models/pihole_settings.dart';
+import 'package:html/dom.dart';
+import 'package:html/parser.dart';
 import 'package:injectable/injectable.dart';
+import 'package:supercharged/supercharged.dart';
 
 @prod
-@injectable
-@RegisterAs(ApiDataSource)
+@Injectable(as: ApiDataSource)
 class ApiDataSourceDio implements ApiDataSource {
   ApiDataSourceDio([Dio dio, Alice alice])
       : _dio = dio ?? getIt<Dio>(),
@@ -34,10 +41,7 @@ class ApiDataSourceDio implements ApiDataSource {
   final Dio _dio;
   final Alice _alice;
 
-  Future<dynamic> _get(
-    PiholeSettings settings, {
-    Map<String, dynamic> queryParameters = const {},
-  }) async {
+  void _checkAllowSelfSignedCertificates(PiholeSettings settings) {
     if (settings.allowSelfSignedCertificates) {
       // https://github.com/flutterchina/dio/issues/32#issuecomment-487401443
       (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -47,12 +51,10 @@ class ApiDataSourceDio implements ApiDataSource {
         return client;
       };
     }
+  }
 
-    Map<String, String> headers = {
-      HttpHeaders.userAgentHeader: "flutterhole",
-      HttpHeaders.contentTypeHeader: Headers.jsonContentType,
-    };
-
+  void _addBasicAuthHeaders(
+      PiholeSettings settings, Map<String, String> headers) {
     if (settings.basicAuthenticationUsername.isNotEmpty ||
         settings.basicAuthenticationPassword.isNotEmpty) {
       String basicAuth = 'Basic ' +
@@ -61,6 +63,39 @@ class ApiDataSourceDio implements ApiDataSource {
 
       headers.putIfAbsent(HttpHeaders.authorizationHeader, () => basicAuth);
     }
+  }
+
+  void _parseDioError(DioError e) {
+    switch (e.type) {
+      case DioErrorType.CONNECT_TIMEOUT:
+      case DioErrorType.SEND_TIMEOUT:
+      case DioErrorType.RECEIVE_TIMEOUT:
+        throw TimeOutPiException(e);
+      case DioErrorType.RESPONSE:
+        throw NotFoundPiException(e);
+      case DioErrorType.CANCEL:
+      case DioErrorType.DEFAULT:
+      default:
+        switch (e.response?.statusCode ?? 0) {
+          case 404:
+            throw NotFoundPiException(e);
+          default:
+            throw MalformedResponsePiException(e);
+        }
+    }
+  }
+
+  Future<dynamic> _get(
+    PiholeSettings settings, {
+    Map<String, dynamic> queryParameters = const {},
+  }) async {
+    Map<String, String> headers = {
+      HttpHeaders.userAgentHeader: "flutterhole",
+      HttpHeaders.contentTypeHeader: Headers.jsonContentType,
+    };
+
+    _checkAllowSelfSignedCertificates(settings);
+    _addBasicAuthHeaders(settings, headers);
 
     try {
       final url = '${settings.baseUrl}:${settings.apiPort}${settings.apiPath}';
@@ -87,23 +122,7 @@ class ApiDataSourceDio implements ApiDataSource {
 
       return data;
     } on DioError catch (e) {
-      switch (e.type) {
-        case DioErrorType.CONNECT_TIMEOUT:
-        case DioErrorType.SEND_TIMEOUT:
-        case DioErrorType.RECEIVE_TIMEOUT:
-          throw TimeOutPiException(e);
-        case DioErrorType.RESPONSE:
-          throw NotFoundPiException(e);
-        case DioErrorType.CANCEL:
-        case DioErrorType.DEFAULT:
-        default:
-          switch (e.response?.statusCode ?? 0) {
-            case 404:
-              throw NotFoundPiException(e);
-            default:
-              throw MalformedResponsePiException(e);
-          }
-      }
+      _parseDioError(e);
     }
   }
 
@@ -137,6 +156,54 @@ class ApiDataSourceDio implements ApiDataSource {
     });
 
     return SummaryModel.fromJson(json);
+  }
+
+  @override
+  Future<PiExtras> fetchExtras(PiholeSettings settings) async {
+    Map<String, String> headers = {
+      HttpHeaders.userAgentHeader: "flutterhole",
+    };
+
+    _checkAllowSelfSignedCertificates(settings);
+    _addBasicAuthHeaders(settings, headers);
+
+    try {
+      final url = '${settings.baseUrl}:${settings.apiPort}/admin/';
+
+      final Response response = await _dio.get(
+        url,
+        options: Options(
+          headers: headers,
+          responseType: ResponseType.plain,
+        ),
+      );
+
+      if (response.data is String) {
+        if (response.data.isEmpty)
+          throw EmptyResponsePiException(response?.toString() ?? '');
+      }
+
+      final Document document = parse(response.data);
+
+      PiExtras extras = PiExtras(
+          temperature:
+              double.tryParse(document.getElementById('rawtemp').innerHtml));
+
+      final List<Element> info =
+          document.getElementsByClassName('fa fa-circle text-green-light');
+
+      if (info.length >= 3) {
+        extras = extras.copyWith(
+          load: info.elementAt(1).parent.innerHtml.getNumbers(),
+          memoryUsage:
+              info.elementAt(2).parent.innerHtml.getNumbers().firstOrNull(),
+        );
+      }
+
+      return extras;
+    } on DioError catch (e) {
+      _parseDioError(e);
+    }
   }
 
   @override
@@ -274,7 +341,7 @@ class ApiDataSourceDio implements ApiDataSource {
     String domain,
   ) async {
     final Map<String, dynamic> json =
-    await _getSecure(settings, queryParameters: {
+        await _getSecure(settings, queryParameters: {
       'getAllQueries': '',
       'domain': '${domain?.trim()}',
     });
@@ -286,10 +353,104 @@ class ApiDataSourceDio implements ApiDataSource {
   Future<ManyQueryData> fetchManyQueryData(PiholeSettings settings,
       [int maxResults]) async {
     final Map<String, dynamic> json =
-    await _getSecure(settings, queryParameters: {
+        await _getSecure(settings, queryParameters: {
       'getAllQueries': '${maxResults ?? ''}',
     });
 
     return ManyQueryData.fromJson(json);
+  }
+
+  @override
+  Future<Whitelist> fetchWhitelist(PiholeSettings settings) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': 'white',
+    });
+
+    return Whitelist.fromJson(json);
+  }
+
+  @override
+  Future<Whitelist> fetchRegexWhitelist(PiholeSettings settings) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': 'regex_white',
+    });
+
+    return Whitelist.fromJson(json);
+  }
+
+  @override
+  Future<ListResponse> addToWhitelist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': isWildcard ? 'regex_white' : 'white',
+      'add': '$domain',
+    });
+
+    return ListResponse.fromJson(json);
+  }
+
+  @override
+  Future<ListResponse> removeFromWhitelist(
+    PiholeSettings settings,
+    String domain,
+    bool isWildcard,
+  ) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': isWildcard ? 'regex_white' : 'white',
+      'sub': '$domain',
+    });
+
+    return ListResponse.fromJson(json);
+  }
+
+  @override
+  Future<Blacklist> fetchBlacklist(PiholeSettings settings) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': 'black',
+    });
+
+    return Blacklist.fromJson(json);
+  }
+
+  @override
+  Future<Blacklist> fetchRegexBlacklist(PiholeSettings settings) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': 'regex_black',
+    });
+
+    return Blacklist.fromJson(json);
+  }
+
+  @override
+  Future<ListResponse> addToBlacklist(
+      PiholeSettings settings, String domain, bool isWildcard) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': isWildcard ? 'regex_black' : 'black',
+      'add': '$domain',
+    });
+
+    return ListResponse.fromJson(json);
+  }
+
+  @override
+  Future<ListResponse> removeFromBlacklist(
+    PiholeSettings settings,
+    String domain,
+    bool isWildcard,
+  ) async {
+    final Map<String, dynamic> json =
+        await _getSecure(settings, queryParameters: {
+      'list': isWildcard ? 'regex_black' : 'black',
+      'sub': '$domain',
+    });
+
+    return ListResponse.fromJson(json);
   }
 }

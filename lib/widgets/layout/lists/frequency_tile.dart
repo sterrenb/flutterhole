@@ -27,9 +27,6 @@ class FrequencyTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
-//      onLongPress: () {
-//        showSnackBar(context, Text(title));
-//      },
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[

@@ -6,8 +6,7 @@ import 'package:preferences/preferences.dart';
 
 @prod
 @preResolve
-@singleton
-@RegisterAs(PreferenceService)
+@Singleton(as: PreferenceService)
 class PreferenceServiceImpl implements PreferenceService {
   @factoryMethod
   static Future<PreferenceServiceImpl> create() async {
@@ -92,4 +91,8 @@ class PreferenceServiceImpl implements PreferenceService {
   @override
   String get footerMessage =>
       _get<String>(KPrefs.footerMessage) ?? 'Made with ♡ by Sterrenburg';
+
+  @override
+  String get temperatureType =>
+      _get<String>(KPrefs.temperatureType) ?? 'celsius';
 }

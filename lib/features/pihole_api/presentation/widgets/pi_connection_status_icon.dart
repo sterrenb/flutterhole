@@ -8,7 +8,7 @@ import 'package:flutterhole/features/pihole_api/blocs/pi_connection_bloc.dart';
 import 'package:flutterhole/features/pihole_api/data/models/pi_status.dart';
 import 'package:flutterhole/features/pihole_api/data/models/toggle_status.dart';
 import 'package:flutterhole/widgets/layout/animations/timer_builder.dart';
-import 'package:flutterhole/widgets/layout/notifications/toasts.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:supercharged/supercharged.dart';
 
 const _$PiStatusEnumEnumMap = {
@@ -28,7 +28,7 @@ class PiConnectionStatusIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PiConnectionBloc, PiConnectionState>(
-        bloc: getIt<PiConnectionBloc>(),
+        cubit: getIt<PiConnectionBloc>(),
         builder: (BuildContext context, state) {
           final Color color = state.when(
             initial: () => KColors.inactive,
@@ -45,10 +45,12 @@ class PiConnectionStatusIcon extends StatelessWidget {
                   return KColors.unknown;
               }
             },
-            sleeping: (_,
-                __,
-                ___,) =>
-            KColors.sleeping,
+            sleeping: (
+              _,
+              __,
+              ___,
+            ) =>
+                KColors.sleeping,
           );
 
           return IconButton(
@@ -65,27 +67,28 @@ class PiConnectionStatusIcon extends StatelessWidget {
             ),
             onPressed: interactive
                 ? getIt<PiConnectionBloc>().state.when<VoidCallback>(
-              initial: () => null,
-              loading: () => null,
-              failure: (failure) =>
-                  () {
-                showToast(
-                    '${failure.message}: ${failure.error?.toString()}');
-              },
-              active: (settings, toggleStatus) =>
-                  () {
-                showToast(
-                    '${settings.title} is ${_$PiStatusEnumEnumMap[toggleStatus
-                        .status]}');
-              },
-              sleeping: (_, start, duration) =>
-                  () {
-                final dateTime = start.add(duration);
-                showToast(
-                    'Sleeping until ${dateTime.formattedTime} (${dateTime
-                        .fromNow})');
-              },
-            )
+                      initial: () => null,
+                      loading: () => null,
+                      failure: (failure) => () {
+                        Fluttertoast.showToast(
+                            msg:
+                                '${failure.message}: ${failure.error?.toString()}');
+                      },
+                      active: (settings, toggleStatus) => () {
+                        Fluttertoast.showToast(
+                            msg:
+                            '${settings
+                                .title} is ${_$PiStatusEnumEnumMap[toggleStatus
+                                .status]}');
+                      },
+                      sleeping: (_, start, duration) => () {
+                        final dateTime = start.add(duration);
+                        Fluttertoast.showToast(
+                            msg:
+                            'Sleeping until ${dateTime
+                                .formattedTime} (${dateTime.fromNow})');
+                      },
+                    )
                 : null,
           );
         });
@@ -100,7 +103,7 @@ class _SleepProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PiConnectionBloc, PiConnectionState>(
-        bloc: getIt<PiConnectionBloc>(),
+        cubit: getIt<PiConnectionBloc>(),
         builder: (BuildContext context, state) {
           return state.maybeWhen<Widget>(
               sleeping: (_, DateTime start, Duration duration) {

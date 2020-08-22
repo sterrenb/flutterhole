@@ -13,7 +13,7 @@ class HomeBlocBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
-      condition: (HomeState previous, HomeState next) {
+      buildWhen: (HomeState previous, HomeState next) {
         if (previous is HomeStateSuccess) return false;
 
         return true;

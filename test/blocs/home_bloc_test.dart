@@ -38,16 +38,9 @@ void main() {
     bloc.close();
   });
 
-  blocTest(
-    'Initially emits $HomeStateInitial',
-    build: () async => bloc,
-    skip: 0,
-    expect: [HomeStateInitial()],
-  );
-
-  blocTest(
+  blocTest<HomeBloc, HomeState>(
     'Emits [] when nothing is added',
-    build: () async => bloc,
+    build: () => bloc,
     expect: [],
   );
 
@@ -71,9 +64,9 @@ void main() {
     final DnsQueryTypeResult tDnsQueryTypeResult =
         DnsQueryTypeResult(dnsQueryTypes: []);
 
-    blocTest(
+    blocTest<HomeBloc, HomeState>(
       'Emits [$HomeStateLoading, $HomeStateSuccess] when $HomeEventFetch succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(piholeSettings));
         when(mockApiRepository.fetchSummary(any))
@@ -108,9 +101,9 @@ void main() {
       ],
     );
 
-    blocTest(
+    blocTest<HomeBloc, HomeState>(
       'Emits [$HomeStateLoading, $HomeStateSuccess] when $HomeEventFetch partially succeeds',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(piholeSettings));
         when(mockApiRepository.fetchSummary(any))
@@ -153,9 +146,9 @@ void main() {
     final tFailure5 = Failure('test #5');
     final tFailure6 = Failure('test #6');
 
-    blocTest(
+    blocTest<HomeBloc, HomeState>(
       'Emits [$HomeStateLoading, $HomeStateFailure] when $HomeEventFetch fails',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Right(piholeSettings));
         when(mockApiRepository.fetchSummary(any))
@@ -190,9 +183,9 @@ void main() {
       ],
     );
 
-    blocTest(
+    blocTest<HomeBloc, HomeState>(
       'Emits [$HomeStateLoading, $HomeStateFailure] when no active settings are available',
-      build: () async {
+      build: () {
         when(mockSettingsRepository.fetchActivePiholeSettings())
             .thenAnswer((_) async => Left(Failure()));
 

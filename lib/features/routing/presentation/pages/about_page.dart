@@ -203,10 +203,7 @@ class AboutPage extends StatelessWidget {
                 ListTile(
                   contentPadding: EdgeInsets.all(16),
                   title: Text('${packageInfo?.appName}',
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .headline4),
+                      style: Theme.of(context).textTheme.headline4),
                   subtitle: Text(
                     'Made by Sterrenburg',
                     style: Theme.of(context).textTheme.caption,
@@ -221,10 +218,7 @@ class AboutPage extends StatelessWidget {
                               context: context,
                               builder: (sheetContext) {
                                 final screenWidth =
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width;
+                                    MediaQuery.of(context).size.width;
 
                                 return LogoInspector(screenWidth: screenWidth);
                               });

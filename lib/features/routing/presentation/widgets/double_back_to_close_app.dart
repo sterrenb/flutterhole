@@ -1,6 +1,7 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/widgets/layout/notifications/toasts.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 const Duration kDoubleBackToCloseDuration = Duration(seconds: 2);
 
@@ -41,7 +42,9 @@ class _DoubleBackToCloseAppState extends State<DoubleBackToCloseApp> {
           return true;
         }
 
-        showToast('Press BACK again to exit');
+        Fluttertoast.showToast(msg: 'Press BACK again to exit');
+
+//        showToast('Press BACK again to exit');
 
         setState(() {
           _stopwatch = clock.stopwatch()..start();
