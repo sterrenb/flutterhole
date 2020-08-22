@@ -30,12 +30,10 @@ void showErrorSnackBar(
   Flushbar(
     title: title,
     message: message ?? 'Message',
-//    backgroundColor: Theme.of(context).colorScheme.primary,
     icon: Icon(
       KIcons.error,
       color: KColors.error,
     ),
     animationDuration: kThemeAnimationDuration,
-//    duration: 1.seconds,
   )..show(context);
 }

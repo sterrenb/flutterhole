@@ -236,10 +236,6 @@ class _AnnotationForm extends StatelessWidget {
           initialValue: initialValue,
           decoration: _decoration,
         ),
-//        AccentColorFormTile(
-//          initialValue: initialValue,
-//          decoration: _decoration,
-//        ),
       ],
     );
   }

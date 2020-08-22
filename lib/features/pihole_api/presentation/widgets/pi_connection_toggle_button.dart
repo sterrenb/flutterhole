@@ -17,19 +17,6 @@ class PiConnectionToggleButton extends StatelessWidget {
       cubit: getIt<PiConnectionBloc>(),
       listener: (BuildContext context, PiConnectionState state) {
         state.maybeWhen(
-//          active: (settings, ToggleStatus toggleStatus) {
-//            switch (toggleStatus.status) {
-//              case PiStatusEnum.enabled:
-//                showToast('Enabled');
-//                break;
-//              case PiStatusEnum.disabled:
-//                showToast('Disabled');
-//                break;
-//              case PiStatusEnum.unknown:
-//              default:
-//                showToast('Unknown');
-//            }
-//          },
           failure: (failure) {
             showErrorSnackBar(context, '${failure.toString()}');
           },
