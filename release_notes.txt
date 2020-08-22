@@ -1,7 +1,0 @@
-* Feature: whitelist/blacklist page
-
-* Feature: whitelist & blacklist queries from the query log by sliding
-
-* Fix: query types graph legend overflow
-
-* Fix: client activity graph time missing
