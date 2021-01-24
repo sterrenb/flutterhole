@@ -56,16 +56,10 @@ class PiholeRepository {
     try {
       final string = doc.outerHtml;
       final startIndex = string.indexOf('Memory usage');
-      // final startIndex = string.indexOf('Memory usage');
-      print('startIndex: $startIndex');
       final sub = string.substring(startIndex);
-      // print('sub: $sub');
       final endIndex = sub.indexOf('</span>');
-      print('endIndex: $endIndex');
       final end = sub.substring(0, endIndex);
-      print('end: $end');
       final nums = end.getNumbers();
-      print('nums: $nums');
       return nums.first.toDouble();
     } catch (e) {
       print('_docToMemoryUsage: $e');

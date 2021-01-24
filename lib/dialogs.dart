@@ -16,7 +16,7 @@ Future<void> showActivePiDialog(BuildContext context, Reader read) async {
   final allPis = read(allPisProvider);
   final selectedPi = await showConfirmationDialog(
     context: context,
-    title: 'Select a Pi-hole',
+    title: 'Active Pi-hole',
     initialSelectedActionKey: pi.state,
     actions: allPis.map<AlertDialogAction>((dPi) {
       return AlertDialogAction(

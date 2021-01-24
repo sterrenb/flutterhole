@@ -31,6 +31,9 @@ final dioProvider = Provider<Dio>((_) {
   dio.options.headers = {
     HttpHeaders.userAgentHeader: "flutterhole",
   };
+  dio.options.connectTimeout = 5000;
+  dio.options.sendTimeout = 5000;
+  dio.options.receiveTimeout = 5000;
   // dio.interceptors.add(LogInterceptor(responseBody: false));
   return dio;
 });
@@ -49,7 +52,8 @@ final summaryProvider = FutureProvider<Summary>((ref) async {
   final api = ref.read(piholeRepositoryProvider);
   final pi = ref.watch(activePiProvider).state;
 
-  return api.fetchSummary(pi);
+  final summary = await api.fetchSummary(pi);
+  return summary;
 });
 
 final piDetailsProvider = FutureProvider<PiDetails>((ref) async {

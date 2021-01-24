@@ -106,12 +106,9 @@ class VersionListTile extends HookWidget {
         loading: () => Text(''),
         error: (o, s) => Text('No version information found'),
       ),
-      onTap: () {
-        print('hi');
-      },
-      // onTap: packageInfo.maybeWhen(
-      //     orElse: () => null,
-      //     data: (info) => () => showAppDetailsDialog(context, info)),
+      onTap: packageInfo.maybeWhen(
+          orElse: () => null,
+          data: (info) => () => showAppDetailsDialog(context, info)),
     );
   }
 }

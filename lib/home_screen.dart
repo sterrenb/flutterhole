@@ -10,6 +10,7 @@ import 'package:flutterhole_web/pi_temperature_text.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/settings_screen.dart';
 import 'package:hooks_riverpod/all.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 List<StaggeredTile> _staggeredTiles = <StaggeredTile>[
   const StaggeredTile.count(4, 1),
@@ -18,63 +19,15 @@ List<StaggeredTile> _staggeredTiles = <StaggeredTile>[
   const StaggeredTile.count(4, 1),
   const StaggeredTile.count(2, 2),
   const StaggeredTile.count(2, 2),
-  // const StaggeredTile.count(4, 2),
-
-  // const StaggeredTile.count(2, 2),
-  // const StaggeredTile.count(2, 1),
-  // const StaggeredTile.count(1, 2),
-  // const StaggeredTile.count(1, 1),
-  // const StaggeredTile.count(2, 2),
-  // const StaggeredTile.count(1, 2),
-  // const StaggeredTile.count(1, 1),
-  // const StaggeredTile.count(3, 1),
-  // const StaggeredTile.count(1, 1),
-  // const StaggeredTile.count(4, 1),
 ];
 List<Widget> _tiles = <Widget>[
   TotalQueriesTile(),
   QueriesBlockedTile(),
-  // const _Example01Tile(Colors.green, Icons.widgets),
   PercentBlockedTile(),
   DomainsOnBlocklistTile(),
   PiTemperatureTile(),
   PiMemoryTile(),
-  _Example01Tile(Colors.lightBlue, Icons.wifi),
-  _Example01Tile(Colors.orange, Icons.panorama_wide_angle),
-  _Example01Tile(Colors.redAccent, Icons.map),
-  _Example01Tile(Colors.deepOrange, Icons.send),
-  // const _Example01Tile(Colors.indigo, Icons.airline_seat_flat),
-  // const _Example01Tile(Colors.red, Icons.bluetooth),
-  // const _Example01Tile(Colors.pink, Icons.battery_alert),
-  // const _Example01Tile(Colors.purple, Icons.desktop_windows),
-  // const _Example01Tile(Colors.blue, Icons.radio),
 ];
-
-class _Example01Tile extends StatelessWidget {
-  const _Example01Tile(this.backgroundColor, this.iconData);
-
-  final Color backgroundColor;
-  final IconData iconData;
-
-  @override
-  Widget build(BuildContext context) {
-    return new Card(
-      color: backgroundColor,
-      child: new InkWell(
-        onTap: () {},
-        child: new Center(
-          child: new Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: new Icon(
-              iconData,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class PiStatusIcon extends HookWidget {
   @override
@@ -141,6 +94,7 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
 
     print('building HomeAppBar');
     return AppBar(
+      elevation: 0.0,
       title: Row(
         children: [
           ActivePiTitle(),
@@ -174,21 +128,59 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
   }
 }
 
-class HomeGrid extends StatelessWidget {
+class RefreshableHomeGrid extends StatefulWidget {
+  @override
+  _RefreshableHomeGridState createState() => _RefreshableHomeGridState();
+}
+
+class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
+  final RefreshController controller = RefreshController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void onRefresh() async {
+    print('wee');
+    await Future.wait([
+      context.refresh(summaryProvider),
+      context.refresh(piDetailsProvider),
+      Future.delayed(Duration(seconds: 2)),
+    ], eagerError: true)
+        .catchError((e) {
+      print('oh no: $e');
+    });
+
+    controller.refreshCompleted();
+  }
+
+  StaggeredGridView buildStaggeredGridView() {
+    return StaggeredGridView.count(
+      crossAxisCount: 4,
+      staggeredTiles: _staggeredTiles,
+      children: _tiles,
+      mainAxisSpacing: 4.0,
+      crossAxisSpacing: 4.0,
+      padding: const EdgeInsets.all(4.0),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scrollbar(
-      child: OrientationBuilder(
-        builder: (context, orientation) {
-          return StaggeredGridView.count(
-            crossAxisCount: orientation == Orientation.portrait ? 4 : 8,
-            staggeredTiles: [..._staggeredTiles],
-            children: [..._tiles],
-            mainAxisSpacing: 4.0,
-            crossAxisSpacing: 4.0,
-            padding: const EdgeInsets.all(4.0),
-          );
-        },
+    return RefreshConfiguration(
+      enableBallisticLoad: true,
+      headerBuilder: () => WaterDropMaterialHeader(
+          // color: Colors.orange,
+          ),
+      child: SmartRefresher(
+        controller: controller,
+        enablePullDown: true,
+        enablePullUp: true,
+        onRefresh: onRefresh,
+        // TODO duplicate
+        child: buildStaggeredGridView(),
       ),
     );
   }
@@ -203,7 +195,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: HomeAppBar(),
-      body: HomeGrid(),
+      body: RefreshableHomeGrid(),
     );
   }
 }
