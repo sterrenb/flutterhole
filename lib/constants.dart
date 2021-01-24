@@ -7,14 +7,14 @@ final debugPis = <Pi>[
     title: 'My hole',
     description: '',
     primaryColor: Colors.purple,
-    baseUrl: 'http://pi.hole',
+    baseUrl: 'http://10.0.1.5',
     apiPath: 'admin/api.php',
     apiPort: 80,
     apiToken: '',
     apiTokenRequired: true,
     allowSelfSignedCertificates: false,
     basicAuthenticationUsername: '',
-    basicAuthenticationPassword: 'null',
+    basicAuthenticationPassword: '',
     proxyUrl: '',
     proxyPort: 8080,
   ),
@@ -59,6 +59,8 @@ class KIcons {
   static const IconData piholeTitle = Icons.handyman_sharp;
 
   static const IconData temperatureReading = MaterialCommunityIcons.thermometer;
+  static const IconData memoryUsage = MaterialCommunityIcons.memory;
+  static const IconData updateFrequency = MaterialCommunityIcons.update;
   static const IconData refresh = MaterialCommunityIcons.refresh;
 
   static const IconData appVersion = MaterialIcons.developer_board;
@@ -66,6 +68,11 @@ class KIcons {
 
   static const IconData settings = MaterialIcons.settings;
   static const IconData dot = Icons.brightness_1;
+  static const IconData totalQueries = MaterialCommunityIcons.earth;
+  static const IconData queriesBlocked = MaterialCommunityIcons.hand_left;
+  static const IconData percentBlocked = MaterialCommunityIcons.chart_pie;
+  static const IconData domainsOnBlocklist =
+      MaterialCommunityIcons.playlist_remove;
 }
 
 class KColors {

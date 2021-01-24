@@ -27,6 +27,9 @@ class MyApp extends HookWidget {
         // is not restarted.
         primarySwatch: Colors.indigo,
         accentColor: Colors.deepOrangeAccent,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.purple,
+        ),
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,

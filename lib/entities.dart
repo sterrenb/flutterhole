@@ -57,17 +57,17 @@ abstract class PiholeApiFailure with _$PiholeApiFailure {
 
   const factory PiholeApiFailure.unknown(dynamic e) = _Unknown;
 
-  // @override
-  // String toString() => this.when(
-  //       notFound: () => 'Not found',
-  //       notAuthenticated: () => 'Not authenticated',
-  //       invalidResponse: (statusCode) => 'Invalid response ($statusCode)',
-  //       emptyString: () => 'Empty string',
-  //       emptyList: () => 'Empty list',
-  //       cancelled: () => 'Cancelled',
-  //       timeout: () => 'Timeout',
-  //       unknown: (error) => 'Unknown',
-  //     );
+// @override
+// String toString() => this.when(
+//       notFound: () => 'Not found',
+//       notAuthenticated: () => 'Not authenticated',
+//       invalidResponse: (statusCode) => 'Invalid response ($statusCode)',
+//       emptyString: () => 'Empty string',
+//       emptyList: () => 'Empty list',
+//       cancelled: () => 'Cancelled',
+//       timeout: () => 'Timeout',
+//       unknown: (error) => 'Unknown',
+//     );
 }
 
 enum PiStatus {
@@ -95,4 +95,28 @@ abstract class Summary with _$Summary {
     @required int privacyLevel,
     @required PiStatus status,
   }) = _Summary;
+}
+
+double _celciusToKelvin(double temp) => temp + 273.15;
+
+double _celciusToFahrenheit(double temp) => (temp * (9 / 5)) + 32;
+
+@freezed
+abstract class PiDetails with _$PiDetails {
+  factory PiDetails({
+    @required double temperature,
+    @required List<double> cpuLoads,
+    @required double memoryUsage,
+  }) = _PiDetails;
+
+  @late
+  String get temperatureInCelcius => '${temperature.toStringAsFixed(1)} °C';
+
+  @late
+  String get temperatureInFahrenheit =>
+      '${_celciusToFahrenheit(temperature).toStringAsFixed(1)} °F';
+
+  @late
+  String get temperatureInKelvin =>
+      '${_celciusToKelvin(temperature).toStringAsFixed(1)} °K';
 }

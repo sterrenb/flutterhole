@@ -3,6 +3,8 @@ import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/models.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/all.dart';
+import 'package:html/dom.dart';
+import 'package:html/parser.dart';
 
 class PiholeRepository {
   const PiholeRepository(this.read);
@@ -40,23 +42,78 @@ class PiholeRepository {
         throw PiholeApiFailure.emptyList();
       }
 
-      print('data: $data');
       final summary = SummaryModel.fromJson(data);
       return summary.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
     }
   }
+
+  double _docToTemperature(Document doc) =>
+      double.tryParse(doc.getElementById('rawtemp').innerHtml) ?? -1;
+
+  double _docToMemoryUsage(Document doc) {
+    try {
+      final string = doc.outerHtml;
+      final startIndex = string.indexOf('Memory usage');
+      // final startIndex = string.indexOf('Memory usage');
+      print('startIndex: $startIndex');
+      final sub = string.substring(startIndex);
+      // print('sub: $sub');
+      final endIndex = sub.indexOf('</span>');
+      print('endIndex: $endIndex');
+      final end = sub.substring(0, endIndex);
+      print('end: $end');
+      final nums = end.getNumbers();
+      print('nums: $nums');
+      return nums.first.toDouble();
+    } catch (e) {
+      print('_docToMemoryUsage: $e');
+      return -1;
+    }
+  }
+
+  List<double> _docToLoad(Document doc) => List<double>.from(doc
+      .getElementsByClassName('fa fa-circle text-green-light')
+      .elementAt(1)
+      .parent
+      .innerHtml
+      .getNumbers());
+
+  Future<PiDetails> fetchPiDetails(Pi pi) async {
+    final dio = read(dioProvider);
+
+    try {
+      final response = await dio.get(pi.adminHome);
+      final data = response.data;
+
+      if (data is String && data.isEmpty) {
+        throw PiholeApiFailure.emptyString();
+      }
+
+      final Document doc = parse(data);
+
+      return PiDetails(
+        temperature: _docToTemperature(doc),
+        cpuLoads: _docToLoad(doc),
+        memoryUsage: _docToMemoryUsage(doc),
+      );
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
 }
 
-final summaryProvider = FutureProvider<Summary>((ref) async {
-  final api = ref.read(piholeRepositoryProvider);
-  final pi = ref.watch(activePiProvider).state;
+final RegExp _numberRegex = RegExp(r'\d+.\d+');
 
-  print('fetching for ${pi.baseApiUrl}');
-
-  return api.fetchSummary(pi);
-});
-
-final totalQueriesProvider = Provider((ref) =>
-    ref.watch(summaryProvider).whenData((value) => value.dnsQueriesToday));
+extension StringExtension on String {
+  List<num> getNumbers() {
+    if (_numberRegex.hasMatch(this))
+      return _numberRegex
+          .allMatches(this)
+          .map((RegExpMatch match) => num.tryParse(match.group(0)) ?? -1)
+          .toList();
+    else
+      return [];
+  }
+}

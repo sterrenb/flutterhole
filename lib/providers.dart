@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole_web/constants.dart';
@@ -13,12 +14,14 @@ final themeModeProvider = StateProvider((_) => ThemeMode.light);
 enum TemperatureReading {
   celcius,
   fahrenheit,
-  celciusAndFahrenheit,
+  kelvin,
 }
 
 final temperatureReadingProvider = StateProvider(
   (_) => TemperatureReading.celcius,
 );
+
+final updateFrequencyProvider = StateProvider((_) => Duration(seconds: 2));
 
 final packageInfoProvider =
     FutureProvider<PackageInfo>((_) => PackageInfo.fromPlatform());
@@ -28,7 +31,7 @@ final dioProvider = Provider<Dio>((_) {
   dio.options.headers = {
     HttpHeaders.userAgentHeader: "flutterhole",
   };
-  dio.interceptors.add(LogInterceptor(responseBody: false));
+  // dio.interceptors.add(LogInterceptor(responseBody: false));
   return dio;
 });
 
@@ -41,3 +44,20 @@ final piStatusProvider = Provider<AsyncValue<PiStatus>>((ref) {
   final summary = ref.watch(summaryProvider);
   return summary.whenData((value) => value.status);
 });
+
+final summaryProvider = FutureProvider<Summary>((ref) async {
+  final api = ref.read(piholeRepositoryProvider);
+  final pi = ref.watch(activePiProvider).state;
+
+  return api.fetchSummary(pi);
+});
+
+final piDetailsProvider = FutureProvider<PiDetails>((ref) async {
+  final api = ref.read(piholeRepositoryProvider);
+  final pi = ref.watch(activePiProvider).state;
+  final piDetails = await api.fetchPiDetails(pi);
+  ref.read(piDetailsOptionProvider).state = some(piDetails);
+  return piDetails;
+});
+
+final piDetailsOptionProvider = StateProvider<Option<PiDetails>>((_) => none());

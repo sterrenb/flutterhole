@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
-import 'package:flutterhole_web/entities.dart';
-import 'package:flutterhole_web/pihole_repository.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info/package_info.dart';
@@ -82,15 +80,15 @@ String themeModeToString(ThemeMode themeMode) {
   }
 }
 
-String temperatureReadingToString(TemperatureReading temperatureReading) {
+String _temperatureReadingToString(TemperatureReading temperatureReading) {
   switch (temperatureReading) {
     case TemperatureReading.celcius:
       return 'Celcius (°C)';
     case TemperatureReading.fahrenheit:
       return 'Fahrenheit (°F)';
-    case TemperatureReading.celciusAndFahrenheit:
+    case TemperatureReading.kelvin:
     default:
-      return 'Celcius & fahrenheit (°C/°F)';
+      return 'Kelvin (°K)';
   }
 }
 
@@ -123,6 +121,7 @@ class AppSettingsList extends HookWidget {
   Widget build(BuildContext context) {
     final themeMode = useProvider(themeModeProvider);
     final temperatureReading = useProvider(temperatureReadingProvider);
+    final updateFrequency = useProvider(updateFrequencyProvider);
 
     final pi = useProvider(activePiProvider);
 
@@ -135,64 +134,24 @@ class AppSettingsList extends HookWidget {
             title: 'Active Pi-hole',
             subtitle: '${pi.state.title}',
             leading: Icon(KIcons.pihole),
-            onPressed: (context) async {
-              await showActivePiDialog(context, context.read);
-              return;
-              final selectedPi = await showConfirmationDialog(
-                context: context,
-                title: 'Active Pi-hole',
-                initialSelectedActionKey: pi.state,
-                actions: debugPis.map<AlertDialogAction<Pi>>((dPi) {
-                  return AlertDialogAction<Pi>(
-                    key: dPi,
-                    label: '${dPi.title}',
-                  );
-                }).toList(),
-              );
-
-              if (selectedPi != null) {
-                pi.state = selectedPi;
-              }
-            },
+            onPressed: (context) => showActivePiDialog(context, context.read),
           ),
         ),
         SettingsSection(
           title: 'Customization',
           tiles: [
+            buildThemeTile(themeMode),
             SettingsTile(
-              title: 'Theme',
-              subtitle: '${themeModeToString(themeMode.state)}',
-              leading: Icon(KIcons.lightTheme),
-              onPressed: (context) async {
-                final selectedTheme = await showConfirmationDialog(
-                  context: context,
-                  title: 'Theme',
-                  initialSelectedActionKey: themeMode.state,
-                  actions: [
-                    AlertDialogAction<ThemeMode>(
-                      key: ThemeMode.system,
-                      label: '${themeModeToString(ThemeMode.system)}',
-                    ),
-                    AlertDialogAction<ThemeMode>(
-                      key: ThemeMode.light,
-                      label: '${themeModeToString(ThemeMode.light)}',
-                    ),
-                    AlertDialogAction<ThemeMode>(
-                      key: ThemeMode.dark,
-                      label: '${themeModeToString(ThemeMode.dark)}',
-                    ),
-                  ],
-                );
-
-                if (selectedTheme != null) {
-                  themeMode.state = selectedTheme;
-                }
-              },
+              title: 'Update frequency',
+              subtitle: 'Every ${updateFrequency.state.inSeconds} seconds',
+              leading: Icon(KIcons.updateFrequency),
+              onPressed: (context) =>
+                  showUpdateFrequencyDialog(context, context.read),
             ),
             SettingsTile(
               title: 'Temperature reading',
               subtitle:
-                  '${temperatureReadingToString(temperatureReading.state)}',
+                  '${_temperatureReadingToString(temperatureReading.state)}',
               leading: Icon(KIcons.temperatureReading),
               onPressed: (context) async {
                 final selectedTemperatureReading = await showConfirmationDialog(
@@ -204,17 +163,17 @@ class AppSettingsList extends HookWidget {
                     AlertDialogAction<TemperatureReading>(
                       key: TemperatureReading.celcius,
                       label:
-                          '${temperatureReadingToString(TemperatureReading.celcius)}',
+                          '${_temperatureReadingToString(TemperatureReading.celcius)}',
                     ),
                     AlertDialogAction<TemperatureReading>(
                       key: TemperatureReading.fahrenheit,
                       label:
-                          '${temperatureReadingToString(TemperatureReading.fahrenheit)}',
+                          '${_temperatureReadingToString(TemperatureReading.fahrenheit)}',
                     ),
                     AlertDialogAction<TemperatureReading>(
-                      key: TemperatureReading.celciusAndFahrenheit,
+                      key: TemperatureReading.kelvin,
                       label:
-                          '${temperatureReadingToString(TemperatureReading.celciusAndFahrenheit)}',
+                          '${_temperatureReadingToString(TemperatureReading.kelvin)}',
                     ),
                   ],
                 );
@@ -267,4 +226,36 @@ class AppSettingsList extends HookWidget {
       ],
     );
   }
+
+  SettingsTile buildThemeTile(StateController<ThemeMode> themeMode) =>
+      SettingsTile(
+        title: 'Theme',
+        subtitle: '${themeModeToString(themeMode.state)}',
+        leading: Icon(KIcons.lightTheme),
+        onPressed: (context) async {
+          final selectedTheme = await showConfirmationDialog(
+            context: context,
+            title: 'Theme',
+            initialSelectedActionKey: themeMode.state,
+            actions: [
+              AlertDialogAction<ThemeMode>(
+                key: ThemeMode.system,
+                label: '${themeModeToString(ThemeMode.system)}',
+              ),
+              AlertDialogAction<ThemeMode>(
+                key: ThemeMode.light,
+                label: '${themeModeToString(ThemeMode.light)}',
+              ),
+              AlertDialogAction<ThemeMode>(
+                key: ThemeMode.dark,
+                label: '${themeModeToString(ThemeMode.dark)}',
+              ),
+            ],
+          );
+
+          if (selectedTheme != null) {
+            themeMode.state = selectedTheme;
+          }
+        },
+      );
 }
