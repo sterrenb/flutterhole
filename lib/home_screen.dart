@@ -8,11 +8,13 @@ import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/periodic_widget.dart';
 import 'package:flutterhole_web/pi_temperature_text.dart';
 import 'package:flutterhole_web/providers.dart';
+import 'package:flutterhole_web/query_types_tile.dart';
 import 'package:flutterhole_web/settings_screen.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 List<StaggeredTile> _staggeredTiles = <StaggeredTile>[
+  const StaggeredTile.count(4, 3),
   const StaggeredTile.count(4, 1),
   const StaggeredTile.count(4, 1),
   const StaggeredTile.count(4, 1),
@@ -21,6 +23,7 @@ List<StaggeredTile> _staggeredTiles = <StaggeredTile>[
   const StaggeredTile.count(2, 2),
 ];
 List<Widget> _tiles = <Widget>[
+  QueryTypesTile(),
   TotalQueriesTile(),
   QueriesBlockedTile(),
   PercentBlockedTile(),
@@ -177,9 +180,7 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
       child: SmartRefresher(
         controller: controller,
         enablePullDown: true,
-        enablePullUp: true,
         onRefresh: onRefresh,
-        // TODO duplicate
         child: buildStaggeredGridView(),
       ),
     );
