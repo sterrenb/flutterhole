@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/home_screen.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/all.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(ProviderScope(child: MyApp()));
 }
 
@@ -27,6 +29,7 @@ class MyApp extends HookWidget {
         // is not restarted.
         primarySwatch: Colors.indigo,
         accentColor: Colors.deepOrangeAccent,
+        scaffoldBackgroundColor: Colors.grey[300],
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.purple,
         ),

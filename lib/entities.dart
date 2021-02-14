@@ -120,3 +120,23 @@ abstract class PiDetails with _$PiDetails {
   String get temperatureInKelvin =>
       '${_celciusToKelvin(temperature).toStringAsFixed(1)} °K';
 }
+
+@freezed
+abstract class PiQueryTypes with _$PiQueryTypes {
+  factory PiQueryTypes({@required Map<String, double> types}) = _PiQueryTypes;
+}
+
+@freezed
+abstract class PiForwardDestinations with _$PiForwardDestinations {
+  factory PiForwardDestinations({@required Map<String, double> destinations}) =
+      _PiForwardDestinations;
+}
+
+@freezed
+abstract class PiQueriesOverTime with _$PiQueriesOverTime {
+  factory PiQueriesOverTime({
+   @required Map<DateTime, int> domainsOverTime,
+   @required Map<DateTime, int> adsOverTime,
+  }) = _PiQueriesOverTime;
+}
+

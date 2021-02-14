@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutterhole_web/entities.dart';
 
+const String token = String.fromEnvironment('TOKEN');
+
 final debugPis = <Pi>[
   Pi(
     title: 'My hole',
@@ -10,7 +12,7 @@ final debugPis = <Pi>[
     baseUrl: 'http://10.0.1.5',
     apiPath: 'admin/api.php',
     apiPort: 80,
-    apiToken: '',
+    apiToken: token,
     apiTokenRequired: true,
     allowSelfSignedCertificates: false,
     basicAuthenticationUsername: '',

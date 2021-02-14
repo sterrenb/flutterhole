@@ -6,10 +6,62 @@ import 'package:hooks_riverpod/all.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
+/// The string that counts as the API token on Pi-holes
+/// without authentication.
+///
+/// https://github.com/sterrenburg/flutterhole/issues/79
+const String kNoApiTokenNeeded = 'No password set';
+
 class PiholeRepository {
   const PiholeRepository(this.read);
 
   final Reader read;
+
+  Future<dynamic> _get(
+    Pi pi,
+    String path,
+    Map<String, dynamic> queryParameters,
+  ) async {
+    final dio = read(dioProvider);
+
+    final response = await dio.get(
+      path,
+      queryParameters: queryParameters,
+    );
+
+    _validateData(response.data);
+
+    return response.data;
+  }
+
+  Future<dynamic> _getSecure(
+    Pi pi,
+    String path,
+    Map<String, dynamic> queryParameters,
+  ) async {
+    if (pi.apiTokenRequired && pi.apiToken.isEmpty) {
+      throw PiholeApiFailure.notAuthenticated();
+    }
+
+    String apiToken = pi.apiToken;
+    if (pi.apiTokenRequired == false && pi.apiToken.isEmpty) {
+      apiToken = kNoApiTokenNeeded;
+    }
+
+    queryParameters.addAll({'auth': apiToken});
+
+    return _get(pi, path, queryParameters);
+  }
+
+  void _validateData(dynamic data) {
+    if (data is String && data.isEmpty) {
+      throw PiholeApiFailure.emptyString();
+    }
+
+    if (data is List && data.isEmpty) {
+      throw PiholeApiFailure.emptyList();
+    }
+  }
 
   PiholeApiFailure _onDioError(DioError e) {
     switch (e.type) {
@@ -28,22 +80,54 @@ class PiholeRepository {
   }
 
   Future<Summary> fetchSummary(Pi pi) async {
-    final dio = read(dioProvider);
-
     try {
-      final response = await dio.get('${pi.baseApiUrl}/summary');
-      final data = response.data;
-
-      if (data is String && data.isEmpty) {
-        return throw PiholeApiFailure.emptyString();
-      }
-
-      if (data is List && data.isEmpty) {
-        throw PiholeApiFailure.emptyList();
-      }
-
+      final data = await _get(pi, pi.baseApiUrl, {'summaryRaw': ''});
       final summary = SummaryModel.fromJson(data);
       return summary.entity;
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
+
+  Future<PiQueryTypes> fetchQueryTypes(Pi pi) async {
+    try {
+      final data = await _getSecure(pi, pi.baseApiUrl, {'getQueryTypes': ''});
+
+      final queryTypes = PiQueryTypesModel.fromJson(data);
+      return queryTypes.entity;
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
+
+  Future<PiForwardDestinations> fetchForwardDestinations(Pi pi) async {
+    try {
+      final data =
+          await _getSecure(pi, pi.baseApiUrl, {'getForwardDestinations': ''});
+
+      final forwardDestinations = PiForwardDestinationsModel.fromJson(data);
+      final Map<String, double> map = Map.from(forwardDestinations.destinations)
+        ..addAll({
+          'testje': 12.34,
+          'testje2': 12.34,
+          'testje34454532453543': 12.34,
+          'tesyasyayayaytje': 12.34
+        });
+      return PiForwardDestinations(destinations: map);
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
+
+  Future<PiQueriesOverTime> fetchQueriesOverTime(Pi pi) async {
+    try {
+      final data =
+          await _getSecure(pi, pi.baseApiUrl, {'overTimeData10mins': ''});
+
+      print('data: ${data.toString().length}');
+      final queries = PiQueriesOverTimeModel.fromJson(data);
+      print('model: $queries');
+      return queries.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
     }

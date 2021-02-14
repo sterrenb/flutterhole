@@ -124,6 +124,7 @@ class AppSettingsList extends HookWidget {
 
     final summary = useProvider(summaryProvider);
     return SettingsList(
+      physics: const BouncingScrollPhysics(),
       sections: [
         CustomSection(child: SizedBox(height: 20.0)),
         CustomSection(
@@ -218,6 +219,11 @@ class AppSettingsList extends HookWidget {
                     child: Text('Fetch')),
               ),
             ],
+          ),
+        ),
+        CustomSection(
+          child: ListTile(
+            subtitle: Text(pi.state.toString()),
           ),
         ),
       ],

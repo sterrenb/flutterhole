@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -59,6 +58,53 @@ abstract class SummaryModel with _$SummaryModel {
         replyCName: replyCName?.toInt() ?? -1,
         replyIP: replyIP?.toInt() ?? -1,
         privacyLevel: privacyLevel?.toInt() ?? -1,
-        status: status == "enabled" ? PiStatus.enabled : PiStatus.disabled,
+        status: status == 'enabled' ? PiStatus.enabled : PiStatus.disabled,
       );
+}
+
+@freezed
+abstract class PiQueryTypesModel with _$PiQueryTypesModel {
+  factory PiQueryTypesModel({
+    @JsonKey(name: 'querytypes') Map<String, double> types,
+  }) = _PiQueryTypesModel;
+
+  @late
+  PiQueryTypes get entity => PiQueryTypes(types: types);
+
+  factory PiQueryTypesModel.fromJson(Map<String, dynamic> json) =>
+      _$PiQueryTypesModelFromJson(json);
+}
+
+@freezed
+abstract class PiForwardDestinationsModel with _$PiForwardDestinationsModel {
+  factory PiForwardDestinationsModel({
+    @JsonKey(name: 'forward_destinations') Map<String, double> destinations,
+  }) = _PiForwardDestinationsModel;
+
+  @late
+  PiForwardDestinations get entity => PiForwardDestinations(
+      destinations: destinations
+          .map((key, value) => MapEntry(key.split('|').first, value)));
+
+  factory PiForwardDestinationsModel.fromJson(Map<String, dynamic> json) =>
+      _$PiForwardDestinationsModelFromJson(json);
+}
+
+@freezed
+abstract class PiQueriesOverTimeModel with _$PiQueriesOverTimeModel {
+  factory PiQueriesOverTimeModel({
+    @JsonKey(name: 'domains_over_time') Map<String, int> domainsOverTime,
+    @JsonKey(name: 'ads_over_time') Map<String, int> adsOverTime,
+  }) = _PiQueriesOverTimeModel;
+
+  @late
+  PiQueriesOverTime get entity => PiQueriesOverTime(
+        domainsOverTime: domainsOverTime.map((key, value) => MapEntry(
+            DateTime.fromMillisecondsSinceEpoch(int.parse(key) * 1000), value)),
+        adsOverTime: adsOverTime.map((key, value) => MapEntry(
+            DateTime.fromMillisecondsSinceEpoch(int.parse(key) * 1000), value)),
+      );
+
+  factory PiQueriesOverTimeModel.fromJson(Map<String, dynamic> json) =>
+      _$PiQueriesOverTimeModelFromJson(json);
 }

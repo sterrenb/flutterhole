@@ -6,7 +6,6 @@ import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:intl/intl.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 final _numberFormat = NumberFormat();
 
@@ -76,11 +75,10 @@ class TotalQueriesTile extends HookWidget {
       child: InkWell(
         onTap: () {
           summary.maybeWhen(
-            data: (summary) =>
-                showOkAlertDialog(
-                  context: context,
-                  message: summary.toString(),
-                ),
+            data: (summary) => showOkAlertDialog(
+              context: context,
+              message: summary.toString(),
+            ),
             error: (e, s) => showErrorDialog(context, e, s),
             orElse: () {},
           );
@@ -108,11 +106,10 @@ class QueriesBlockedTile extends HookWidget {
       child: InkWell(
         onTap: () {
           summary.maybeWhen(
-            data: (summary) =>
-                showOkAlertDialog(
-                  context: context,
-                  message: summary.toString(),
-                ),
+            data: (summary) => showOkAlertDialog(
+              context: context,
+              message: summary.toString(),
+            ),
             error: (e, s) => showErrorDialog(context, e, s),
             orElse: () {},
           );
@@ -140,11 +137,10 @@ class PercentBlockedTile extends HookWidget {
       child: InkWell(
         onTap: () {
           summary.maybeWhen(
-            data: (summary) =>
-                showOkAlertDialog(
-                  context: context,
-                  message: summary.toString(),
-                ),
+            data: (summary) => showOkAlertDialog(
+              context: context,
+              message: summary.toString(),
+            ),
             error: (e, s) => showErrorDialog(context, e, s),
             orElse: () {},
           );
@@ -153,7 +149,7 @@ class PercentBlockedTile extends HookWidget {
           top: 'Percent Blocked',
           bottom: summary.when(
             data: (summary) =>
-            '${summary.adsPercentageToday.toStringAsFixed(2)}%',
+                '${summary.adsPercentageToday.toStringAsFixed(2)}%',
             loading: () => '',
             error: (e, s) => '---',
           ),
@@ -169,15 +165,14 @@ class DomainsOnBlocklistTile extends HookWidget {
   Widget build(BuildContext context) {
     final summary = useProvider(summaryProvider);
     return Card(
-      color: Colors.redAccent,
+      color: Colors.red,
       child: InkWell(
         onTap: () {
           summary.maybeWhen(
-            data: (summary) =>
-                showOkAlertDialog(
-                  context: context,
-                  message: summary.toString(),
-                ),
+            data: (summary) => showOkAlertDialog(
+              context: context,
+              message: summary.toString(),
+            ),
             error: (e, s) => showErrorDialog(context, e, s),
             orElse: () {},
           );
@@ -208,7 +203,7 @@ class PiTemperatureTile extends HookWidget {
         onTap: () {},
         child: TextTileContent(
           top: 'Temperature',
-          bottom: option.fold(() => '', (details) {
+          bottom: option.fold(() => '---', (details) {
             switch (temperatureReading) {
               case TemperatureReading.celcius:
                 return details.temperatureInCelcius;
@@ -232,7 +227,8 @@ class PiMemoryTile extends HookWidget {
   Widget build(BuildContext context) {
     final option = useProvider(piDetailsOptionProvider).state;
     return Card(
-      color: Colors.grey[800],
+      color: Colors.blueGrey,
+      // color: Colors.grey[800],
       child: InkWell(
         onTap: () {},
         child: TextTileContent(
@@ -248,4 +244,3 @@ class PiMemoryTile extends HookWidget {
     );
   }
 }
-

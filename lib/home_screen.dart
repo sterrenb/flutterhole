@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutterhole_web/chart_tiles.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dashboard_tiles.dart';
 import 'package:flutterhole_web/dialogs.dart';
@@ -8,7 +9,6 @@ import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/periodic_widget.dart';
 import 'package:flutterhole_web/pi_temperature_text.dart';
 import 'package:flutterhole_web/providers.dart';
-import 'package:flutterhole_web/query_types_tile.dart';
 import 'package:flutterhole_web/settings_screen.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -21,15 +21,19 @@ List<StaggeredTile> _staggeredTiles = <StaggeredTile>[
   const StaggeredTile.count(4, 1),
   const StaggeredTile.count(2, 2),
   const StaggeredTile.count(2, 2),
+  const StaggeredTile.count(4, 3),
+  const StaggeredTile.count(4, 3),
 ];
 List<Widget> _tiles = <Widget>[
-  QueryTypesTile(),
+  QueriesOverTimeTile(),
   TotalQueriesTile(),
   QueriesBlockedTile(),
   PercentBlockedTile(),
   DomainsOnBlocklistTile(),
   PiTemperatureTile(),
   PiMemoryTile(),
+  QueryTypesTile(),
+  ForwardDestinationsTile(),
 ];
 
 class PiStatusIcon extends HookWidget {
@@ -103,7 +107,8 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
           ActivePiTitle(),
           PiStatusIcon(),
           PeriodicWidget(
-            child: PiTemperatureText(),
+            child: Container(),
+            // child: PiTemperatureText(),
             duration: updateFrequency.state,
             onTimer: (timer) {
               // print('hi ${timer.tick}');
@@ -149,8 +154,10 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
     print('wee');
     await Future.wait([
       context.refresh(summaryProvider),
+      context.refresh(queryTypesProvider),
+      context.refresh(forwardDestinationsProvider),
       context.refresh(piDetailsProvider),
-      Future.delayed(Duration(seconds: 2)),
+      Future.delayed(Duration(seconds: 1)),
     ], eagerError: true)
         .catchError((e) {
       print('oh no: $e');
@@ -159,7 +166,7 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
     controller.refreshCompleted();
   }
 
-  StaggeredGridView buildStaggeredGridView() {
+  StaggeredGridView buildStaggeredGridView(BuildContext context) {
     return StaggeredGridView.count(
       crossAxisCount: 4,
       staggeredTiles: _staggeredTiles,
@@ -167,6 +174,7 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
       mainAxisSpacing: 4.0,
       crossAxisSpacing: 4.0,
       padding: const EdgeInsets.all(4.0),
+      physics: const BouncingScrollPhysics(),
     );
   }
 
@@ -174,6 +182,7 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
   Widget build(BuildContext context) {
     return RefreshConfiguration(
       enableBallisticLoad: true,
+      enableRefreshVibrate: true,
       headerBuilder: () => WaterDropMaterialHeader(
           // color: Colors.orange,
           ),
@@ -181,7 +190,7 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
         controller: controller,
         enablePullDown: true,
         onRefresh: onRefresh,
-        child: buildStaggeredGridView(),
+        child: buildStaggeredGridView(context),
       ),
     );
   }
@@ -207,6 +216,8 @@ class HomeRefreshIcon extends HookWidget {
         icon: Icon(KIcons.refresh),
         onPressed: () {
           context.refresh(summaryProvider);
+          context.refresh(queryTypesProvider);
+          context.refresh(forwardDestinationsProvider);
           context.refresh(piDetailsProvider);
         },
       );

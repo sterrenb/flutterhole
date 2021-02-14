@@ -9,7 +9,7 @@ import 'package:flutterhole_web/pihole_repository.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:package_info/package_info.dart';
 
-final themeModeProvider = StateProvider((_) => ThemeMode.light);
+final themeModeProvider = StateProvider((_) => ThemeMode.system);
 
 enum TemperatureReading {
   celcius,
@@ -21,7 +21,7 @@ final temperatureReadingProvider = StateProvider(
   (_) => TemperatureReading.celcius,
 );
 
-final updateFrequencyProvider = StateProvider((_) => Duration(seconds: 2));
+final updateFrequencyProvider = StateProvider((_) => Duration(seconds: 10));
 
 final packageInfoProvider =
     FutureProvider<PackageInfo>((_) => PackageInfo.fromPlatform());
@@ -34,7 +34,10 @@ final dioProvider = Provider<Dio>((_) {
   dio.options.connectTimeout = 5000;
   dio.options.sendTimeout = 5000;
   dio.options.receiveTimeout = 5000;
-  // dio.interceptors.add(LogInterceptor(responseBody: false));
+  dio.interceptors.add(LogInterceptor(
+    requestBody: false,
+    responseBody: false,
+  ));
   return dio;
 });
 
@@ -51,9 +54,26 @@ final piStatusProvider = Provider<AsyncValue<PiStatus>>((ref) {
 final summaryProvider = FutureProvider<Summary>((ref) async {
   final api = ref.read(piholeRepositoryProvider);
   final pi = ref.watch(activePiProvider).state;
+  return api.fetchSummary(pi);
+});
 
-  final summary = await api.fetchSummary(pi);
-  return summary;
+final queryTypesProvider = FutureProvider<PiQueryTypes>((ref) async {
+  final api = ref.read(piholeRepositoryProvider);
+  final pi = ref.watch(activePiProvider).state;
+  return api.fetchQueryTypes(pi);
+});
+
+final forwardDestinationsProvider =
+    FutureProvider<PiForwardDestinations>((ref) async {
+  final api = ref.read(piholeRepositoryProvider);
+  final pi = ref.watch(activePiProvider).state;
+  return api.fetchForwardDestinations(pi);
+});
+
+final queriesOverTimeProvider = FutureProvider<PiQueriesOverTime>((ref) async {
+  final api = ref.read(piholeRepositoryProvider);
+  final pi = ref.watch(activePiProvider).state;
+  return api.fetchQueriesOverTime(pi);
 });
 
 final piDetailsProvider = FutureProvider<PiDetails>((ref) async {
