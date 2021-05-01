@@ -58,8 +58,6 @@ Future<void> showUpdateFrequencyDialog(
     // ),
   );
 
-  print('selectedDuration: $selectedDuration');
-
   if (selectedDuration != null) {
     read(updateFrequencyProvider).state = selectedDuration;
   }

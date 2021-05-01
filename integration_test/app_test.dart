@@ -8,9 +8,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutterhole_web/main.dart' as app;
-import 'package:integration_test/integration_test.dart';
 
-void main() => run(_testMain);
+// void main() => run(_testMain);
 
 void _testMain() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

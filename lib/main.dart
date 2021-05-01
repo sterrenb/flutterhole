@@ -5,9 +5,17 @@ import 'package:flutterhole_web/home_screen.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/all.dart';
 
+class Logger extends ProviderObserver {
+  @override
+  void didUpdateProvider(ProviderBase provider, Object newValue) {
+    print('[${provider.name ?? provider.runtimeType}] value: $newValue');
+  }
+}
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(ProviderScope(child: MyApp()));
+
+  runApp(ProviderScope(observers: [Logger()], child: MyApp()));
 }
 
 class MyApp extends HookWidget {

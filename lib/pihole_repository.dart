@@ -124,9 +124,7 @@ class PiholeRepository {
       final data =
           await _getSecure(pi, pi.baseApiUrl, {'overTimeData10mins': ''});
 
-      print('data: ${data.toString().length}');
       final queries = PiQueriesOverTimeModel.fromJson(data);
-      print('model: $queries');
       return queries.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
@@ -146,7 +144,6 @@ class PiholeRepository {
       final nums = end.getNumbers();
       return nums.first.toDouble();
     } catch (e) {
-      print('_docToMemoryUsage: $e');
       return -1;
     }
   }
@@ -176,6 +173,19 @@ class PiholeRepository {
         cpuLoads: _docToLoad(doc),
         memoryUsage: _docToMemoryUsage(doc),
       );
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
+
+  Future<PiholeStatus> enable(Pi pi) async {
+    print('enabling ${pi.title}');
+    try {
+      final data = await _getSecure(pi, pi.baseApiUrl, {'enable': ''});
+
+      final status = PiholeStatusModel.fromJson(data);
+      print('status after enable: ${status.entity}');
+      return status.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
     }

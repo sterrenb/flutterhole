@@ -48,9 +48,9 @@ class DoughnutChart extends StatelessWidget {
             groupTo: 2.0,
             dataLabelSettings: DataLabelSettings(
               isVisible: true,
-              labelPosition: ChartDataLabelPosition.outside,
+              // labelPosition: ChartDataLabelPosition.outside,
               useSeriesColor: true,
-              labelIntersectAction: LabelIntersectAction.none,
+              // labelIntersectAction: LabelIntersectAction.none,
             ),
             // explode: true,
             legendIconType: LegendIconType.circle,

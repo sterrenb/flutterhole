@@ -7,7 +7,6 @@ import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 List<DoughnutChartData> _createQueryTypesChartData(PiQueryTypes queryTypes) {
   queryTypes.types.removeWhere((key, value) => value <= 0);
@@ -60,9 +59,7 @@ class ForwardDestinationsTile extends HookWidget {
       child: Center(
         child: forwardDestinations.when(
           data: (destinations) {
-            print(destinations);
             final list = _createForwardDestinationsChartData(destinations);
-            print(list);
             return DoughnutChart(
               title: 'Queries answered by',
               dataSource: list,

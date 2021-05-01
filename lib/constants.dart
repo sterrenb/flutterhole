@@ -75,6 +75,10 @@ class KIcons {
   static const IconData percentBlocked = MaterialCommunityIcons.chart_pie;
   static const IconData domainsOnBlocklist =
       MaterialCommunityIcons.playlist_remove;
+
+  static const IconData enablePihole = Icons.play_arrow;
+  static const IconData disablePihole = Icons.pause;
+  static const IconData wakePihole = Icons.alarm_on;
 }
 
 class KColors {

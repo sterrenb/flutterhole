@@ -58,8 +58,24 @@ abstract class SummaryModel with _$SummaryModel {
         replyCName: replyCName?.toInt() ?? -1,
         replyIP: replyIP?.toInt() ?? -1,
         privacyLevel: privacyLevel?.toInt() ?? -1,
-        status: status == 'enabled' ? PiStatus.enabled : PiStatus.disabled,
+        status: status == 'enabled'
+            ? PiholeStatus.enabled()
+            : PiholeStatus.disabled(),
       );
+}
+
+@freezed
+abstract class PiholeStatusModel with _$PiholeStatusModel {
+  factory PiholeStatusModel({
+    @JsonKey(name: 'status') String status,
+  }) = _PiholeStatusModel;
+
+  factory PiholeStatusModel.fromJson(Map<String, dynamic> json) =>
+      _$PiholeStatusModelFromJson(json);
+
+  @late
+  PiholeStatus get entity =>
+      status == 'enabled' ? PiholeStatus.enabled() : PiholeStatus.disabled();
 }
 
 @freezed

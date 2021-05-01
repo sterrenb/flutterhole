@@ -55,24 +55,20 @@ abstract class PiholeApiFailure with _$PiholeApiFailure {
 
   const factory PiholeApiFailure.timeout() = _Timeout;
 
-  const factory PiholeApiFailure.unknown(dynamic e) = _Unknown;
-
-// @override
-// String toString() => this.when(
-//       notFound: () => 'Not found',
-//       notAuthenticated: () => 'Not authenticated',
-//       invalidResponse: (statusCode) => 'Invalid response ($statusCode)',
-//       emptyString: () => 'Empty string',
-//       emptyList: () => 'Empty list',
-//       cancelled: () => 'Cancelled',
-//       timeout: () => 'Timeout',
-//       unknown: (error) => 'Unknown',
-//     );
+  const factory PiholeApiFailure.unknown(dynamic e) = _UnknownApiFailure;
 }
 
-enum PiStatus {
-  enabled,
-  disabled,
+@freezed
+abstract class PiholeStatus with _$PiholeStatus {
+  factory PiholeStatus.enabled() = _Enabled;
+
+  const factory PiholeStatus.disabled() = _Disabled;
+
+  const factory PiholeStatus.loading() = _PiholeStatusLoading;
+
+  const factory PiholeStatus.sleeping(Duration duration) = _Sleeping;
+
+  const factory PiholeStatus.error(String error) = _PiholeStatusError;
 }
 
 @freezed
@@ -93,7 +89,7 @@ abstract class Summary with _$Summary {
     @required int replyCName,
     @required int replyIP,
     @required int privacyLevel,
-    @required PiStatus status,
+    @required PiholeStatus status,
   }) = _Summary;
 }
 
@@ -135,8 +131,7 @@ abstract class PiForwardDestinations with _$PiForwardDestinations {
 @freezed
 abstract class PiQueriesOverTime with _$PiQueriesOverTime {
   factory PiQueriesOverTime({
-   @required Map<DateTime, int> domainsOverTime,
-   @required Map<DateTime, int> adsOverTime,
+    @required Map<DateTime, int> domainsOverTime,
+    @required Map<DateTime, int> adsOverTime,
   }) = _PiQueriesOverTime;
 }
-
