@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
-import 'package:flutterhole_web/periodic_widget.dart';
+import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/layout/periodic_widget.dart';
+import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/settings_screen.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomeAppBar extends HookWidget implements PreferredSizeWidget {
-  const HomeAppBar({Key key})
+  const HomeAppBar({Key? key})
       : preferredSize = const Size.fromHeight(kToolbarHeight),
         super(key: key);
 
@@ -24,20 +26,21 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
       title: Row(
         children: [
           ActivePiTitle(),
-          PiStatusIcon(),
+          PiStatusIndicator(),
           PeriodicWidget(
             child: Container(),
             // child: PiTemperatureText(),
             duration: updateFrequency.state,
             onTimer: (timer) {
               // TODO debug
-              // context.refresh(piDetailsProvider);
+              // print('onTimer');
+              context.refresh(piDetailsProvider);
             },
           ),
         ],
       ),
       actions: [
-        HomeRefreshIcon(),
+        // HomeRefreshIcon(),
         IconButton(
           icon: Icon(KIcons.pihole),
           tooltip: 'Select Pi-hole',
@@ -50,7 +53,8 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
                   MaterialPageRoute(
                       builder: (BuildContext context) => SettingsScreen()),
                 )),
-        PiToggleIconButton(),
+        // PiToggleIconButton(),
+        // PiSleepIconButton(),
       ],
     );
   }
@@ -64,102 +68,41 @@ class ActivePiTitle extends HookWidget {
   }
 }
 
-class PiToggleIconButton extends HookWidget {
-  @override
-  Widget build(BuildContext context) {
-    final piStatus = useProvider(myStatusProvider).state;
-    // final piStatus = useProvider(piStatusProvider).state;
-
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        IconButton(
-          icon: Icon(
-            piStatus.when(
-              enabled: () => KIcons.disablePihole,
-              disabled: () => KIcons.enablePihole,
-              error: (error) => Icons.warning,
-              sleeping: (duration) => KIcons.wakePihole,
-              loading: () => KIcons.enablePihole,
-            ),
-            color: piStatus.maybeWhen(
-              loading: () => Colors.transparent,
-              orElse: () => null,
-            ),
-            // size: 8.0,
-          ),
-          tooltip: piStatus.when(
-            enabled: () => 'Disable Pi-hole',
-            disabled: () => 'Enable Pi-hole',
-            loading: () => 'Loading',
-            error: (error) => error,
-            sleeping: (duration) => 'Sleeping $duration',
-          ),
-          onPressed: piStatus.maybeWhen(
-            orElse: () => () {
-              context.refresh(enablePiProvider);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class HomeRefreshIcon extends HookWidget {
   @override
   Widget build(BuildContext context) => IconButton(
         icon: Icon(KIcons.refresh),
         onPressed: () {
           context.refresh(summaryProvider);
-          context.refresh(queryTypesProvider);
-          context.refresh(forwardDestinationsProvider);
-          context.refresh(piDetailsProvider);
+          // context.refresh(queryTypesProvider);
+          // context.refresh(forwardDestinationsProvider);
+          // context.refresh(piDetailsProvider);
         },
       );
 }
 
-class PiStatusIcon extends HookWidget {
+class PiToggleIconButton extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final piStatus = useProvider(myStatusProvider).state;
+    final piStatus = useProvider(piholeStatusNotifierProvider) as PiholeStatus;
 
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        IconButton(
-          icon: Icon(
-            KIcons.dot,
-            color: piStatus.when(
-              enabled: () => Colors.green,
-              disabled: () => Colors.orange,
-              error: (_) => Colors.red,
-              loading: () => Colors.grey,
-              sleeping: (duration) => Colors.blue,
-            ),
-            size: 8.0,
-          ),
-          tooltip: piStatus.when(
-            enabled: () => 'Enabled',
-            disabled: () => 'Disabled',
-            error: (error) => error,
-            loading: () => 'Loading',
-            sleeping: (duration) => 'Sleeping $duration',
-          ),
-          onPressed: () {},
+    return IconButton(
+        icon: PiStatusToggleIcon(),
+        tooltip: piStatus.when(
+          enabled: () => 'Disable Pi-hole',
+          disabled: () => 'Enable Pi-hole',
+          loading: () => 'Loading',
+          error: (error) => error,
+          sleeping: (duration, _) => 'Sleeping $duration',
         ),
-        IgnorePointer(
-          child: AnimatedOpacity(
-            duration: kThemeAnimationDuration,
-            opacity: piStatus.maybeWhen(loading: () => 1.0, orElse: () => 0.0),
-            child: SizedBox(
-              width: 14.0,
-              height: 14.0,
-              child: CircularProgressIndicator(strokeWidth: 2.0),
-            ),
-          ),
-        ),
-      ],
-    );
+        onPressed: piStatus.maybeWhen(
+          enabled: () => () {
+            context.read(piholeStatusNotifierProvider.notifier).disable();
+          },
+          disabled: () => () {
+            context.read(piholeStatusNotifierProvider.notifier).enable();
+          },
+          orElse: () => null,
+        ));
   }
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/chart_tiles.dart';
 import 'package:flutterhole_web/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/home/home_app_bar.dart';
+import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/providers.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 List<StaggeredTile> _staggeredTiles = <StaggeredTile>[
@@ -50,10 +52,11 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
       context.refresh(queryTypesProvider),
       context.refresh(forwardDestinationsProvider),
       context.refresh(piDetailsProvider),
-      Future.delayed(Duration(seconds: 1)),
+      context.read(piholeStatusNotifierProvider.notifier).fetchStatus(),
     ], eagerError: true)
         .catchError((e) {
       print('oh no: $e');
+      controller.refreshCompleted();
     });
 
     controller.refreshCompleted();
@@ -89,16 +92,22 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends HookWidget {
   const HomeScreen({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    useEffect(() {
+      print('home build first');
+      context.read(piholeStatusNotifierProvider.notifier).fetchStatus();
+    }, [piholeStatusNotifierProvider]);
+
     return Scaffold(
       appBar: HomeAppBar(),
       body: RefreshableHomeGrid(),
+      floatingActionButton: PiToggleFloatingActionButton(),
     );
   }
 }

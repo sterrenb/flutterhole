@@ -4,7 +4,7 @@ import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/doughnut_chart.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/providers.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -78,7 +78,7 @@ class LineChartData {
 
   final DateTime x;
   final int y;
-  final Color color;
+  final Color? color;
 }
 
 final format = DateFormat.Hm();
@@ -87,9 +87,6 @@ class QueriesOverTimeTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final queriesOverTime = useProvider(queriesOverTimeProvider);
-
-    final str = queriesOverTime.maybeWhen(
-        data: (e) => '${e.domainsOverTime.keys.first}', orElse: () => '...');
 
     return Card(
       child: Center(
@@ -107,7 +104,7 @@ class QueriesOverTimeTile extends HookWidget {
               ),
               // tooltipBehavior: TooltipBehavior(enable: true),
               trackballBehavior: TrackballBehavior(
-                enable: true,
+                // enable: true,
                 lineColor: Colors.green.withOpacity(.8),
                 // tooltipAlignment: ChartAlignment.center,
                 tooltipDisplayMode: TrackballDisplayMode.groupAllPoints,
@@ -119,11 +116,14 @@ class QueriesOverTimeTile extends HookWidget {
                 ),
                 builder:
                     (BuildContext context, TrackballDetails trackballDetails) {
+                  final TrackballGroupingModeInfo? info =
+                      trackballDetails.groupingModeInfo;
+
                   final int totalQueries =
-                      trackballDetails.groupingModeInfo.points.first.y;
+                      info == null ? 0 : info.points.first.y;
                   final int blockedQueries =
-                      trackballDetails.groupingModeInfo.points.last.y;
-                  final double percent = totalQueries == 0
+                      info == null ? 0 : info.points.last.y;
+                  final double percent = (totalQueries == 0)
                       ? 0
                       : (blockedQueries / totalQueries) * 100;
 
@@ -168,7 +168,7 @@ class QueriesOverTimeTile extends HookWidget {
                   xValueMapper: (data, _) => data.x,
                   // '${format.format(data.x.subtract(Duration(minutes: 5)))} - ${format.format(data.x.add(Duration(minutes: 5)))}',
                   yValueMapper: (data, _) => data.y,
-                  color: Colors.green[700].withOpacity(.8),
+                  color: Colors.green[700]!.withOpacity(.8),
                   borderColor: Colors.green,
                   borderWidth: 1.0,
                 ),
@@ -179,7 +179,7 @@ class QueriesOverTimeTile extends HookWidget {
                   xValueMapper: (data, _) => data.x,
                   // '${format.format(data.x.subtract(Duration(minutes: 5)))} - ${format.format(data.x.add(Duration(minutes: 5)))}',
                   yValueMapper: (data, _) => data.y,
-                  color: Colors.red[700].withOpacity(.8),
+                  color: Colors.red[700]!.withOpacity(.8),
                   borderColor: Colors.red,
                   borderWidth: 1.0,
                 ),
@@ -199,9 +199,9 @@ class LegendText extends StatelessWidget {
   final String text;
 
   const LegendText({
-    Key key,
-    @required this.color,
-    @required this.text,
+    Key? key,
+    required this.color,
+    required this.text,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {

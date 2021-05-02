@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/providers.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
 final _numberFormat = NumberFormat();
@@ -14,13 +14,13 @@ class TextTileContent extends StatelessWidget {
   final String bottom;
   final IconData iconData;
   final double iconLeft;
-  final double iconTop;
+  final double? iconTop;
 
   const TextTileContent({
-    Key key,
-    @required this.top,
-    @required this.bottom,
-    @required this.iconData,
+    Key? key,
+    required this.top,
+    required this.bottom,
+    required this.iconData,
     this.iconLeft = 16.0,
     this.iconTop,
   }) : super(key: key);

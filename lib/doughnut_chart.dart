@@ -6,14 +6,14 @@ class DoughnutChartData {
 
   final String x;
   final double y;
-  final Color color;
+  final Color? color;
 }
 
 class DoughnutChart extends StatelessWidget {
   const DoughnutChart({
-    Key key,
-    @required this.title,
-    @required this.dataSource,
+    Key? key,
+    required this.title,
+    required this.dataSource,
   }) : super(key: key);
 
   final String title;

@@ -10,10 +10,10 @@ class PeriodicWidget extends StatefulWidget {
   final PeriodicCallback onTimer;
 
   const PeriodicWidget({
-    Key key,
-    @required this.child,
-    @required this.duration,
-    @required this.onTimer,
+    Key? key,
+    required this.child,
+    required this.duration,
+    required this.onTimer,
   }) : super(key: key);
 
   @override
@@ -21,7 +21,7 @@ class PeriodicWidget extends StatefulWidget {
 }
 
 class _PeriodicWidgetState extends State<PeriodicWidget> {
-  Timer timer;
+  Timer? timer;
 
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _PeriodicWidgetState extends State<PeriodicWidget> {
 
   @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 

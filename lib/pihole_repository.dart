@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/models.dart';
 import 'package:flutterhole_web/providers.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
@@ -65,15 +66,15 @@ class PiholeRepository {
 
   PiholeApiFailure _onDioError(DioError e) {
     switch (e.type) {
-      case DioErrorType.CONNECT_TIMEOUT:
-      case DioErrorType.SEND_TIMEOUT:
-      case DioErrorType.RECEIVE_TIMEOUT:
+      case DioErrorType.connectTimeout:
+      case DioErrorType.sendTimeout:
+      case DioErrorType.receiveTimeout:
         return PiholeApiFailure.timeout();
-      case DioErrorType.RESPONSE:
-        return PiholeApiFailure.invalidResponse(e.response.statusCode);
-      case DioErrorType.CANCEL:
+      case DioErrorType.response:
+        return PiholeApiFailure.invalidResponse(e.response!.statusCode!);
+      case DioErrorType.cancel:
         return PiholeApiFailure.cancelled();
-      case DioErrorType.DEFAULT:
+      case DioErrorType.other:
       default:
         return PiholeApiFailure.unknown(e);
     }
@@ -131,8 +132,10 @@ class PiholeRepository {
     }
   }
 
-  double _docToTemperature(Document doc) =>
-      double.tryParse(doc.getElementById('rawtemp').innerHtml) ?? -1;
+  double _docToTemperature(Document doc) {
+    // print(doc.getElementById('rawtemp')!.innerHtml);
+    return double.tryParse(doc.getElementById('rawtemp')!.innerHtml) ?? -1;
+  }
 
   double _docToMemoryUsage(Document doc) {
     try {
@@ -148,12 +151,16 @@ class PiholeRepository {
     }
   }
 
-  List<double> _docToLoad(Document doc) => List<double>.from(doc
-      .getElementsByClassName('fa fa-circle text-green-light')
-      .elementAt(1)
-      .parent
-      .innerHtml
-      .getNumbers());
+  List<double> _docToLoad(Document doc) {
+    final element = doc
+        .getElementsByClassName('fa fa-circle text-green-light')
+        .elementAt(1)
+        .parent;
+
+    if (element == null) return [];
+
+    return List<double>.from(element.innerHtml.getNumbers());
+  }
 
   Future<PiDetails> fetchPiDetails(Pi pi) async {
     final dio = read(dioProvider);
@@ -178,6 +185,18 @@ class PiholeRepository {
     }
   }
 
+  Future<PiholeStatus> fetchStatus(Pi pi) async {
+    try {
+      final data = await _get(pi, pi.baseApiUrl, {'status': ''});
+
+      final status = PiholeStatusModel.fromJson(data);
+      print('status after fetch: ${status.entity}');
+      return status.entity;
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
+
   Future<PiholeStatus> enable(Pi pi) async {
     print('enabling ${pi.title}');
     try {
@@ -186,6 +205,34 @@ class PiholeRepository {
       final status = PiholeStatusModel.fromJson(data);
       print('status after enable: ${status.entity}');
       return status.entity;
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
+
+  Future<PiholeStatus> disable(Pi pi) async {
+    print('disabling ${pi.title}');
+    try {
+      final data = await _getSecure(pi, pi.baseApiUrl, {'disable': ''});
+
+      final status = PiholeStatusModel.fromJson(data);
+      return status.entity;
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
+
+  Future<PiholeStatus> sleep(Pi pi, Duration duration) async {
+    print('sleeping ${pi.title}');
+    try {
+      final data = await _getSecure(
+          pi, pi.baseApiUrl, {'disable': '${duration.inSeconds}'});
+
+      final status = PiholeStatusModel.fromJson(data);
+      return status.entity.maybeWhen(
+        disabled: () => PiholeStatus.sleeping(duration, TimeOfDay.now()),
+        orElse: () => status.entity,
+      );
     } on DioError catch (e) {
       throw _onDioError(e);
     }
@@ -199,7 +246,7 @@ extension StringExtension on String {
     if (_numberRegex.hasMatch(this))
       return _numberRegex
           .allMatches(this)
-          .map((RegExpMatch match) => num.tryParse(match.group(0)) ?? -1)
+          .map((RegExpMatch match) => num.tryParse(match.group(0)!) ?? -1)
           .toList();
     else
       return [];

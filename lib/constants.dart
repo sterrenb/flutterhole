@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutterhole_web/entities.dart';
 
 const String token = String.fromEnvironment('TOKEN');
@@ -54,30 +53,30 @@ class KStrings {
 class KIcons {
   KIcons._();
 
-  static const IconData lightTheme = MaterialIcons.wb_sunny;
-  static const IconData darkTheme = MaterialIcons.wb_cloudy;
-  static const IconData systemTheme = MaterialIcons.wb_auto;
+  static const IconData lightTheme = Icons.wb_sunny;
+  static const IconData darkTheme = Icons.wb_cloudy;
+  static const IconData systemTheme = Icons.wb_auto;
 
   static const IconData piholeTitle = Icons.handyman_sharp;
 
-  static const IconData temperatureReading = MaterialCommunityIcons.thermometer;
-  static const IconData memoryUsage = MaterialCommunityIcons.memory;
-  static const IconData updateFrequency = MaterialCommunityIcons.update;
-  static const IconData refresh = MaterialCommunityIcons.refresh;
+  static const IconData temperatureReading = Icons.device_thermostat;
+  static const IconData memoryUsage = Icons.memory;
+  static const IconData updateFrequency = Icons.update;
+  static const IconData refresh = Icons.refresh;
 
-  static const IconData appVersion = MaterialIcons.developer_board;
-  static const IconData pihole = MaterialCommunityIcons.raspberry_pi;
+  static const IconData appVersion = Icons.developer_board;
+  static const IconData pihole = Icons.computer;
 
-  static const IconData settings = MaterialIcons.settings;
+  static const IconData settings = Icons.settings;
   static const IconData dot = Icons.brightness_1;
-  static const IconData totalQueries = MaterialCommunityIcons.earth;
-  static const IconData queriesBlocked = MaterialCommunityIcons.hand_left;
-  static const IconData percentBlocked = MaterialCommunityIcons.chart_pie;
-  static const IconData domainsOnBlocklist =
-      MaterialCommunityIcons.playlist_remove;
+  static const IconData totalQueries = Icons.public;
+  static const IconData queriesBlocked = Icons.block;
+  static const IconData percentBlocked = Icons.pie_chart;
+  static const IconData domainsOnBlocklist = Icons.list;
 
   static const IconData enablePihole = Icons.play_arrow;
   static const IconData disablePihole = Icons.pause;
+  static const IconData sleepPihole = Icons.alarm;
   static const IconData wakePihole = Icons.alarm_on;
 }
 

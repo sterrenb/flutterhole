@@ -3,10 +3,10 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/providers.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 Future<void> showErrorDialog(
-    BuildContext context, Object e, StackTrace s) async {
+    BuildContext context, Object e, StackTrace? s) async {
   await showConfirmationDialog(
       context: context, title: 'Error: $e', message: 'Stacktrace: \n\n$s');
 }
@@ -33,7 +33,7 @@ Future<void> showActivePiDialog(BuildContext context, Reader read) async {
 
 Future<void> showUpdateFrequencyDialog(
     BuildContext context, Reader read) async {
-  void pop(Duration key) => Navigator.of(context).pop(key);
+  void pop(Duration? key) => Navigator.of(context).pop(key);
   final theme = Theme.of(context);
 
   const String title = 'Update frequency';
@@ -67,16 +67,16 @@ class DurationDialog extends HookWidget {
   final String title;
   final String message;
   final Duration initialValue;
-  final ValueChanged<Duration> onSelect;
+  final ValueChanged<Duration?> onSelect;
   final ThemeData theme;
 
   const DurationDialog({
-    Key key,
-    @required this.title,
-    @required this.message,
-    @required this.initialValue,
-    @required this.onSelect,
-    @required this.theme,
+    Key? key,
+    required this.title,
+    required this.message,
+    required this.initialValue,
+    required this.onSelect,
+    required this.theme,
   }) : super(key: key);
 
   @override
@@ -153,18 +153,18 @@ class DurationDialog extends HookWidget {
 
 class _Dialog<T> extends StatefulWidget {
   const _Dialog({
-    Key key,
-    @required this.title,
-    @required this.message,
-    @required this.initialKey,
-    @required this.onSelect,
-    @required this.theme,
+    Key? key,
+    required this.title,
+    required this.message,
+    required this.initialKey,
+    required this.onSelect,
+    required this.theme,
   }) : super(key: key);
 
   final String title;
   final String message;
   final T initialKey;
-  final ValueChanged<T> onSelect;
+  final ValueChanged<T?> onSelect;
   final ThemeData theme;
 
   @override
@@ -172,7 +172,7 @@ class _Dialog<T> extends StatefulWidget {
 }
 
 class __DialogState<T> extends State<_Dialog<T>> {
-  T selectedKey;
+  T? selectedKey;
 
   @override
   void initState() {

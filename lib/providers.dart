@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/pihole_repository.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info/package_info.dart';
 
 final dioProvider = Provider<Dio>((_) {
@@ -58,20 +58,40 @@ final summaryProvider = FutureProvider<Summary>((ref) async {
   // await Future.delayed(Duration(seconds: 5));
   // status.state = PiholeStatus.loading();
 
-  await Future.delayed(Duration(seconds: 1));
-  final summary = await api.fetchSummary(pi);
-  // print("setting ${summary.status}");
-  // ref.read(piStatusProvider).state = summary.status;
-  return summary;
+  // await Future.delayed(Duration(seconds: 1));
+  try {
+    final summary = await api.fetchSummary(pi);
+    return summary;
+  } catch (e) {
+    throw e;
+  }
 });
 
 final enablePiProvider = FutureProvider<PiholeStatus>((ref) async {
   final api = ref.read(piholeRepositoryProvider);
-  // final status = ref.read(piStatusProvider);
-  final pi = ref.watch(activePiProvider).state;
+  final pi = ref.read(activePiProvider).state;
+
+  final newStatus = await api.enable(pi);
+  return newStatus;
+});
+
+final disablePiProvider = FutureProvider<PiholeStatus>((ref) async {
+  final api = ref.read(piholeRepositoryProvider);
+  final pi = ref.read(activePiProvider).state;
   await Future.delayed(Duration(seconds: 1));
-  throw 'Oh noes';
-  return api.enable(pi);
+
+  final newStatus = await api.disable(pi);
+  return newStatus;
+});
+
+final sleepPiProvider =
+    FutureProvider.family<PiholeStatus, Duration>((ref, duration) async {
+  final api = ref.read(piholeRepositoryProvider);
+  final pi = ref.read(activePiProvider).state;
+  await Future.delayed(Duration(seconds: 1));
+
+  final newStatus = await api.sleep(pi, duration);
+  return newStatus;
 });
 
 final queryTypesProvider = FutureProvider<PiQueryTypes>((ref) async {
@@ -103,32 +123,83 @@ final piDetailsProvider = FutureProvider<PiDetails>((ref) async {
 
 final piDetailsOptionProvider = StateProvider<Option<PiDetails>>((_) => none());
 
-final myStatusProvider = StateProvider<PiholeStatus>((ref) {
-  final summary = ref.watch(summaryProvider);
-  final enable = ref.watch(enablePiProvider);
+// final piholeStatusProvider =
+//     StateProvider<PiholeStatus>((_) => PiholeStatus.loading());
 
-  for (final value in [summary, enable]) {
-    if (value is AsyncLoading) {
-      print("${value} is loading");
-      return PiholeStatus.loading();
-    }
-    if (value is AsyncError) {
-      print("${value} is error");
-      return PiholeStatus.error(value.error);
-    }
+class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
+  final PiholeRepository _repository;
+  final Pi _pi;
+
+  PiholeStatusNotifier(this._repository, this._pi)
+      : super(PiholeStatus.loading());
+
+  Future<void> fetchStatus() async {
+    state = PiholeStatus.loading();
+    await Future.delayed(Duration(seconds: 1));
+    final result = await _repository.fetchStatus(_pi);
+    state = result;
   }
 
-  // return PiholeStatus.disabled();
+  Future<void> enable() async {
+    state = PiholeStatus.loading();
+    final result = await _repository.enable(_pi);
+    state = result;
+  }
 
-  return summary.when(
-    data: (data) {
-      print('got sum');
-      return data.status;
-    },
-    loading: () => PiholeStatus.loading(),
-    error: (error, _) {
-      print(error);
-      return PiholeStatus.disabled();
-    },
-  );
-});
+  Future<void> disable() async {
+    state = PiholeStatus.loading();
+    final result = await _repository.disable(_pi);
+    state = result;
+  }
+
+  Future<void> sleep(Duration duration) async {
+    state = PiholeStatus.loading();
+    final result = await _repository.sleep(_pi, duration);
+    state = result;
+
+    print('sleeping: ${result}');
+    Future.delayed(duration).then((_) {
+      print('waking up');
+      fetchStatus();
+    });
+    print('scheduled');
+  }
+}
+
+final piholeStatusNotifierProvider =
+    StateNotifierProvider((ref) => PiholeStatusNotifier(
+          ref.watch(piholeRepositoryProvider),
+          ref.watch(activePiProvider).state,
+        ));
+
+// final myStatusProvider = StateProvider<PiholeStatus>((ref) {
+//   final summary = ref.watch(summaryProvider);
+//   final enable = ref.watch(enablePiProvider);
+//
+//   for (final value in [summary, enable]) {
+//     if (value is AsyncLoading) {
+//       print("$value is loading");
+//       return PiholeStatus.loading();
+//     }
+//     if (value is AsyncError<Summary>) {
+//       return PiholeStatus.error(value.error.toString());
+//     }
+//     if (value is AsyncError<PiholeStatus>) {
+//       return PiholeStatus.error(value.error.toString());
+//     }
+//   }
+//
+//   // return PiholeStatus.disabled();
+//
+//   return summary.when(
+//     data: (data) {
+//       print('got sum');
+//       return data.status;
+//     },
+//     loading: () => PiholeStatus.loading(),
+//     error: (error, _) {
+//       print(error);
+//       return PiholeStatus.disabled();
+//     },
+//   );
+// });

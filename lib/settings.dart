@@ -41,7 +41,7 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
             TextSpan(
               style: Theme.of(context)
                   .textTheme
-                  .bodyText2
+                  .bodyText2!
                   .apply(color: KColors.link),
               text: 'GitHub',
               recognizer: TapGestureRecognizer()
@@ -54,7 +54,7 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
             TextSpan(
               style: Theme.of(context)
                   .textTheme
-                  .bodyText2
+                  .bodyText2!
                   .apply(color: KColors.link),
               text: 'Mathijs Sterrenburg',
               recognizer: TapGestureRecognizer()
@@ -212,7 +212,7 @@ class AppSettingsList extends HookWidget {
               ),
               ListTile(
                 title: Text('$summary'),
-                trailing: FlatButton(
+                trailing: TextButton(
                     onPressed: () {
                       context.refresh(summaryProvider);
                     },

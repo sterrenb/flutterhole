@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/home_screen.dart';
 import 'package:flutterhole_web/providers.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class Logger extends ProviderObserver {
   @override
-  void didUpdateProvider(ProviderBase provider, Object newValue) {
+  void didUpdateProvider(ProviderBase provider, Object? newValue) {
     print('[${provider.name ?? provider.runtimeType}] value: $newValue');
   }
 }
@@ -15,7 +15,8 @@ class Logger extends ProviderObserver {
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(ProviderScope(observers: [Logger()], child: MyApp()));
+  // runApp(ProviderScope(observers: [Logger()], child: MyApp()));
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends HookWidget {
@@ -36,11 +37,11 @@ class MyApp extends HookWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Colors.indigo,
-        accentColor: Colors.deepOrangeAccent,
-        scaffoldBackgroundColor: Colors.grey[300],
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.purple,
-        ),
+        // accentColor: Colors.deepOrangeAccent,
+        // scaffoldBackgroundColor: Colors.grey[300],
+        // appBarTheme: AppBarTheme(
+        //   backgroundColor: Colors.purple,
+        // ),
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
