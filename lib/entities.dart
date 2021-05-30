@@ -133,3 +133,50 @@ class PiQueriesOverTime with _$PiQueriesOverTime {
     required Map<DateTime, int> adsOverTime,
   }) = _PiQueriesOverTime;
 }
+
+enum QueryStatus {
+  Unknown,
+  BlockedWithGravity,
+  Forwarded,
+  Cached,
+  BlockedWithRegexWildcard,
+  BlockedWithBlacklist,
+  BlockedWithExternalIP,
+  BlockedWithExternalNull,
+  BlockedWithExternalNXRA,
+}
+
+enum DnsSecStatus {
+  Empty,
+  Secure,
+  Insecure,
+  Bogus,
+  Abandoned,
+  Unknown,
+}
+
+@freezed
+class QueryItem with _$QueryItem {
+  QueryItem._();
+
+  factory QueryItem({
+    required DateTime timestamp,
+    required String queryType,
+    required String domain,
+    required String clientName,
+    required QueryStatus queryStatus,
+    required DnsSecStatus dnsSecStatus,
+  }) = _QueryItem;
+
+  late final int pageKey = (timestamp.millisecondsSinceEpoch / 1000).round();
+}
+
+@freezed
+class TopItems with _$TopItems {
+  TopItems._();
+
+  factory TopItems({
+    required Map<String, int> topQueries,
+    required Map<String, int> topAds,
+  }) = _TopItems;
+}

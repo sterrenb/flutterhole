@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/entities.dart';
@@ -100,6 +101,13 @@ final queryTypesProvider = FutureProvider<PiQueryTypes>((ref) async {
   return api.fetchQueryTypes(pi);
 });
 
+final topItemsProvider = FutureProvider<TopItems>((ref) async {
+  final api = ref.read(piholeRepositoryProvider);
+  final pi = ref.watch(activePiProvider).state;
+  await Future.delayed(Duration(seconds: 2));
+  return api.fetchTopItems(pi);
+});
+
 final forwardDestinationsProvider =
     FutureProvider<PiForwardDestinations>((ref) async {
   final api = ref.read(piholeRepositoryProvider);
@@ -134,9 +142,12 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
       : super(PiholeStatus.loading());
 
   Future<void> fetchStatus() async {
+    final previousState = state;
     state = PiholeStatus.loading();
     await Future.delayed(Duration(seconds: 1));
+    print('fetching status in notifier');
     final result = await _repository.fetchStatus(_pi);
+    print('result: $result');
     state = result;
   }
 
@@ -160,7 +171,9 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
     print('sleeping: ${result}');
     Future.delayed(duration).then((_) {
       print('waking up');
-      fetchStatus();
+      if (mounted) {
+        fetchStatus();
+      }
     });
     print('scheduled');
   }
@@ -171,6 +184,75 @@ final piholeStatusNotifierProvider =
           ref.watch(piholeRepositoryProvider),
           ref.watch(activePiProvider).state,
         ));
+
+class QueryLogNotifier extends StateNotifier<List<QueryItem>> {
+  final PiholeRepository _repository;
+  final Pi _pi;
+
+  QueryLogNotifier(this._repository, this._pi) : super([]);
+
+  Future<void> fetchItems([int maxResults = 3]) async {
+    final items = await _repository.fetchQueryItems(_pi, maxResults);
+    state = items;
+  }
+
+  Future<List<QueryItem>> fetchMore(int pageKey) async {
+    final items = await _repository.fetchQueryItems(_pi, 100, pageKey);
+    return items;
+  }
+
+  void addDummy() {
+    final faker = Faker();
+
+    state = [
+      QueryItem(
+        timestamp: DateTime.now(),
+        queryType: "No",
+        domain: faker.internet.httpUrl(),
+        clientName: faker.internet.ipv4Address(),
+        queryStatus: QueryStatus.BlockedWithBlacklist,
+        dnsSecStatus: DnsSecStatus.Bogus,
+      ),
+      ...state,
+    ];
+  }
+
+  Future<List<QueryItem>> fetchDummies() async {
+    return [
+      QueryItem(
+        timestamp: DateTime.now(),
+        queryType: "No",
+        domain: faker.internet.httpUrl(),
+        clientName: faker.internet.ipv4Address(),
+        queryStatus: QueryStatus.BlockedWithBlacklist,
+        dnsSecStatus: DnsSecStatus.Bogus,
+      ),
+      QueryItem(
+        timestamp: DateTime.now(),
+        queryType: "No",
+        domain: faker.internet.httpUrl(),
+        clientName: faker.internet.ipv4Address(),
+        queryStatus: QueryStatus.BlockedWithBlacklist,
+        dnsSecStatus: DnsSecStatus.Bogus,
+      ),
+      QueryItem(
+        timestamp: DateTime.now(),
+        queryType: "No",
+        domain: faker.internet.httpUrl(),
+        clientName: faker.internet.ipv4Address(),
+        queryStatus: QueryStatus.BlockedWithBlacklist,
+        dnsSecStatus: DnsSecStatus.Bogus,
+      ),
+    ];
+  }
+}
+
+final queryLogNotifierProvider =
+    StateNotifierProvider<QueryLogNotifier, List<QueryItem>>(
+        (ref) => QueryLogNotifier(
+              ref.watch(piholeRepositoryProvider),
+              ref.watch(activePiProvider).state,
+            ));
 
 // final myStatusProvider = StateProvider<PiholeStatus>((ref) {
 //   final summary = ref.watch(summaryProvider);

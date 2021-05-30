@@ -23,6 +23,7 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
 
     return AppBar(
       elevation: 0.0,
+      // backgroundColor: Theme.of(context).colorScheme.surface,
       title: Row(
         children: [
           ActivePiTitle(),

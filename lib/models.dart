@@ -13,6 +13,7 @@ num _valueToNum(dynamic value) {
 @freezed
 class SummaryModel with _$SummaryModel {
   SummaryModel._();
+
   factory SummaryModel({
     @JsonKey(fromJson: _valueToNum, name: 'domains_being_blocked')
         required num domainsBeingBlocked,
@@ -73,6 +74,7 @@ class SummaryModel with _$SummaryModel {
 @freezed
 class PiholeStatusModel with _$PiholeStatusModel {
   PiholeStatusModel._();
+
   factory PiholeStatusModel({
     @JsonKey(name: 'status') required String status,
   }) = _PiholeStatusModel;
@@ -87,6 +89,7 @@ class PiholeStatusModel with _$PiholeStatusModel {
 @freezed
 class PiQueryTypesModel with _$PiQueryTypesModel {
   PiQueryTypesModel._();
+
   factory PiQueryTypesModel({
     @JsonKey(name: 'querytypes') required Map<String, num> types,
   }) = _PiQueryTypesModel;
@@ -102,6 +105,7 @@ class PiQueryTypesModel with _$PiQueryTypesModel {
 @freezed
 class PiForwardDestinationsModel with _$PiForwardDestinationsModel {
   PiForwardDestinationsModel._();
+
   factory PiForwardDestinationsModel({
     @JsonKey(name: 'forward_destinations')
         required Map<String, num> destinations,
@@ -118,6 +122,7 @@ class PiForwardDestinationsModel with _$PiForwardDestinationsModel {
 @freezed
 class PiQueriesOverTimeModel with _$PiQueriesOverTimeModel {
   PiQueriesOverTimeModel._();
+
   factory PiQueriesOverTimeModel({
     @JsonKey(name: 'domains_over_time')
         required Map<String, num> domainsOverTime,
@@ -135,4 +140,82 @@ class PiQueriesOverTimeModel with _$PiQueriesOverTimeModel {
 
   factory PiQueriesOverTimeModel.fromJson(Map<String, dynamic> json) =>
       _$PiQueriesOverTimeModelFromJson(json);
+}
+
+// https://github.com/pi-hole/AdminLTE/blob/44aff727e59d129e6201341caa1d74c8b2954bd2/scripts/pi-hole/js/queries.js#L158
+DnsSecStatus _stringToDnsSecStatus(String json) {
+  final int index = int.parse(json);
+
+  if (index > DnsSecStatus.values.length || index == 0)
+    return DnsSecStatus.values.first;
+
+  return DnsSecStatus.values[index - 1];
+}
+
+// https://github.com/pi-hole/AdminLTE/blob/44aff727e59d129e6201341caa1d74c8b2954bd2/scripts/pi-hole/js/queries.js#L181
+QueryStatus _stringToQueryStatus(String json) {
+  try {
+    final int index = int.parse(json);
+
+    if (index > QueryStatus.values.length || index == 0)
+      return QueryStatus.values.first;
+
+    return QueryStatus.values[index];
+  } catch (e) {
+    return QueryStatus.Unknown;
+  }
+}
+
+DateTime dateTimeFromPiholeString(String key) =>
+    DateTime.fromMillisecondsSinceEpoch(int.tryParse(key + '000') ?? 0);
+
+@freezed
+class QueryItemModel with _$QueryItemModel {
+  QueryItemModel._();
+
+  factory QueryItemModel({
+    required DateTime timestamp,
+    required String queryType,
+    required String domain,
+    required String clientName,
+    required QueryStatus queryStatus,
+    required DnsSecStatus dnsSecStatus,
+  }) = _QueryItemModel;
+
+  factory QueryItemModel.fromList(List<dynamic> list) => QueryItemModel(
+        timestamp: dateTimeFromPiholeString(list.elementAt(0)),
+        queryType: list.elementAt(1),
+        // queryType: _$enumDecodeNullable(_$QueryTypeEnumMap, list.elementAt(1)),
+        domain: list.elementAt(2) as String,
+        clientName: list.elementAt(3) as String,
+        queryStatus: _stringToQueryStatus(list.elementAt(4)),
+        dnsSecStatus: _stringToDnsSecStatus(list.elementAt(5)),
+      );
+
+  late final QueryItem entity = QueryItem(
+    timestamp: timestamp,
+    queryType: queryType,
+    domain: domain,
+    clientName: clientName,
+    queryStatus: queryStatus,
+    dnsSecStatus: dnsSecStatus,
+  );
+}
+
+@freezed
+class TopItemsModel with _$TopItemsModel {
+  TopItemsModel._();
+
+  factory TopItemsModel({
+    @JsonKey(name: 'top_queries') required Map<String, int> topQueries,
+    @JsonKey(name: 'top_ads') required Map<String, int> topAds,
+  }) = _TopItemsModel;
+
+  factory TopItemsModel.fromJson(Map<String, dynamic> json) =>
+      _$TopItemsModelFromJson(json);
+
+  late final TopItems entity = TopItems(
+    topQueries: topQueries,
+    topAds: topAds,
+  );
 }

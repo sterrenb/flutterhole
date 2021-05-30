@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_web/entities.dart';
 
-const String token = String.fromEnvironment('TOKEN');
+// const String token = String.fromEnvironment('TOKEN');
+const String token =
+    "ca2562667c9ab743ca4cf79df0d21bde73cdea7b369348e35b80ea332305c8ad";
 
 final debugPis = <Pi>[
   Pi(
@@ -69,15 +71,23 @@ class KIcons {
 
   static const IconData settings = Icons.settings;
   static const IconData dot = Icons.brightness_1;
+
   static const IconData totalQueries = Icons.public;
   static const IconData queriesBlocked = Icons.block;
   static const IconData percentBlocked = Icons.pie_chart;
   static const IconData domainsOnBlocklist = Icons.list;
+  static const IconData domainsPermittedTile = Icons.domain;
+  static const IconData domainsBlockedTile = Icons.domain_disabled;
 
   static const IconData enablePihole = Icons.play_arrow;
   static const IconData disablePihole = Icons.pause;
   static const IconData sleepPihole = Icons.alarm;
   static const IconData wakePihole = Icons.alarm_on;
+
+  static const IconData expand = Icons.keyboard_arrow_down;
+  static const IconData shrink = Icons.keyboard_arrow_up;
+
+  static const IconData error = Icons.warning;
 }
 
 class KColors {

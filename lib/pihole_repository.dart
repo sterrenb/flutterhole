@@ -30,7 +30,8 @@ class PiholeRepository {
       queryParameters: queryParameters,
     );
 
-    _validateData(response.data);
+    final error = _validateData(response.data);
+    if (error != null) throw error;
 
     return response.data;
   }
@@ -54,13 +55,13 @@ class PiholeRepository {
     return _get(pi, path, queryParameters);
   }
 
-  void _validateData(dynamic data) {
+  PiholeApiFailure? _validateData(dynamic data) {
     if (data is String && data.isEmpty) {
-      throw PiholeApiFailure.emptyString();
+      return PiholeApiFailure.emptyString();
     }
 
     if (data is List && data.isEmpty) {
-      throw PiholeApiFailure.emptyList();
+      return PiholeApiFailure.emptyList();
     }
   }
 
@@ -94,6 +95,7 @@ class PiholeRepository {
     try {
       final data = await _getSecure(pi, pi.baseApiUrl, {'getQueryTypes': ''});
 
+      print('data: ${data}');
       final queryTypes = PiQueryTypesModel.fromJson(data);
       return queryTypes.entity;
     } on DioError catch (e) {
@@ -233,6 +235,39 @@ class PiholeRepository {
         disabled: () => PiholeStatus.sleeping(duration, TimeOfDay.now()),
         orElse: () => status.entity,
       );
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
+
+  Future<List<QueryItem>> fetchQueryItems(Pi pi,
+      [int? maxResults, int? pageKey]) async {
+    print('fetching $maxResults from API');
+    try {
+      final params = <String, dynamic>{
+        'getAllQueries': maxResults?.toString() ?? '',
+        '_': pageKey ?? ''
+      };
+      print('params: $params');
+
+      final data = await _getSecure(pi, pi.baseApiUrl, params);
+
+      final list = data['data'] as List<dynamic>;
+      print(QueryItemModel.fromList(list[0]));
+      return List.from(
+          list.map((json) => QueryItemModel.fromList(json).entity));
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
+
+  // TODO add maxResults for fake pagination
+  Future<TopItems> fetchTopItems(Pi pi) async {
+    try {
+      final data = await _getSecure(pi, pi.baseApiUrl, {'topItems': ''});
+
+      final topItems = TopItemsModel.fromJson(data);
+      return topItems.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
     }
