@@ -71,8 +71,8 @@ class PiholeStatus with _$PiholeStatus {
 }
 
 @freezed
-class Summary with _$Summary {
-  const factory Summary({
+class PiSummary with _$PiSummary {
+  const factory PiSummary({
     required int domainsBeingBlocked,
     required int dnsQueriesToday,
     required int adsBlockedToday,
@@ -89,7 +89,7 @@ class Summary with _$Summary {
     required int replyIP,
     required int privacyLevel,
     required PiholeStatus status,
-  }) = _Summary;
+  }) = _PiSummary;
 }
 
 double _celciusToKelvin(double temp) => temp + 273.15;
@@ -179,4 +179,9 @@ class TopItems with _$TopItems {
     required Map<String, int> topQueries,
     required Map<String, int> topAds,
   }) = _TopItems;
+}
+
+@freezed
+abstract class SleepPiParams with _$SleepPiParams {
+  factory SleepPiParams(Pi pi, Duration duration) = _SleepPiParams;
 }

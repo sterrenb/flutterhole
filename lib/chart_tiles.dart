@@ -18,7 +18,8 @@ List<DoughnutChartData> _createQueryTypesChartData(PiQueryTypes queryTypes) {
 class QueryTypesTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final queryTypes = useProvider(queryTypesProvider);
+    final pi = useProvider(activePiProvider).state;
+    final queryTypes = useProvider(queryTypesProvider(pi));
 
     return Card(
       child: Center(
@@ -53,7 +54,8 @@ List<LineChartData> _createQueriesOverTimeChartData(
 class ForwardDestinationsTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final forwardDestinations = useProvider(forwardDestinationsProvider);
+    final pi = useProvider(activePiProvider).state;
+    final forwardDestinations = useProvider(forwardDestinationsProvider(pi));
 
     return Card(
       child: Center(
@@ -86,7 +88,8 @@ final format = DateFormat.Hm();
 class QueriesOverTimeTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final queriesOverTime = useProvider(queriesOverTimeProvider);
+    final pi = useProvider(activePiProvider).state;
+    final queriesOverTime = useProvider(queriesOverTimeProvider(pi));
 
     return Card(
       child: Center(

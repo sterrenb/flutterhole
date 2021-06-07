@@ -4,7 +4,6 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,9 +11,29 @@ import 'package:intl/intl.dart';
 
 final _numberFormat = NumberFormat();
 
+class TextTileBottomText extends StatelessWidget {
+  const TextTileBottomText(
+    this.title, {
+    Key? key,
+  }) : super(key: key);
+
+  final String title;
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 32.0,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+    );
+  }
+}
+
 class TextTileContent extends StatelessWidget {
   final String top;
-  final String bottom;
+  final Widget bottom;
   final IconData iconData;
   final double iconLeft;
   final double? iconTop;
@@ -49,14 +68,7 @@ class TextTileContent extends StatelessWidget {
               ),
             ),
             Center(
-              child: Text(
-                bottom,
-                style: TextStyle(
-                  fontSize: 32.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              child: bottom,
             ),
           ],
         ),
@@ -112,27 +124,26 @@ class _TileIcon extends StatelessWidget {
 class TotalQueriesTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final summary = useProvider(summaryProvider);
+    final option = useProvider(sumCacheProvider).state;
+
     return Card(
       color: Colors.green,
       child: InkWell(
         onTap: () {
-          summary.maybeWhen(
-            data: (summary) => showOkAlertDialog(
+          option.fold(
+            () {},
+            (piSummary) => showOkAlertDialog(
               context: context,
-              message: summary.toString(),
+              message: piSummary.toString(),
             ),
-            error: (e, s) => showErrorDialog(context, e, s),
-            orElse: () {},
           );
         },
         child: TextTileContent(
           top: 'Total Queries',
-          bottom: summary.when(
-            data: (summary) => _numberFormat.format(summary.dnsQueriesToday),
-            loading: () => '',
-            error: (e, s) => '---',
-          ),
+          bottom: TextTileBottomText(option.fold(
+            () => '---',
+            (piSummary) => _numberFormat.format(piSummary.dnsQueriesToday),
+          )),
           iconData: KIcons.totalQueries,
         ),
       ),
@@ -143,27 +154,24 @@ class TotalQueriesTile extends HookWidget {
 class QueriesBlockedTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final summary = useProvider(summaryProvider);
+    final option = useProvider(sumCacheProvider).state;
     return Card(
       color: Colors.lightBlue,
       child: InkWell(
         onTap: () {
-          summary.maybeWhen(
-            data: (summary) => showOkAlertDialog(
-              context: context,
-              message: summary.toString(),
-            ),
-            error: (e, s) => showErrorDialog(context, e, s),
-            orElse: () {},
-          );
+          option.fold(
+              () => null,
+              (a) => showOkAlertDialog(
+                    context: context,
+                    message: a.toString(),
+                  ));
         },
         child: TextTileContent(
           top: 'Queries Blocked',
-          bottom: summary.when(
-            data: (summary) => _numberFormat.format(summary.adsBlockedToday),
-            loading: () => '',
-            error: (e, s) => '---',
-          ),
+          bottom: TextTileBottomText(option.fold(
+            () => '---',
+            (piSummary) => _numberFormat.format(piSummary.adsBlockedToday),
+          )),
           iconData: KIcons.queriesBlocked,
         ),
       ),
@@ -174,28 +182,26 @@ class QueriesBlockedTile extends HookWidget {
 class PercentBlockedTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final summary = useProvider(summaryProvider);
+    final option = useProvider(sumCacheProvider).state;
     return Card(
       color: Colors.orange,
       child: InkWell(
         onTap: () {
-          summary.maybeWhen(
-            data: (summary) => showOkAlertDialog(
+          option.fold(
+            () {},
+            (piSummary) => showOkAlertDialog(
               context: context,
-              message: summary.toString(),
+              message: piSummary.toString(),
             ),
-            error: (e, s) => showErrorDialog(context, e, s),
-            orElse: () {},
           );
         },
         child: TextTileContent(
           top: 'Percent Blocked',
-          bottom: summary.when(
-            data: (summary) =>
-                '${summary.adsPercentageToday.toStringAsFixed(2)}%',
-            loading: () => '',
-            error: (e, s) => '---',
-          ),
+          bottom: TextTileBottomText(option.fold(
+            () => '---',
+            (piSummary) =>
+                '${piSummary.adsPercentageToday.toStringAsFixed(2)}%',
+          )),
           iconData: KIcons.percentBlocked,
         ),
       ),
@@ -206,82 +212,26 @@ class PercentBlockedTile extends HookWidget {
 class DomainsOnBlocklistTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final summary = useProvider(summaryProvider);
+    final option = useProvider(sumCacheProvider).state;
     return Card(
       color: Colors.red,
       child: InkWell(
         onTap: () {
-          summary.maybeWhen(
-            data: (summary) => showOkAlertDialog(
+          option.fold(
+            () {},
+            (piSummary) => showOkAlertDialog(
               context: context,
-              message: summary.toString(),
+              message: piSummary.toString(),
             ),
-            error: (e, s) => showErrorDialog(context, e, s),
-            orElse: () {},
           );
         },
         child: TextTileContent(
           top: 'Domains on Blocklist',
-          bottom: summary.when(
-            data: (summary) =>
-                _numberFormat.format(summary.domainsBeingBlocked),
-            loading: () => '',
-            error: (e, s) => '---',
-          ),
+          bottom: TextTileBottomText(option.fold(
+            () => '---',
+            (piSummary) => _numberFormat.format(piSummary.domainsBeingBlocked),
+          )),
           iconData: KIcons.domainsOnBlocklist,
-        ),
-      ),
-    );
-  }
-}
-
-class PiTemperatureTile extends HookWidget {
-  @override
-  Widget build(BuildContext context) {
-    final temperatureReading = useProvider(temperatureReadingProvider).state;
-    final option = useProvider(piDetailsOptionProvider).state;
-    return Card(
-      color: Colors.orange,
-      child: InkWell(
-        onTap: () {},
-        child: TextTileContent(
-          top: 'Temperature',
-          bottom: option.fold(() => '---', (details) {
-            switch (temperatureReading) {
-              case TemperatureReading.celcius:
-                return details.temperatureInCelcius;
-              case TemperatureReading.fahrenheit:
-                return details.temperatureInFahrenheit;
-              case TemperatureReading.kelvin:
-              default:
-                return details.temperatureInKelvin;
-            }
-          }),
-          iconData: KIcons.temperatureReading,
-          iconTop: 16.0,
-        ),
-      ),
-    );
-  }
-}
-
-class PiMemoryTile extends HookWidget {
-  @override
-  Widget build(BuildContext context) {
-    final option = useProvider(piDetailsOptionProvider).state;
-    return Card(
-      color: Colors.blueGrey,
-      // color: Colors.grey[800],
-      child: InkWell(
-        onTap: () {},
-        child: TextTileContent(
-          top: 'Memory Usage',
-          bottom: option.fold(() => '---', (details) {
-            if (details.memoryUsage < 0) return '---';
-            return '${details.memoryUsage.toStringAsFixed(1)}%';
-          }),
-          iconData: KIcons.memoryUsage,
-          iconTop: 16.0,
         ),
       ),
     );
@@ -341,7 +291,8 @@ class _QueryItemTile extends StatelessWidget {
 class TopPermittedDomainsTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final topItems = useProvider(topItemsProvider);
+    final pi = useProvider(activePiProvider).state;
+    final topItems = useProvider(topItemsProvider(pi));
     final expanded = useState(false);
     final ticker = useSingleTickerProvider();
     return Card(
@@ -418,7 +369,8 @@ class TopPermittedDomainsTile extends HookWidget {
 class TopBlockedDomainsTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final topItems = useProvider(topItemsProvider);
+    final pi = useProvider(activePiProvider).state;
+    final topItems = useProvider(topItemsProvider(pi));
     final expanded = useState(false);
     final ticker = useSingleTickerProvider();
     return Card(

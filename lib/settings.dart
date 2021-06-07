@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
+import 'package:flutterhole_web/features/home/temperature_tile.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -120,9 +121,9 @@ class AppSettingsList extends HookWidget {
     final temperatureReading = useProvider(temperatureReadingProvider);
     final updateFrequency = useProvider(updateFrequencyProvider);
 
-    final pi = useProvider(activePiProvider);
+    final pi = useProvider(activePiProvider).state;
 
-    final summary = useProvider(summaryProvider);
+    final piSummary = useProvider(piSummaryProvider(pi));
     return SettingsList(
       physics: const BouncingScrollPhysics(),
       sections: [
@@ -130,7 +131,7 @@ class AppSettingsList extends HookWidget {
         CustomSection(
           child: SettingsTile(
             title: 'Active Pi-hole',
-            subtitle: '${pi.state.title}',
+            subtitle: '${pi.title}',
             leading: Icon(KIcons.pihole),
             onPressed: (context) => showActivePiDialog(context, context.read),
           ),
@@ -151,35 +152,8 @@ class AppSettingsList extends HookWidget {
               subtitle:
                   '${_temperatureReadingToString(temperatureReading.state)}',
               leading: Icon(KIcons.temperatureReading),
-              onPressed: (context) async {
-                final selectedTemperatureReading = await showConfirmationDialog(
-                  context: context,
-                  title: 'Temperature reading',
-                  message: 'Used for the Pi-hole CPU temperature',
-                  initialSelectedActionKey: temperatureReading.state,
-                  actions: [
-                    AlertDialogAction<TemperatureReading>(
-                      key: TemperatureReading.celcius,
-                      label:
-                          '${_temperatureReadingToString(TemperatureReading.celcius)}',
-                    ),
-                    AlertDialogAction<TemperatureReading>(
-                      key: TemperatureReading.fahrenheit,
-                      label:
-                          '${_temperatureReadingToString(TemperatureReading.fahrenheit)}',
-                    ),
-                    AlertDialogAction<TemperatureReading>(
-                      key: TemperatureReading.kelvin,
-                      label:
-                          '${_temperatureReadingToString(TemperatureReading.kelvin)}',
-                    ),
-                  ],
-                );
-
-                if (selectedTemperatureReading != null) {
-                  temperatureReading.state = selectedTemperatureReading;
-                }
-              },
+              onPressed: (context) =>
+                  showTemperatureReadingDialog(context, context.read),
             ),
           ],
         ),
@@ -208,13 +182,13 @@ class AppSettingsList extends HookWidget {
             children: [
               VersionListTile(),
               ListTile(
-                subtitle: Text('${pi.state.baseApiUrl}'),
+                subtitle: Text('${pi.baseApiUrl}'),
               ),
               ListTile(
-                title: Text('$summary'),
+                title: Text('$piSummary'),
                 trailing: TextButton(
                     onPressed: () {
-                      context.refresh(summaryProvider);
+                      context.refresh(piSummaryProvider(pi));
                     },
                     child: Text('Fetch')),
               ),
@@ -223,7 +197,7 @@ class AppSettingsList extends HookWidget {
         ),
         CustomSection(
           child: ListTile(
-            subtitle: Text(pi.state.toString()),
+            subtitle: Text(pi.toString()),
           ),
         ),
       ],

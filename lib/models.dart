@@ -11,10 +11,10 @@ num _valueToNum(dynamic value) {
 }
 
 @freezed
-class SummaryModel with _$SummaryModel {
-  SummaryModel._();
+class PiSummaryModel with _$PiSummaryModel {
+  PiSummaryModel._();
 
-  factory SummaryModel({
+  factory PiSummaryModel({
     @JsonKey(fromJson: _valueToNum, name: 'domains_being_blocked')
         required num domainsBeingBlocked,
     @JsonKey(fromJson: _valueToNum, name: 'dns_queries_today')
@@ -45,12 +45,12 @@ class SummaryModel with _$SummaryModel {
     @JsonKey(fromJson: _valueToNum, name: 'privacy_level')
         required num privacyLevel,
     @JsonKey(name: 'status') required String status,
-  }) = _SummaryModel;
+  }) = _PiSummaryModel;
 
-  factory SummaryModel.fromJson(Map<String, dynamic> json) =>
-      _$SummaryModelFromJson(json);
+  factory PiSummaryModel.fromJson(Map<String, dynamic> json) =>
+      _$PiSummaryModelFromJson(json);
 
-  late final Summary entity = Summary(
+  late final PiSummary entity = PiSummary(
     domainsBeingBlocked: domainsBeingBlocked.toInt(),
     dnsQueriesToday: dnsQueriesToday.toInt(),
     adsBlockedToday: adsBlockedToday.toInt(),

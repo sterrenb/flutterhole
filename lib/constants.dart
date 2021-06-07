@@ -9,7 +9,7 @@ final debugPis = <Pi>[
   Pi(
     title: 'My hole',
     description: '',
-    primaryColor: Colors.purple,
+    primaryColor: Colors.indigoAccent,
     baseUrl: 'http://10.0.1.5',
     apiPath: 'admin/api.php',
     apiPort: 80,
@@ -96,7 +96,7 @@ class KColors {
   static const Color inactive = Colors.grey;
   static const Color loading = Colors.blue;
   static const Color sleeping = Colors.blue;
-  static const Color summary = Colors.green;
+  static const Color piSummary = Colors.green;
   static const Color clients = Colors.blue;
   static const Color domains = Colors.orange;
   static const Color settings = Colors.red;
@@ -118,4 +118,8 @@ class KColors {
   static const Color blocked = Colors.red;
   static const Color forwarded = Colors.green;
   static const Color cached = Colors.blue;
+
+  static const Color temperatureLow = Colors.green;
+  static const Color temperatureMed = Colors.orange;
+  static const Color temperatureHigh = Colors.red;
 }

@@ -2,8 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/models.dart';
-import 'package:flutterhole_web/providers.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
@@ -14,20 +12,21 @@ import 'package:html/parser.dart';
 const String kNoApiTokenNeeded = 'No password set';
 
 class PiholeRepository {
-  const PiholeRepository(this.read);
+  const PiholeRepository(this.dio, this.pi);
 
-  final Reader read;
+  final Dio dio;
+  final Pi pi;
 
   Future<dynamic> _get(
-    Pi pi,
     String path,
     Map<String, dynamic> queryParameters,
+    CancelToken cancelToken,
   ) async {
-    final dio = read(dioProvider);
-
+    print(queryParameters);
     final response = await dio.get(
       path,
       queryParameters: queryParameters,
+      cancelToken: cancelToken,
     );
 
     final error = _validateData(response.data);
@@ -37,9 +36,9 @@ class PiholeRepository {
   }
 
   Future<dynamic> _getSecure(
-    Pi pi,
     String path,
     Map<String, dynamic> queryParameters,
+    CancelToken cancelToken,
   ) async {
     if (pi.apiTokenRequired && pi.apiToken.isEmpty) {
       throw PiholeApiFailure.notAuthenticated();
@@ -52,7 +51,7 @@ class PiholeRepository {
 
     queryParameters.addAll({'auth': apiToken});
 
-    return _get(pi, path, queryParameters);
+    return _get(path, queryParameters, cancelToken);
   }
 
   PiholeApiFailure? _validateData(dynamic data) {
@@ -81,21 +80,22 @@ class PiholeRepository {
     }
   }
 
-  Future<Summary> fetchSummary(Pi pi) async {
+  Future<PiSummary> fetchPiSummary(CancelToken cancelToken) async {
     try {
-      final data = await _get(pi, pi.baseApiUrl, {'summaryRaw': ''});
-      final summary = SummaryModel.fromJson(data);
-      return summary.entity;
+      final data = await _get(pi.baseApiUrl, {'summaryRaw': ''}, cancelToken);
+      final piSummary = PiSummaryModel.fromJson(data);
+      return piSummary.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
     }
   }
 
-  Future<PiQueryTypes> fetchQueryTypes(Pi pi) async {
+  Future<PiQueryTypes> fetchQueryTypes(CancelToken cancelToken) async {
     try {
-      final data = await _getSecure(pi, pi.baseApiUrl, {'getQueryTypes': ''});
+      final data =
+          await _getSecure(pi.baseApiUrl, {'getQueryTypes': ''}, cancelToken);
 
-      print('data: ${data}');
+      print('data: $data');
       final queryTypes = PiQueryTypesModel.fromJson(data);
       return queryTypes.entity;
     } on DioError catch (e) {
@@ -103,10 +103,11 @@ class PiholeRepository {
     }
   }
 
-  Future<PiForwardDestinations> fetchForwardDestinations(Pi pi) async {
+  Future<PiForwardDestinations> fetchForwardDestinations(
+      CancelToken cancelToken) async {
     try {
-      final data =
-          await _getSecure(pi, pi.baseApiUrl, {'getForwardDestinations': ''});
+      final data = await _getSecure(
+          pi.baseApiUrl, {'getForwardDestinations': ''}, cancelToken);
 
       final forwardDestinations = PiForwardDestinationsModel.fromJson(data);
       final Map<String, double> map = Map.from(forwardDestinations.destinations)
@@ -122,10 +123,11 @@ class PiholeRepository {
     }
   }
 
-  Future<PiQueriesOverTime> fetchQueriesOverTime(Pi pi) async {
+  Future<PiQueriesOverTime> fetchQueriesOverTime(
+      CancelToken cancelToken) async {
     try {
-      final data =
-          await _getSecure(pi, pi.baseApiUrl, {'overTimeData10mins': ''});
+      final data = await _getSecure(
+          pi.baseApiUrl, {'overTimeData10mins': ''}, cancelToken);
 
       final queries = PiQueriesOverTimeModel.fromJson(data);
       return queries.entity;
@@ -164,9 +166,7 @@ class PiholeRepository {
     return List<double>.from(element.innerHtml.getNumbers());
   }
 
-  Future<PiDetails> fetchPiDetails(Pi pi) async {
-    final dio = read(dioProvider);
-
+  Future<PiDetails> fetchPiDetails() async {
     try {
       final response = await dio.get(pi.adminHome);
       final data = response.data;
@@ -187,9 +187,9 @@ class PiholeRepository {
     }
   }
 
-  Future<PiholeStatus> fetchStatus(Pi pi) async {
+  Future<PiholeStatus> fetchStatus(CancelToken cancelToken) async {
     try {
-      final data = await _get(pi, pi.baseApiUrl, {'status': ''});
+      final data = await _get(pi.baseApiUrl, {'status': ''}, cancelToken);
 
       final status = PiholeStatusModel.fromJson(data);
       print('status after fetch: ${status.entity}');
@@ -199,10 +199,10 @@ class PiholeRepository {
     }
   }
 
-  Future<PiholeStatus> enable(Pi pi) async {
+  Future<PiholeStatus> enable(CancelToken cancelToken) async {
     print('enabling ${pi.title}');
     try {
-      final data = await _getSecure(pi, pi.baseApiUrl, {'enable': ''});
+      final data = await _getSecure(pi.baseApiUrl, {'enable': ''}, cancelToken);
 
       final status = PiholeStatusModel.fromJson(data);
       print('status after enable: ${status.entity}');
@@ -212,10 +212,11 @@ class PiholeRepository {
     }
   }
 
-  Future<PiholeStatus> disable(Pi pi) async {
+  Future<PiholeStatus> disable(CancelToken cancelToken) async {
     print('disabling ${pi.title}');
     try {
-      final data = await _getSecure(pi, pi.baseApiUrl, {'disable': ''});
+      final data =
+          await _getSecure(pi.baseApiUrl, {'disable': ''}, cancelToken);
 
       final status = PiholeStatusModel.fromJson(data);
       return status.entity;
@@ -224,11 +225,11 @@ class PiholeRepository {
     }
   }
 
-  Future<PiholeStatus> sleep(Pi pi, Duration duration) async {
+  Future<PiholeStatus> sleep(Duration duration, CancelToken cancelToken) async {
     print('sleeping ${pi.title}');
     try {
       final data = await _getSecure(
-          pi, pi.baseApiUrl, {'disable': '${duration.inSeconds}'});
+          pi.baseApiUrl, {'disable': '${duration.inSeconds}'}, cancelToken);
 
       final status = PiholeStatusModel.fromJson(data);
       return status.entity.maybeWhen(
@@ -240,7 +241,7 @@ class PiholeRepository {
     }
   }
 
-  Future<List<QueryItem>> fetchQueryItems(Pi pi,
+  Future<List<QueryItem>> fetchQueryItems(CancelToken cancelToken,
       [int? maxResults, int? pageKey]) async {
     print('fetching $maxResults from API');
     try {
@@ -250,7 +251,7 @@ class PiholeRepository {
       };
       print('params: $params');
 
-      final data = await _getSecure(pi, pi.baseApiUrl, params);
+      final data = await _getSecure(pi.baseApiUrl, params, cancelToken);
 
       final list = data['data'] as List<dynamic>;
       print(QueryItemModel.fromList(list[0]));
@@ -262,9 +263,10 @@ class PiholeRepository {
   }
 
   // TODO add maxResults for fake pagination
-  Future<TopItems> fetchTopItems(Pi pi) async {
+  Future<TopItems> fetchTopItems(CancelToken cancelToken) async {
     try {
-      final data = await _getSecure(pi, pi.baseApiUrl, {'topItems': ''});
+      final data =
+          await _getSecure(pi.baseApiUrl, {'topItems': ''}, cancelToken);
 
       final topItems = TopItemsModel.fromJson(data);
       return topItems.entity;

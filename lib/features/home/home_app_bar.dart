@@ -20,6 +20,7 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final updateFrequency = useProvider(updateFrequencyProvider);
+    final pi = useProvider(activePiProvider).state;
 
     return AppBar(
       elevation: 0.0,
@@ -34,14 +35,24 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
             duration: updateFrequency.state,
             onTimer: (timer) {
               // TODO debug
-              // print('onTimer');
-              context.refresh(piDetailsProvider);
+              print('onTimer');
+              context.refresh(piDetailsProvider(pi));
+              context
+                  .refresh(piSummaryProvider(context.read(simplePiProvider)));
             },
           ),
         ],
       ),
       actions: [
         // HomeRefreshIcon(),
+        IconButton(
+          icon: Icon(Icons.cancel),
+          tooltip: 'Cancel',
+          onPressed: () {
+            print('cancelling');
+            context.read(cancelTokenStateProvider).state.cancel('manual-debug');
+          },
+        ),
         IconButton(
           icon: Icon(KIcons.pihole),
           tooltip: 'Select Pi-hole',
@@ -71,15 +82,19 @@ class ActivePiTitle extends HookWidget {
 
 class HomeRefreshIcon extends HookWidget {
   @override
-  Widget build(BuildContext context) => IconButton(
-        icon: Icon(KIcons.refresh),
-        onPressed: () {
-          context.refresh(summaryProvider);
-          // context.refresh(queryTypesProvider);
-          // context.refresh(forwardDestinationsProvider);
-          // context.refresh(piDetailsProvider);
-        },
-      );
+  Widget build(BuildContext context) {
+    final pi = useProvider(activePiProvider).state;
+
+    return IconButton(
+      icon: Icon(KIcons.refresh),
+      onPressed: () {
+        context.refresh(piSummaryProvider(pi));
+        // context.refresh(queryTypesProvider);
+        // context.refresh(forwardDestinationsProvider);
+        // context.refresh(piDetailsProvider);
+      },
+    );
+  }
 }
 
 class PiToggleIconButton extends HookWidget {

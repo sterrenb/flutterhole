@@ -31,35 +31,102 @@ Future<void> showActivePiDialog(BuildContext context, Reader read) async {
   }
 }
 
-Future<void> showUpdateFrequencyDialog(
-    BuildContext context, Reader read) async {
-  void pop(Duration? key) => Navigator.of(context).pop(key);
-  final theme = Theme.of(context);
+class DialogHeader extends StatelessWidget {
+  const DialogHeader({
+    Key? key,
+    required this.title,
+    required this.message,
+  }) : super(key: key);
+  final String title;
+  final String message;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 24,
+        vertical: 16,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              message,
+              style: Theme.of(context).textTheme.caption,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-  const String title = 'Update frequency';
-  const String message = 'Used for refreshing API data, temperature, etc.';
+class DialogBase extends HookWidget {
+  const DialogBase({
+    Key? key,
+    required this.header,
+    required this.body,
+    required this.onSelect,
+    required this.onCancel,
+    required this.theme,
+    this.extraButtons = const [],
+  }) : super(key: key);
 
-  final selectedDuration = await showModal<Duration>(
-    context: context,
-    configuration: FadeScaleTransitionConfiguration(),
-    builder: (context) => DurationDialog(
-      title: title,
-      message: message,
-      initialValue: read(updateFrequencyProvider).state,
-      onSelect: pop,
-      theme: theme,
-    ),
-    //     _Dialog(
-    //   title: title,
-    //   message: message,
-    //   theme: theme,
-    //   initialKey: Duration(seconds: 15),
-    //   onSelect: pop,
-    // ),
-  );
+  final Widget header;
+  final Widget body;
+  final VoidCallback onSelect;
+  final VoidCallback onCancel;
+  final ThemeData theme;
+  final List<Widget> extraButtons;
 
-  if (selectedDuration != null) {
-    read(updateFrequencyProvider).state = selectedDuration;
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          header,
+          const Divider(height: 0),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: body,
+          ),
+          const Divider(height: 0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ButtonBar(
+                layoutBehavior: ButtonBarLayoutBehavior.constrained,
+                children: extraButtons,
+              ),
+              ButtonBar(
+                layoutBehavior: ButtonBarLayoutBehavior.constrained,
+                children: [
+                  TextButton(
+                    child: Text(
+                      MaterialLocalizations.of(context).cancelButtonLabel,
+                    ),
+                    onPressed: onCancel,
+                  ),
+                  TextButton(
+                    child: Text(
+                      MaterialLocalizations.of(context).okButtonLabel,
+                    ),
+                    onPressed: onSelect,
+                  )
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -83,165 +150,51 @@ class DurationDialog extends HookWidget {
   Widget build(BuildContext context) {
     final counter = useState(initialValue.inSeconds.toDouble());
 
-    return Dialog(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+    return DialogBase(
+      header: DialogHeader(
+        title: title,
+        message: message,
+      ),
+      body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 16,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: theme.textTheme.headline6,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    message,
-                    style: theme.textTheme.caption,
-                  ),
-                ),
-              ],
-            ),
+          Slider(
+            value: counter.value,
+            min: 0.0,
+            max: 60.0,
+            divisions: 60,
+            label: counter.value == 0.0
+                ? 'Disabled'
+                : '${counter.value.round()} seconds',
+            onChanged: (value) => counter.value = value,
           ),
-          const Divider(height: 0),
-          Column(
-            children: [
-              Slider(
-                value: counter.value,
-                min: 0.0,
-                max: 60.0,
-                divisions: 60,
-                label: counter.value == 0.0
-                    ? 'Disabled'
-                    : '${counter.value.round()} seconds',
-                onChanged: (value) => counter.value = value,
-              ),
-              // Text('${counter.value}'),
-            ],
-          ),
-          const Divider(height: 0),
-          ButtonBar(
-            layoutBehavior: ButtonBarLayoutBehavior.constrained,
-            children: [
-              TextButton(
-                child: Text(
-                  MaterialLocalizations.of(context).cancelButtonLabel,
-                ),
-                onPressed: () => onSelect(null),
-              ),
-              TextButton(
-                child: Text(
-                  MaterialLocalizations.of(context).okButtonLabel,
-                ),
-                onPressed: () =>
-                    onSelect(Duration(seconds: counter.value.round())),
-              )
-            ],
-          )
+          // Text('${counter.value}'),
         ],
       ),
+      onSelect: () => onSelect(Duration(seconds: counter.value.round())),
+      onCancel: () => onSelect(null),
+      theme: theme,
     );
   }
 }
 
-class _Dialog<T> extends StatefulWidget {
-  const _Dialog({
-    Key? key,
-    required this.title,
-    required this.message,
-    required this.initialKey,
-    required this.onSelect,
-    required this.theme,
-  }) : super(key: key);
+Future<void> showUpdateFrequencyDialog(
+    BuildContext context, Reader read) async {
+  void pop(Duration? key) => Navigator.of(context).pop(key);
+  final theme = Theme.of(context);
 
-  final String title;
-  final String message;
-  final T initialKey;
-  final ValueChanged<T?> onSelect;
-  final ThemeData theme;
+  final selectedDuration = await showModal<Duration>(
+    context: context,
+    configuration: FadeScaleTransitionConfiguration(),
+    builder: (context) => DurationDialog(
+      title: 'Update frequency',
+      message: 'Used for refreshing API data, temperature, etc.',
+      initialValue: read(updateFrequencyProvider).state,
+      onSelect: pop,
+      theme: theme,
+    ),
+  );
 
-  @override
-  __DialogState<T> createState() => __DialogState<T>();
-}
-
-class __DialogState<T> extends State<_Dialog<T>> {
-  T? selectedKey;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedKey = widget.initialKey;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 16,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.title,
-                  style: widget.theme.textTheme.headline6,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    widget.message,
-                    style: widget.theme.textTheme.caption,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 0),
-          Flexible(
-            child: SizedBox(
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  Text('Hi'),
-                  Text('Hi'),
-                  Text('Hi'),
-                ],
-              ),
-            ),
-          ),
-          const Divider(height: 0),
-          ButtonBar(
-            layoutBehavior: ButtonBarLayoutBehavior.constrained,
-            children: [
-              TextButton(
-                child: Text(
-                  MaterialLocalizations.of(context).cancelButtonLabel,
-                ),
-                onPressed: () => widget.onSelect(null),
-              ),
-              TextButton(
-                child: Text(
-                  MaterialLocalizations.of(context).okButtonLabel,
-                ),
-                onPressed: () => widget.onSelect(selectedKey),
-              )
-            ],
-          )
-        ],
-      ),
-    );
+  if (selectedDuration != null) {
+    read(updateFrequencyProvider).state = selectedDuration;
   }
 }

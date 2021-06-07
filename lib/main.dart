@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutterhole_web/home_screen.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import 'home_screen.dart';
 
 class Logger extends ProviderObserver {
   @override
   void didUpdateProvider(ProviderBase provider, Object? newValue) {
-    print('[${provider.name ?? provider.runtimeType}] value: $newValue');
+    print('''
+{
+  "provider": "${provider.name ?? provider.runtimeType}",
+  "newValue": "$newValue"
+}''');
   }
 }
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // runApp(ProviderScope(observers: [Logger()], child: MyApp()));
+  runApp(ProviderScope(observers: [Logger()], child: MyApp()));
   runApp(ProviderScope(child: MyApp()));
 }
 
@@ -31,10 +36,15 @@ class MyApp extends HookWidget {
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
+        // primaryColor: Colors.purple,
         accentColor: Colors.orangeAccent,
+        colorScheme: ColorScheme.dark(
+          secondary: Colors.orangeAccent,
+        ),
       ),
       themeMode: themeMode.state,
       home: const HomeScreen(),
+      // home: const DashboardPage(),
       // home: const QueryLogScreen(),
     );
   }
