@@ -44,7 +44,7 @@ class MemoryTile extends HookWidget {
                                         color: Colors.white,
                                       ),
                                       Container(
-                                        height: e * 10 * 5,
+                                        height: e * 10,
                                         width: 10,
                                         color: KColors.temperatureMed,
                                       ),

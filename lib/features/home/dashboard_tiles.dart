@@ -11,6 +11,8 @@ import 'package:intl/intl.dart';
 
 final _numberFormat = NumberFormat();
 
+const double kMinTileHeight = 150.0;
+
 class TextTileBottomText extends StatelessWidget {
   const TextTileBottomText(
     this.title, {
@@ -55,17 +57,14 @@ class TextTileContent extends StatelessWidget {
         Positioned(
           left: iconLeft,
           top: iconTop,
-          child: _TileIcon(iconData),
+          child: DashboardTileIcon(iconData),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Center(
-              child: Text(
-                top,
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
+              child: TileTitle(top),
             ),
             Center(
               child: bottom,
@@ -77,8 +76,26 @@ class TextTileContent extends StatelessWidget {
   }
 }
 
-class _TileIcon extends StatelessWidget {
-  const _TileIcon(
+class TileTitle extends StatelessWidget {
+  const TileTitle(
+    this.title, {
+    Key? key,
+  }) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: TextStyle(fontSize: 18, color: Colors.white),
+      textAlign: TextAlign.center,
+    );
+  }
+}
+
+class DashboardTileIcon extends StatelessWidget {
+  const DashboardTileIcon(
     this.primaryIcon, {
     Key? key,
     this.subIcon,
@@ -127,7 +144,7 @@ class TotalQueriesTile extends HookWidget {
     final option = useProvider(sumCacheProvider).state;
 
     return Card(
-      color: Colors.green,
+      color: KColors.totalQueries,
       child: InkWell(
         onTap: () {
           option.fold(
@@ -156,7 +173,7 @@ class QueriesBlockedTile extends HookWidget {
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
     return Card(
-      color: Colors.lightBlue,
+      color: KColors.queriesBlocked,
       child: InkWell(
         onTap: () {
           option.fold(
@@ -184,7 +201,7 @@ class PercentBlockedTile extends HookWidget {
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
     return Card(
-      color: Colors.orange,
+      color: KColors.percentBlocked,
       child: InkWell(
         onTap: () {
           option.fold(
@@ -214,7 +231,7 @@ class DomainsOnBlocklistTile extends HookWidget {
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
     return Card(
-      color: Colors.red,
+      color: KColors.domainsOnBlocklist,
       child: InkWell(
         onTap: () {
           option.fold(
@@ -306,11 +323,10 @@ class TopPermittedDomainsTile extends HookWidget {
           children: [
             ListTile(
               // tileColor: Colors.green.withOpacity(0.1),
-              title: Text(
+              title: TileTitle(
                 'Permitted Domains',
-                textAlign: TextAlign.center,
               ),
-              leading: _TileIcon(
+              leading: DashboardTileIcon(
                 KIcons.domainsPermittedTile,
                 subIcon: Icons.check_box,
                 subIconColor: Colors.green,
@@ -385,11 +401,10 @@ class TopBlockedDomainsTile extends HookWidget {
               // color: Colors.orange,
               child: ListTile(
                 // tileColor: Colors.red.withOpacity(0.1),
-                title: Text(
+                title: TileTitle(
                   'Blocked Domains',
-                  textAlign: TextAlign.center,
                 ),
-                leading: _TileIcon(
+                leading: DashboardTileIcon(
                   KIcons.domainsPermittedTile,
                   subIcon: Icons.remove_circle,
                   subIconColor: Colors.red,

@@ -3,7 +3,7 @@ import 'package:flutterhole_web/entities.dart';
 
 // const String token = String.fromEnvironment('TOKEN');
 const String token =
-    "ca2562667c9ab743ca4cf79df0d21bde73cdea7b369348e35b80ea332305c8ad";
+    "3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c";
 
 final debugPis = <Pi>[
   Pi(
@@ -78,6 +78,7 @@ class KIcons {
   static const IconData domainsOnBlocklist = Icons.list;
   static const IconData domainsPermittedTile = Icons.domain;
   static const IconData domainsBlockedTile = Icons.domain_disabled;
+  static const IconData queriesOverTime = Icons.stacked_line_chart;
 
   static const IconData enablePihole = Icons.play_arrow;
   static const IconData disablePihole = Icons.pause;
@@ -119,7 +120,12 @@ class KColors {
   static const Color forwarded = Colors.green;
   static const Color cached = Colors.blue;
 
+  static const Color totalQueries = Colors.lightGreen;
+  static const Color queriesBlocked = Colors.lightBlue;
+  static const Color percentBlocked = Colors.orange;
+  static const Color domainsOnBlocklist = Colors.red;
+
   static const Color temperatureLow = Colors.green;
-  static const Color temperatureMed = Colors.orange;
+  static const Color temperatureMed = Colors.orangeAccent;
   static const Color temperatureHigh = Colors.red;
 }

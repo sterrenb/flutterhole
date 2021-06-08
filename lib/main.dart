@@ -10,10 +10,10 @@ class Logger extends ProviderObserver {
   @override
   void didUpdateProvider(ProviderBase provider, Object? newValue) {
     print('''
-{
-  "provider": "${provider.name ?? provider.runtimeType}",
-  "newValue": "$newValue"
-}''');
+
+  "{ provider": "${provider.name ?? provider.runtimeType}",
+  "  newValue": ${newValue.toString()} }
+''');
   }
 }
 

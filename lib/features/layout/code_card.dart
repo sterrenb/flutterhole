@@ -22,7 +22,6 @@ class CodeCard extends HookWidget {
         onTap: tappable
             ? () {
                 expand.value = !expand.value;
-                print(expand.value);
               }
             : null,
         child: SingleChildScrollView(

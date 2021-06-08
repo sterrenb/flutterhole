@@ -111,12 +111,13 @@ class PiholeRepository {
 
       final forwardDestinations = PiForwardDestinationsModel.fromJson(data);
       final Map<String, double> map = Map.from(forwardDestinations.destinations)
-        ..addAll({
-          'testje': 12.34,
-          'testje2': 12.34,
-          'testje34454532453543': 12.34,
-          'tesyasyayayaytje': 12.34
-        });
+          // ..addAll({
+          //   'testje': 12.34,
+          //   'testje2': 12.34,
+          //   'testje34454532453543': 12.34,
+          //   'tesyasyayayaytje': 12.34
+          // })
+          ;
       return PiForwardDestinations(destinations: map);
     } on DioError catch (e) {
       throw _onDioError(e);
@@ -129,7 +130,10 @@ class PiholeRepository {
       final data = await _getSecure(
           pi.baseApiUrl, {'overTimeData10mins': ''}, cancelToken);
 
-      final queries = PiQueriesOverTimeModel.fromJson(data);
+      var queries = PiQueriesOverTimeModel.fromJson(data);
+      queries = queries.copyWith(
+          domainsOverTime: queries.domainsOverTime
+              .map((key, value) => MapEntry(key, value * 1)));
       return queries.entity;
     } on DioError catch (e) {
       throw _onDioError(e);

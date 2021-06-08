@@ -74,7 +74,6 @@ class TemperatureScaleDropdownButton extends HookWidget {
         value: reading.state,
         onChanged: (reading) {
           if (reading != null) {
-            print('updating');
             context.read(temperatureReadingProvider).state = reading;
           }
         },

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -128,10 +130,14 @@ class PiForwardDestinations with _$PiForwardDestinations {
 
 @freezed
 class PiQueriesOverTime with _$PiQueriesOverTime {
+  PiQueriesOverTime._();
+
   factory PiQueriesOverTime({
     required Map<DateTime, int> domainsOverTime,
     required Map<DateTime, int> adsOverTime,
   }) = _PiQueriesOverTime;
+
+  late final int highestDomains = domainsOverTime.values.reduce(max);
 }
 
 enum QueryStatus {

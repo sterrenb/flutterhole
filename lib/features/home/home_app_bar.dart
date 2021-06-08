@@ -45,14 +45,14 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
       ),
       actions: [
         // HomeRefreshIcon(),
-        IconButton(
-          icon: Icon(Icons.cancel),
-          tooltip: 'Cancel',
-          onPressed: () {
-            print('cancelling');
-            context.read(cancelTokenStateProvider).state.cancel('manual-debug');
-          },
-        ),
+        // IconButton(
+        //   icon: Icon(Icons.cancel),
+        //   tooltip: 'Cancel',
+        //   onPressed: () {
+        //     print('cancelling');
+        //     context.read(cancelTokenStateProvider).state.cancel('manual-debug');
+        //   },
+        // ),
         IconButton(
           icon: Icon(KIcons.pihole),
           tooltip: 'Select Pi-hole',

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutterhole_web/chart_tiles.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/home/home_app_bar.dart';
 import 'package:flutterhole_web/features/home/memory_tile.dart';
@@ -59,32 +60,45 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
           // 4,
           staggeredTiles: [
             // const StaggeredTile.count(4, 2),
+            QueriesBarChartTile.tile,
             const StaggeredTile.count(4, 1),
+            // const StaggeredTile.count(4, 3),
+
             const StaggeredTile.count(4, 1),
+            // QueriesBarChartTile.tile,
             const StaggeredTile.count(4, 1),
             const StaggeredTile.count(4, 1),
             const StaggeredTile.count(2, 2),
             const StaggeredTile.count(2, 2),
+            const StaggeredTile.count(4, 2),
+            const StaggeredTile.count(4, 2),
             // const StaggeredTile.count(4, 3),
 
             const StaggeredTile.fit(4),
             const StaggeredTile.fit(4),
             // const StaggeredTile.count(4, 3),
-            // const StaggeredTile.count(4, 3),
           ],
           children: [
+            QueriesBarChartTile(),
+            // Card(
+            //   child: ExpandableDashboardTile(
+            //     'Query graph',
+            //     title: TileTitle('Query graph'),
+            //     leading: DashboardTileIcon(KIcons.queriesOverTime),
+            //     child: Container(),
+            //   ),
+            // ),
+            // QueriesOverTimeTile(),
             TotalQueriesTile(),
             QueriesBlockedTile(),
             PercentBlockedTile(),
             DomainsOnBlocklistTile(),
             TemperatureTile(),
             MemoryTile(),
-            // QueriesOverTimeTile(),
+            QueryTypesTile(),
+            ForwardDestinationsTile(),
             TopPermittedDomainsTile(),
             TopBlockedDomainsTile(),
-
-            // QueryTypesTile(),
-            // ForwardDestinationsTile(),
           ],
           mainAxisSpacing: 4.0,
           crossAxisSpacing: 4.0,
