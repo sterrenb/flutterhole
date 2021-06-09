@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -139,24 +140,31 @@ class DashboardTileIcon extends StatelessWidget {
 }
 
 class TotalQueriesTile extends HookWidget {
+  static const String title = 'Total queries';
+
   @override
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
+
+    // final pi = useProvider(activePiProvider).state;
+    final value = useProvider(activeSummaryProvider);
 
     return Card(
       color: KColors.totalQueries,
       child: InkWell(
         onTap: () {
-          option.fold(
-            () {},
-            (piSummary) => showOkAlertDialog(
-              context: context,
-              message: piSummary.toString(),
-            ),
-          );
+          // final pi = context.read(activePiProvider);
+          // context.refresh(clientActivityOverTimeProvider(pi.state));
+          // option.fold(
+          //   () {},
+          //   (piSummary) => showOkAlertDialog(
+          //     context: context,
+          //     message: piSummary.toString(),
+          //   ),
+          // );
         },
         child: TextTileContent(
-          top: 'Total Queries',
+          top: title,
           bottom: TextTileBottomText(option.fold(
             () => '---',
             (piSummary) => _numberFormat.format(piSummary.dnsQueriesToday),
@@ -308,8 +316,8 @@ class _QueryItemTile extends StatelessWidget {
 class TopPermittedDomainsTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final pi = useProvider(activePiProvider).state;
-    final topItems = useProvider(topItemsProvider(pi));
+    // final pi = useProvider(activePiProvider).state;
+    final topItems = useProvider(activeTopItemsProvider);
     final expanded = useState(false);
     final ticker = useSingleTickerProvider();
     return Card(
@@ -385,8 +393,7 @@ class TopPermittedDomainsTile extends HookWidget {
 class TopBlockedDomainsTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final pi = useProvider(activePiProvider).state;
-    final topItems = useProvider(topItemsProvider(pi));
+    final topItems = useProvider(activeTopItemsProvider);
     final expanded = useState(false);
     final ticker = useSingleTickerProvider();
     return Card(

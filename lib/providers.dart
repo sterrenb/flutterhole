@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/pihole_repository.dart';
+import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -62,10 +63,7 @@ final simplePiProvider = Provider<Pi>((ref) {
   return debugPis.first;
 });
 
-// TODO hopefully remove
-final activePiProvider = StateProvider<Pi>((_) => debugPis.first);
 final piStatusProvider = StateProvider((_) => PiholeStatus.loading());
-final allPisProvider = Provider((_) => debugPis);
 
 final piholeRepositoryProviderFamily =
     Provider.family<PiholeRepository, Pi>((ref, pi) {
@@ -164,6 +162,15 @@ final queriesOverTimeProvider =
 
   final api = ref.read(piholeRepositoryProviderFamily(pi));
   return api.fetchQueriesOverTime(cancelToken);
+});
+
+final clientActivityOverTimeProvider = FutureProvider.autoDispose
+    .family<PiClientActivityOverTime, Pi>((ref, pi) async {
+  final cancelToken = CancelToken();
+  ref.onDispose(() => cancelToken.cancel());
+
+  final api = ref.read(piholeRepositoryProviderFamily(pi));
+  return api.fetchClientActivityOverTime(cancelToken);
 });
 
 final piDetailsProvider =

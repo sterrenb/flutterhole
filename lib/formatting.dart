@@ -1,4 +1,5 @@
 import 'package:flutterhole_web/providers.dart';
+import 'package:intl/intl.dart';
 
 extension doubleX on double {
   double _celciusToKelvin(double temp) => temp + 273.15;
@@ -27,3 +28,13 @@ extension doubleX on double {
 }
 
 final importFormatting = 123;
+
+final _hm = DateFormat.Hm();
+
+extension DateTimeX on DateTime {
+  String beforeAfter(Duration duration) {
+    final before = _hm.format(subtract(duration));
+    final after = _hm.format(add(duration));
+    return '$before - $after';
+  }
+}

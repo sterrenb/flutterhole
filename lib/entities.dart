@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'entities.freezed.dart';
@@ -8,6 +9,7 @@ part 'entities.freezed.dart';
 @freezed
 class Pi with _$Pi {
   Pi._();
+
   factory Pi({
     // annotation
     required String title,
@@ -101,6 +103,7 @@ double _celciusToFahrenheit(double temp) => (temp * (9 / 5)) + 32;
 @freezed
 class PiDetails with _$PiDetails {
   PiDetails._();
+
   factory PiDetails({
     required double temperature,
     required List<double> cpuLoads,
@@ -188,6 +191,56 @@ class TopItems with _$TopItems {
 }
 
 @freezed
-abstract class SleepPiParams with _$SleepPiParams {
+class SleepPiParams with _$SleepPiParams {
   factory SleepPiParams(Pi pi, Duration duration) = _SleepPiParams;
+}
+
+@freezed
+class PiClientName with _$PiClientName {
+  PiClientName._();
+
+  factory PiClientName({
+    required String ip,
+    required String name,
+  }) = _PiClientName;
+}
+
+@freezed
+class PiClientActivityOverTime with _$PiClientActivityOverTime {
+  PiClientActivityOverTime._();
+
+  factory PiClientActivityOverTime({
+    required List<PiClientName> clients,
+    required Map<DateTime, List<int>> activity,
+  }) = _PiClientActivityOverTime;
+
+  late final Map<PiClientName, List<int>> byClient = clients.asMap().map(
+      (index, client) => MapEntry(
+          client, activity.values.map((e) => e.elementAt(index)).toList()));
+}
+
+enum DashboardID {
+  TotalQueries,
+  QueriesBlocked,
+  PercentBlocked,
+  DomainsOnBlocklist,
+  QueriesBarChart,
+  ClientActivityBarChart,
+  Temperature,
+  Memory,
+  QueryTypes,
+  ForwardDestinations,
+  TopPermittedDomains,
+  TopBlockedDomains,
+}
+
+@freezed
+class DashboardEntry with _$DashboardEntry {
+  DashboardEntry._();
+
+  factory DashboardEntry({
+    required DashboardID id,
+    required StaggeredTile tile,
+    required bool enabled,
+  }) = _DashboardEntry;
 }

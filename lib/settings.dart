@@ -6,6 +6,7 @@ import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/home/temperature_tile.dart';
 import 'package:flutterhole_web/providers.dart';
+import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';

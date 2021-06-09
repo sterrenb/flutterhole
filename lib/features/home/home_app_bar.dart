@@ -4,6 +4,7 @@ import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
+import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/settings_screen.dart';
@@ -20,7 +21,6 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final updateFrequency = useProvider(updateFrequencyProvider);
-    final pi = useProvider(activePiProvider).state;
 
     return AppBar(
       elevation: 0.0,
@@ -35,10 +35,10 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
             duration: updateFrequency.state,
             onTimer: (timer) {
               // TODO debug
-              print('onTimer');
-              context.refresh(piDetailsProvider(pi));
-              context
-                  .refresh(piSummaryProvider(context.read(simplePiProvider)));
+              // print('onTimer');
+              // context.refresh(piDetailsProvider(pi));
+              // context
+              //     .refresh(piSummaryProvider(context.read(simplePiProvider)));
             },
           ),
         ],
@@ -68,31 +68,6 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
         // PiToggleIconButton(),
         // PiSleepIconButton(),
       ],
-    );
-  }
-}
-
-class ActivePiTitle extends HookWidget {
-  @override
-  Widget build(BuildContext context) {
-    final pi = useProvider(activePiProvider);
-    return Text(pi.state.title);
-  }
-}
-
-class HomeRefreshIcon extends HookWidget {
-  @override
-  Widget build(BuildContext context) {
-    final pi = useProvider(activePiProvider).state;
-
-    return IconButton(
-      icon: Icon(KIcons.refresh),
-      onPressed: () {
-        context.refresh(piSummaryProvider(pi));
-        // context.refresh(queryTypesProvider);
-        // context.refresh(forwardDestinationsProvider);
-        // context.refresh(piDetailsProvider);
-      },
     );
   }
 }

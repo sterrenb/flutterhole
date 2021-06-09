@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
+import 'package:flutterhole_web/features/layout/snackbar.dart';
 import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -211,10 +212,29 @@ class TemperatureTile extends HookWidget {
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            // onTap: () {
-            //   // showTemperatureRangeDialog(context, context.read);
-            //   showTemperatureReadingDialog(context, context.read);
-            // },
+            onTap: detailsOption.fold(
+                () => null,
+                (details) => () {
+                      String message;
+                      switch (temperatureReading) {
+                        case TemperatureReading.celcius:
+                          message = details.temperatureInCelcius;
+                          break;
+                        case TemperatureReading.fahrenheit:
+                          message = details.temperatureInCelcius;
+                          break;
+                        case TemperatureReading.kelvin:
+                          message = details.temperatureInCelcius;
+                      }
+                      ScaffoldMessenger.of(context)
+                          .showThemedSnackBarNow(context,
+                              message: 'Temperature: ${[
+                                details.temperatureInCelcius,
+                                details.temperatureInFahrenheit,
+                                details.temperatureInKelvin
+                              ].join(' | ')}',
+                              leading: Icon(KIcons.temperatureReading));
+                    }),
             onLongPress: () {
               showTemperatureRangeDialog(context, context.read);
             },

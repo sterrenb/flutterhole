@@ -79,6 +79,13 @@ class PiStatusToggleIcon extends HookWidget {
 }
 
 class PiStatusIndicator extends HookWidget {
+  const PiStatusIndicator({
+    Key? key,
+    this.enabled = true,
+  }) : super(key: key);
+
+  final bool enabled;
+
   @override
   Widget build(BuildContext context) {
     // final piStatus = useProvider(piholeStatusProvider).state;
@@ -108,7 +115,7 @@ class PiStatusIndicator extends HookWidget {
             sleeping: (duration, _) =>
                 'Sleeping for ${duration.inSeconds - tick.value} seconds',
           ),
-          onPressed: () {},
+          onPressed: enabled ? () {} : null,
         ),
         IgnorePointer(
           child: AnimatedOpacity(

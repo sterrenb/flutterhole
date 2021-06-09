@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/chart_tiles.dart';
+import 'package:flutterhole_web/features/home/dashboard_grid.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/home/home_app_bar.dart';
 import 'package:flutterhole_web/features/home/memory_tile.dart';
 import 'package:flutterhole_web/features/home/temperature_tile.dart';
+import 'package:flutterhole_web/features/layout/app_drawer.dart';
+import 'package:flutterhole_web/features/layout/double_back_to_cxlose_app.dart';
 import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/providers.dart';
+import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -60,7 +64,6 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
           // 4,
           staggeredTiles: [
             // const StaggeredTile.count(4, 2),
-            QueriesBarChartTile.tile,
             const StaggeredTile.count(4, 1),
             // const StaggeredTile.count(4, 3),
 
@@ -68,6 +71,8 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
             // QueriesBarChartTile.tile,
             const StaggeredTile.count(4, 1),
             const StaggeredTile.count(4, 1),
+            StaggeredTile.fit(4),
+            StaggeredTile.fit(4),
             const StaggeredTile.count(2, 2),
             const StaggeredTile.count(2, 2),
             const StaggeredTile.count(4, 2),
@@ -79,7 +84,6 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
             // const StaggeredTile.count(4, 3),
           ],
           children: [
-            QueriesBarChartTile(),
             // Card(
             //   child: ExpandableDashboardTile(
             //     'Query graph',
@@ -93,6 +97,8 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
             QueriesBlockedTile(),
             PercentBlockedTile(),
             DomainsOnBlocklistTile(),
+            QueriesBarChartTile(),
+            ClientActivityBarChartTile(),
             TemperatureTile(),
             MemoryTile(),
             QueryTypesTile(),
@@ -118,13 +124,16 @@ class HomeScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     useEffect(() {
-      print('home build first');
+      // print('home build first');
       context.read(piholeStatusNotifierProvider.notifier).fetchStatus();
     }, [piholeStatusNotifierProvider]);
 
     return Scaffold(
       appBar: HomeAppBar(),
-      body: RefreshableHomeGrid(),
+      drawer: AppDrawer(),
+      body: DoubleBackToCloseApp(child: DashboardGrid()),
+
+      // body: RefreshableHomeGrid(),
       floatingActionButton: PiToggleFloatingActionButton(),
     );
   }

@@ -622,12 +622,10 @@ packages:
   pull_to_refresh:
     dependency: "direct main"
     description:
-      path: "."
-      ref: nullsafety
-      resolved-ref: "8048176b0b2e961bab8f3537f2591766673326b5"
-      url: "https://github.com/peng8350/flutter_pulltorefresh.git"
-    source: git
-    version: "1.6.4-nullsafety.1"
+      name: pull_to_refresh
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   riverpod:
     dependency: transitive
     description:

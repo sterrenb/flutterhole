@@ -35,7 +35,22 @@ final debugPis = <Pi>[
     basicAuthenticationPassword: 'null',
     proxyUrl: '',
     proxyPort: 8080,
-  )
+  ),
+  Pi(
+    title: 'Last',
+    description: '',
+    primaryColor: Colors.greenAccent,
+    baseUrl: 'http://10.0.1.5',
+    apiPath: 'admin/api.php',
+    apiPort: 80,
+    apiToken: token,
+    apiTokenRequired: true,
+    allowSelfSignedCertificates: false,
+    basicAuthenticationUsername: '',
+    basicAuthenticationPassword: '',
+    proxyUrl: '',
+    proxyPort: 8080,
+  ),
 ];
 
 class KStrings {
@@ -79,14 +94,19 @@ class KIcons {
   static const IconData domainsPermittedTile = Icons.domain;
   static const IconData domainsBlockedTile = Icons.domain_disabled;
   static const IconData queriesOverTime = Icons.stacked_line_chart;
+  static const IconData clientActivity = Icons.stacked_bar_chart;
 
   static const IconData enablePihole = Icons.play_arrow;
   static const IconData disablePihole = Icons.pause;
   static const IconData sleepPihole = Icons.alarm;
   static const IconData wakePihole = Icons.alarm_on;
 
+  static const IconData toggleVisible = Icons.visibility;
+  static const IconData toggleInvisible = Icons.visibility_off;
+
   static const IconData expand = Icons.keyboard_arrow_down;
   static const IconData shrink = Icons.keyboard_arrow_up;
+  static const IconData selectDashboardTiles = Icons.playlist_add_check;
 
   static const IconData error = Icons.warning;
 }

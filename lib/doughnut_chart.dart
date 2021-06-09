@@ -145,36 +145,3 @@ class LegendTileList extends StatelessWidget {
     );
   }
 }
-
-class ChartTileScaffold extends StatelessWidget {
-  const ChartTileScaffold({
-    Key? key,
-    required this.left,
-    required this.right,
-  }) : super(key: key);
-
-  final Widget left;
-  final Widget right;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            flex: 2,
-            fit: FlexFit.tight,
-            child: left,
-          ),
-          Flexible(
-            flex: 3,
-            fit: FlexFit.tight,
-            child: right,
-          ),
-        ],
-      ),
-    );
-  }
-}

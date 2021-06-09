@@ -219,3 +219,39 @@ class TopItemsModel with _$TopItemsModel {
     topAds: topAds,
   );
 }
+
+@freezed
+class PiClientNameModel with _$PiClientNameModel {
+  PiClientNameModel._();
+
+  factory PiClientNameModel({
+    required String ip,
+    String? name,
+  }) = _PiClientNameModel;
+
+  factory PiClientNameModel.fromJson(Map<String, dynamic> json) =>
+      _$PiClientNameModelFromJson(json);
+
+  late final PiClientName entity = PiClientName(ip: ip, name: name ?? '');
+}
+
+@freezed
+class PiClientsOverTimeModel with _$PiClientsOverTimeModel {
+  PiClientsOverTimeModel._();
+
+  factory PiClientsOverTimeModel({
+    required List<PiClientNameModel> clients,
+    @JsonKey(name: 'over_time') required Map<String, List<int>> activity,
+  }) = _PiClientsOverTimeModel;
+
+  late final PiClientActivityOverTime entity = PiClientActivityOverTime(
+    clients: clients.map((e) => e.entity).toList(),
+    activity: activity.map((dateTimeString, hits) => MapEntry(
+          dateTimeFromPiholeString(dateTimeString),
+          hits,
+        )),
+  );
+
+  factory PiClientsOverTimeModel.fromJson(Map<String, dynamic> json) =>
+      _$PiClientsOverTimeModelFromJson(json);
+}

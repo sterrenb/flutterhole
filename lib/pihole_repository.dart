@@ -131,9 +131,29 @@ class PiholeRepository {
           pi.baseApiUrl, {'overTimeData10mins': ''}, cancelToken);
 
       var queries = PiQueriesOverTimeModel.fromJson(data);
-      queries = queries.copyWith(
-          domainsOverTime: queries.domainsOverTime
-              .map((key, value) => MapEntry(key, value * 1)));
+      // queries = queries.copyWith(
+      //     domainsOverTime: queries.domainsOverTime
+      //         .map((key, value) => MapEntry(key, value * 1)));
+      return queries.entity;
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
+
+  Future<PiClientActivityOverTime> fetchClientActivityOverTime(
+      CancelToken cancelToken) async {
+    try {
+      final data = await _getSecure(
+          pi.baseApiUrl,
+          {
+            'getClientNames': '',
+            'overTimeDataClients': '',
+          },
+          cancelToken);
+
+      var queries = PiClientsOverTimeModel.fromJson(data);
+      // print(queries);
+      // print(queries.entity.activity);
       return queries.entity;
     } on DioError catch (e) {
       throw _onDioError(e);

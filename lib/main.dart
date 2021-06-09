@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'home_screen.dart';
 
@@ -29,23 +30,26 @@ class MyApp extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final themeMode = useProvider(themeModeProvider);
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        // primaryColor: Colors.purple,
-        accentColor: Colors.orangeAccent,
-        colorScheme: ColorScheme.dark(
-          secondary: Colors.orangeAccent,
+    return RefreshConfiguration(
+      headerBuilder: () => WaterDropMaterialHeader(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.indigo,
         ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          accentColor: Colors.orangeAccent,
+          toggleableActiveColor: Colors.orangeAccent,
+          colorScheme: ColorScheme.dark(
+            secondary: Colors.orangeAccent,
+          ),
+        ),
+        themeMode: themeMode.state,
+        home: const HomeScreen(),
+        // home: const DashboardPage(),
+        // home: const QueryLogScreen(),
       ),
-      themeMode: themeMode.state,
-      home: const HomeScreen(),
-      // home: const DashboardPage(),
-      // home: const QueryLogScreen(),
     );
   }
 }
