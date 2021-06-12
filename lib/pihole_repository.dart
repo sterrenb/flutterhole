@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/models.dart';
 import 'package:html/dom.dart';
@@ -110,15 +109,15 @@ class PiholeRepository {
           pi.baseApiUrl, {'getForwardDestinations': ''}, cancelToken);
 
       final forwardDestinations = PiForwardDestinationsModel.fromJson(data);
-      final Map<String, double> map = Map.from(forwardDestinations.destinations)
-          // ..addAll({
-          //   'testje': 12.34,
-          //   'testje2': 12.34,
-          //   'testje34454532453543': 12.34,
-          //   'tesyasyayayaytje': 12.34
-          // })
-          ;
-      return PiForwardDestinations(destinations: map);
+      // final Map<String, double> map = Map.from(forwardDestinations.destinations)
+      // ..addAll({
+      //   'testje': 12.34,
+      //   'testje2': 12.34,
+      //   'testje34454532453543': 12.34,
+      //   'tesyasyayayaytje': 12.34
+      // })
+      // ;
+      return forwardDestinations.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
     }
@@ -211,12 +210,13 @@ class PiholeRepository {
     }
   }
 
-  Future<PiholeStatus> fetchStatus(CancelToken cancelToken) async {
+  Future<PiholeStatus> ping(CancelToken cancelToken) async {
     try {
       final data = await _get(pi.baseApiUrl, {'status': ''}, cancelToken);
 
       final status = PiholeStatusModel.fromJson(data);
-      print('status after fetch: ${status.entity}');
+      print('status for ${pi.baseApiUrl} after ping: ${status.entity}');
+      print('returning');
       return status.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
@@ -257,7 +257,7 @@ class PiholeRepository {
 
       final status = PiholeStatusModel.fromJson(data);
       return status.entity.maybeWhen(
-        disabled: () => PiholeStatus.sleeping(duration, TimeOfDay.now()),
+        disabled: () => PiholeStatus.sleeping(duration, DateTime.now()),
         orElse: () => status.entity,
       );
     } on DioError catch (e) {
@@ -294,6 +294,17 @@ class PiholeRepository {
 
       final topItems = TopItemsModel.fromJson(data);
       return topItems.entity;
+    } on DioError catch (e) {
+      throw _onDioError(e);
+    }
+  }
+
+  Future<PiVersions> fetchVersions(CancelToken cancelToken) async {
+    try {
+      final data = await _get(pi.baseApiUrl, {'versions': ''}, cancelToken);
+      await Future.delayed(Duration(seconds: 1));
+      final versions = PiVersionsModel.fromJson(data);
+      return versions.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
     }

@@ -4,6 +4,7 @@ import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/layout/grid.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
@@ -12,7 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class MemoryTile extends HookWidget {
   const MemoryTile({Key? key}) : super(key: key);
 
-  static const double loadWidth = 10.0;
+  static const double loadWidth = 3.0;
   static const double loadHeight = 10.0;
 
   String memoryUsageToString(double memoryUsage) =>
@@ -32,21 +33,24 @@ class MemoryTile extends HookWidget {
     }, [detailsValue, detailsCache]);
 
     return Card(
-      color: Colors.blueGrey,
+      color: KColors.memoryUsage,
       child: InkWell(
         onTap: detailsCache.value == null
             ? null
             : () {
                 ScaffoldMessenger.of(context).showThemedSnackBarNow(context,
                     message:
-                        'CPU loads: ${detailsCache.value!.cpuLoads.map((e) => '${(e * 100).toStringAsFixed(0)}%').join(' | ')}',
+                        'CPU load: ${detailsCache.value!.cpuLoads.map((e) => '${(e * 100).toStringAsFixed(0)}%').join(' | ')}',
                     leading: Icon(KIcons.memoryUsage));
               },
         child: Stack(
           alignment: Alignment.center,
           children: [
             TextTileContent(
-              top: 'Memory Usage',
+              top: TileTitle(
+                'Memory Usage',
+                color: Colors.white,
+              ),
               bottom: detailsValue.when(
                 data: (details) => TextTileBottomText(
                     memoryUsageToString(details.memoryUsage)),

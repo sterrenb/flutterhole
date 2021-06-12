@@ -6,11 +6,18 @@ import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/home/memory_tile.dart';
+import 'package:flutterhole_web/features/home/query_types_tile.dart';
 import 'package:flutterhole_web/features/home/temperature_tile.dart';
+import 'package:flutterhole_web/features/home/versions_tile.dart';
+import 'package:flutterhole_web/features/layout/grid.dart';
+import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 final List<DashboardEntry> _dashboardProviderDefault = {
+  DashboardID.QueryTypesTwo: const StaggeredTile.count(4, 2),
+  DashboardID.ForwardDestinationsTwo: const StaggeredTile.count(4, 2),
+  DashboardID.Versions: const StaggeredTile.fit(4),
   DashboardID.TotalQueries: const StaggeredTile.count(4, 1),
   DashboardID.QueriesBlocked: const StaggeredTile.count(4, 1),
   DashboardID.PercentBlocked: const StaggeredTile.count(4, 1),
@@ -25,7 +32,13 @@ final List<DashboardEntry> _dashboardProviderDefault = {
   DashboardID.TopBlockedDomains: const StaggeredTile.fit(4),
 }
     .entries
-    .map((e) => DashboardEntry(id: e.key, tile: e.value, enabled: true))
+    .map((e) => DashboardEntry(
+        id: e.key,
+        tile: e.value,
+        enabled: e.key != DashboardID.TopPermittedDomains &&
+            // e.key != DashboardID.TopBlockedDomains &&
+            e.key != DashboardID.QueryTypes &&
+            e.key != DashboardID.ForwardDestinations))
     .toList();
 
 final dashboardProvider =
@@ -55,17 +68,31 @@ class DashboardGrid extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final tiles = useProvider(dashboardProvider);
+    if (5 > 6)
+      return ListView(
+        children: [
+          TextButton(
+              onPressed: () {
+                context.read(piholeStatusNotifierProvider.notifier).ping();
+              },
+              child: Text('ping')),
+        ],
+      );
     return tiles.state.any((element) => element.enabled)
         ? TheGrid(
             tiles: [
+              const StaggeredTile.count(4, 1),
               ...tiles.state
                   .where((element) => element.enabled)
                   .map((e) => e.tile),
               const StaggeredTile.count(4, 1),
             ].toList(),
             children: <Widget>[
+              DashTog(),
               ...tiles.state.where((element) => element.enabled).map((e) {
                 switch (e.id) {
+                  case DashboardID.Versions:
+                    return VersionsTile();
                   case DashboardID.TotalQueries:
                     return TotalQueriesTile();
                   case DashboardID.QueriesBlocked:
@@ -84,8 +111,12 @@ class DashboardGrid extends HookWidget {
                     return MemoryTile();
                   case DashboardID.QueryTypes:
                     return QueryTypesTile();
+                  case DashboardID.QueryTypesTwo:
+                    return QueryTypesTileTwo();
                   case DashboardID.ForwardDestinations:
                     return ForwardDestinationsTile();
+                  case DashboardID.ForwardDestinationsTwo:
+                    return ForwardDestinationsTileTwo();
                   case DashboardID.TopPermittedDomains:
                     return TopPermittedDomainsTile();
                   case DashboardID.TopBlockedDomains:
@@ -126,6 +157,7 @@ class TheGrid extends HookWidget {
     return SmartRefresher(
       controller: controller.value,
       onRefresh: onRefresh,
+      enablePullDown: true,
       child: StaggeredGridView.count(
         crossAxisCount:
             (MediaQuery.of(context).orientation == Orientation.landscape)
@@ -133,9 +165,9 @@ class TheGrid extends HookWidget {
                 : 4,
         staggeredTiles: this.tiles,
         children: this.children,
-        mainAxisSpacing: 4.0,
-        crossAxisSpacing: 4.0,
-        padding: const EdgeInsets.all(4.0),
+        mainAxisSpacing: kGridSpacing,
+        crossAxisSpacing: kGridSpacing,
+        padding: const EdgeInsets.all(kGridSpacing),
         physics: const BouncingScrollPhysics(),
       ),
     );
@@ -165,7 +197,7 @@ class DashSelectScreen extends HookWidget {
       body: HookBuilder(builder: (context) {
         final dash = useProvider(dashboardProvider);
         return ReorderableListView(
-            buildDefaultDragHandles: false,
+            buildDefaultDragHandles: true,
             children: <Widget>[
               for (int index = 0; index < dash.state.length; index++)
                 GridSelectItem(
@@ -203,39 +235,50 @@ class GridSelectItem extends HookWidget {
       children: [
         Divider(height: 0),
         ListTile(
+          onTap: () {},
           title: Text(
             entry.id.toString().split('.').last,
             style: TextStyle(
                 color: entry.enabled ? null : Theme.of(context).disabledColor),
           ),
-          leading: DashboardTileIcon((DashboardID id) {
-            switch (id) {
-              case DashboardID.TotalQueries:
-                return KIcons.totalQueries;
-              case DashboardID.QueriesBlocked:
-                return KIcons.queriesBlocked;
-              case DashboardID.PercentBlocked:
-                return KIcons.percentBlocked;
-              case DashboardID.DomainsOnBlocklist:
-                return KIcons.domainsOnBlocklist;
-              case DashboardID.QueriesBarChart:
-                return KIcons.queriesOverTime;
-              case DashboardID.ClientActivityBarChart:
-                return KIcons.clientActivity;
-              case DashboardID.Temperature:
-                return KIcons.temperatureReading;
-              case DashboardID.Memory:
-                return KIcons.memoryUsage;
-              case DashboardID.QueryTypes:
-                return KIcons.memoryUsage;
-              case DashboardID.ForwardDestinations:
-                return KIcons.memoryUsage;
-              case DashboardID.TopPermittedDomains:
-                return KIcons.domainsPermittedTile;
-              case DashboardID.TopBlockedDomains:
-                return KIcons.domainsBlockedTile;
-            }
-          }(entry.id)),
+          leading: GridIcon(
+            (DashboardID id) {
+              switch (id) {
+                case DashboardID.Versions:
+                  return KIcons.appVersion;
+                case DashboardID.TotalQueries:
+                  return KIcons.totalQueries;
+                case DashboardID.TotalQueries:
+                  return KIcons.totalQueries;
+                case DashboardID.QueriesBlocked:
+                  return KIcons.queriesBlocked;
+                case DashboardID.PercentBlocked:
+                  return KIcons.percentBlocked;
+                case DashboardID.DomainsOnBlocklist:
+                  return KIcons.domainsOnBlocklist;
+                case DashboardID.QueriesBarChart:
+                  return KIcons.queriesOverTime;
+                case DashboardID.ClientActivityBarChart:
+                  return KIcons.clientActivity;
+                case DashboardID.Temperature:
+                  return KIcons.temperatureReading;
+                case DashboardID.Memory:
+                  return KIcons.memoryUsage;
+                case DashboardID.QueryTypes:
+                  return KIcons.memoryUsage;
+                case DashboardID.QueryTypesTwo:
+                  return KIcons.memoryUsage;
+                case DashboardID.ForwardDestinations:
+                case DashboardID.ForwardDestinationsTwo:
+                  return KIcons.memoryUsage;
+                case DashboardID.TopPermittedDomains:
+                  return KIcons.domainsPermittedTile;
+                case DashboardID.TopBlockedDomains:
+                  return KIcons.domainsBlockedTile;
+              }
+            }(entry.id),
+            isDark: true,
+          ),
           trailing: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,

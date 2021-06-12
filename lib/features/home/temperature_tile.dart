@@ -4,24 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
+import 'package:flutterhole_web/features/layout/grid.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
 import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'dashboard_tiles.dart';
-
-String _temperatureReadingToScale(TemperatureReading temperatureReading) {
-  switch (temperatureReading) {
-    case TemperatureReading.celcius:
-      return '°C';
-    case TemperatureReading.fahrenheit:
-      return '°F';
-    case TemperatureReading.kelvin:
-    default:
-      return '°K';
-  }
-}
 
 String _temperatureReadingToString(TemperatureReading temperatureReading) {
   switch (temperatureReading) {
@@ -273,7 +262,10 @@ class TemperatureTile extends HookWidget {
                                   )))),
                 ),
                 TextTileContent(
-                  top: 'Temperature',
+                  top: TileTitle(
+                    'Temperature',
+                    color: Colors.white,
+                  ),
                   bottom: TextTileBottomText(
                       detailsOption.fold(() => '---', (details) {
                     switch (temperatureReading) {

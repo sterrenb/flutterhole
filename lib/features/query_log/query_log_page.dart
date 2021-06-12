@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/layout/app_drawer.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -31,7 +32,6 @@ class __RefreshableQueryItemListState extends State<_RefreshableQueryItemList> {
 
   void onRefresh() async {
     print('refreshing');
-    await Future.delayed(Duration(seconds: 1));
     await widget.onRefresh();
     controller.refreshCompleted();
   }
@@ -67,8 +67,8 @@ class __RefreshableQueryItemListState extends State<_RefreshableQueryItemList> {
   }
 }
 
-class QueryLogScreen extends HookWidget {
-  const QueryLogScreen({Key? key}) : super(key: key);
+class QueryLogPage extends HookWidget {
+  const QueryLogPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +82,7 @@ class QueryLogScreen extends HookWidget {
     }, [piholeStatusNotifierProvider]);
 
     return Scaffold(
+      drawer: AppDrawer(),
       appBar: AppBar(
         title: Text('Query log (${queryItems.length})'),
         actions: [

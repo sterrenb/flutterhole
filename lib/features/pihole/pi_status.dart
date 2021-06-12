@@ -1,13 +1,18 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
+import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/layout/dialog.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
+import 'package:flutterhole_web/features/layout/snackbar.dart';
+import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/providers.dart';
+import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PiStatusIcon extends HookWidget {
@@ -21,14 +26,14 @@ class PiStatusIcon extends HookWidget {
   @override
   Widget build(BuildContext context) {
     // final piStatus = useProvider(piholeStatusProvider).state;
-    final piStatus = useProvider(piholeStatusNotifierProvider) as PiholeStatus;
+    final piStatus = useProvider(piholeStatusNotifierProvider);
 
     return Icon(
       KIcons.dot,
       color: piStatus.when(
         enabled: () => Colors.green,
         disabled: () => Colors.orange,
-        error: (_) => Colors.red,
+        failure: (_) => Colors.red,
         loading: () => Colors.grey,
         sleeping: (_, __) => Colors.blue,
       ),
@@ -43,13 +48,13 @@ class PiStatusToggleIcon extends HookWidget {
   @override
   Widget build(BuildContext context) {
     // final piStatus = useProvider(piholeStatusProvider).state;
-    final piStatus = useProvider(piholeStatusNotifierProvider) as PiholeStatus;
+    final piStatus = useProvider(piholeStatusNotifierProvider);
 
     final icon = Icon(
       piStatus.when(
         enabled: () => KIcons.disablePihole,
         disabled: () => KIcons.enablePihole,
-        error: (error) => Icons.warning,
+        failure: (error) => Icons.warning,
         sleeping: (_, __) => KIcons.wakePihole,
         loading: () => KIcons.enablePihole,
       ),
@@ -89,7 +94,7 @@ class PiStatusIndicator extends HookWidget {
   @override
   Widget build(BuildContext context) {
     // final piStatus = useProvider(piholeStatusProvider).state;
-    final piStatus = useProvider(piholeStatusNotifierProvider) as PiholeStatus;
+    final PiholeStatus piStatus = useProvider(piholeStatusNotifierProvider);
 
     final tick = useState<int>(0);
 
@@ -110,7 +115,7 @@ class PiStatusIndicator extends HookWidget {
           tooltip: piStatus.when(
             enabled: () => 'Enabled',
             disabled: () => 'Disabled',
-            error: (error) => error,
+            failure: (error) => error.toString(),
             loading: () => 'Loading',
             sleeping: (duration, _) =>
                 'Sleeping for ${duration.inSeconds - tick.value} seconds',
@@ -128,9 +133,12 @@ class PiStatusIndicator extends HookWidget {
             ),
           ),
         ),
-        piStatus.maybeWhen(
+        piStatus.maybeWhen<Widget>(
           sleeping: (duration, start) {
-            final progress = tick.value / duration.inSeconds;
+            // final progress = tick.value / duration.inSeconds;
+            final Duration diff = DateTime.now().difference(start);
+            final double progress = diff.inSeconds / duration.inSeconds;
+            // return 0;
             return PeriodicWidget(
                 child: Transform(
                   alignment: Alignment.center,
@@ -140,7 +148,7 @@ class PiStatusIndicator extends HookWidget {
                     height: 14.0,
                     child: CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation(KColors.sleeping),
-                      value: 1 - progress,
+                      value: progress,
                       strokeWidth: 2.0,
                     ),
                   ),
@@ -161,11 +169,68 @@ extension TimeOfDayX on TimeOfDay {
   int get inMinutes => hour * 60 + minute;
 }
 
+void useAsyncEffect(
+  FutureOr<dynamic> Function() effect, {
+  FutureOr<dynamic> Function()? cleanup,
+  List<Object>? keys,
+}) {
+  useEffect(() {
+    Future.microtask(effect);
+    return () {
+      if (cleanup != null) {
+        Future.microtask(cleanup);
+      }
+    };
+  }, keys);
+}
+
+class PiStatusMessenger extends HookWidget {
+  const PiStatusMessenger({
+    Key? key,
+    required this.builder,
+  }) : super(key: key);
+
+  final WidgetBuilder builder;
+
+  @override
+  Widget build(BuildContext context) {
+    final PiholeStatus piStatus = useProvider(piholeStatusNotifierProvider);
+    final debugMode = useProvider(debugModeProvider);
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    useAsyncEffect(() {
+      final message = piStatus.when<String?>(
+        loading: () => debugMode ? 'Loading' : null,
+        enabled: () => debugMode ? 'Enabled' : null,
+        disabled: () => debugMode ? 'Disabled' : null,
+        sleeping: (duration, start) => 'Sleeping',
+        failure: (e) {
+          return e.when(
+            notFound: () => 'Not found',
+            notAuthenticated: () => 'notAuthenticated',
+            invalidResponse: (statusCode) => 'invalidResponse',
+            emptyString: () => 'emptyString',
+            emptyList: () => 'emptyList',
+            cancelled: () => 'cancelled',
+            timeout: () => 'timeout',
+            unknown: (e) => 'unknown',
+          );
+        },
+      );
+
+      if (message != null) {
+        messenger.showThemedSnackBarNow(context, message: message);
+      }
+    }, keys: [messenger, piStatus]);
+
+    return builder(context);
+  }
+}
+
 class PiToggleFloatingActionButton extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    // final piStatus = useProvider(piholeStatusProvider).state;
-    final piStatus = useProvider(piholeStatusNotifierProvider) as PiholeStatus;
+    final piStatus = useProvider(piholeStatusNotifierProvider);
+    // final piStatus = watch(piholeStatusNotifierProvider);
 
     Future<Duration?> showCustomSleepDialog() async {
       final now = TimeOfDay.now();
@@ -234,6 +299,9 @@ class PiToggleFloatingActionButton extends HookWidget {
           },
           sleeping: (_, __) => () {
             context.read(piholeStatusNotifierProvider.notifier).enable();
+          },
+          failure: (failure) => () {
+            showFailureDialog(context, failure.title, failure.description);
           },
           orElse: () => null,
         ),

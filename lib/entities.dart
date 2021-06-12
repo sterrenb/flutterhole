@@ -12,6 +12,7 @@ class Pi with _$Pi {
 
   factory Pi({
     // annotation
+    required int id,
     required String title,
     required String description,
     required Color primaryColor,
@@ -35,7 +36,7 @@ class Pi with _$Pi {
 
   late final String host = '$baseUrl:$apiPort';
 
-  late final String baseApiUrl = '$host/$apiPath';
+  late final String baseApiUrl = '$host$apiPath';
 
   late final String adminHome = '$host/admin';
 }
@@ -62,16 +63,17 @@ class PiholeApiFailure with _$PiholeApiFailure {
 
 @freezed
 class PiholeStatus with _$PiholeStatus {
-  factory PiholeStatus.enabled() = PiholeStatusEnabled;
+  const factory PiholeStatus.loading() = PiholeStatusLoading;
+
+  const factory PiholeStatus.enabled() = PiholeStatusEnabled;
 
   const factory PiholeStatus.disabled() = PiholeStatusDisabled;
 
-  const factory PiholeStatus.loading() = PiholeStatusLoading;
-
-  const factory PiholeStatus.sleeping(Duration duration, TimeOfDay start) =
+  const factory PiholeStatus.sleeping(Duration duration, DateTime start) =
       PiholeStatusSleeping;
 
-  const factory PiholeStatus.error(String error) = PiholeStatusError;
+  const factory PiholeStatus.failure(PiholeApiFailure failure) =
+      PiholeStatusFailure;
 }
 
 @freezed
@@ -219,7 +221,28 @@ class PiClientActivityOverTime with _$PiClientActivityOverTime {
           client, activity.values.map((e) => e.elementAt(index)).toList()));
 }
 
+@freezed
+class PiVersions with _$PiVersions {
+  PiVersions._();
+
+  factory PiVersions({
+    required bool hasCoreUpdate,
+    required bool hasWebUpdate,
+    required bool hasFtlUpdate,
+    required String currentCoreVersion,
+    required String currentWebVersion,
+    required String currentFtlVersion,
+    required String latestCoreVersion,
+    required String latestWebVersion,
+    required String latestFtlVersion,
+    required String coreBranch,
+    required String webBranch,
+    required String ftlBranch,
+  }) = _PiVersions;
+}
+
 enum DashboardID {
+  Versions,
   TotalQueries,
   QueriesBlocked,
   PercentBlocked,
@@ -229,7 +252,9 @@ enum DashboardID {
   Temperature,
   Memory,
   QueryTypes,
+  QueryTypesTwo,
   ForwardDestinations,
+  ForwardDestinationsTwo,
   TopPermittedDomains,
   TopBlockedDomains,
 }
@@ -243,4 +268,20 @@ class DashboardEntry with _$DashboardEntry {
     required StaggeredTile tile,
     required bool enabled,
   }) = _DashboardEntry;
+}
+
+@freezed
+class SettingsState with _$SettingsState {
+  SettingsState._();
+
+  factory SettingsState({
+    required List<Pi> allPis,
+    required int activeId,
+    required bool dev,
+  }) = _SettingsState;
+
+  late final Pi active = allPis.firstWhere((element) {
+    print("${element.id} == $activeId");
+    return element.id == activeId;
+  });
 }

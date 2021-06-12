@@ -1,3 +1,4 @@
+import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:intl/intl.dart';
 
@@ -37,4 +38,19 @@ extension DateTimeX on DateTime {
     final after = _hm.format(add(duration));
     return '$before - $after';
   }
+}
+
+extension PiholeApiFailureX on PiholeApiFailure {
+  String get title => when(
+        notFound: () => 'Not found',
+        notAuthenticated: () => 'Not authenticated',
+        invalidResponse: (statusCode) => 'Invalid response',
+        emptyString: () => 'Empty response',
+        emptyList: () => 'Empty response',
+        cancelled: () => 'Cancelled',
+        timeout: () => 'Timeout',
+        unknown: (e) => 'Unknown',
+      );
+
+  String get description => title;
 }

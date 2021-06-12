@@ -116,17 +116,24 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
   }
 }
 
-class HomeScreen extends HookWidget {
-  const HomeScreen({
+class HomePage extends HookWidget {
+  const HomePage({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    useEffect(() {
-      // print('home build first');
-      context.read(piholeStatusNotifierProvider.notifier).fetchStatus();
-    }, [piholeStatusNotifierProvider]);
+    // return SettingsPage();
+    // final activePi = useProvider(activePiProvider).state;
+    useAsyncEffect(() {
+      print('pinging from homepage');
+      context.read(piholeStatusNotifierProvider.notifier).ping();
+      context.refresh(piSummaryProvider(context.read(activePiProvider).state));
+    }, keys: [
+      piholeStatusNotifierProvider,
+      piSummaryProvider,
+      activePiProvider
+    ]);
 
     return Scaffold(
       appBar: HomeAppBar(),

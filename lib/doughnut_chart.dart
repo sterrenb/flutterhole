@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
+import 'package:flutterhole_web/features/layout/grid.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 const double kShowTitleThresholdPercentage = 105.0;
@@ -13,6 +13,39 @@ class DoughnutChartData {
   final String x;
   final double y;
   final Color color;
+}
+
+class DoughnutScaffold extends StatelessWidget {
+  const DoughnutScaffold({
+    Key? key,
+    required this.left,
+    required this.right,
+  }) : super(key: key);
+
+  final Widget left;
+  final Widget right;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            flex: 2,
+            fit: FlexFit.tight,
+            child: left,
+          ),
+          Flexible(
+            flex: 3,
+            fit: FlexFit.tight,
+            child: right,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 final doughnutChartProvider =
@@ -142,6 +175,44 @@ class LegendTileList extends StatelessWidget {
           ...legendTiles,
         ],
       ),
+    );
+  }
+}
+
+class DoughnutChartLegendList extends StatelessWidget {
+  const DoughnutChartLegendList({
+    Key? key,
+    required this.title,
+    required this.iconData,
+    required this.builder,
+    required this.childCount,
+  }) : super(key: key);
+
+  final String title;
+  final IconData iconData;
+  final IndexedWidgetBuilder builder;
+  final int childCount;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: ListTile(
+            title: TileTitle(title),
+            // horizontalTitleGap: 0.0,
+            // leading: Container(
+            //   child: DashboardTileIcon(iconData),
+            //   // color: Colors.orangeAccent,
+            // ),
+          ),
+        ),
+        SliverList(
+            delegate: SliverChildBuilderDelegate(
+          builder,
+          childCount: childCount,
+        )),
+      ],
     );
   }
 }

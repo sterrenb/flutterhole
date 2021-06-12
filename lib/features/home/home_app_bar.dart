@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
-import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/providers.dart';
-import 'package:flutterhole_web/settings_screen.dart';
+import 'package:flutterhole_web/settings_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomeAppBar extends HookWidget implements PreferredSizeWidget {
@@ -25,23 +24,25 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
     return AppBar(
       elevation: 0.0,
       // backgroundColor: Theme.of(context).colorScheme.surface,
-      title: Row(
-        children: [
-          ActivePiTitle(),
-          PiStatusIndicator(),
-          PeriodicWidget(
-            child: Container(),
-            // child: PiTemperatureText(),
-            duration: updateFrequency.state,
-            onTimer: (timer) {
-              // TODO debug
-              // print('onTimer');
-              // context.refresh(piDetailsProvider(pi));
-              // context
-              //     .refresh(piSummaryProvider(context.read(simplePiProvider)));
-            },
-          ),
-        ],
+      title: PiStatusMessenger(
+        builder: (context) => Row(
+          children: [
+            ActivePiTitle(),
+            PiStatusIndicator(),
+            PeriodicWidget(
+              child: Container(),
+              // child: PiTemperatureText(),
+              duration: updateFrequency.state,
+              onTimer: (timer) {
+                // TODO debug
+                // print('onTimer');
+                // context.refresh(piDetailsProvider(pi));
+                // context
+                //     .refresh(piSummaryProvider(context.read(simplePiProvider)));
+              },
+            ),
+          ],
+        ),
       ),
       actions: [
         // HomeRefreshIcon(),
@@ -63,7 +64,7 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
             tooltip: 'Settings',
             onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                      builder: (BuildContext context) => SettingsScreen()),
+                      builder: (BuildContext context) => SettingsPage()),
                 )),
         // PiToggleIconButton(),
         // PiSleepIconButton(),
@@ -75,7 +76,7 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
 class PiToggleIconButton extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final piStatus = useProvider(piholeStatusNotifierProvider) as PiholeStatus;
+    final piStatus = useProvider(piholeStatusNotifierProvider);
 
     return IconButton(
         icon: PiStatusToggleIcon(),
@@ -83,7 +84,7 @@ class PiToggleIconButton extends HookWidget {
           enabled: () => 'Disable Pi-hole',
           disabled: () => 'Enable Pi-hole',
           loading: () => 'Loading',
-          error: (error) => error,
+          failure: (error) => error.toString(),
           sleeping: (duration, _) => 'Sleeping $duration',
         ),
         onPressed: piStatus.maybeWhen(

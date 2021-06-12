@@ -7,23 +7,30 @@ class CodeCard extends HookWidget {
     this.code, {
     Key? key,
     this.tappable = true,
-  }) : super(key: key);
+    this.expanded = true,
+    this.onTap,
+  })  : assert(tappable || onTap != null),
+        super(key: key);
 
   final String code;
   final bool tappable;
+  final bool expanded;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final expand = useState(true);
+    final expand = useState(expanded);
     return Card(
       elevation: 0.0,
       color: Colors.grey[850],
       child: InkWell(
+        customBorder:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
         onTap: tappable
             ? () {
                 expand.value = !expand.value;
               }
-            : null,
+            : (onTap != null ? onTap : null),
         child: SingleChildScrollView(
           scrollDirection: expand.value ? Axis.horizontal : Axis.vertical,
           // physics: const BouncingScrollPhysics(),

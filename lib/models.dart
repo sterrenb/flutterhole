@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutterhole_web/entities.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -112,8 +114,8 @@ class PiForwardDestinationsModel with _$PiForwardDestinationsModel {
   }) = _PiForwardDestinationsModel;
 
   late final PiForwardDestinations entity = PiForwardDestinations(
-      destinations: destinations.map<String, double>(
-          (key, value) => MapEntry(key.split('|').first, value.toDouble())));
+      destinations: destinations.map<String, double>((String key, num value) =>
+          MapEntry(key.split('|').first, value.toDouble())));
 
   factory PiForwardDestinationsModel.fromJson(Map<String, dynamic> json) =>
       _$PiForwardDestinationsModelFromJson(json);
@@ -254,4 +256,101 @@ class PiClientsOverTimeModel with _$PiClientsOverTimeModel {
 
   factory PiClientsOverTimeModel.fromJson(Map<String, dynamic> json) =>
       _$PiClientsOverTimeModelFromJson(json);
+}
+
+@freezed
+class PiVersionsModel with _$PiVersionsModel {
+  PiVersionsModel._();
+
+  factory PiVersionsModel({
+    @JsonKey(name: 'core_update') required bool hasCoreUpdate,
+    @JsonKey(name: 'web_update') required bool hasWebUpdate,
+    @JsonKey(name: 'FTL_update') required bool hasFtlUpdate,
+    @JsonKey(name: 'core_current') required String currentCoreVersion,
+    @JsonKey(name: 'web_current') required String currentWebVersion,
+    @JsonKey(name: 'FTL_current') required String currentFtlVersion,
+    @JsonKey(name: 'core_latest') required String latestCoreVersion,
+    @JsonKey(name: 'web_latest') required String latestWebVersion,
+    @JsonKey(name: 'FTL_latest') required String latestFtlVersion,
+    @JsonKey(name: 'core_branch') required String coreBranch,
+    @JsonKey(name: 'web_branch') required String webBranch,
+    @JsonKey(name: 'FTL_branch') required String ftlBranch,
+  }) = _PiVersionsModel;
+
+  factory PiVersionsModel.fromJson(Map<String, dynamic> json) =>
+      _$PiVersionsModelFromJson(json);
+
+  late final PiVersions entity = PiVersions(
+    hasCoreUpdate: hasCoreUpdate,
+    hasWebUpdate: hasWebUpdate,
+    hasFtlUpdate: hasFtlUpdate,
+    currentCoreVersion: currentCoreVersion,
+    currentWebVersion: currentWebVersion,
+    currentFtlVersion: currentFtlVersion,
+    latestCoreVersion: latestCoreVersion,
+    latestWebVersion: latestWebVersion,
+    latestFtlVersion: latestFtlVersion,
+    coreBranch: coreBranch,
+    webBranch: webBranch,
+    ftlBranch: ftlBranch,
+  );
+}
+
+@freezed
+class PiModel with _$PiModel {
+  PiModel._();
+
+  factory PiModel({
+    required int id,
+    required String title,
+    required String description,
+    required int primaryColor,
+    required String baseUrl,
+    required String apiPath,
+    required int apiPort,
+    required String apiToken,
+    required bool apiTokenRequired,
+    required bool allowSelfSignedCertificates,
+    required String basicAuthenticationUsername,
+    required String basicAuthenticationPassword,
+    required String proxyUrl,
+    required int proxyPort,
+  }) = _PiModel;
+
+  factory PiModel.fromJson(Map<String, dynamic> json) =>
+      _$PiModelFromJson(json);
+
+  factory PiModel.initial() => PiModel(
+        id: 0,
+        title: "Pi-hole",
+        description: "",
+        primaryColor: 4283657726,
+        baseUrl: "http://pi.hole",
+        apiPath: "/admin/api.php",
+        apiPort: 80,
+        apiToken: "",
+        apiTokenRequired: true,
+        allowSelfSignedCertificates: false,
+        basicAuthenticationUsername: "",
+        basicAuthenticationPassword: "",
+        proxyUrl: "",
+        proxyPort: 8080,
+      );
+
+  late final Pi entity = Pi(
+    id: id,
+    title: title,
+    description: description,
+    primaryColor: Color(primaryColor),
+    baseUrl: baseUrl,
+    apiPath: apiPath,
+    apiPort: apiPort,
+    apiToken: apiToken,
+    apiTokenRequired: apiTokenRequired,
+    allowSelfSignedCertificates: allowSelfSignedCertificates,
+    basicAuthenticationUsername: basicAuthenticationUsername,
+    basicAuthenticationPassword: basicAuthenticationPassword,
+    proxyUrl: proxyUrl,
+    proxyPort: proxyPort,
+  );
 }

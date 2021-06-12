@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
@@ -24,15 +25,19 @@ final dioProvider = Provider<Dio>((_) {
   dio.options.headers = {
     HttpHeaders.userAgentHeader: "flutterhole",
   };
-  dio.options.connectTimeout = 5000;
-  dio.options.sendTimeout = 5000;
-  dio.options.receiveTimeout = 5000;
+  dio.options.connectTimeout = 2000;
+  dio.options.sendTimeout = 2000;
+  dio.options.receiveTimeout = 2000;
   // dio.interceptors.add(LogInterceptor(
   //   requestBody: false,
-  //   responseBody: false,
+  //   responseBody: true,
   // ));
   return dio;
 });
+
+// static String getUserExceptionMessage(DioError dioError) {
+// return '${dioError.response.statusCode}: ${dioError.response.statusMessage}.\nURL: ${dioError.request.path}';
+// }
 
 final cancelTokenStateProvider = StateProvider<CancelToken>((ref) {
   return CancelToken();
@@ -63,8 +68,6 @@ final simplePiProvider = Provider<Pi>((ref) {
   return debugPis.first;
 });
 
-final piStatusProvider = StateProvider((_) => PiholeStatus.loading());
-
 final piholeRepositoryProviderFamily =
     Provider.family<PiholeRepository, Pi>((ref, pi) {
   final dio = ref.read(dioProvider);
@@ -73,7 +76,6 @@ final piholeRepositoryProviderFamily =
   //   print('disposing for ${pi.title}');
   //   cancelToken.cancel();
   // });
-  print('returning repo for ${pi.title}');
   return PiholeRepository(dio, pi);
 });
 
@@ -142,7 +144,6 @@ final topItemsProvider =
   ref.onDispose(() => cancelToken.cancel());
 
   final api = ref.read(piholeRepositoryProviderFamily(pi));
-  await Future.delayed(Duration(seconds: 2));
   return api.fetchTopItems(cancelToken);
 });
 
@@ -173,6 +174,15 @@ final clientActivityOverTimeProvider = FutureProvider.autoDispose
   return api.fetchClientActivityOverTime(cancelToken);
 });
 
+final piVersionsProvider =
+    FutureProvider.autoDispose.family<PiVersions, Pi>((ref, pi) async {
+  final cancelToken = CancelToken();
+  ref.onDispose(() => cancelToken.cancel());
+
+  final api = ref.read(piholeRepositoryProviderFamily(pi));
+  return api.fetchVersions(cancelToken);
+});
+
 final piDetailsProvider =
     FutureProvider.autoDispose.family<PiDetails, Pi>((ref, pi) async {
   final cancelToken = CancelToken();
@@ -192,6 +202,7 @@ final piDetailsOptionProvider = StateProvider<Option<PiDetails>>((_) => none());
 class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
   final PiholeRepository _repository;
   final CancelToken _cancelToken = CancelToken();
+
   PiholeStatusNotifier(this._repository) : super(PiholeStatus.loading());
 
   @override
@@ -201,44 +212,45 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
     super.dispose();
   }
 
-  Future<void> fetchStatus() async {
+  Future<void> _perform(Future<PiholeStatus> action) async {
     state = PiholeStatus.loading();
-    await Future.delayed(Duration(seconds: 1));
-    print('fetching status in notifier');
-    final result = await _repository.fetchStatus(_cancelToken);
-    print('result: $result');
-    state = result;
+    // await Future.delayed(Duration(seconds: 3));
+    try {
+      final result = await action;
+      print('result: $result');
+      if (mounted) {
+        state = result;
+      }
+    } on PiholeApiFailure catch (e) {
+      print('oi: $e');
+      if (mounted) {
+        print('mounted == true');
+        state = PiholeStatus.failure(e);
+      }
+    }
   }
 
-  Future<void> enable() async {
-    state = PiholeStatus.loading();
-    final result = await _repository.enable(_cancelToken);
-    state = result;
-  }
+  Future<void> ping() => _perform(_repository.ping(_cancelToken));
 
-  Future<void> disable() async {
-    state = PiholeStatus.loading();
-    final result = await _repository.disable(_cancelToken);
-    state = result;
-  }
+  Future<void> enable() async => _perform(_repository.enable(_cancelToken));
+
+  Future<void> disable() async => _perform(_repository.disable(_cancelToken));
 
   Future<void> sleep(Duration duration) async {
-    state = PiholeStatus.loading();
-    final result = await _repository.sleep(duration, _cancelToken);
-    state = result;
-
+    await _perform(_repository.sleep(duration, _cancelToken));
     Future.delayed(duration).then((_) {
       print('waking up');
       if (mounted) {
-        fetchStatus();
+        ping();
       }
     });
     print('scheduled');
   }
 }
 
-final piholeStatusNotifierProvider = StateNotifierProvider((ref) =>
-    PiholeStatusNotifier(ref.watch(
+final piholeStatusNotifierProvider = StateNotifierProvider<PiholeStatusNotifier,
+        PiholeStatus>(
+    (ref) => PiholeStatusNotifier(ref.watch(
         piholeRepositoryProviderFamily(ref.watch(activePiProvider).state))));
 
 class QueryLogNotifier extends StateNotifier<List<QueryItem>> {

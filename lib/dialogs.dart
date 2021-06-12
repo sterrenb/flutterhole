@@ -12,6 +12,12 @@ Future<void> showErrorDialog(
       context: context, title: 'Error: $e', message: 'Stacktrace: \n\n$s');
 }
 
+Future<void> showFailureDialog(
+    BuildContext context, String title, String message) async {
+  await showOkAlertDialog(
+      context: context, title: 'Error: $title', message: message);
+}
+
 Future<void> showActivePiDialog(BuildContext context, Reader read) async {
   final pi = read(activePiProvider);
   final allPis = read(allPisProvider).state;
@@ -22,7 +28,7 @@ Future<void> showActivePiDialog(BuildContext context, Reader read) async {
     actions: allPis.map<AlertDialogAction>((dPi) {
       return AlertDialogAction(
         key: dPi,
-        label: '${dPi.title}',
+        label: dPi.title,
       );
     }).toList(),
   );

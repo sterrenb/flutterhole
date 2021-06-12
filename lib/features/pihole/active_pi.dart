@@ -23,6 +23,12 @@ final activeClientActivityProvider =
   return ref.watch(clientActivityOverTimeProvider(pi));
 });
 
+final activeVersionsProvider =
+    Provider.autoDispose<AsyncValue<PiVersions>>((ref) {
+  final pi = ref.watch(activePiProvider).state;
+  return ref.watch(piVersionsProvider(pi));
+});
+
 final activeQueryTypesProvider =
     Provider.autoDispose<AsyncValue<PiQueryTypes>>((ref) {
   final pi = ref.watch(activePiProvider).state;
@@ -40,6 +46,10 @@ final activeQueriesOverTimeProvider =
   final pi = ref.watch(activePiProvider).state;
   return ref.watch(queriesOverTimeProvider(pi));
 });
+
+void switchActivePi(Reader read, Pi pi) {
+  read(activePiProvider).state = pi;
+}
 
 class ActivePiTitle extends HookWidget {
   @override

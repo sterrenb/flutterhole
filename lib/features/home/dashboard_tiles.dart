@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/layout/grid.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -21,6 +22,7 @@ class TextTileBottomText extends StatelessWidget {
   }) : super(key: key);
 
   final String title;
+
   @override
   Widget build(BuildContext context) {
     return Text(
@@ -35,7 +37,7 @@ class TextTileBottomText extends StatelessWidget {
 }
 
 class TextTileContent extends StatelessWidget {
-  final String top;
+  final Widget top;
   final Widget bottom;
   final IconData iconData;
   final double iconLeft;
@@ -58,14 +60,14 @@ class TextTileContent extends StatelessWidget {
         Positioned(
           left: iconLeft,
           top: iconTop,
-          child: DashboardTileIcon(iconData),
+          child: GridIcon(iconData),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Center(
-              child: TileTitle(top),
+              child: top,
             ),
             Center(
               child: bottom,
@@ -77,65 +79,21 @@ class TextTileContent extends StatelessWidget {
   }
 }
 
-class TileTitle extends StatelessWidget {
-  const TileTitle(
-    this.title, {
-    Key? key,
-  }) : super(key: key);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: TextStyle(fontSize: 18, color: Colors.white),
-      textAlign: TextAlign.center,
-    );
-  }
-}
-
-class DashboardTileIcon extends StatelessWidget {
-  const DashboardTileIcon(
+class DashboardListIcon extends StatelessWidget {
+  const DashboardListIcon(
     this.primaryIcon, {
     Key? key,
-    this.subIcon,
-    this.subIconColor,
   }) : super(key: key);
 
   final IconData primaryIcon;
-  final IconData? subIcon;
-  final Color? subIconColor;
 
   @override
   Widget build(BuildContext context) {
-    final primary = Icon(
+    return Icon(
       primaryIcon,
       size: 32.0,
-      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+      color: Colors.white.withOpacity(0.5),
     );
-
-    if (subIcon != null) {
-      return Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.center,
-        children: [
-          primary,
-          Positioned(
-              left: 18.0,
-              top: 18.0,
-              child: Container(
-                // color: Colors.purple,
-                child: Icon(
-                  subIcon,
-                  size: 24.0,
-                  color: subIconColor,
-                ),
-              )),
-        ],
-      );
-    }
-    return primary;
   }
 }
 
@@ -145,9 +103,6 @@ class TotalQueriesTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
-
-    // final pi = useProvider(activePiProvider).state;
-    final value = useProvider(activeSummaryProvider);
 
     return Card(
       color: KColors.totalQueries,
@@ -164,7 +119,10 @@ class TotalQueriesTile extends HookWidget {
           // );
         },
         child: TextTileContent(
-          top: title,
+          top: TileTitle(
+            title,
+            color: Colors.white,
+          ),
           bottom: TextTileBottomText(option.fold(
             () => '---',
             (piSummary) => _numberFormat.format(piSummary.dnsQueriesToday),
@@ -192,7 +150,10 @@ class QueriesBlockedTile extends HookWidget {
                   ));
         },
         child: TextTileContent(
-          top: 'Queries Blocked',
+          top: TileTitle(
+            'Queries blocked',
+            color: Colors.white,
+          ),
           bottom: TextTileBottomText(option.fold(
             () => '---',
             (piSummary) => _numberFormat.format(piSummary.adsBlockedToday),
@@ -221,7 +182,10 @@ class PercentBlockedTile extends HookWidget {
           );
         },
         child: TextTileContent(
-          top: 'Percent Blocked',
+          top: TileTitle(
+            'Percent blocked',
+            color: Colors.white,
+          ),
           bottom: TextTileBottomText(option.fold(
             () => '---',
             (piSummary) =>
@@ -251,7 +215,10 @@ class DomainsOnBlocklistTile extends HookWidget {
           );
         },
         child: TextTileContent(
-          top: 'Domains on Blocklist',
+          top: TileTitle(
+            'Domains on blocklist',
+            color: Colors.white,
+          ),
           bottom: TextTileBottomText(option.fold(
             () => '---',
             (piSummary) => _numberFormat.format(piSummary.domainsBeingBlocked),
@@ -334,7 +301,7 @@ class TopPermittedDomainsTile extends HookWidget {
               title: TileTitle(
                 'Permitted Domains',
               ),
-              leading: DashboardTileIcon(
+              leading: GridIcon(
                 KIcons.domainsPermittedTile,
                 subIcon: Icons.check_box,
                 subIconColor: Colors.green,
@@ -363,7 +330,7 @@ class TopPermittedDomainsTile extends HookWidget {
                 );
               },
               loading: () => Container(
-                  height: kToolbarHeight * 3,
+                  height: kMinTileHeight,
                   child: Center(child: CircularProgressIndicator())),
               error: (error, stacktrace) => Column(
                 children: [
@@ -396,22 +363,30 @@ class TopBlockedDomainsTile extends HookWidget {
     final topItems = useProvider(activeTopItemsProvider);
     final expanded = useState(false);
     final ticker = useSingleTickerProvider();
+    // return Card(
+    //   child: Center(child: Text('hi')),
+    // );
+
     return Card(
       child: AnimatedSize(
         vsync: ticker,
         duration: kThemeAnimationDuration * 2,
         alignment: Alignment.topCenter,
         curve: Curves.ease,
-        child: Column(
+        child: ListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
           children: [
             Container(
               // color: Colors.orange,
+              height: 80,
               child: ListTile(
                 // tileColor: Colors.red.withOpacity(0.1),
                 title: TileTitle(
                   'Blocked Domains',
                 ),
-                leading: DashboardTileIcon(
+                leading: GridIcon(
                   KIcons.domainsPermittedTile,
                   subIcon: Icons.remove_circle,
                   subIconColor: Colors.red,
@@ -440,7 +415,7 @@ class TopBlockedDomainsTile extends HookWidget {
                 );
               },
               loading: () => Container(
-                  height: kToolbarHeight * 3,
+                  height: kToolbarHeight * 5,
                   child: Center(child: CircularProgressIndicator())),
               error: (error, stacktrace) => CodeCard(stacktrace.toString()),
             ),

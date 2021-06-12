@@ -5,45 +5,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/doughnut_chart.dart';
 import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/home/charts.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
+import 'package:flutterhole_web/features/layout/grid.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/step_line_chart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-
-class ChartTileScaffold extends StatelessWidget {
-  const ChartTileScaffold({
-    Key? key,
-    required this.left,
-    required this.right,
-  }) : super(key: key);
-
-  final Widget left;
-  final Widget right;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            flex: 2,
-            fit: FlexFit.tight,
-            child: left,
-          ),
-          Flexible(
-            flex: 3,
-            fit: FlexFit.tight,
-            child: right,
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class QueryTypesTile extends HookWidget {
   static const String title = 'Query Types';
@@ -66,7 +35,7 @@ class QueryTypesTile extends HookWidget {
       child: Center(
         child: queryTypes.when(
           data: (types) {
-            return ChartTileScaffold(
+            return DoughnutScaffold(
                 left: LegendTileList(
                   title: title,
                   legendTiles: (PiQueryTypes queryTypes) {
@@ -88,20 +57,7 @@ class QueryTypesTile extends HookWidget {
                     }).toList();
                   }(types),
                 ),
-                right: DoughnutChart(
-                  title: title,
-                  dataSource: (PiQueryTypes queryTypes) {
-                    queryTypes.types.removeWhere((key, value) => value <= 0);
-                    int index = 0;
-                    return queryTypes.types.entries
-                        .map((e) => DoughnutChartData(
-                            e.key,
-                            e.value,
-                            _chartColors
-                                .elementAt(index++ % _chartColors.length)))
-                        .toList();
-                  }(types),
-                ));
+                right: PiQueriesDoughnutChart(title, types));
           },
           loading: () => CircularProgressIndicator(),
           error: (e, s) => Text('${e.toString()}'),
@@ -132,7 +88,7 @@ class ForwardDestinationsTile extends HookWidget {
       child: Center(
         child: forwardDestinations.when(
           data: (PiForwardDestinations destinations) {
-            return ChartTileScaffold(
+            return DoughnutScaffold(
               left: LegendTileList(
                 title: title,
                 legendTiles: (PiForwardDestinations destinations) {
@@ -172,7 +128,7 @@ class ForwardDestinationsTile extends HookWidget {
             );
           },
           loading: () => CircularProgressIndicator(),
-          error: (e, s) => Text('${e.toString()}'),
+          error: (e, s) => Text(e.toString()),
         ),
       ),
     );
@@ -194,7 +150,7 @@ class QueriesBarChartTile extends HookWidget {
     return Card(
       child: ExpandableDashboardTile(
         title,
-        leading: DashboardTileIcon(KIcons.queriesOverTime),
+        leading: GridIcon(KIcons.queriesOverTime),
         title: TileTitle(title),
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: kMinTileHeight),
@@ -275,7 +231,7 @@ class QueriesBarChartTile extends HookWidget {
                 );
               },
               loading: () => CircularProgressIndicator(),
-              error: (e, s) => Text('${e.toString()}'),
+              error: (e, s) => Text(e.toString()),
             )),
           ),
         ),
@@ -316,14 +272,18 @@ class ExpandableDashboardTile extends HookWidget {
           ListTile(
             title: title,
             leading: leading,
-            trailing: IconButton(
-              tooltip:
-                  expanded.state ? 'Collapse $hookTitle' : 'Expand $hookTitle',
-              icon: Icon(expanded.state ? KIcons.shrink : KIcons.expand),
-              onPressed: () {
-                expanded.state = !expanded.state;
-              },
-            ),
+            onTap: () {
+              expanded.state = !expanded.state;
+            },
+            trailing: Icon(expanded.state ? KIcons.shrink : KIcons.expand),
+            // trailing: IconButton(
+            //   tooltip:
+            //       expanded.state ? 'Collapse $hookTitle' : 'Expand $hookTitle',
+            //   icon: Icon(expanded.state ? KIcons.shrink : KIcons.expand),
+            //   onPressed: () {
+            //     // expanded.state = !expanded.state;
+            //   },
+            // ),
           ),
           child,
         ],
@@ -397,7 +357,7 @@ class ClientActivityBarChartTile extends HookWidget {
                     )
                   ];
 
-                  if (index == 0)
+                  if (index == 0) {
                     localSpans.insert(
                         0,
                         TextSpan(
@@ -407,6 +367,7 @@ class ClientActivityBarChartTile extends HookWidget {
                               '\n',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ));
+                  }
 
                   return LineTooltipItem(
                     // 'Pls here ${client.ip}',
@@ -423,12 +384,12 @@ class ClientActivityBarChartTile extends HookWidget {
         );
       },
       loading: () => CircularProgressIndicator(),
-      error: (e, s) => Text('${e.toString()}'),
+      error: (e, s) => Text(e.toString()),
     );
     return Card(
       child: ExpandableDashboardTile(
         title,
-        leading: DashboardTileIcon(KIcons.clientActivity),
+        leading: GridIcon(KIcons.clientActivity),
         title: TileTitle(title),
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: kMinTileHeight),
