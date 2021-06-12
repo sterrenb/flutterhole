@@ -305,7 +305,9 @@ class PiModel with _$PiModel {
     required String title,
     required String description,
     required int primaryColor,
+    required int accentColor,
     required String baseUrl,
+    required bool useSsl,
     required String apiPath,
     required int apiPort,
     required String apiToken,
@@ -320,12 +322,15 @@ class PiModel with _$PiModel {
   factory PiModel.fromJson(Map<String, dynamic> json) =>
       _$PiModelFromJson(json);
 
+  // TODO move somewhere else
   factory PiModel.initial() => PiModel(
         id: 0,
         title: "Pi-hole",
         description: "",
         primaryColor: 4283657726,
-        baseUrl: "http://pi.hole",
+        accentColor: 2283656726,
+        baseUrl: "pi.hole",
+        useSsl: false,
         apiPath: "/admin/api.php",
         apiPort: 80,
         apiToken: "",
@@ -342,7 +347,9 @@ class PiModel with _$PiModel {
     title: title,
     description: description,
     primaryColor: Color(primaryColor),
+    accentColor: Color(accentColor),
     baseUrl: baseUrl,
+    useSsl: useSsl,
     apiPath: apiPath,
     apiPort: apiPort,
     apiToken: apiToken,

@@ -8,10 +8,10 @@ import 'package:flutterhole_web/settings_page.dart';
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
-    AutoRoute(page: HomePage, initial: true),
+    AutoRoute(page: HomePage),
     AutoRoute(page: QueryLogPage),
     AutoRoute(page: SettingsPage),
-    AutoRoute(page: PiEditPage),
+    AutoRoute(page: PiEditPage, initial: true),
     AutoRoute(page: AboutPage),
   ],
 )

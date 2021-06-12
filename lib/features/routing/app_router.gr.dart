@@ -48,16 +48,16 @@ class AppRouter extends _i1.RootStackRouter {
 
   @override
   List<_i1.RouteConfig> get routes => [
-        _i1.RouteConfig(HomeRoute.name, path: '/'),
+        _i1.RouteConfig(HomeRoute.name, path: '/home-page'),
         _i1.RouteConfig(QueryLogRoute.name, path: '/query-log-page'),
         _i1.RouteConfig(SettingsRoute.name, path: '/settings-page'),
-        _i1.RouteConfig(PiEditRoute.name, path: '/pi-edit-page'),
+        _i1.RouteConfig(PiEditRoute.name, path: '/'),
         _i1.RouteConfig(AboutRoute.name, path: '/about-page')
       ];
 }
 
 class HomeRoute extends _i1.PageRouteInfo {
-  const HomeRoute() : super(name, path: '/');
+  const HomeRoute() : super(name, path: '/home-page');
 
   static const String name = 'HomeRoute';
 }
@@ -75,7 +75,7 @@ class SettingsRoute extends _i1.PageRouteInfo {
 }
 
 class PiEditRoute extends _i1.PageRouteInfo {
-  const PiEditRoute() : super(name, path: '/pi-edit-page');
+  const PiEditRoute() : super(name, path: '/');
 
   static const String name = 'PiEditRoute';
 }

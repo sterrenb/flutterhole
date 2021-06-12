@@ -16,9 +16,11 @@ class Pi with _$Pi {
     required String title,
     required String description,
     required Color primaryColor,
+    required Color accentColor,
 
     // host details
     required String baseUrl,
+    required bool useSsl,
     required String apiPath,
     required int apiPort,
 
@@ -36,7 +38,8 @@ class Pi with _$Pi {
 
   late final String host = '$baseUrl:$apiPort';
 
-  late final String baseApiUrl = '$host$apiPath';
+  late final String baseApiUrl =
+      '${useSsl ? 'https://' : 'http://'}$host$apiPath';
 
   late final String adminHome = '$host/admin';
 }

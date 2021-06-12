@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
+import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/settings_repository.dart';
 import 'package:flutterhole_web/features/settings/single_pi_page.dart';
@@ -16,7 +17,7 @@ class PiEditPage extends HookWidget {
     return Scaffold(
       // drawer: AppDrawer(),
       appBar: AppBar(
-        title: Text('Pipis ${settings.active.baseApiUrl}'),
+        title: Text('My Pi-holes'),
       ),
       body: Column(
         children: [
@@ -48,12 +49,20 @@ class PiEditPage extends HookWidget {
                           .read(settingsNotifierProvider.notifier)
                           .activate(pi.id);
                     },
-                    onTap: () {
+                    onTap: () async {
                       // onLongPress: () {
                       print('setting pi to ${pi.title}');
                       context.read(singlePiProvider(pi).notifier);
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => SinglePiPage(pi)));
+                      final update = await Navigator.of(context).push<Pi>(
+                          MaterialPageRoute(
+                              builder: (context) => SinglePiPage(pi)));
+
+                      if (update != null) {
+                        print('update: ${update.title}');
+                        context
+                            .read(settingsNotifierProvider.notifier)
+                            .save(update);
+                      }
                     },
                   ),
                 );

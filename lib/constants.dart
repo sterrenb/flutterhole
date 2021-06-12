@@ -14,7 +14,9 @@ final debugPis = <Pi>[
     title: 'My hole',
     description: '',
     primaryColor: Colors.indigoAccent,
-    baseUrl: 'http://10.0.1.5',
+    accentColor: Colors.orange,
+    baseUrl: '10.0.1.5',
+    useSsl: false,
     apiPath: '/admin/api.php',
     apiPort: 80,
     apiToken: token,
@@ -30,7 +32,9 @@ final debugPis = <Pi>[
     title: 'Broken',
     description: 'This won\'t work',
     primaryColor: Colors.orange,
-    baseUrl: 'http://example.com',
+    accentColor: Colors.blueAccent,
+    baseUrl: 'example.com',
+    useSsl: false,
     apiPath: 'admin/api.php',
     apiPort: 80,
     apiToken: '',
@@ -43,10 +47,12 @@ final debugPis = <Pi>[
   ),
   Pi(
     id: 789,
-    title: 'Last',
+    title: 'With SSL on',
     description: '',
     primaryColor: Colors.greenAccent,
-    baseUrl: 'http://10.0.1.5',
+    accentColor: Colors.redAccent,
+    baseUrl: '10.0.1.5',
+    useSsl: true,
     apiPath: 'admin/api.php',
     apiPort: 80,
     apiToken: token,
@@ -123,6 +129,7 @@ class KIcons {
 
   static const IconData toggleVisible = Icons.visibility;
   static const IconData toggleInvisible = Icons.visibility_off;
+  static const IconData save = Icons.save;
 
   static const IconData expand = Icons.keyboard_arrow_down;
   static const IconData shrink = Icons.keyboard_arrow_up;
@@ -132,6 +139,8 @@ class KIcons {
   static const IconData delete = Icons.delete;
   static const IconData selected = Icons.check;
   static const IconData host = Icons.dns;
+  static const IconData authentication = Icons.vpn_key;
+  static const IconData qrCode = Icons.qr_code_scanner;
   static const IconData customization = Icons.format_paint;
 }
 

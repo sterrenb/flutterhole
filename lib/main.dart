@@ -26,7 +26,7 @@ Future<void> main() async {
 
   runApp(ProviderScope(
     observers: <ProviderObserver>[
-      Logger(),
+      // Logger(),
     ],
     overrides: [
       settingsRepositoryProvider
@@ -47,6 +47,7 @@ class MyApp extends HookWidget {
       headerBuilder: () => WaterDropMaterialHeader(),
       child: MaterialApp.router(
         title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.indigo,
           scaffoldBackgroundColor: Color(0xFFFAFBFC),

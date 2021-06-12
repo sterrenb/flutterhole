@@ -7,10 +7,9 @@ class CodeCard extends HookWidget {
     this.code, {
     Key? key,
     this.tappable = true,
-    this.expanded = true,
+    this.expanded = false,
     this.onTap,
-  })  : assert(tappable || onTap != null),
-        super(key: key);
+  }) : super(key: key);
 
   final String code;
   final bool tappable;

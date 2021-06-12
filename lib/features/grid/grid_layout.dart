@@ -99,14 +99,20 @@ class GridSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(kGridSpacing),
-      child: Center(
-        child: Row(
+      child: Container(
+        // color: Colors.red,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GridIcon(iconData),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GridIcon(iconData),
+                ),
+                TileTitle(title),
+              ],
             ),
-            TileTitle(title),
           ],
         ),
       ),
@@ -127,6 +133,27 @@ class GridClip extends StatelessWidget {
       clipper: ShapeBorderClipper(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(kGridSpacing))),
+      child: child,
+    );
+  }
+}
+
+class GridInkWell extends StatelessWidget {
+  const GridInkWell({
+    Key? key,
+    required this.child,
+    this.onTap,
+  }) : super(key: key);
+
+  final VoidCallback? onTap;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(kGridSpacing)),
+      onTap: onTap,
       child: child,
     );
   }

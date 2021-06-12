@@ -27,6 +27,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   Future<void> save(Pi pi) async {
     print('saving ${pi.title} ${pi.id}');
     await _repository.savePi(pi);
+    // TODO skip activating
     await _repository.setActivePiId(pi.id);
     state = state.copyWith(
       allPis: _repository.allPis(),
