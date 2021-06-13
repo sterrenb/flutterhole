@@ -1,10 +1,10 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:animations/animations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
-import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -130,7 +130,7 @@ class DialogBase extends StatelessWidget {
     required this.header,
     required this.body,
     required this.onSelect,
-    required this.onCancel,
+    this.onCancel,
     required this.theme,
     this.extraButtons = const [],
   }) : super(key: key);
@@ -138,7 +138,7 @@ class DialogBase extends StatelessWidget {
   final Widget header;
   final Widget body;
   final VoidCallback onSelect;
-  final VoidCallback onCancel;
+  final VoidCallback? onCancel;
   final ThemeData theme;
   final List<Widget> extraButtons;
 
@@ -157,7 +157,7 @@ class DialogBase extends StatelessWidget {
           ),
           const Divider(height: 0),
           BaseButtonRow(
-            onCancel: onCancel,
+            onCancel: onCancel != null ? onCancel! : () => context.router.pop(),
             onSelect: onSelect,
             extraButtons: extraButtons,
           )
@@ -197,8 +197,8 @@ class DurationDialog extends HookWidget {
           Slider(
             value: counter.value,
             min: 0.0,
-            max: 60.0,
-            divisions: 60,
+            max: 60 * 2,
+            divisions: 60 * 2,
             label: counter.value == 0.0
                 ? 'Disabled'
                 : '${counter.value.round()} seconds',
@@ -214,26 +214,26 @@ class DurationDialog extends HookWidget {
   }
 }
 
-Future<void> showUpdateFrequencyDialog(
-    BuildContext context, Reader read) async {
+Future<Duration?> showUpdateFrequencyDialog(
+    BuildContext context, Duration initialValue) async {
   void pop(Duration? key) => Navigator.of(context).pop(key);
   final theme = Theme.of(context);
 
-  final selectedDuration = await showModal<Duration>(
+  return showModal<Duration>(
     context: context,
     configuration: FadeScaleTransitionConfiguration(),
     builder: (context) => DurationDialog(
       title: 'Update frequency',
-      message: 'Used for refreshing API data, temperature, etc.',
-      initialValue: read(updateFrequencyProvider).state,
+      message: 'The time between automatic updates on the dashboard.',
+      initialValue: initialValue,
       onSelect: pop,
       theme: theme,
     ),
   );
 
-  if (selectedDuration != null) {
-    read(updateFrequencyProvider).state = selectedDuration;
-  }
+  // if (selectedDuration != null) {
+  //   read(updateFrequencyProvider).state = selectedDuration;
+  // }
 }
 
 class DialogListBase extends StatelessWidget {

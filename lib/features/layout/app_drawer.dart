@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
-import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -74,9 +73,27 @@ class _DrawerTile extends StatelessWidget {
         //     ? Theme.of(context).accentColor.withOpacity(.2)
         //     : null,
         onTap: () {
-          Navigator.of(context).pop();
+          // return;
+          // Navigator.of(context).pop();
           // router.replace(info);
-          router.popAndPush(info);
+          // router.popAndPush(info);
+          // print(router.current.name);
+          // print(info.routeName);
+
+          if (router.current.name == info.routeName) {
+            print('popping');
+            router.pop();
+          } else {
+            router.pop();
+            if (info.routeName == HomeRoute.name) {
+              print('popping to home');
+              router.popUntilRoot();
+              return;
+            }
+            print('pushing ${info.routeName}');
+            router.push(info);
+          }
+
           return;
 
           // Navigator.of(context).pop();

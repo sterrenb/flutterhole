@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
+import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
+import 'package:flutterhole_web/features/pihole/active_pi.dart';
+import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -25,13 +28,14 @@ String _temperatureReadingToString(TemperatureReading temperatureReading) {
 }
 
 Future<void> showTemperatureReadingDialog(
-    BuildContext context, Reader read) async {
-  final temperatureReading = read(temperatureReadingProvider);
+    BuildContext context,
+    TemperatureReading initial,
+    ValueChanged<TemperatureReading> onSelected) async {
   final selectedTemperatureReading = await showConfirmationDialog(
     context: context,
     title: 'Temperature scale',
     message: 'Used for the Pi-hole CPU temperature',
-    initialSelectedActionKey: temperatureReading.state,
+    initialSelectedActionKey: initial,
     actions: [
       AlertDialogAction<TemperatureReading>(
         key: TemperatureReading.celcius,
@@ -49,7 +53,7 @@ Future<void> showTemperatureReadingDialog(
   );
 
   if (selectedTemperatureReading != null) {
-    temperatureReading.state = selectedTemperatureReading;
+    return onSelected(selectedTemperatureReading);
   }
 }
 
@@ -58,13 +62,14 @@ class TemperatureScaleDropdownButton extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reading = useProvider(temperatureReadingProvider);
-
+    final settings = useProvider(settingsNotifierProvider);
+    final selected = useState(settings.preferences.temperatureReading);
     return DropdownButton<TemperatureReading>(
-        value: reading.state,
-        onChanged: (reading) {
-          if (reading != null) {
-            context.read(temperatureReadingProvider).state = reading;
+        value: selected.value,
+        onChanged: (update) {
+          if (update != null) {
+            context.read(settingsNotifierProvider.notifier).savePreferences(
+                settings.preferences.copyWith(temperatureReading: update));
           }
         },
         items: TemperatureReading.values
@@ -79,25 +84,22 @@ class TemperatureScaleDropdownButton extends HookWidget {
 class TemperatureRangeDialog extends HookWidget {
   const TemperatureRangeDialog({
     Key? key,
-    required this.initialValue,
   }) : super(key: key);
-
-  final RangeValues initialValue;
 
   @override
   Widget build(BuildContext context) {
     void pop(RangeValues? values) => Navigator.of(context).pop(values);
     final theme = Theme.of(context);
 
-    final currentRange = useState(initialValue);
-    final activeRange = useProvider(temperatureRangeProvider);
-    final rangeEnabled = useProvider(temperatureRangeEnabledProvider);
-    final reading = useProvider(temperatureReadingProvider);
+    final settings = useProvider(settingsNotifierProvider);
+    final currentRange = useState(RangeValues(
+        settings.preferences.temperatureMin,
+        settings.preferences.temperatureMax));
     final option = useProvider(piDetailsOptionProvider).state;
 
     return DialogBase(
       onSelect: () => pop(currentRange.value),
-      onCancel: () => pop(initialValue),
+      onCancel: () => pop(null),
       theme: theme,
       header: DialogHeader(
         title: 'Temperature',
@@ -108,8 +110,8 @@ class TemperatureRangeDialog extends HookWidget {
           ListTile(
             title: option.fold(
               () => Container(),
-              (a) =>
-                  Text('${a.temperature.temperatureInReading(reading.state)}'),
+              (a) => Text(
+                  '${a.temperature.temperatureInReading(settings.preferences.temperatureReading)}'),
             ),
             trailing: TemperatureScaleDropdownButton(),
           ),
@@ -123,22 +125,22 @@ class TemperatureRangeDialog extends HookWidget {
                   values: currentRange.value,
                   min: 0,
                   max: 100,
-                  divisions: reading.state == TemperatureReading.fahrenheit
+                  divisions: settings.preferences.temperatureReading ==
+                          TemperatureReading.fahrenheit
                       ? 180
                       : 100,
                   labels: RangeLabels(
-                    currentRange.value.start
-                        .temperatureInReading(reading.state),
-                    currentRange.value.end.temperatureInReading(reading.state),
+                    currentRange.value.start.temperatureInReading(
+                        settings.preferences.temperatureReading),
+                    currentRange.value.end.temperatureInReading(
+                        settings.preferences.temperatureReading),
                   ),
-                  onChanged: rangeEnabled.state
-                      ? (RangeValues changed) {
-                          if ((changed.start - changed.end).abs() >= 2) {
-                            currentRange.value = changed;
-                            activeRange.state = changed;
-                          }
-                        }
-                      : null,
+                  onChanged: (RangeValues changed) {
+                    if ((changed.start - changed.end).abs() >= 2) {
+                      currentRange.value = changed;
+                      // activeRange.state = changed;
+                    }
+                  },
                 ),
               ),
               const Icon(Icons.local_fire_department),
@@ -147,87 +149,88 @@ class TemperatureRangeDialog extends HookWidget {
           ),
         ],
       ),
-      extraButtons: [
-        // TextButton(
-        //   child: Text(
-        //     rangeEnabled.state ? 'DISABLE' : 'ENABLE',
-        //   ),
-        //   onPressed: () {
-        //     rangeEnabled.state = !rangeEnabled.state;
-        //   },
-        // ),
-      ],
     );
   }
 }
 
-Future<void> showTemperatureRangeDialog(
-    BuildContext context, Reader read) async {
-  final selectedRange = await showModal<RangeValues>(
-    context: context,
-    configuration: FadeScaleTransitionConfiguration(),
-    builder: (context) => TemperatureRangeDialog(
-        initialValue: read(temperatureRangeProvider).state),
-  );
-
-  if (selectedRange != null) {
-    read(temperatureRangeProvider).state = selectedRange;
-  }
-}
+Future<RangeValues?> showTemperatureRangeDialog(
+        BuildContext context, Reader read) =>
+    showModal<RangeValues>(
+      context: context,
+      configuration: FadeScaleTransitionConfiguration(),
+      builder: (context) => TemperatureRangeDialog(),
+    );
 
 class TemperatureTile extends HookWidget {
   const TemperatureTile({
     Key? key,
   }) : super(key: key);
-  Color temperatureRangeToColor(RangeValues values, double temperature) {
-    if (temperature < values.start) return KColors.temperatureLow;
-    if (temperature < values.end) return KColors.temperatureMed;
+
+  Color preferencesToTemperatureColor(
+      UserPreferences preferences, double temperature) {
+    if (temperature < preferences.temperatureMin) return KColors.temperatureLow;
+    if (temperature < preferences.temperatureMax) return KColors.temperatureMed;
     return KColors.temperatureHigh;
   }
 
   @override
   Widget build(BuildContext context) {
-    final temperatureReading = useProvider(temperatureReadingProvider).state;
-    final temperatureRange = useProvider(temperatureRangeProvider).state;
-    final temperatureRangeEnabled =
-        useProvider(temperatureRangeEnabledProvider).state;
-    final detailsOption = useProvider(piDetailsOptionProvider).state;
+    final settings = useProvider(settingsNotifierProvider);
+    // final temperatureReading = useProvider(temperatureReadingProvider).state;
+    // final temperatureRange = useProvider(temperatureRangeProvider).state;
+    // final temperatureRangeEnabled =
+    //     useProvider(temperatureRangeEnabledProvider).state;
+    final detailsValue = useProvider(activePiDetailsProvider);
     return Card(
       child: AnimatedContainer(
         duration: kThemeChangeDuration * 2,
-        color: detailsOption.fold(
-            () => KColors.temperatureMed,
-            (details) => temperatureRangeEnabled
-                ? temperatureRangeToColor(temperatureRange, details.temperature)
-                : KColors.temperatureMed),
+        color: detailsValue.when(
+          loading: () => KColors.temperatureMed,
+          data: (details) => preferencesToTemperatureColor(
+              settings.preferences, details.temperature),
+          error: (e, s) => KColors.unknown,
+        ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: detailsOption.fold(
-                () => null,
-                (details) => () {
-                      String message;
-                      switch (temperatureReading) {
-                        case TemperatureReading.celcius:
-                          message = details.temperatureInCelcius;
-                          break;
-                        case TemperatureReading.fahrenheit:
-                          message = details.temperatureInCelcius;
-                          break;
-                        case TemperatureReading.kelvin:
-                          message = details.temperatureInCelcius;
-                      }
-                      ScaffoldMessenger.of(context)
-                          .showThemedSnackBarNow(context,
-                              message: 'Temperature: ${[
-                                details.temperatureInCelcius,
-                                details.temperatureInFahrenheit,
-                                details.temperatureInKelvin
-                              ].join(' | ')}',
-                              leading: Icon(KIcons.temperatureReading));
-                    }),
-            onLongPress: () {
-              showTemperatureRangeDialog(context, context.read);
+            onTap: detailsValue.when(
+              loading: () => null,
+              data: (details) => () {
+                String message;
+                switch (settings.preferences.temperatureReading) {
+                  case TemperatureReading.celcius:
+                    message = details.temperatureInCelcius;
+                    break;
+                  case TemperatureReading.fahrenheit:
+                    message = details.temperatureInCelcius;
+                    break;
+                  case TemperatureReading.kelvin:
+                    message = details.temperatureInCelcius;
+                }
+
+                print(message);
+
+                ScaffoldMessenger.of(context).showThemedMessageNow(context,
+                    message: 'Temperature: ${[
+                      details.temperatureInCelcius,
+                      details.temperatureInFahrenheit,
+                      details.temperatureInKelvin
+                    ].join(' | ')}',
+                    leading: Icon(KIcons.temperatureReading));
+              },
+              error: (e, s) => null,
+            ),
+            onLongPress: () async {
+              final selectedRange =
+                  await showTemperatureRangeDialog(context, context.read);
+              if (selectedRange != null) {
+                context
+                    .read(settingsNotifierProvider.notifier)
+                    .savePreferences(settings.preferences.copyWith(
+                      temperatureMin: selectedRange.start,
+                      temperatureMax: selectedRange.end,
+                    ));
+              }
             },
             child: Stack(
               alignment: Alignment.center,
@@ -249,9 +252,10 @@ class TemperatureTile extends HookWidget {
                             // ),
                             thumbShape: SliderComponentShape.noOverlay,
                           ),
-                          child: detailsOption.fold(
-                              () => Container(),
-                              (details) => Opacity(
+                          child: detailsValue.when(
+                              loading: () => Container(),
+                              error: (e, s) => Container(),
+                              data: (details) => Opacity(
                                     opacity: 0.5,
                                     child: Slider(
                                       onChanged: null,
@@ -268,18 +272,20 @@ class TemperatureTile extends HookWidget {
                     'Temperature',
                     color: Colors.white,
                   ),
-                  bottom: TextTileBottomText(
-                      detailsOption.fold(() => '---', (details) {
-                    switch (temperatureReading) {
-                      case TemperatureReading.celcius:
-                        return details.temperatureInCelcius;
-                      case TemperatureReading.fahrenheit:
-                        return details.temperatureInFahrenheit;
-                      case TemperatureReading.kelvin:
-                      default:
-                        return details.temperatureInKelvin;
-                    }
-                  })),
+                  bottom: TextTileBottomText(detailsValue.when(
+                      error: (e, s) => '???',
+                      loading: () => '---',
+                      data: (details) {
+                        switch (settings.preferences.temperatureReading) {
+                          case TemperatureReading.celcius:
+                            return details.temperatureInCelcius;
+                          case TemperatureReading.fahrenheit:
+                            return details.temperatureInFahrenheit;
+                          case TemperatureReading.kelvin:
+                          default:
+                            return details.temperatureInKelvin;
+                        }
+                      })),
                   iconData: KIcons.temperatureReading,
                   iconTop: 16.0,
                 ),

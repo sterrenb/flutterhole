@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/settings/settings_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,6 +12,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       : super(SettingsState(
           allPis: _repository.allPis(),
           activeId: _repository.activePiId(),
+          preferences: _repository.getPreferences(),
           dev: true,
         ));
 
@@ -18,9 +20,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   Future<void> reset() async {
     await _repository.clear();
-    state = state.copyWith(
+    state = SettingsState(
       allPis: _repository.allPis(),
       activeId: _repository.activePiId(),
+      preferences: _repository.getPreferences(),
+      dev: true,
     );
   }
 
@@ -48,4 +52,27 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         dashboardSettings:
             state.active.dashboardSettings.copyWith(entries: entries)));
   }
+
+  Future<void> savePreferences(UserPreferences preferences) async {
+    await _repository.savePreferences(preferences);
+    state = state.copyWith(preferences: preferences);
+  }
+
+  Future<void> saveThemeMode(ThemeMode themeMode) =>
+      savePreferences(state.preferences.copyWith(themeMode: themeMode));
+
+  Future<void> saveUpdateFrequency(Duration frequency) =>
+      savePreferences(state.preferences.copyWith(updateFrequency: frequency));
 }
+
+final temperatureReadingProvider = Provider<TemperatureReading>((ref) {
+  return ref.watch(settingsNotifierProvider).preferences.temperatureReading;
+});
+
+final themeModeProvider = Provider<ThemeMode>((ref) {
+  return ref.watch(settingsNotifierProvider).preferences.themeMode;
+});
+
+final updateFrequencyProvider = Provider<Duration>((ref) {
+  return ref.watch(settingsNotifierProvider).preferences.updateFrequency;
+});

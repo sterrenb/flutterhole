@@ -19,23 +19,17 @@ final cancelTokenStateProvider = StateProvider<CancelToken>((ref) {
   return CancelToken();
 });
 
-final themeModeProvider = StateProvider((_) => ThemeMode.system);
+final oldThemeModeProvider = StateProvider((_) => ThemeMode.system);
 
-enum TemperatureReading {
-  celcius,
-  fahrenheit,
-  kelvin,
-}
-
-final temperatureReadingProvider = StateProvider<TemperatureReading>(
-  (_) => TemperatureReading.celcius,
-);
-
-final updateFrequencyProvider = StateProvider((_) => Duration(seconds: 10));
-
-final temperatureRangeProvider =
-    StateProvider<RangeValues>((_) => RangeValues(30, 70));
-final temperatureRangeEnabledProvider = StateProvider<bool>((_) => true);
+// final temperatureReadingProvider = StateProvider<TemperatureReading>(
+//   (_) => TemperatureReading.celcius,
+// );
+//
+// final updateFrequencyProvider = StateProvider((_) => Duration(seconds: 10));
+//
+// final temperatureRangeProvider =
+//     StateProvider<RangeValues>((_) => RangeValues(30, 70));
+// final temperatureRangeEnabledProvider = StateProvider<bool>((_) => true);
 
 final packageInfoProvider =
     FutureProvider<PackageInfo>((_) => PackageInfo.fromPlatform());

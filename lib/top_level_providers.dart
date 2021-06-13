@@ -22,6 +22,10 @@ final debugModeProvider = Provider<bool>((ref) {
   return false;
 });
 
+final userPreferencesProvider = Provider<UserPreferences>((ref) {
+  return UserPreferences.initial();
+});
+
 final dioProvider = Provider.family<Dio, Pi>((ref, pi) {
   print('making dio for ${pi.title}');
   final dio = Dio();

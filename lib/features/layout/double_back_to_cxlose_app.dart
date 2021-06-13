@@ -41,8 +41,8 @@ class _DoubleBackToCloseAppState extends State<DoubleBackToCloseApp> {
           return true;
         }
 
-        ScaffoldMessenger.of(context).showThemedSnackBarNow(context,
-            message: 'Press BACK again to exit');
+        ScaffoldMessenger.of(context)
+            .showThemedMessageNow(context, message: 'Press BACK again to exit');
 
         setState(() {
           stopwatch = clock.stopwatch()..start();

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/top_level_providers.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 const importThemes = null;
 
@@ -23,30 +26,46 @@ class PiTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = Theme.of(context);
     return Theme(
       data: ThemeData.from(
-          colorScheme: Theme.of(context).colorScheme.copyWith(
-                primary: pi.primaryColor,
-                onPrimary: Colors.green,
-              )).copyWith(
+          colorScheme: c.colorScheme.copyWith(
+        primary: pi.primaryColor,
+        onPrimary: Colors.green,
+      )).copyWith(
         primaryColor: pi.primaryColor,
         accentColor: pi.accentColor,
         primaryColorDark: Colors.pink,
-        textSelectionTheme: Theme.of(context).textSelectionTheme.copyWith(
-              cursorColor: pi.accentColor,
-              selectionColor: pi.accentColor.withOpacity(.5),
-              selectionHandleColor: pi.accentColor,
-            ),
+        textSelectionTheme: c.textSelectionTheme.copyWith(
+          cursorColor: pi.accentColor,
+          selectionColor: pi.accentColor.withOpacity(.5),
+          selectionHandleColor: pi.accentColor,
+        ),
         toggleableActiveColor: pi.primaryColor,
         buttonColor: pi.primaryColor.computeForegroundColor(),
-        appBarTheme: Theme.of(context).appBarTheme.copyWith(
-              backgroundColor: pi.primaryColor,
-              titleTextStyle: TextStyle(
-                color: Colors.green,
-              ),
-            ),
+        appBarTheme: c.appBarTheme.copyWith(
+          backgroundColor: pi.primaryColor,
+          titleTextStyle: TextStyle(
+            color: Colors.green,
+          ),
+        ),
       ),
       child: child,
     );
+  }
+}
+
+class ActivePiTheme extends HookWidget {
+  const ActivePiTheme({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final active = useProvider(activePiProvider);
+    return PiTheme(pi: active, child: child);
   }
 }

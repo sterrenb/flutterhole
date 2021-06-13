@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -405,4 +406,39 @@ class DashboardSettingsModel with _$DashboardSettingsModel {
 
   late final DashboardSettings entity =
       DashboardSettings(entries: entries.map((e) => e.entity).toList());
+}
+
+@freezed
+class UserPreferencesModel with _$UserPreferencesModel {
+  UserPreferencesModel._();
+
+  factory UserPreferencesModel({
+    required String themeMode,
+    required String temperatureReading,
+    required double temperatureMin,
+    required double temperatureMax,
+    required int updateFrequency,
+  }) = _UserPreferencesModel;
+
+  factory UserPreferencesModel.fromJson(Map<String, dynamic> json) =>
+      _$UserPreferencesModelFromJson(json);
+
+  factory UserPreferencesModel.fromEntity(UserPreferences entity) =>
+      UserPreferencesModel(
+        themeMode: entity.themeMode.toString(),
+        temperatureReading: entity.temperatureReading.toString(),
+        temperatureMin: entity.temperatureMin,
+        temperatureMax: entity.temperatureMax,
+        updateFrequency: entity.updateFrequency.inSeconds,
+      );
+
+  late final UserPreferences entity = UserPreferences(
+    themeMode: ThemeMode.values
+        .firstWhere((element) => element.toString() == themeMode),
+    temperatureReading: TemperatureReading.values
+        .firstWhere((element) => element.toString() == temperatureReading),
+    temperatureMin: temperatureMin,
+    temperatureMax: temperatureMax,
+    updateFrequency: Duration(seconds: updateFrequency),
+  );
 }

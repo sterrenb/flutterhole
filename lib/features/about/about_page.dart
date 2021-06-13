@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/about/app_version.dart';
+import 'package:flutterhole_web/features/about/logo.dart';
 import 'package:flutterhole_web/features/browser_helpers.dart';
-import 'package:flutterhole_web/features/query_log/logo_inspector.dart';
 import 'package:in_app_review/in_app_review.dart';
 
 class ListTitle extends StatelessWidget {
@@ -44,23 +44,7 @@ class AboutPage extends StatelessWidget {
               'FlutterHole for Pi-Hole®',
             ),
             subtitle: Text('Made by Thomas Sterrenburg'),
-            leading: SizedBox(
-              width: 56.0,
-              child: Ink.image(
-                image: AssetImage('assets/icons/icon.png'),
-                child: InkWell(
-                  onTap: () {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (sheetContext) {
-                          final screenWidth = MediaQuery.of(context).size.width;
-                          return LogoInspector(screenWidth: screenWidth);
-                          // return LogoInspector(screenWidth: screenWidth);
-                        });
-                  },
-                ),
-              ),
-            ),
+            leading: LogoIcon(),
           ),
           Divider(),
           AppVersionListTile(),

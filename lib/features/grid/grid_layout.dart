@@ -1,6 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+
+class PageGrid extends StatelessWidget {
+  const PageGrid({
+    Key? key,
+    this.pageController,
+    this.crossAxisCount = 4,
+    required this.tiles,
+    required this.children,
+  })  : assert(tiles.length == children.length),
+        super(key: key);
+
+  final ScrollController? pageController;
+  final int crossAxisCount;
+  final List<StaggeredTile> tiles;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return StaggeredGridView.count(
+      controller: pageController,
+      crossAxisCount: 4,
+      mainAxisSpacing: kGridSpacing,
+      crossAxisSpacing: kGridSpacing,
+      padding: const EdgeInsets.all(kGridSpacing),
+      physics: const BouncingScrollPhysics(),
+      staggeredTiles: tiles,
+      children: children,
+    );
+  }
+}
 
 class GridSpacer extends StatelessWidget {
   const GridSpacer({Key? key}) : super(key: key);

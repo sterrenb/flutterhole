@@ -47,6 +47,12 @@ final activeQueriesOverTimeProvider =
   return ref.watch(queriesOverTimeProvider(pi));
 });
 
+final activePiDetailsProvider =
+    Provider.autoDispose<AsyncValue<PiDetails>>((ref) {
+  final pi = ref.watch(activePiProvider);
+  return ref.watch(piDetailsProvider(pi));
+});
+
 class ActivePiTitle extends HookWidget {
   @override
   Widget build(BuildContext context) {

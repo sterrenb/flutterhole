@@ -139,6 +139,7 @@ class KIcons {
   static const IconData selectDashboardTiles = Icons.playlist_add_check;
 
   static const IconData error = Icons.warning;
+  static const IconData dangerZone = error;
   static const IconData delete = Icons.delete;
   static const IconData selected = Icons.check;
   static const IconData host = Icons.dns;
@@ -165,11 +166,15 @@ class KColors {
   static const Color timestamp = Colors.amber;
   static const Color link = Colors.blue;
 
+  static const Color temperatureLow = Color(0xFF005C32);
+  static const Color temperatureMed = Color(0xFFB1720C);
+  static const Color temperatureHigh = Color(0xFF913225);
+
   static const Color info = Colors.blue;
   static const Color debug = Colors.brown;
-  static const Color warning = Colors.orange;
   static const Color success = Colors.green;
-  static const Color error = Colors.red;
+  static const Color warning = temperatureMed;
+  static const Color error = temperatureHigh;
 
   static const Color enabled = Colors.green;
   static const Color disabled = Colors.orange;
@@ -182,8 +187,4 @@ class KColors {
   static const Color queriesBlocked = Color(0xFF007997);
   static const Color percentBlocked = Color(0xFFB1720C);
   static const Color domainsOnBlocklist = Color(0xFF913225);
-
-  static const Color temperatureLow = Color(0xFF005C32);
-  static const Color temperatureMed = Color(0xFFB1720C);
-  static const Color temperatureHigh = Color(0xFF913225);
 }

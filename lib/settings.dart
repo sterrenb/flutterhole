@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
-import 'package:flutterhole_web/features/about/app_version.dart';
-import 'package:flutterhole_web/features/home/temperature_tile.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
@@ -24,25 +22,11 @@ String themeModeToString(ThemeMode themeMode) {
   }
 }
 
-String _temperatureReadingToString(TemperatureReading temperatureReading) {
-  switch (temperatureReading) {
-    case TemperatureReading.celcius:
-      return 'Celcius (°C)';
-    case TemperatureReading.fahrenheit:
-      return 'Fahrenheit (°F)';
-    case TemperatureReading.kelvin:
-    default:
-      return 'Kelvin (°K)';
-  }
-}
-
 class AppSettingsList extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final themeMode = useProvider(themeModeProvider);
-    final temperatureReading = useProvider(temperatureReadingProvider);
-    final updateFrequency = useProvider(updateFrequencyProvider);
-
+    final themeMode = useProvider(oldThemeModeProvider);
+    final preferences = useProvider(userPreferencesProvider);
     final pi = useProvider(activePiProvider);
 
     final piSummary = useProvider(piSummaryProvider(pi));
@@ -68,21 +52,23 @@ class AppSettingsList extends HookWidget {
               },
             ),
             buildThemeTile(themeMode),
-            SettingsTile(
-              title: 'Update frequency',
-              subtitle: 'Every ${updateFrequency.state.inSeconds} seconds',
-              leading: Icon(KIcons.updateFrequency),
-              onPressed: (context) =>
-                  showUpdateFrequencyDialog(context, context.read),
-            ),
-            SettingsTile(
-              title: 'Temperature reading',
-              subtitle:
-                  '${_temperatureReadingToString(temperatureReading.state)}',
-              leading: Icon(KIcons.temperatureReading),
-              onPressed: (context) =>
-                  showTemperatureReadingDialog(context, context.read),
-            ),
+            // SettingsTile(
+            //   title: 'Update frequency',
+            //   subtitle: 'Every ${updateFrequency.state.inSeconds} seconds',
+            //   leading: Icon(KIcons.updateFrequency),
+            //   onPressed: (context) =>
+            //       showUpdateFrequencyDialog(context, context.read),
+            // ),
+            // SettingsTile(
+            //   title: 'Temperature reading',
+            //   subtitle:
+            //       '${_temperatureReadingToString(temperatureReading.state)}',
+            //   leading: Icon(KIcons.temperatureReading),
+            //   onPressed: (context) =>
+            //       showTemperatureReadingDialog(context, preferences.temperatureReading, (update) {
+            //         print('TODO');
+            //       }),
+            // ),
           ],
         ),
         SettingsSection(
@@ -104,29 +90,6 @@ class AppSettingsList extends HookWidget {
               },
             ),
           ],
-        ),
-        CustomSection(
-          child: Column(
-            children: [
-              AppVersionListTile(),
-              ListTile(
-                subtitle: Text('${pi.baseApiUrl}'),
-              ),
-              ListTile(
-                title: Text('$piSummary'),
-                trailing: TextButton(
-                    onPressed: () {
-                      context.refresh(piSummaryProvider(pi));
-                    },
-                    child: Text('Fetch')),
-              ),
-            ],
-          ),
-        ),
-        CustomSection(
-          child: ListTile(
-            subtitle: Text(pi.toString()),
-          ),
         ),
       ],
     );

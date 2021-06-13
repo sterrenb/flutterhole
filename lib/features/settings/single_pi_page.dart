@@ -10,12 +10,16 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
+import 'package:flutterhole_web/features/home/dashboard_grid.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/routing/app_router.gr.dart';
+import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/single_pi_grid.dart';
 import 'package:flutterhole_web/features/settings/single_pi_tiles.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
 import 'package:flutterhole_web/models.dart';
 import 'package:flutterhole_web/pihole_repository.dart';
+import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -74,6 +78,17 @@ final singlePiProvider = StateNotifierProvider.autoDispose
     .family<SinglePiNotifier, Pi, Pi>((ref, initial) {
   return SinglePiNotifier(initial);
 });
+
+Future<void> pushAndSaveSinglePiRoute(BuildContext context, Pi initial) async {
+  await context.router.push(SinglePiRoute(
+    initial: initial,
+    onSave: (update) {
+      context.read(settingsNotifierProvider.notifier).savePi(update);
+
+      context.read(piholeStatusNotifierProvider.notifier).ping();
+    },
+  ));
+}
 
 class SinglePiPage extends HookWidget {
   const SinglePiPage({
@@ -213,6 +228,7 @@ class SinglePiPage extends HookWidget {
           onSelected: (selected) {
             n.updateAccentColor(selected);
           }),
+      StaggeredTile.count(4, 1): SelectTilesButtonTile(),
       StaggeredTile.count(4, 4): CodeCard(
         (input) {
           JsonEncoder encoder = new JsonEncoder.withIndent('  ');
@@ -254,7 +270,7 @@ class SinglePiPage extends HookWidget {
             onTap: () {
               FocusScope.of(context).unfocus();
             },
-            child: SinglePiGrid(
+            child: PageGrid(
               pageController: pageController,
               tiles: items.keys.toList(),
               children: items.values.toList(),
@@ -280,7 +296,11 @@ class UseApiKeyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return TriplePiGridCard(
       onTap: () => onChanged(!value),
-      left: Center(child: Text('Use API key')),
+      left: Center(
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text('Require API key'),
+      )),
       right: Checkbox(
         value: value,
         onChanged: onChanged,

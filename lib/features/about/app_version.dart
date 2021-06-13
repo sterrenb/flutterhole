@@ -57,13 +57,21 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
 }
 
 class AppVersionListTile extends HookWidget {
+  const AppVersionListTile({
+    Key? key,
+    this.title = 'App version',
+    this.showLicences = true,
+  }) : super(key: key);
+
+  final String title;
+  final bool showLicences;
+
   @override
   Widget build(BuildContext context) {
     final packageInfo = useProvider(packageInfoProvider);
     return ListTile(
-      leading: Image(
-          width: 24.0, image: AssetImage('assets/icons/github_light.png')),
-      title: Text('App version'),
+      leading: Icon(KIcons.appVersion),
+      title: Text(title),
       // subtitle: Text('${packageInfo.toString()}'),
       subtitle: packageInfo.when(
         data: (PackageInfo info) =>
@@ -71,11 +79,13 @@ class AppVersionListTile extends HookWidget {
         loading: () => Text(''),
         error: (o, s) => Text('No version information found'),
       ),
-      trailing: TextButton(
-          onPressed: packageInfo.maybeWhen(
-              orElse: () => null,
-              data: (info) => () => showAppDetailsDialog(context, info)),
-          child: Text('Licences')),
+      trailing: showLicences
+          ? TextButton(
+              onPressed: packageInfo.maybeWhen(
+                  orElse: () => null,
+                  data: (info) => () => showAppDetailsDialog(context, info)),
+              child: Text('Licences'))
+          : null,
     );
   }
 }

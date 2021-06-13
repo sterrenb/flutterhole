@@ -289,6 +289,7 @@ class SettingsState with _$SettingsState {
   factory SettingsState({
     required List<Pi> allPis,
     required int activeId,
+    required UserPreferences preferences,
     required bool dev,
   }) = _SettingsState;
 
@@ -325,4 +326,31 @@ class DashboardSettings with _$DashboardSettings {
       ]);
 
   late final List<DashboardID> keys = entries.map((e) => e.id).toList();
+}
+
+enum TemperatureReading {
+  celcius,
+  fahrenheit,
+  kelvin,
+}
+
+@freezed
+class UserPreferences with _$UserPreferences {
+  UserPreferences._();
+
+  factory UserPreferences({
+    required ThemeMode themeMode,
+    required TemperatureReading temperatureReading,
+    required double temperatureMin,
+    required double temperatureMax,
+    required Duration updateFrequency,
+  }) = _UserPreferences;
+
+  factory UserPreferences.initial() => UserPreferences(
+        themeMode: ThemeMode.system,
+        temperatureReading: TemperatureReading.celcius,
+        temperatureMin: 40.0,
+        temperatureMax: 60.0,
+        updateFrequency: Duration(seconds: 30),
+      );
 }

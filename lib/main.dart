@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
+import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/settings_repository.dart';
-import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,10 +60,11 @@ class MyApp extends HookWidget {
             secondary: Colors.orangeAccent,
           ),
           scaffoldBackgroundColor: Color(0xFF121212),
+          // canvasColor: Color(0xFF121212),
           cardColor: KColors.versions,
           dialogBackgroundColor: KColors.versions,
         ),
-        themeMode: themeMode.state,
+        themeMode: themeMode,
         routerDelegate: router.delegate(),
         routeInformationParser: router.defaultRouteParser(),
         // home: const HomeScreen(),

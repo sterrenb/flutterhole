@@ -228,7 +228,7 @@ class PiStatusMessenger extends HookWidget {
       );
 
       if (message != null) {
-        messenger.showThemedSnackBarNow(context, message: message);
+        messenger.showThemedMessageNow(context, message: message);
       }
     }, keys: [messenger, piStatus]);
 

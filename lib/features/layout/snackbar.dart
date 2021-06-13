@@ -8,7 +8,7 @@ extension ScaffoldMessengerStateX on ScaffoldMessengerState {
   }
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
-      showThemedSnackBarNow(
+      showThemedMessageNow(
     BuildContext context, {
     required String message,
     Widget? leading,
@@ -29,6 +29,32 @@ extension ScaffoldMessengerStateX on ScaffoldMessengerState {
           Text(
             message,
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          ),
+        ],
+      ),
+      duration: Duration(seconds: 3),
+    ));
+  }
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showMessageNow(
+    BuildContext context, {
+    required String message,
+    Widget? leading,
+  }) {
+    return showSnackBarNow(SnackBar(
+      content: Row(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          leading != null
+              ? Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: leading,
+                )
+              : Container(
+                  height: 0,
+                ),
+          Text(
+            message,
           ),
         ],
       ),

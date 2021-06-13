@@ -38,7 +38,7 @@ class MemoryTile extends HookWidget {
         onTap: detailsCache.value == null
             ? null
             : () {
-                ScaffoldMessenger.of(context).showThemedSnackBarNow(context,
+                ScaffoldMessenger.of(context).showThemedMessageNow(context,
                     message:
                         'CPU load: ${detailsCache.value!.cpuLoads.map((e) => '${(e * 100).toStringAsFixed(0)}%').join(' | ')}',
                     leading: Icon(KIcons.memoryUsage));

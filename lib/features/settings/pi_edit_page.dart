@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/settings_repository.dart';
+import 'package:flutterhole_web/features/settings/single_pi_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PiEditPage extends HookWidget {
@@ -25,44 +26,39 @@ class PiEditPage extends HookWidget {
               itemCount: settings.allPis.length,
               itemBuilder: (context, index) {
                 final pi = settings.allPis.elementAt(index);
-                return Container(
-                  // decoration: pi.id == settings.active.id
-                  //     ? BoxDecoration(
-                  //         color: Theme.of(context).accentColor.withOpacity(.2))
-                  //     : null,
-                  child: ListTile(
-                    leading: Icon(
-                      KIcons.dot,
-                      color: pi.primaryColor,
-                    ),
-                    title: Text('${pi.title} ${pi.id}'),
-                    subtitle: Text(pi.baseApiUrl),
-                    trailing: AnimatedOpacity(
-                        opacity: pi.id == settings.active.id ? 1 : 0,
-                        duration: kThemeChangeDuration,
-                        child: Icon(KIcons.selected)),
-                    // onTap: () {
-                    onLongPress: () {
-                      context
-                          .read(settingsNotifierProvider.notifier)
-                          .activate(pi.id);
-                    },
-                    onTap: () async {
-                      // onLongPress: () {
-                      // print('setting pi to ${pi.title}');
-                      // context.read(singlePiProvider(pi).notifier);
-                      // final update = await Navigator.of(context).push<Pi>(
-                      //     MaterialPageRoute(
-                      //         builder: (context) => SinglePiPage(pi)));
-                      //
-                      // if (update != null) {
-                      //   print('update: ${update.title}');
-                      //   context
-                      //       .read(settingsNotifierProvider.notifier)
-                      //       .save(update);
-                      // }
-                    },
+                return ListTile(
+                  leading: Icon(
+                    KIcons.dot,
+                    color: pi.primaryColor,
                   ),
+                  title: Text('${pi.title} ${pi.id}'),
+                  subtitle: Text(pi.baseApiUrl),
+                  trailing: AnimatedOpacity(
+                      opacity: pi.id == settings.active.id ? 1 : 0,
+                      duration: kThemeChangeDuration,
+                      child: Icon(KIcons.selected)),
+                  onLongPress: () {
+                    context
+                        .read(settingsNotifierProvider.notifier)
+                        .activate(pi.id);
+                  },
+                  onTap: () async {
+                    await pushAndSaveSinglePiRoute(context, pi);
+
+                    // onLongPress: () {
+                    // print('setting pi to ${pi.title}');
+                    // context.read(singlePiProvider(pi).notifier);
+                    // final update = await Navigator.of(context).push<Pi>(
+                    //     MaterialPageRoute(
+                    //         builder: (context) => SinglePiPage(pi)));
+                    //
+                    // if (update != null) {
+                    //   print('update: ${update.title}');
+                    //   context
+                    //       .read(settingsNotifierProvider.notifier)
+                    //       .save(update);
+                    // }
+                  },
                 );
               },
             );
