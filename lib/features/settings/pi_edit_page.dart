@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/settings_repository.dart';
-import 'package:flutterhole_web/features/settings/single_pi_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PiEditPage extends HookWidget {
@@ -12,7 +10,7 @@ class PiEditPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final pi = useProvider(activePiProvider).state;
+    // final pi = useProvider(activePiProvider);
     final settings = useProvider(settingsNotifierProvider);
     return Scaffold(
       // drawer: AppDrawer(),
@@ -51,18 +49,18 @@ class PiEditPage extends HookWidget {
                     },
                     onTap: () async {
                       // onLongPress: () {
-                      print('setting pi to ${pi.title}');
-                      context.read(singlePiProvider(pi).notifier);
-                      final update = await Navigator.of(context).push<Pi>(
-                          MaterialPageRoute(
-                              builder: (context) => SinglePiPage(pi)));
-
-                      if (update != null) {
-                        print('update: ${update.title}');
-                        context
-                            .read(settingsNotifierProvider.notifier)
-                            .save(update);
-                      }
+                      // print('setting pi to ${pi.title}');
+                      // context.read(singlePiProvider(pi).notifier);
+                      // final update = await Navigator.of(context).push<Pi>(
+                      //     MaterialPageRoute(
+                      //         builder: (context) => SinglePiPage(pi)));
+                      //
+                      // if (update != null) {
+                      //   print('update: ${update.title}');
+                      //   context
+                      //       .read(settingsNotifierProvider.notifier)
+                      //       .save(update);
+                      // }
                     },
                   ),
                 );
@@ -83,7 +81,6 @@ class PiEditPage extends HookWidget {
                   onPressed: () {
                     final all =
                         context.read(settingsRepositoryProvider).allPis();
-                    print(all);
                     // print("result ${str}");
                   },
                   child: Text('all')),
@@ -91,7 +88,7 @@ class PiEditPage extends HookWidget {
                   onPressed: () {
                     final x = settings.active
                         .copyWith(title: settings.active.title + '~');
-                    context.read(settingsNotifierProvider.notifier).save(x);
+                    context.read(settingsNotifierProvider.notifier).savePi(x);
                   },
                   child: Text('increment')),
               TextButton(
@@ -100,7 +97,7 @@ class PiEditPage extends HookWidget {
                       title: settings.active.title + '!',
                       id: DateTime.now().millisecondsSinceEpoch,
                     );
-                    context.read(settingsNotifierProvider.notifier).save(x);
+                    context.read(settingsNotifierProvider.notifier).savePi(x);
                   },
                   child: Text('add')),
             ],

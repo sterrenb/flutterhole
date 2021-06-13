@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'entities.freezed.dart';
@@ -17,6 +16,7 @@ class Pi with _$Pi {
     required String description,
     required Color primaryColor,
     required Color accentColor,
+    required DashboardSettings dashboardSettings,
 
     // host details
     required String baseUrl,
@@ -36,12 +36,33 @@ class Pi with _$Pi {
     required int proxyPort,
   }) = _Pi;
 
+  factory Pi.initial() => Pi(
+        id: 0,
+        title: "Pi-hole",
+        description: "",
+        primaryColor: Colors.purple,
+        accentColor: Colors.orangeAccent,
+        dashboardSettings: DashboardSettings.initial(),
+        baseUrl: "pi.hole",
+        useSsl: false,
+        apiPath: "/admin/api.php",
+        apiPort: 80,
+        apiToken:
+            "3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c",
+        apiTokenRequired: true,
+        allowSelfSignedCertificates: false,
+        basicAuthenticationUsername: "",
+        basicAuthenticationPassword: "",
+        proxyUrl: "",
+        proxyPort: 8080,
+      );
+
   late final String host = '$baseUrl:$apiPort';
 
   late final String baseApiUrl =
       '${useSsl ? 'https://' : 'http://'}$host$apiPath';
 
-  late final String adminHome = '$host/admin';
+  late final String adminHome = '${useSsl ? 'https://' : 'http://'}$host/admin';
 }
 
 @freezed
@@ -245,7 +266,7 @@ class PiVersions with _$PiVersions {
 }
 
 enum DashboardID {
-  Versions,
+  SelectTiles,
   TotalQueries,
   QueriesBlocked,
   PercentBlocked,
@@ -255,22 +276,10 @@ enum DashboardID {
   Temperature,
   Memory,
   QueryTypes,
-  QueryTypesTwo,
   ForwardDestinations,
-  ForwardDestinationsTwo,
   TopPermittedDomains,
   TopBlockedDomains,
-}
-
-@freezed
-class DashboardEntry with _$DashboardEntry {
-  DashboardEntry._();
-
-  factory DashboardEntry({
-    required DashboardID id,
-    required StaggeredTile tile,
-    required bool enabled,
-  }) = _DashboardEntry;
+  Versions,
 }
 
 @freezed
@@ -287,4 +296,33 @@ class SettingsState with _$SettingsState {
     print("${element.id} == $activeId");
     return element.id == activeId;
   });
+}
+
+@freezed
+class DashboardEntry with _$DashboardEntry {
+  DashboardEntry._();
+
+  factory DashboardEntry({
+    required DashboardID id,
+    required bool enabled,
+  }) = _DashboardEntry;
+}
+
+@freezed
+class DashboardSettings with _$DashboardSettings {
+  DashboardSettings._();
+
+  factory DashboardSettings({
+    required List<DashboardEntry> entries,
+  }) = _DashboardSettings;
+
+  factory DashboardSettings.initial() => DashboardSettings(entries: [
+        ...DashboardID.values
+            .map<DashboardEntry>((e) => DashboardEntry(id: e, enabled: true))
+            .toList()
+            .sublist(0, DashboardID.values.length ~/ 2),
+        DashboardEntry(id: DashboardID.SelectTiles, enabled: true),
+      ]);
+
+  late final List<DashboardID> keys = entries.map((e) => e.id).toList();
 }

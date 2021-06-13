@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -11,29 +10,6 @@ import 'package:flutterhole_web/pihole_repository.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-// final dio = Dio(
-//   BaseOptions(
-//       headers: {
-//         HttpHeaders.userAgentHeader: "flutterhole",
-//       },
-//   )
-// );
-
-final dioProvider = Provider<Dio>((_) {
-  final dio = Dio();
-  dio.options.headers = {
-    HttpHeaders.userAgentHeader: "flutterhole",
-  };
-  dio.options.connectTimeout = 2000;
-  dio.options.sendTimeout = 2000;
-  dio.options.receiveTimeout = 2000;
-  // dio.interceptors.add(LogInterceptor(
-  //   requestBody: false,
-  //   responseBody: true,
-  // ));
-  return dio;
-});
 
 // static String getUserExceptionMessage(DioError dioError) {
 // return '${dioError.response.statusCode}: ${dioError.response.statusMessage}.\nURL: ${dioError.request.path}';
@@ -70,12 +46,7 @@ final simplePiProvider = Provider<Pi>((ref) {
 
 final piholeRepositoryProviderFamily =
     Provider.family<PiholeRepository, Pi>((ref, pi) {
-  final dio = ref.read(dioProvider);
-  // final cancelToken = CancelToken();
-  // ref.onDispose(() {
-  //   print('disposing for ${pi.title}');
-  //   cancelToken.cancel();
-  // });
+  final dio = ref.watch(dioProvider(pi));
   return PiholeRepository(dio, pi);
 });
 
@@ -222,7 +193,7 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
         state = result;
       }
     } on PiholeApiFailure catch (e) {
-      print('oi: $e');
+      print('oi: $e ($action)');
       if (mounted) {
         print('mounted == true');
         state = PiholeStatus.failure(e);
@@ -230,7 +201,10 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
     }
   }
 
-  Future<void> ping() => _perform(_repository.ping(_cancelToken));
+  Future<void> ping() {
+    print('pinging');
+    return _perform(_repository.ping(_cancelToken));
+  }
 
   Future<void> enable() async => _perform(_repository.enable(_cancelToken));
 
@@ -248,10 +222,10 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
   }
 }
 
-final piholeStatusNotifierProvider = StateNotifierProvider<PiholeStatusNotifier,
-        PiholeStatus>(
-    (ref) => PiholeStatusNotifier(ref.watch(
-        piholeRepositoryProviderFamily(ref.watch(activePiProvider).state))));
+final piholeStatusNotifierProvider =
+    StateNotifierProvider<PiholeStatusNotifier, PiholeStatus>((ref) =>
+        PiholeStatusNotifier(ref.watch(
+            piholeRepositoryProviderFamily(ref.watch(activePiProvider)))));
 
 class QueryLogNotifier extends StateNotifier<List<QueryItem>> {
   final PiholeRepository _repository;
@@ -327,8 +301,8 @@ class QueryLogNotifier extends StateNotifier<List<QueryItem>> {
 final queryLogNotifierProvider =
     StateNotifierProvider<QueryLogNotifier, List<QueryItem>>(
         (ref) => QueryLogNotifier(
-              ref.watch(piholeRepositoryProviderFamily(
-                  ref.watch(activePiProvider).state)),
+              ref.watch(
+                  piholeRepositoryProviderFamily(ref.watch(activePiProvider))),
             ));
 
 // final myStatusProvider = StateProvider<PiholeStatus>((ref) {

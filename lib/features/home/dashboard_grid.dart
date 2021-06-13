@@ -1,61 +1,103 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/chart_tiles.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/entities.dart';
-import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/home/memory_tile.dart';
 import 'package:flutterhole_web/features/home/query_types_tile.dart';
 import 'package:flutterhole_web/features/home/temperature_tile.dart';
 import 'package:flutterhole_web/features/home/versions_tile.dart';
+import 'package:flutterhole_web/features/routing/app_router.gr.dart';
+import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/providers.dart';
+import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-final List<DashboardEntry> _dashboardProviderDefault = {
-  DashboardID.QueryTypesTwo: const StaggeredTile.count(4, 2),
-  DashboardID.ForwardDestinationsTwo: const StaggeredTile.count(4, 2),
-  DashboardID.Versions: const StaggeredTile.fit(4),
-  DashboardID.TotalQueries: const StaggeredTile.count(4, 1),
-  DashboardID.QueriesBlocked: const StaggeredTile.count(4, 1),
-  DashboardID.PercentBlocked: const StaggeredTile.count(4, 1),
-  DashboardID.DomainsOnBlocklist: const StaggeredTile.count(4, 1),
-  DashboardID.QueriesBarChart: const StaggeredTile.fit(4),
-  DashboardID.ClientActivityBarChart: const StaggeredTile.fit(4),
-  DashboardID.Temperature: const StaggeredTile.count(2, 2),
-  DashboardID.Memory: const StaggeredTile.count(2, 2),
-  DashboardID.QueryTypes: const StaggeredTile.count(4, 2),
-  DashboardID.ForwardDestinations: const StaggeredTile.count(4, 2),
-  DashboardID.TopPermittedDomains: const StaggeredTile.fit(4),
-  DashboardID.TopBlockedDomains: const StaggeredTile.fit(4),
-}
-    .entries
-    .map((e) => DashboardEntry(
-        id: e.key,
-        tile: e.value,
-        enabled: e.key != DashboardID.TopPermittedDomains &&
-            // e.key != DashboardID.TopBlockedDomains &&
-            e.key != DashboardID.QueryTypes &&
-            e.key != DashboardID.ForwardDestinations))
-    .toList();
+final Map<DashboardID, StaggeredTile> staggeredTile =
+    DashboardID.values.asMap().map((index, id) {
+  final tile = (id) {
+    switch (id) {
+      case DashboardID.SelectTiles:
+        return const StaggeredTile.count(4, 1);
+      case DashboardID.TotalQueries:
+        return const StaggeredTile.count(4, 1);
+      case DashboardID.QueriesBlocked:
+        return const StaggeredTile.count(4, 1);
+      case DashboardID.PercentBlocked:
+        return const StaggeredTile.count(4, 1);
+      case DashboardID.DomainsOnBlocklist:
+        return const StaggeredTile.count(4, 1);
+      case DashboardID.QueriesBarChart:
+        return const StaggeredTile.fit(4);
+      case DashboardID.ClientActivityBarChart:
+        return const StaggeredTile.fit(4);
+      case DashboardID.Temperature:
+        return const StaggeredTile.count(2, 2);
+      case DashboardID.Memory:
+        return const StaggeredTile.count(2, 2);
+      case DashboardID.QueryTypes:
+        return const StaggeredTile.count(4, 2);
+      case DashboardID.ForwardDestinations:
+        return const StaggeredTile.count(4, 2);
+      case DashboardID.TopPermittedDomains:
+        return const StaggeredTile.fit(4);
+      case DashboardID.TopBlockedDomains:
+        return const StaggeredTile.fit(4);
+      case DashboardID.Versions:
+        return const StaggeredTile.fit(4);
+      default:
+        return const StaggeredTile.count(4, 1);
+    }
+  }(id);
 
-final dashboardProvider =
-    StateProvider<List<DashboardEntry>>((ref) => _dashboardProviderDefault);
+  return MapEntry(id, tile);
+});
 
-class DashTog extends HookWidget {
-  const DashTog({Key? key}) : super(key: key);
+// final Map<DashboardID, StaggeredTile> staggeredTiles = {
+//   DashboardID.Versions: const StaggeredTile.fit(4),
+//   DashboardID.TotalQueries: const StaggeredTile.count(4, 1),
+//   DashboardID.QueriesBlocked: const StaggeredTile.count(4, 1),
+//   DashboardID.PercentBlocked: const StaggeredTile.count(4, 1),
+//   DashboardID.DomainsOnBlocklist: const StaggeredTile.count(4, 1),
+//   DashboardID.QueriesBarChart: const StaggeredTile.fit(4),
+//   DashboardID.ClientActivityBarChart: const StaggeredTile.fit(4),
+//   DashboardID.Temperature: const StaggeredTile.count(2, 2),
+//   DashboardID.Memory: const StaggeredTile.count(2, 2),
+//   DashboardID.QueryTypes: const StaggeredTile.count(4, 2),
+//   DashboardID.ForwardDestinations: const StaggeredTile.count(4, 2),
+//   DashboardID.TopPermittedDomains: const StaggeredTile.fit(4),
+//   DashboardID.TopBlockedDomains: const StaggeredTile.fit(4),
+// };
+
+// final dashboardProvider =
+//     StateProvider<List<DashboardEntry>>((ref) => _dashboardProviderDefault);
+
+class SelectTilesButtonTile extends HookWidget {
+  const SelectTilesButtonTile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
       icon: Icon(KIcons.selectDashboardTiles),
       onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => const DashSelectScreen(),
-          // fullscreenDialog: true,
-        ));
+        context.router.push(
+          DashboardSettingsRoute(
+              initial: context.read(activePiProvider).dashboardSettings,
+              onSave: (update) {
+                print('updating');
+                context
+                    .read(settingsNotifierProvider.notifier)
+                    .updateDashboardEntries(update.entries);
+              }),
+        );
+        // Navigator.of(context).push(MaterialPageRoute(
+        //   builder: (BuildContext context) => const DashboardSettingsPage(),
+        //   // fullscreenDialog: true,
+        // ));
       },
       label: Text('Select tiles'.toUpperCase()),
     );
@@ -67,7 +109,11 @@ class DashboardGrid extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tiles = useProvider(dashboardProvider);
+    // final dashboardSettings = DashboardSettings.initial();
+    final dashboardSettings =
+        useProvider(settingsNotifierProvider).active.dashboardSettings;
+    final tiles = dashboardSettings.entries;
+    // final tiles = useProvider(dashboardProvider);
     if (5 > 6)
       return ListView(
         children: [
@@ -78,55 +124,61 @@ class DashboardGrid extends HookWidget {
               child: Text('ping')),
         ],
       );
-    return tiles.state.any((element) => element.enabled)
+
+    return tiles.any((element) => element.enabled)
         ? TheGrid(
-            tiles: [
-              const StaggeredTile.count(4, 1),
-              ...tiles.state
-                  .where((element) => element.enabled)
-                  .map((e) => e.tile),
-              const StaggeredTile.count(4, 1),
-            ].toList(),
-            children: <Widget>[
-              DashTog(),
-              ...tiles.state.where((element) => element.enabled).map((e) {
-                switch (e.id) {
-                  case DashboardID.Versions:
-                    return VersionsTile();
-                  case DashboardID.TotalQueries:
-                    return TotalQueriesTile();
-                  case DashboardID.QueriesBlocked:
-                    return QueriesBlockedTile();
-                  case DashboardID.PercentBlocked:
-                    return PercentBlockedTile();
-                  case DashboardID.DomainsOnBlocklist:
-                    return DomainsOnBlocklistTile();
-                  case DashboardID.QueriesBarChart:
-                    return QueriesBarChartTile();
-                  case DashboardID.ClientActivityBarChart:
-                    return ClientActivityBarChartTile();
-                  case DashboardID.Temperature:
-                    return TemperatureTile();
-                  case DashboardID.Memory:
-                    return MemoryTile();
-                  case DashboardID.QueryTypes:
-                    return QueryTypesTile();
-                  case DashboardID.QueryTypesTwo:
-                    return QueryTypesTileTwo();
-                  case DashboardID.ForwardDestinations:
-                    return ForwardDestinationsTile();
-                  case DashboardID.ForwardDestinationsTwo:
-                    return ForwardDestinationsTileTwo();
-                  case DashboardID.TopPermittedDomains:
-                    return TopPermittedDomainsTile();
-                  case DashboardID.TopBlockedDomains:
-                    return TopBlockedDomainsTile();
-                }
-              }),
-              DashTog(),
-            ].toList(),
+            // tiles: [
+            //   const StaggeredTile.count(4, 1),
+            //   ...tiles.state
+            //       .where((element) => element.enabled)
+            //       .map((e) => e.tile),
+            //   const StaggeredTile.count(4, 1),
+            // ].toList(),
+            tiles: dashboardSettings.entries
+                .where((element) => element.enabled)
+                .map<StaggeredTile>((entry) {
+              final x = staggeredTile.containsKey(entry.id)
+                  ? staggeredTile[entry.id]
+                  : null;
+
+              if (x != null) return x;
+              return const StaggeredTile.count(4, 1);
+            }).toList(),
+            // children: tiles.map((e) {
+            children: tiles.where((element) => element.enabled).map((e) {
+              switch (e.id) {
+                case DashboardID.Versions:
+                  return const VersionsTile();
+                case DashboardID.TotalQueries:
+                  return const TotalQueriesTile();
+                case DashboardID.QueriesBlocked:
+                  return const QueriesBlockedTile();
+                case DashboardID.PercentBlocked:
+                  return const PercentBlockedTile();
+                case DashboardID.DomainsOnBlocklist:
+                  return const DomainsOnBlocklistTile();
+                case DashboardID.QueriesBarChart:
+                  return const QueriesBarChartTile();
+                case DashboardID.ClientActivityBarChart:
+                  return const ClientActivityBarChartTile();
+                case DashboardID.Temperature:
+                  return const TemperatureTile();
+                case DashboardID.Memory:
+                  return const MemoryTile();
+                case DashboardID.QueryTypes:
+                  return const QueryTypesTileTwo();
+                case DashboardID.ForwardDestinations:
+                  return const ForwardDestinationsTileTwo();
+                case DashboardID.TopPermittedDomains:
+                  return const TopPermittedDomainsTile();
+                case DashboardID.TopBlockedDomains:
+                  return const TopBlockedDomainsTile();
+                case DashboardID.SelectTiles:
+                  return const SelectTilesButtonTile();
+              }
+            }).toList(),
           )
-        : Center(child: DashTog());
+        : Center(child: SelectTilesButtonTile());
   }
 }
 
@@ -170,143 +222,6 @@ class TheGrid extends HookWidget {
         padding: const EdgeInsets.all(kGridSpacing),
         physics: const BouncingScrollPhysics(),
       ),
-    );
-  }
-}
-
-class DashSelectScreen extends HookWidget {
-  const DashSelectScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Select tiles'),
-        actions: [
-          IconButton(
-              tooltip: 'Reset to default',
-              onPressed: () {
-                context.read(dashboardProvider).state =
-                    _dashboardProviderDefault;
-              },
-              icon: Icon(
-                Icons.update,
-              ))
-        ],
-      ),
-      body: HookBuilder(builder: (context) {
-        final dash = useProvider(dashboardProvider);
-        return ReorderableListView(
-            buildDefaultDragHandles: true,
-            children: <Widget>[
-              for (int index = 0; index < dash.state.length; index++)
-                GridSelectItem(
-                  index,
-                  key: Key('$index'),
-                )
-            ],
-            onReorder: (oldIndex, newIndex) {
-              print('$oldIndex, $newIndex');
-              if (oldIndex < newIndex) {
-                newIndex -= 1;
-              }
-
-              final list =
-                  List<DashboardEntry>.from(dash.state, growable: true);
-              final item = list.removeAt(oldIndex);
-              list.insert(newIndex, item);
-              dash.state = list;
-            });
-      }),
-    );
-  }
-}
-
-class GridSelectItem extends HookWidget {
-  const GridSelectItem(this.index, {Key? key}) : super(key: key);
-
-  final int index;
-
-  @override
-  Widget build(BuildContext context) {
-    final dash = useProvider(dashboardProvider);
-    final entry = dash.state.elementAt(index);
-    return Column(
-      children: [
-        Divider(height: 0),
-        ListTile(
-          onTap: () {},
-          title: Text(
-            entry.id.toString().split('.').last,
-            style: TextStyle(
-                color: entry.enabled ? null : Theme.of(context).disabledColor),
-          ),
-          leading: GridIcon(
-            (DashboardID id) {
-              switch (id) {
-                case DashboardID.Versions:
-                  return KIcons.appVersion;
-                case DashboardID.TotalQueries:
-                  return KIcons.totalQueries;
-                case DashboardID.TotalQueries:
-                  return KIcons.totalQueries;
-                case DashboardID.QueriesBlocked:
-                  return KIcons.queriesBlocked;
-                case DashboardID.PercentBlocked:
-                  return KIcons.percentBlocked;
-                case DashboardID.DomainsOnBlocklist:
-                  return KIcons.domainsOnBlocklist;
-                case DashboardID.QueriesBarChart:
-                  return KIcons.queriesOverTime;
-                case DashboardID.ClientActivityBarChart:
-                  return KIcons.clientActivity;
-                case DashboardID.Temperature:
-                  return KIcons.temperatureReading;
-                case DashboardID.Memory:
-                  return KIcons.memoryUsage;
-                case DashboardID.QueryTypes:
-                  return KIcons.memoryUsage;
-                case DashboardID.QueryTypesTwo:
-                  return KIcons.memoryUsage;
-                case DashboardID.ForwardDestinations:
-                case DashboardID.ForwardDestinationsTwo:
-                  return KIcons.memoryUsage;
-                case DashboardID.TopPermittedDomains:
-                  return KIcons.domainsPermittedTile;
-                case DashboardID.TopBlockedDomains:
-                  return KIcons.domainsBlockedTile;
-              }
-            }(entry.id),
-            isDark: true,
-          ),
-          trailing: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Tooltip(
-                message: 'Toggle visibility',
-                child: Checkbox(
-                  value: entry.enabled,
-                  onChanged: (_) {
-                    List<DashboardEntry> l = List.from(dash.state);
-                    final newEntry = l.elementAt(index);
-                    l[index] = newEntry.copyWith(enabled: !newEntry.enabled);
-                    dash.state = l;
-                  },
-                ),
-              ),
-              ReorderableDragStartListener(
-                index: index,
-                child: IconButton(
-                  onPressed: null,
-                  icon: Icon(Icons.drag_handle),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Divider(height: 0),
-      ],
     );
   }
 }

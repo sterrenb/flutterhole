@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:animations/animations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,7 +14,10 @@ import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/settings/single_pi_grid.dart';
 import 'package:flutterhole_web/features/settings/single_pi_tiles.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
+import 'package:flutterhole_web/models.dart';
+import 'package:flutterhole_web/pihole_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 // final singlePiProvider = StateProvider.autoDispose<Pi>((ref) => debugPis.first);
 
@@ -19,7 +27,7 @@ final whitespaceFormatter =
 class SinglePiNotifier extends StateNotifier<Pi> {
   SinglePiNotifier(Pi initial) : super(initial);
 
-  void update(Pi pi) => state = pi;
+  // void update(Pi pi) => state = pi;
 
   void updateTitle(String title) {
     state = state.copyWith(title: title);
@@ -33,8 +41,20 @@ class SinglePiNotifier extends StateNotifier<Pi> {
     state = state.copyWith(useSsl: value);
   }
 
+  void updateApiTokenRequired(bool value) {
+    state = state.copyWith(apiTokenRequired: value);
+  }
+
+  void updateAllowSelfSignedCertificates(bool value) {
+    state = state.copyWith(allowSelfSignedCertificates: value);
+  }
+
   void updateApiPath(String apiPath) {
     state = state.copyWith(apiPath: apiPath);
+  }
+
+  void updateApiToken(String token) {
+    state = state.copyWith(apiToken: token);
   }
 
   void updateApiPort(int port) {
@@ -52,13 +72,13 @@ class SinglePiNotifier extends StateNotifier<Pi> {
 
 final singlePiProvider = StateNotifierProvider.autoDispose
     .family<SinglePiNotifier, Pi, Pi>((ref, initial) {
-  print('returning notifier for ${initial.title}');
   return SinglePiNotifier(initial);
 });
 
 class SinglePiPage extends HookWidget {
-  const SinglePiPage(
-    this.initial, {
+  const SinglePiPage({
+    required this.initial,
+    required this.onSave,
     Key? key,
   }) : super(key: key);
 
@@ -69,7 +89,9 @@ class SinglePiPage extends HookWidget {
     ...Colors.primaries,
     ...Colors.accents
   ];
+
   final Pi initial;
+  final ValueChanged<Pi> onSave;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +106,7 @@ class SinglePiPage extends HookWidget {
         useTextEditingController(text: initial.apiPort.toString());
 
     final scrollPosition = useState(1.0);
+    final hasChanges = pi != initial;
 
     useEffect(() {
       pageController.addListener(() {
@@ -94,32 +117,32 @@ class SinglePiPage extends HookWidget {
 
     useEffect(() {
       titleController.addListener(() {
-        n.update(pi.copyWith(title: titleController.text));
+        n.updateTitle(titleController.text);
       });
     }, [titleController]);
 
     useEffect(() {
       baseUrlController.addListener(() {
-        n.update(pi.copyWith(baseUrl: baseUrlController.text));
+        n.updateBaseUrl(baseUrlController.text);
       });
     }, [baseUrlController]);
 
     useEffect(() {
       apiPathController.addListener(() {
-        n.update(pi.copyWith(apiPath: apiPathController.text));
+        n.updateApiPath(apiPathController.text);
       });
     }, [apiPathController]);
 
     useEffect(() {
       apiTokenController.addListener(() {
-        n.update(pi.copyWith(apiToken: apiTokenController.text));
+        print('update: ${apiTokenController.text}');
+        n.updateApiToken(apiTokenController.text);
       });
     }, [apiTokenController]);
 
     useEffect(() {
       apiPortController.addListener(() {
-        n.update(
-            pi.copyWith(apiPort: int.tryParse(apiPortController.text) ?? 80));
+        n.updateApiPort(int.tryParse(apiPortController.text) ?? 80);
       });
     }, [apiPortController]);
 
@@ -148,22 +171,31 @@ class SinglePiPage extends HookWidget {
 
       StaggeredTile.count(4, 1):
           const GridSectionHeader('Authentication', KIcons.authentication),
-      StaggeredTile.count(3, 1):
-          ApiTokenCard(apiTokenController: apiTokenController),
-      StaggeredTile.count(1, 1): Tooltip(
-        message: 'Scan QR code',
-        child: PiGridCard(
-          onTap: () {},
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Icon(
-                KIcons.qrCode,
-                // size: constraints.maxHeight / 2,
-              );
-            },
-          ),
-        ),
+
+      StaggeredTile.count(3, 1): ApiTokenCard(
+        apiTokenController: apiTokenController,
+        pi: pi,
       ),
+
+      StaggeredTile.count(1, 1): QrScanCard(
+        onScan: (scan) {
+          apiTokenController.text = scan;
+        },
+        pi: pi,
+      ),
+      StaggeredTile.count(2, 2): UseApiKeyCard(
+        value: pi.apiTokenRequired,
+        onChanged: (value) {
+          if (value != null) n.updateApiTokenRequired(value);
+        },
+      ),
+      StaggeredTile.count(2, 2): AllowSelfSignedCertificatesCard(
+        value: pi.allowSelfSignedCertificates,
+        onChanged: (value) {
+          if (value != null) n.updateAllowSelfSignedCertificates(value);
+        },
+      ),
+      StaggeredTile.count(2, 1): VersionsTestTile(pi: pi),
 
       StaggeredTile.count(4, 1):
           const GridSectionHeader('Customization', KIcons.customization),
@@ -181,8 +213,12 @@ class SinglePiPage extends HookWidget {
           onSelected: (selected) {
             n.updateAccentColor(selected);
           }),
-      StaggeredTile.count(3, 2): CodeCard(
-        pi.toString(),
+      StaggeredTile.count(4, 4): CodeCard(
+        (input) {
+          JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+          String pretty = encoder.convert(input);
+          return pretty;
+        }(PiModel.fromEntity(pi).toJson()),
         tappable: false,
         expanded: false,
         onTap: () {},
@@ -203,26 +239,14 @@ class SinglePiPage extends HookWidget {
                 opacity: scrollPosition.value > 0.4 ? 1 : 0,
                 child: Text('Editing ${pi.title}')),
             actions: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Tooltip(
-                    message: 'Save changes',
-                    child: ElevatedButton(
-                      onPressed: pi != initial
-                          ? () {
-                              Navigator.of(context).pop(pi);
-                            }
-                          : null,
-                      child: Text(
-                        'Save',
-                        style: TextStyle(
-                          color: pi.primaryColor.computeForegroundColor(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+              ElevatedSaveButton(
+                onPressed: () {
+                  if (hasChanges) {
+                    onSave(pi);
+                  }
+
+                  context.router.pop();
+                },
               ),
             ],
           ),
@@ -242,31 +266,222 @@ class SinglePiPage extends HookWidget {
   }
 }
 
-class UseSslCard extends StatelessWidget {
-  const UseSslCard({
+class UseApiKeyCard extends StatelessWidget {
+  const UseApiKeyCard({
     Key? key,
-    required this.pi,
+    required this.value,
     required this.onChanged,
-    required this.onTap,
   }) : super(key: key);
 
-  final Pi pi;
+  final bool value;
   final ValueChanged<bool?> onChanged;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return DoublePiGridCard(
-      left: Center(child: TileTitle('Use SSL')),
-      right: Center(
-        child: Checkbox(
-          activeColor: pi.primaryColor,
-          checkColor: pi.primaryColor.computeForegroundColor(),
-          value: pi.useSsl,
-          onChanged: onChanged,
+    return TriplePiGridCard(
+      onTap: () => onChanged(!value),
+      left: Center(child: Text('Use API key')),
+      right: Checkbox(
+        value: value,
+        onChanged: onChanged,
+      ),
+      bottom: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'If your Pi-hole does not have an API token, disable this option and leave the API key empty.',
+            style: Theme.of(context).textTheme.caption,
+          ),
         ),
       ),
-      onTap: onTap,
+    );
+  }
+}
+
+class AllowSelfSignedCertificatesCard extends StatelessWidget {
+  const AllowSelfSignedCertificatesCard({
+    Key? key,
+    required this.value,
+    required this.onChanged,
+  }) : super(key: key);
+
+  final bool value;
+  final ValueChanged<bool?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return TriplePiGridCard(
+      onTap: () => onChanged(!value),
+      left: Center(
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          'Allow self signed certificates',
+        ),
+      )),
+      right: Checkbox(
+        value: value,
+        onChanged: onChanged,
+      ),
+      bottom: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'Trust all certificates, even when the TLS handshake fails. Useful when using SSL with your own certificate.',
+            style: Theme.of(context).textTheme.caption,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TextSaveButton extends StatelessWidget {
+  const TextSaveButton({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Tooltip(
+          message: 'Save changes',
+          child: TextButton(
+            onPressed: onPressed,
+            child: Text(
+              'Save',
+              style: TextStyle(
+                color: Theme.of(context).buttonColor,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ElevatedSaveButton extends StatelessWidget {
+  const ElevatedSaveButton({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Tooltip(
+          message: 'Save changes',
+          child: ElevatedButton(
+            onPressed: onPressed,
+            child: Text(
+              'Save',
+              style: TextStyle(
+                color: Theme.of(context).buttonColor,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class QrScanCard extends StatelessWidget {
+  const QrScanCard({
+    Key? key,
+    required this.onScan,
+    required this.pi,
+  }) : super(key: key);
+
+  final ValueChanged<String> onScan;
+  final Pi pi;
+
+  @override
+  Widget build(BuildContext context) {
+    final VoidCallback? onTap = () async {
+      final barcode = await showModal<String>(
+        context: context,
+        builder: (context) {
+          return _QrScanDialog();
+        },
+      );
+
+      if (barcode != null) onScan(barcode);
+    };
+
+    return Tooltip(
+      message: 'Scan QR code',
+      child: PiGridCard(
+        onTap: onTap,
+        child: IconButton(
+          icon: Icon(
+            KIcons.qrCode,
+            // size: constraints.maxHeight / 2,
+          ),
+          onPressed: onTap,
+        ),
+      ),
+    );
+  }
+}
+
+class _QrScanDialog extends StatefulWidget {
+  const _QrScanDialog({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _QrScanDialogState createState() => _QrScanDialogState();
+}
+
+class _QrScanDialogState extends State<_QrScanDialog> {
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  QRViewController? controller;
+
+  // In order to get hot reload to work we need to pause the camera if the platform
+  // is android, or resume the camera if the platform is iOS.
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (Platform.isAndroid) {
+      controller?.pauseCamera();
+    } else if (Platform.isIOS) {
+      controller?.resumeCamera();
+    }
+  }
+
+  void onQRViewCreated(QRViewController controller) {
+    this.controller = controller;
+    controller.scannedDataStream.listen((scanData) {
+      if (mounted) {
+        setState(() {
+          Navigator.of(context).pop(scanData.code);
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return QRView(
+      key: qrKey,
+      onQRViewCreated: onQRViewCreated,
     );
   }
 }
@@ -332,9 +547,11 @@ class ApiTokenCard extends HookWidget {
   const ApiTokenCard({
     Key? key,
     required this.apiTokenController,
+    required this.pi,
   }) : super(key: key);
 
   final TextEditingController apiTokenController;
+  final Pi pi;
 
   @override
   Widget build(BuildContext context) {
@@ -342,16 +559,19 @@ class ApiTokenCard extends HookWidget {
     return Card(
       child: Center(
         child: TileTextField(
+          // enabled: pi.apiTokenRequired,
           controller: apiTokenController,
           textAlign: TextAlign.start,
-          style: Theme.of(context).textTheme.headline6,
+          style: apiTokenController.text.isEmpty
+              ? Theme.of(context).textTheme.headline5
+              : Theme.of(context).textTheme.caption,
           keyboardType: TextInputType.visiblePassword,
           inputFormatters: [
             LengthLimitingTextInputFormatter(200),
             FilteringTextInputFormatter.singleLineFormatter,
             whitespaceFormatter,
           ],
-          hintText: 'API token',
+          hintText: pi.apiTokenRequired ? 'API token' : kNoApiTokenNeeded,
           obscureText: !show.value,
           // expands: !show.value,
           maxLines: show.value ? null : 1,

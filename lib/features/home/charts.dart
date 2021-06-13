@@ -26,7 +26,6 @@ class PiQueriesDoughnutChart extends StatelessWidget {
     return DoughnutChart(
       title: title,
       dataSource: (PiQueryTypes queryTypes) {
-        queryTypes.types.removeWhere((key, value) => value <= 0);
         int index = 0;
         return queryTypes.types.entries
             .map((e) => DoughnutChartData(
@@ -61,8 +60,6 @@ class ForwardDestinationsDoughnutChart extends StatelessWidget {
     return DoughnutChart(
       title: title,
       dataSource: (PiForwardDestinations forwardDestinations) {
-        forwardDestinations.destinations
-            .removeWhere((key, value) => value <= 0);
         int index = 0;
         return forwardDestinations.destinations.entries
             .map((e) => DoughnutChartData(

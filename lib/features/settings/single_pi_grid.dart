@@ -70,11 +70,7 @@ class DoublePiGridCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: Theme.of(context).dividerColor, width: 1.0),
-        borderRadius: BorderRadius.circular(kGridSpacing),
-      ),
+    return PiGridCard(
       child: GridInkWell(
         onTap: onTap,
         child: Row(
@@ -84,6 +80,49 @@ class DoublePiGridCard extends StatelessWidget {
             ),
             Expanded(
               child: right,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TriplePiGridCard extends StatelessWidget {
+  final Widget left;
+  final Widget right;
+  final Widget bottom;
+  final VoidCallback? onTap;
+
+  const TriplePiGridCard({
+    Key? key,
+    required this.left,
+    required this.right,
+    required this.bottom,
+    this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PiGridCard(
+      child: GridInkWell(
+        onTap: onTap,
+        child: Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: left,
+                  ),
+                  Expanded(
+                    child: right,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: bottom,
             ),
           ],
         ),

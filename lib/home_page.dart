@@ -25,7 +25,7 @@ class _RefreshableHomeGridState extends State<RefreshableHomeGrid> {
   final RefreshController controller = RefreshController();
 
   void onRefresh() async {
-    final pi = context.read(activePiProvider).state;
+    final pi = context.read(activePiProvider);
     await Future.wait<void>([
       context.refresh(piSummaryProvider(pi)),
       context.refresh(queryTypesProvider(pi)),
@@ -123,12 +123,13 @@ class HomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pi = useProvider(activePiProvider);
     // return SettingsPage();
     // final activePi = useProvider(activePiProvider).state;
     useAsyncEffect(() {
-      print('pinging from homepage');
-      context.read(piholeStatusNotifierProvider.notifier).ping();
-      context.refresh(piSummaryProvider(context.read(activePiProvider).state));
+      // TODO deprecate
+      // print('pinging from homepage');
+      // context.read(piholeStatusNotifierProvider.notifier).ping();
     }, keys: [
       piholeStatusNotifierProvider,
       piSummaryProvider,

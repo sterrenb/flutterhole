@@ -171,12 +171,14 @@ Future<void> showTemperatureRangeDialog(
   );
 
   if (selectedRange != null) {
-    print('setting $selectedRange');
     read(temperatureRangeProvider).state = selectedRange;
   }
 }
 
 class TemperatureTile extends HookWidget {
+  const TemperatureTile({
+    Key? key,
+  }) : super(key: key);
   Color temperatureRangeToColor(RangeValues values, double temperature) {
     if (temperature < values.start) return KColors.temperatureLow;
     if (temperature < values.end) return KColors.temperatureMed;

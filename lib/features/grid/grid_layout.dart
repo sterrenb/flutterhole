@@ -234,3 +234,17 @@ class CenteredGridTileErrorIndicator extends StatelessWidget {
     return Center(child: CodeCard(error.toString()));
   }
 }
+
+// class GridCheckbox extends StatelessWidget {
+//   const GridCheckbox({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Checkbox(
+//       activeColor: pi.primaryColor,
+//       checkColor: pi.primaryColor.computeForegroundColor(),
+//       value: pi.useSsl,
+//       onChanged: onChanged,
+//     );
+//   }
+// }

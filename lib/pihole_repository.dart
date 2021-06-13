@@ -21,7 +21,6 @@ class PiholeRepository {
     Map<String, dynamic> queryParameters,
     CancelToken cancelToken,
   ) async {
-    print(queryParameters);
     final response = await dio.get(
       path,
       queryParameters: queryParameters,
@@ -94,8 +93,8 @@ class PiholeRepository {
       final data =
           await _getSecure(pi.baseApiUrl, {'getQueryTypes': ''}, cancelToken);
 
-      print('data: $data');
       final queryTypes = PiQueryTypesModel.fromJson(data);
+      queryTypes.types.removeWhere((key, value) => value <= 0);
       return queryTypes.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
@@ -151,8 +150,6 @@ class PiholeRepository {
           cancelToken);
 
       var queries = PiClientsOverTimeModel.fromJson(data);
-      // print(queries);
-      // print(queries.entity.activity);
       return queries.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
@@ -160,7 +157,6 @@ class PiholeRepository {
   }
 
   double _docToTemperature(Document doc) {
-    // print(doc.getElementById('rawtemp')!.innerHtml);
     return double.tryParse(doc.getElementById('rawtemp')!.innerHtml) ?? -1;
   }
 
@@ -171,8 +167,8 @@ class PiholeRepository {
       final sub = string.substring(startIndex);
       final endIndex = sub.indexOf('</span>');
       final end = sub.substring(0, endIndex);
-      final nums = end.getNumbers();
-      return nums.first.toDouble();
+      final numbers = end.getNumbers();
+      return numbers.first.toDouble();
     } catch (e) {
       return -1;
     }
@@ -215,8 +211,6 @@ class PiholeRepository {
       final data = await _get(pi.baseApiUrl, {'status': ''}, cancelToken);
 
       final status = PiholeStatusModel.fromJson(data);
-      print('status for ${pi.baseApiUrl} after ping: ${status.entity}');
-      print('returning');
       return status.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
@@ -224,12 +218,10 @@ class PiholeRepository {
   }
 
   Future<PiholeStatus> enable(CancelToken cancelToken) async {
-    print('enabling ${pi.title}');
     try {
       final data = await _getSecure(pi.baseApiUrl, {'enable': ''}, cancelToken);
 
       final status = PiholeStatusModel.fromJson(data);
-      print('status after enable: ${status.entity}');
       return status.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
@@ -237,7 +229,6 @@ class PiholeRepository {
   }
 
   Future<PiholeStatus> disable(CancelToken cancelToken) async {
-    print('disabling ${pi.title}');
     try {
       final data =
           await _getSecure(pi.baseApiUrl, {'disable': ''}, cancelToken);
@@ -250,7 +241,6 @@ class PiholeRepository {
   }
 
   Future<PiholeStatus> sleep(Duration duration, CancelToken cancelToken) async {
-    print('sleeping ${pi.title}');
     try {
       final data = await _getSecure(
           pi.baseApiUrl, {'disable': '${duration.inSeconds}'}, cancelToken);
@@ -267,18 +257,13 @@ class PiholeRepository {
 
   Future<List<QueryItem>> fetchQueryItems(CancelToken cancelToken,
       [int? maxResults, int? pageKey]) async {
-    print('fetching $maxResults from API');
     try {
       final params = <String, dynamic>{
         'getAllQueries': maxResults?.toString() ?? '',
         '_': pageKey ?? ''
       };
-      print('params: $params');
-
       final data = await _getSecure(pi.baseApiUrl, params, cancelToken);
-
       final list = data['data'] as List<dynamic>;
-      print(QueryItemModel.fromList(list[0]));
       return List.from(
           list.map((json) => QueryItemModel.fromList(json).entity));
     } on DioError catch (e) {

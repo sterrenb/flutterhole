@@ -24,7 +24,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     );
   }
 
-  Future<void> save(Pi pi) async {
+  Future<void> savePi(Pi pi) async {
     print('saving ${pi.title} ${pi.id}');
     await _repository.savePi(pi);
     // TODO skip activating
@@ -38,5 +38,14 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   Future<void> activate(int id) async {
     await _repository.setActivePiId(id);
     state = state.copyWith(activeId: id);
+  }
+
+  Future<void> resetDashboard() => savePi(
+      state.active.copyWith(dashboardSettings: DashboardSettings.initial()));
+
+  Future<void> updateDashboardEntries(List<DashboardEntry> entries) async {
+    savePi(state.active.copyWith(
+        dashboardSettings:
+            state.active.dashboardSettings.copyWith(entries: entries)));
   }
 }

@@ -21,7 +21,7 @@ class MemoryTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pi = useProvider(activePiProvider).state;
+    final pi = useProvider(activePiProvider);
     final detailsValue = useProvider(piDetailsProvider(pi));
 
     final detailsCache = useState<PiDetails?>(null);

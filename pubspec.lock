@@ -506,7 +506,7 @@ packages:
       name: package_info_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   package_info_plus_linux:
     dependency: transitive
     description:
@@ -534,7 +534,7 @@ packages:
       name: package_info_plus_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   package_info_plus_windows:
     dependency: transitive
     description:
@@ -640,6 +640,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  qr_code_scanner:
+    dependency: "direct main"
+    description:
+      name: qr_code_scanner
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.1"
   riverpod:
     dependency: transitive
     description:

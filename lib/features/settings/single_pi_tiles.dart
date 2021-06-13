@@ -9,7 +9,6 @@ import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
-import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/single_pi_grid.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
 import 'package:flutterhole_web/providers.dart';
@@ -22,6 +21,7 @@ class TileTextField extends HookWidget {
     required this.inputFormatters,
     required this.keyboardType,
     required this.hintText,
+    this.enabled = true,
     this.style,
     this.decoration,
     this.textAlign,
@@ -31,6 +31,7 @@ class TileTextField extends HookWidget {
     this.expands = true,
   }) : super(key: key);
 
+  final bool enabled;
   final TextEditingController controller;
   final List<TextInputFormatter> inputFormatters;
   final TextInputType keyboardType;
@@ -65,6 +66,7 @@ class TileTextField extends HookWidget {
     );
 
     return TextField(
+      enabled: enabled,
       controller: controller,
       focusNode: node,
       expands: expands,
@@ -72,7 +74,9 @@ class TileTextField extends HookWidget {
       textAlignVertical: TextAlignVertical.center,
       textAlign: textAlign ?? TextAlign.center,
       style: style,
-      inputFormatters: inputFormatters,
+      inputFormatters: [
+        ...inputFormatters,
+      ],
       keyboardType: keyboardType,
       textCapitalization: textCapitalization ?? TextCapitalization.none,
       obscureText: obscureText,
@@ -254,6 +258,35 @@ class ColorGrid extends HookWidget {
   }
 }
 
+class UseSslCard extends StatelessWidget {
+  const UseSslCard({
+    Key? key,
+    required this.pi,
+    required this.onChanged,
+    required this.onTap,
+  }) : super(key: key);
+
+  final Pi pi;
+  final ValueChanged<bool?> onChanged;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return DoublePiGridCard(
+      left: Center(child: TileTitle('Use SSL')),
+      right: Center(
+        child: Checkbox(
+          // activeColor: pi.primaryColor,
+          // checkColor: pi.primaryColor.computeForegroundColor(),
+          value: pi.useSsl,
+          onChanged: onChanged,
+        ),
+      ),
+      onTap: onTap,
+    );
+  }
+}
+
 class SummaryTestTile extends HookWidget {
   const SummaryTestTile({
     Key? key,
@@ -264,7 +297,6 @@ class SummaryTestTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = useProvider(settingsNotifierProvider);
     final summaryValue = useProvider(piSummaryProvider(pi));
 
     final color = summaryValue.when(
@@ -304,30 +336,81 @@ class SummaryTestTile extends HookWidget {
       }
     };
 
-    if (5 < 6)
-      return DoublePiGridCard(
-        onTap: onTap,
-        left: Center(child: TileTitle('Status')),
-        right: IconButton(
-          icon: Icon(
-            KIcons.dot,
-            color: color,
-            size: 8.0,
-          ),
-          onPressed: onTap,
+    return DoublePiGridCard(
+      onTap: onTap,
+      left: Center(child: Text('Summary')),
+      right: IconButton(
+        icon: Icon(
+          KIcons.dot,
+          color: color,
+          size: 8.0,
         ),
+        onPressed: onTap,
+      ),
+    );
+  }
+}
+
+class VersionsTestTile extends HookWidget {
+  const VersionsTestTile({
+    Key? key,
+    required this.pi,
+  }) : super(key: key);
+
+  final Pi pi;
+
+  @override
+  Widget build(BuildContext context) {
+    final versionsValue = useProvider(topItemsProvider(pi));
+
+    final color = versionsValue.when(
+      data: (data) => KColors.success,
+      loading: () => KColors.loading,
+      error: (error, stacktrace) => KColors.error,
+    );
+
+    final VoidCallback onTap = () {
+      final dialog = versionsValue.maybeWhen(
+        data: (versions) => DialogListBase(
+          header: DialogHeader(title: 'Success'),
+          body: SliverToBoxAdapter(
+            child: CodeCard(
+              versions.toString(),
+              expanded: false,
+              tappable: false,
+            ),
+          ),
+        ),
+        error: (e, s) => DialogListBase(
+          header: DialogHeader(title: e.toString()),
+          body: SliverToBoxAdapter(
+            child: CodeCard(s.toString()),
+          ),
+        ),
+        orElse: () => null,
       );
 
-    return Column(
-      children: [
-        Text(
-          '${pi.title}: ${pi.baseApiUrl}',
+      if (dialog != null) {
+        showModal(
+          context: context,
+          builder: (context) {
+            return dialog;
+          },
+        );
+      }
+    };
+
+    return DoublePiGridCard(
+      onTap: onTap,
+      left: Center(child: Text('Top items')),
+      right: IconButton(
+        icon: Icon(
+          KIcons.dot,
+          color: color,
+          size: 8.0,
         ),
-        Text(
-          '${settings.active.title}: ${settings.active.baseApiUrl}',
-        ),
-        Text(summaryValue.toString()),
-      ],
+        onPressed: onTap,
+      ),
     );
   }
 }

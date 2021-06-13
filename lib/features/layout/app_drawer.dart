@@ -111,7 +111,7 @@ class _DrawerMenu extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final allPis = useProvider(allPisProvider).state;
+    final allPis = useProvider(allPisProvider);
     final expanded = useProvider(_expandedProvider);
 
     final double o = 80;
@@ -147,15 +147,15 @@ class _DrawerHeader extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activePi = useProvider(activePiProvider).state;
-    final allPis = useProvider(allPisProvider).state;
+    final activePi = useProvider(activePiProvider);
+    final allPis = useProvider(allPisProvider);
     final expanded = useProvider(_expandedProvider);
 
     return UserAccountsDrawerHeader(
       accountName: Row(
         children: [
           ActivePiTitle(),
-          PiStatusIndicator(enabled: false),
+          // PiStatusIndicator(enabled: false),
         ],
       ),
       onDetailsPressed: () {
@@ -171,7 +171,8 @@ class _DrawerHeader extends HookWidget {
           .map((currentPi) => _PiAvatar(
                 pi: currentPi,
                 onTap: () {
-                  context.read(activePiProvider).state = currentPi;
+                  print('TODO');
+                  // context.read(activePiProvider).state = currentPi;
                 },
               ))
           .toList(),

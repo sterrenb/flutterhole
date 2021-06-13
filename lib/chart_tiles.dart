@@ -113,8 +113,6 @@ class ForwardDestinationsTile extends HookWidget {
               right: DoughnutChart(
                 title: title,
                 dataSource: (PiForwardDestinations forwardDestinations) {
-                  forwardDestinations.destinations
-                      .removeWhere((key, value) => value <= 0);
                   int index = 0;
                   return forwardDestinations.destinations.entries
                       .map((e) => DoughnutChartData(
@@ -311,7 +309,7 @@ class ClientActivityBarChartTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final pi = useProvider(activePiProvider).state;
+    // final pi = useProvider(activePiProvider);
     final clientActivity = useProvider(activeClientActivityProvider);
     final expanded = useProvider(expandableDashboardTileProvider(title));
 

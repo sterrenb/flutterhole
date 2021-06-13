@@ -118,8 +118,8 @@ class VersionsTile extends HookWidget {
         children: [
           ListTile(
             onTap: () {
-              context.refresh(
-                  piVersionsProvider(context.read(activePiProvider).state));
+              context
+                  .refresh(piVersionsProvider(context.read(activePiProvider)));
             },
             title: TileTitle('Versions'),
             // leading: DashboardTileIcon(KIcons.appVersion),

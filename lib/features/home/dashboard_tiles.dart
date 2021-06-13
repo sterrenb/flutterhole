@@ -100,6 +100,10 @@ class DashboardListIcon extends StatelessWidget {
 class TotalQueriesTile extends HookWidget {
   static const String title = 'Total queries';
 
+  const TotalQueriesTile({
+    Key? key,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
@@ -135,6 +139,9 @@ class TotalQueriesTile extends HookWidget {
 }
 
 class QueriesBlockedTile extends HookWidget {
+  const QueriesBlockedTile({
+    Key? key,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
@@ -166,6 +173,9 @@ class QueriesBlockedTile extends HookWidget {
 }
 
 class PercentBlockedTile extends HookWidget {
+  const PercentBlockedTile({
+    Key? key,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
@@ -199,6 +209,9 @@ class PercentBlockedTile extends HookWidget {
 }
 
 class DomainsOnBlocklistTile extends HookWidget {
+  const DomainsOnBlocklistTile({
+    Key? key,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
@@ -281,9 +294,13 @@ class _QueryItemTile extends StatelessWidget {
 }
 
 class TopPermittedDomainsTile extends HookWidget {
+  const TopPermittedDomainsTile({
+    Key? key,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    // final pi = useProvider(activePiProvider).state;
+    // final pi = useProvider(activePiProvider);
     final topItems = useProvider(activeTopItemsProvider);
     final expanded = useState(false);
     final ticker = useSingleTickerProvider();
@@ -358,6 +375,10 @@ class TopPermittedDomainsTile extends HookWidget {
 }
 
 class TopBlockedDomainsTile extends HookWidget {
+  const TopBlockedDomainsTile({
+    Key? key,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final topItems = useProvider(activeTopItemsProvider);

@@ -29,14 +29,23 @@ class PiTheme extends StatelessWidget {
                 primary: pi.primaryColor,
                 onPrimary: Colors.green,
               )).copyWith(
-          primaryColor: pi.primaryColor,
-          accentColor: pi.accentColor,
-          primaryColorDark: Colors.pink,
-          textSelectionTheme: Theme.of(context).textSelectionTheme.copyWith(
-                cursorColor: pi.accentColor,
-                selectionColor: pi.accentColor.withOpacity(.5),
-                selectionHandleColor: pi.accentColor,
-              )),
+        primaryColor: pi.primaryColor,
+        accentColor: pi.accentColor,
+        primaryColorDark: Colors.pink,
+        textSelectionTheme: Theme.of(context).textSelectionTheme.copyWith(
+              cursorColor: pi.accentColor,
+              selectionColor: pi.accentColor.withOpacity(.5),
+              selectionHandleColor: pi.accentColor,
+            ),
+        toggleableActiveColor: pi.primaryColor,
+        buttonColor: pi.primaryColor.computeForegroundColor(),
+        appBarTheme: Theme.of(context).appBarTheme.copyWith(
+              backgroundColor: pi.primaryColor,
+              titleTextStyle: TextStyle(
+                color: Colors.green,
+              ),
+            ),
+      ),
       child: child,
     );
   }

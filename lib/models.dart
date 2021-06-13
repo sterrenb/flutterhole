@@ -317,29 +317,31 @@ class PiModel with _$PiModel {
     required String basicAuthenticationPassword,
     required String proxyUrl,
     required int proxyPort,
+    required DashboardSettingsModel dashboardSettings,
   }) = _PiModel;
 
   factory PiModel.fromJson(Map<String, dynamic> json) =>
       _$PiModelFromJson(json);
 
-  // TODO move somewhere else
-  factory PiModel.initial() => PiModel(
-        id: 0,
-        title: "Pi-hole",
-        description: "",
-        primaryColor: 4283657726,
-        accentColor: 2283656726,
-        baseUrl: "pi.hole",
-        useSsl: false,
-        apiPath: "/admin/api.php",
-        apiPort: 80,
-        apiToken: "",
-        apiTokenRequired: true,
-        allowSelfSignedCertificates: false,
-        basicAuthenticationUsername: "",
-        basicAuthenticationPassword: "",
-        proxyUrl: "",
-        proxyPort: 8080,
+  factory PiModel.fromEntity(Pi pi) => PiModel(
+        id: pi.id,
+        title: pi.title,
+        description: pi.description,
+        primaryColor: pi.primaryColor.value,
+        accentColor: pi.accentColor.value,
+        dashboardSettings:
+            DashboardSettingsModel.fromEntity(pi.dashboardSettings),
+        baseUrl: pi.baseUrl,
+        useSsl: pi.useSsl,
+        apiPath: pi.apiPath,
+        apiPort: pi.apiPort,
+        apiToken: pi.apiToken,
+        apiTokenRequired: pi.apiTokenRequired,
+        allowSelfSignedCertificates: pi.allowSelfSignedCertificates,
+        basicAuthenticationUsername: pi.basicAuthenticationUsername,
+        basicAuthenticationPassword: pi.basicAuthenticationPassword,
+        proxyUrl: pi.proxyUrl,
+        proxyPort: pi.proxyPort,
       );
 
   late final Pi entity = Pi(
@@ -348,6 +350,7 @@ class PiModel with _$PiModel {
     description: description,
     primaryColor: Color(primaryColor),
     accentColor: Color(accentColor),
+    dashboardSettings: dashboardSettings.entity,
     baseUrl: baseUrl,
     useSsl: useSsl,
     apiPath: apiPath,
@@ -360,4 +363,46 @@ class PiModel with _$PiModel {
     proxyUrl: proxyUrl,
     proxyPort: proxyPort,
   );
+}
+
+@freezed
+class DashboardEntryModel with _$DashboardEntryModel {
+  DashboardEntryModel._();
+
+  factory DashboardEntryModel({
+    required DashboardID id,
+    required bool enabled,
+  }) = _DashboardEntryModel;
+
+  factory DashboardEntryModel.fromJson(Map<String, dynamic> json) =>
+      _$DashboardEntryModelFromJson(json);
+
+  factory DashboardEntryModel.fromEntity(DashboardEntry entry) =>
+      DashboardEntryModel(
+        id: entry.id,
+        enabled: entry.enabled,
+      );
+
+  late final DashboardEntry entity = DashboardEntry(id: id, enabled: enabled);
+}
+
+@freezed
+class DashboardSettingsModel with _$DashboardSettingsModel {
+  DashboardSettingsModel._();
+
+  factory DashboardSettingsModel({
+    required List<DashboardEntryModel> entries,
+  }) = _DashboardSettingsModel;
+
+  factory DashboardSettingsModel.fromEntity(DashboardSettings settings) =>
+      DashboardSettingsModel(
+          entries: settings.entries
+              .map((e) => DashboardEntryModel.fromEntity(e))
+              .toList());
+
+  factory DashboardSettingsModel.fromJson(Map<String, dynamic> json) =>
+      _$DashboardSettingsModelFromJson(json);
+
+  late final DashboardSettings entity =
+      DashboardSettings(entries: entries.map((e) => e.entity).toList());
 }

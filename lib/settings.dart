@@ -43,7 +43,7 @@ class AppSettingsList extends HookWidget {
     final temperatureReading = useProvider(temperatureReadingProvider);
     final updateFrequency = useProvider(updateFrequencyProvider);
 
-    final pi = useProvider(activePiProvider).state;
+    final pi = useProvider(activePiProvider);
 
     final piSummary = useProvider(piSummaryProvider(pi));
     return SettingsList(

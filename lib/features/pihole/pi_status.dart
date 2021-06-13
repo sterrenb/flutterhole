@@ -27,6 +27,16 @@ class PiStatusIcon extends HookWidget {
   Widget build(BuildContext context) {
     // final piStatus = useProvider(piholeStatusProvider).state;
     final piStatus = useProvider(piholeStatusNotifierProvider);
+    final n = useProvider(piholeStatusNotifierProvider.notifier);
+    final pi = useProvider(activePiProvider);
+
+    useAsyncEffect(
+      () {
+        print('pinging from status icon');
+        n.ping();
+      },
+      keys: [pi, n],
+    );
 
     return Icon(
       KIcons.dot,
@@ -86,10 +96,10 @@ class PiStatusToggleIcon extends HookWidget {
 class PiStatusIndicator extends HookWidget {
   const PiStatusIndicator({
     Key? key,
-    this.enabled = true,
+    this.onTap,
   }) : super(key: key);
 
-  final bool enabled;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +130,7 @@ class PiStatusIndicator extends HookWidget {
             sleeping: (duration, _) =>
                 'Sleeping for ${duration.inSeconds - tick.value} seconds',
           ),
-          onPressed: enabled ? () {} : null,
+          onPressed: onTap,
         ),
         IgnorePointer(
           child: AnimatedOpacity(

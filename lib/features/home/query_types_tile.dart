@@ -18,30 +18,33 @@ class QueryTypesTileTwo extends HookWidget {
     final queryTypesValue = useProvider(activeQueryTypesProvider);
     final selected = useProvider(doughnutChartProvider(title));
 
-    return DoubleGridCard(
-      left: queryTypesValue.when(
-        data: (queryTypes) => DoughnutChartLegendList(
-          title: title,
-          iconData: KIcons.about,
-          builder: (context, index) {
-            final queryTypeEntry = queryTypes.types.entries.elementAt(index);
-            return Tooltip(
-              message:
-                  '${queryTypeEntry.key}: ${queryTypeEntry.value.toStringAsFixed(2)}%',
-              child: LegendTile(
-                title: queryTypeEntry.key,
-                trailing: '${queryTypeEntry.value.toStringAsFixed(0)}%',
-                selected: selected.state == queryTypeEntry.key,
-                color: PiQueriesDoughnutChart.colors
-                    .elementAt(index % PiQueriesDoughnutChart.colors.length),
-              ),
-            );
-          },
-          childCount: queryTypes.types.length,
-        ),
-        loading: () => CenteredGridTileLoadingIndicator(),
-        error: (error, stacktrace) => CenteredGridTileErrorIndicator(error),
+    final left = queryTypesValue.when(
+      data: (queryTypes) => DoughnutChartLegendList(
+        title: title,
+        iconData: KIcons.about,
+        builder: (context, index) {
+          final queryTypeEntry = queryTypes.types.entries.elementAt(index);
+          return Tooltip(
+            message:
+                '${queryTypeEntry.key}: ${queryTypeEntry.value.toStringAsFixed(2)}%',
+            child: LegendTile(
+              title: queryTypeEntry.key,
+              trailing: '${queryTypeEntry.value.toStringAsFixed(0)}%',
+              selected: selected.state == queryTypeEntry.key,
+              color: PiQueriesDoughnutChart.colors
+                  .elementAt(index % PiQueriesDoughnutChart.colors.length),
+            ),
+          );
+        },
+        childCount: queryTypes.types.length,
       ),
+      loading: () => CenteredGridTileLoadingIndicator(),
+      error: (error, stacktrace) => CenteredGridTileErrorIndicator(error),
+    );
+
+    return DoubleGridCard(
+      left: left,
+      // left: Container(),
       right: queryTypesValue.when(
         data: (queryTypes) => Padding(
           padding: const EdgeInsets.all(8.0),
