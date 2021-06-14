@@ -310,7 +310,7 @@ class SummaryTestTile extends HookWidget {
         data: (summary) => DialogListBase(
           header: DialogHeader(title: 'Success'),
           body: SliverToBoxAdapter(
-            child: CodeCard(
+            child: ExpandableCode(
               summary.toString(),
               expanded: false,
               tappable: false,
@@ -320,7 +320,7 @@ class SummaryTestTile extends HookWidget {
         error: (e, s) => DialogListBase(
           header: DialogHeader(title: e.toString()),
           body: SliverToBoxAdapter(
-            child: CodeCard(s.toString()),
+            child: ExpandableCode(s.toString()),
           ),
         ),
         orElse: () => null,
@@ -374,7 +374,7 @@ class VersionsTestTile extends HookWidget {
         data: (versions) => DialogListBase(
           header: DialogHeader(title: 'Success'),
           body: SliverToBoxAdapter(
-            child: CodeCard(
+            child: ExpandableCode(
               versions.toString(),
               expanded: false,
               tappable: false,
@@ -384,7 +384,7 @@ class VersionsTestTile extends HookWidget {
         error: (e, s) => DialogListBase(
           header: DialogHeader(title: e.toString()),
           body: SliverToBoxAdapter(
-            child: CodeCard(s.toString()),
+            child: ExpandableCode(s.toString()),
           ),
         ),
         orElse: () => null,

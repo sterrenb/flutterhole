@@ -7,6 +7,7 @@ import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
+import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -53,6 +54,24 @@ class _ThemeModeTile extends HookWidget {
   }
 }
 
+class _MyPiHolesTile extends HookWidget {
+  const _MyPiHolesTile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ListTile(
+        leading: Icon(KIcons.pihole),
+        title: Text('My Pi-holes'),
+        trailing: Icon(KIcons.push),
+        onTap: () {
+          AutoRouter.of(context).push(PiEditRoute());
+        },
+      ),
+    );
+  }
+}
+
 class BetterSettingsPage extends HookWidget {
   const BetterSettingsPage({Key? key}) : super(key: key);
 
@@ -66,6 +85,7 @@ class BetterSettingsPage extends HookWidget {
       StaggeredTile.extent(4, kGridSpacing * 2): Container(),
       // StaggeredTile.extent(4, kToolbarHeight):
       //     const GridSectionHeader('Preferences', KIcons.customization),
+      StaggeredTile.extent(4, kToolbarHeight): const _MyPiHolesTile(),
       StaggeredTile.extent(4, kToolbarHeight): const _ThemeModeTile(),
       StaggeredTile.extent(4, kToolbarHeight): const _UpdateFrequencyTile(),
       StaggeredTile.count(4, 1):

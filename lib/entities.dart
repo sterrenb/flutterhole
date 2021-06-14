@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:logging/logging.dart';
 
 part 'entities.freezed.dart';
 
@@ -59,10 +60,13 @@ class Pi with _$Pi {
 
   late final String host = '$baseUrl:$apiPort';
 
+  late final String dioBase =
+      '${useSsl ? 'https://' : 'http://'}$baseUrl${(apiPort == 80 && useSsl == false) || (apiPort == 443 && useSsl == true) ? '' : ':$apiPort'}';
+
   late final String baseApiUrl =
       '${useSsl ? 'https://' : 'http://'}$host$apiPath';
 
-  late final String adminHome = '${useSsl ? 'https://' : 'http://'}$host/admin';
+  late final String adminHome = '/admin';
 }
 
 @freezed
@@ -131,19 +135,19 @@ class PiDetails with _$PiDetails {
   PiDetails._();
 
   factory PiDetails({
-    required double temperature,
+    required double? temperature,
     required List<double> cpuLoads,
-    required double memoryUsage,
+    required double? memoryUsage,
   }) = _PiDetails;
 
   late final String temperatureInCelcius =
-      '${temperature.toStringAsFixed(1)} °C';
+      '${(temperature ?? 0).toStringAsFixed(1)} °C';
 
   late final String temperatureInFahrenheit =
-      '${_celciusToFahrenheit(temperature).toStringAsFixed(1)} °F';
+      '${_celciusToFahrenheit((temperature ?? 0)).toStringAsFixed(1)} °F';
 
   late final String temperatureInKelvin =
-      '${_celciusToKelvin(temperature).toStringAsFixed(1)} °K';
+      '${_celciusToKelvin((temperature ?? 0)).toStringAsFixed(1)} °K';
 }
 
 @freezed
@@ -280,6 +284,7 @@ enum DashboardID {
   TopPermittedDomains,
   TopBlockedDomains,
   Versions,
+  Logs,
 }
 
 @freezed
@@ -353,4 +358,39 @@ class UserPreferences with _$UserPreferences {
         temperatureMax: 60.0,
         updateFrequency: Duration(seconds: 30),
       );
+}
+
+enum LogLevel {
+  debug,
+  info,
+  warning,
+  error,
+}
+
+extension LogLevelX on LogLevel {
+  Level get level {
+    switch (this) {
+      case LogLevel.debug:
+        return Level.FINE;
+      case LogLevel.info:
+        return Level.INFO;
+      case LogLevel.warning:
+        return Level.WARNING;
+      case LogLevel.error:
+        return Level.SEVERE;
+    }
+  }
+}
+
+@freezed
+class LogCall with _$LogCall {
+  LogCall._();
+
+  factory LogCall({
+    required String source,
+    required LogLevel level,
+    required Object message,
+    Object? error,
+    StackTrace? stackTrace,
+  }) = _LogCall;
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
+import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/settings_repository.dart';
@@ -9,25 +10,17 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Logger extends ProviderObserver {
-  @override
-  void didUpdateProvider(ProviderBase provider, Object? newValue) {
-    print('''
-
-  "{ provider": "${provider.name ?? provider.runtimeType}",
-  "  newValue": ${newValue.toString()} }
-''');
-  }
-}
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final preferences = await SharedPreferences.getInstance();
 
   runApp(ProviderScope(
-    observers: <ProviderObserver>[
-      // Logger(),
-    ],
+    observers: false
+        ? <ProviderObserver>[
+            ProviderLogger(),
+          ]
+        : [],
     overrides: [
       settingsRepositoryProvider
           .overrideWithValue(SettingsRepository(preferences))
@@ -43,6 +36,8 @@ class MyApp extends HookWidget {
   Widget build(BuildContext context) {
     final themeMode = useProvider(themeModeProvider);
     final router = useState(AppRouter()).value;
+    // trigger root logger
+    // useProvider(rootLoggerProvider);
     return RefreshConfiguration(
       headerBuilder: () => WaterDropMaterialHeader(),
       child: MaterialApp.router(

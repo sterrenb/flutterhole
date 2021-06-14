@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -28,13 +29,18 @@ final userPreferencesProvider = Provider<UserPreferences>((ref) {
 
 final dioProvider = Provider.family<Dio, Pi>((ref, pi) {
   print('making dio for ${pi.title}');
-  final dio = Dio();
-  dio.options.headers = {
-    HttpHeaders.userAgentHeader: "flutterhole",
-  };
-  dio.options.connectTimeout = 2000;
-  dio.options.sendTimeout = 2000;
-  dio.options.receiveTimeout = 2000;
+
+  final logger = ref.watch(logNotifierProvider.notifier);
+
+  final dio = Dio(BaseOptions(
+    baseUrl: pi.dioBase,
+    headers: {
+      HttpHeaders.userAgentHeader: "flutterhole",
+    },
+    connectTimeout: 2000,
+    sendTimeout: 2000,
+    receiveTimeout: 2000,
+  ));
 
   if (pi.allowSelfSignedCertificates) {
     print('allowSelfSignedCertificates: true!!');
@@ -51,5 +57,26 @@ final dioProvider = Provider.family<Dio, Pi>((ref, pi) {
   //   requestBody: false,
   //   responseBody: true,
   // ));
+
+  dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
+    String params = '';
+    if (options.queryParameters.isNotEmpty) {
+      params = '?' +
+          options.queryParameters.entries
+              .map((mapEntry) =>
+                  '${mapEntry.key}=${mapEntry.key == 'auth' ? '<auth>' : mapEntry.value}')
+              .join("&");
+      print(params);
+    }
+    logger.log(LogCall(
+      source: 'dio',
+      level: LogLevel.debug,
+      message: '${options.method} ${options.baseUrl}${options.path}${params}',
+    ));
+
+    return handler.next(options);
+  }, onResponse: (response, handler) {
+    return handler.next(response);
+  }));
   return dio;
 });

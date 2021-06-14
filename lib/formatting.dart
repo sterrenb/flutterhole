@@ -30,6 +30,8 @@ extension doubleX on double {
 final importFormatting = 123;
 
 final _hm = DateFormat.Hm();
+final _hms = DateFormat.Hms();
+final _jms = DateFormat('H:m:s.S');
 
 extension DateTimeX on DateTime {
   String beforeAfter(Duration duration) {
@@ -37,6 +39,9 @@ extension DateTimeX on DateTime {
     final after = _hm.format(add(duration));
     return '$before - $after';
   }
+
+  String get hms => _hms.format(this);
+  String get jms => _jms.format(this);
 }
 
 extension PiholeApiFailureX on PiholeApiFailure {

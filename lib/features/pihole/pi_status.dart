@@ -30,13 +30,13 @@ class PiStatusIcon extends HookWidget {
     final n = useProvider(piholeStatusNotifierProvider.notifier);
     final pi = useProvider(activePiProvider);
 
-    useAsyncEffect(
-      () {
-        print('pinging from status icon');
-        n.ping();
-      },
-      keys: [pi, n],
-    );
+    // useAsyncEffect(
+    //   () {
+    //     print('pinging from status icon');
+    //     n.ping();
+    //   },
+    //   keys: [pi, n],
+    // );
 
     return Icon(
       KIcons.dot,

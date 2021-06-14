@@ -16,8 +16,8 @@ class MemoryTile extends HookWidget {
   static const double loadWidth = 3.0;
   static const double loadHeight = 10.0;
 
-  String memoryUsageToString(double memoryUsage) =>
-      '${memoryUsage.toStringAsFixed(1)}%';
+  String memoryUsageToString(double? memoryUsage) =>
+      memoryUsage == null ? '?%' : '${memoryUsage.toStringAsFixed(1)}%';
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class MemoryTile extends HookWidget {
                 loading: () => TextTileBottomText(detailsCache.value != null
                     ? memoryUsageToString(detailsCache.value!.memoryUsage)
                     : '-'),
-                error: (error, stacktrace) => CodeCard(error.toString()),
+                error: (error, stacktrace) => ExpandableCode(error.toString()),
               ),
               iconData: KIcons.memoryUsage,
               iconTop: 16.0,

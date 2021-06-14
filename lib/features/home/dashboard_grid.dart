@@ -13,6 +13,7 @@ import 'package:flutterhole_web/features/home/versions_tile.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
+import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -50,19 +51,63 @@ final Map<DashboardID, StaggeredTile> staggeredTile =
               return const StaggeredTile.fit(4);
             case DashboardID.Versions:
               return const StaggeredTile.fit(4);
+            case DashboardID.Versions:
+              return const StaggeredTile.fit(4);
+            case DashboardID.Logs:
+              return const StaggeredTile.count(4, 3);
             default:
               return const StaggeredTile.count(4, 1);
           }
         }(id)));
 
-class SelectTilesButtonTile extends HookWidget {
-  const SelectTilesButtonTile({Key? key}) : super(key: key);
+extension DashboardIDX on DashboardID {
+  Widget get widget {
+    switch (this) {
+      case DashboardID.Versions:
+        return const VersionsTile();
+      case DashboardID.TotalQueries:
+        return const TotalQueriesTile();
+      case DashboardID.QueriesBlocked:
+        return const QueriesBlockedTile();
+      case DashboardID.PercentBlocked:
+        return const PercentBlockedTile();
+      case DashboardID.DomainsOnBlocklist:
+        return const DomainsOnBlocklistTile();
+      case DashboardID.QueriesBarChart:
+        return const QueriesBarChartTile();
+      case DashboardID.ClientActivityBarChart:
+        return const ClientActivityBarChartTile();
+      case DashboardID.Temperature:
+        return const TemperatureTile();
+      case DashboardID.Memory:
+        return const MemoryTile();
+      case DashboardID.QueryTypes:
+        return const QueryTypesTileTwo();
+      case DashboardID.ForwardDestinations:
+        return const ForwardDestinationsTileTwo();
+      case DashboardID.TopPermittedDomains:
+        return const TopPermittedDomainsTile();
+      case DashboardID.TopBlockedDomains:
+        return const TopBlockedDomainsTile();
+      case DashboardID.SelectTiles:
+        return const SelectTilesTile();
+      case DashboardID.Logs:
+        return const LogsTile();
+    }
+  }
+}
+
+class SelectTilesTile extends HookWidget {
+  const SelectTilesTile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
       icon: Icon(KIcons.selectDashboardTiles),
       onPressed: () {
+        // context.read(loggerProvider('tile')).log(Level.INFO, 'Hi there');
+        // context.read(logNotifierProvider.notifier).log(Level.INFO, 'Byeee');
+        // return;
         context.router.push(
           DashboardSettingsRoute(
               initial: context.read(activePiProvider).dashboardSettings,
@@ -73,10 +118,6 @@ class SelectTilesButtonTile extends HookWidget {
                     .updateDashboardEntries(update.entries);
               }),
         );
-        // Navigator.of(context).push(MaterialPageRoute(
-        //   builder: (BuildContext context) => const DashboardSettingsPage(),
-        //   // fullscreenDialog: true,
-        // ));
       },
       label: Text('Select tiles'.toUpperCase()),
     );
@@ -91,13 +132,22 @@ class DashboardGrid extends HookWidget {
     final dashboardSettings =
         useProvider(settingsNotifierProvider).active.dashboardSettings;
     final tiles = dashboardSettings.entries;
+    final statusNotifier = useProvider(piholeStatusNotifierProvider.notifier);
+    final activePi = useProvider(activePiProvider);
 
     final VoidFutureCallBack onRefresh = () async {
       print('refreshing from DashboardGrid');
-      await Future.delayed(Duration(seconds: 1));
+      // await Future.delayed(Duration(seconds: 1));
+      statusNotifier.ping();
       context.refresh(activeSummaryProvider);
       context.refresh(activePiDetailsProvider);
+      context.refresh(activeClientActivityProvider);
     };
+
+    useEffect(() {
+      print('trigging refresh from effect');
+      onRefresh();
+    }, [activePi]);
 
     return tiles.any((element) => element.enabled)
         ? _DashboardGridBuilder(
@@ -113,39 +163,10 @@ class DashboardGrid extends HookWidget {
               return const StaggeredTile.count(4, 1);
             }).toList(),
             children: tiles.where((element) => element.enabled).map((e) {
-              switch (e.id) {
-                case DashboardID.Versions:
-                  return const VersionsTile();
-                case DashboardID.TotalQueries:
-                  return const TotalQueriesTile();
-                case DashboardID.QueriesBlocked:
-                  return const QueriesBlockedTile();
-                case DashboardID.PercentBlocked:
-                  return const PercentBlockedTile();
-                case DashboardID.DomainsOnBlocklist:
-                  return const DomainsOnBlocklistTile();
-                case DashboardID.QueriesBarChart:
-                  return const QueriesBarChartTile();
-                case DashboardID.ClientActivityBarChart:
-                  return const ClientActivityBarChartTile();
-                case DashboardID.Temperature:
-                  return const TemperatureTile();
-                case DashboardID.Memory:
-                  return const MemoryTile();
-                case DashboardID.QueryTypes:
-                  return const QueryTypesTileTwo();
-                case DashboardID.ForwardDestinations:
-                  return const ForwardDestinationsTileTwo();
-                case DashboardID.TopPermittedDomains:
-                  return const TopPermittedDomainsTile();
-                case DashboardID.TopBlockedDomains:
-                  return const TopBlockedDomainsTile();
-                case DashboardID.SelectTiles:
-                  return const SelectTilesButtonTile();
-              }
+              return e.id.widget;
             }).toList(),
           )
-        : Center(child: SelectTilesButtonTile());
+        : Center(child: SelectTilesTile());
   }
 }
 

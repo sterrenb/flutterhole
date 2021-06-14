@@ -5,16 +5,19 @@ import 'package:flutter/material.dart';
 typedef void PeriodicCallback(Timer timer);
 
 class PeriodicWidget extends StatefulWidget {
-  final Widget child;
+  final Widget? child;
+  final WidgetBuilder? builder;
   final Duration duration;
   final PeriodicCallback onTimer;
 
   const PeriodicWidget({
     Key? key,
-    required this.child,
+    this.child,
+    this.builder,
     required this.duration,
     required this.onTimer,
-  }) : super(key: key);
+  })  : assert(builder == null || child == null),
+        super(key: key);
 
   @override
   _PeriodicWidgetState createState() => _PeriodicWidgetState();
@@ -22,7 +25,6 @@ class PeriodicWidget extends StatefulWidget {
 
 class _PeriodicWidgetState extends State<PeriodicWidget> {
   Timer? timer;
-
   @override
   void initState() {
     super.initState();
@@ -39,7 +41,6 @@ class _PeriodicWidgetState extends State<PeriodicWidget> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return widget.child;
-  }
+  Widget build(BuildContext context) =>
+      widget.child == null ? widget.builder!(context) : widget.child!;
 }

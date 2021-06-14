@@ -136,16 +136,22 @@ class KIcons {
 
   static const IconData expand = Icons.keyboard_arrow_down;
   static const IconData shrink = Icons.keyboard_arrow_up;
+  static const IconData push = Icons.keyboard_arrow_right;
   static const IconData selectDashboardTiles = Icons.playlist_add_check;
 
-  static const IconData error = Icons.warning;
-  static const IconData dangerZone = error;
+  static const IconData dangerZone = Icons.warning;
   static const IconData delete = Icons.delete;
   static const IconData selected = Icons.check;
   static const IconData host = Icons.dns;
   static const IconData authentication = Icons.vpn_key;
   static const IconData qrCode = Icons.qr_code_scanner;
   static const IconData customization = Icons.format_paint;
+
+  static const IconData logDebug = Icons.bug_report;
+  static const IconData logInfo = Icons.info;
+  static const IconData logWarning = Icons.warning;
+  static const IconData logError = Icons.error;
+  static const IconData unknown = Icons.device_unknown;
 }
 
 class KColors {
@@ -182,6 +188,7 @@ class KColors {
   static const Color blocked = Colors.red;
   static const Color forwarded = Colors.green;
   static const Color cached = Colors.blue;
+  static const Color code = Color(0xFF303030);
 
   static const Color totalQueries = Color(0xFF005C32);
   static const Color queriesBlocked = Color(0xFF007997);

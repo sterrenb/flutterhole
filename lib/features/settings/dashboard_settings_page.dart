@@ -113,6 +113,45 @@ class DashboardSettingsPage extends HookWidget {
   }
 }
 
+extension DashboardIDX on DashboardID {
+  IconData get iconData {
+    switch (this) {
+      case DashboardID.Versions:
+        return KIcons.appVersion;
+      case DashboardID.TotalQueries:
+        return KIcons.totalQueries;
+      case DashboardID.TotalQueries:
+        return KIcons.totalQueries;
+      case DashboardID.QueriesBlocked:
+        return KIcons.queriesBlocked;
+      case DashboardID.PercentBlocked:
+        return KIcons.percentBlocked;
+      case DashboardID.DomainsOnBlocklist:
+        return KIcons.domainsOnBlocklist;
+      case DashboardID.QueriesBarChart:
+        return KIcons.queriesOverTime;
+      case DashboardID.ClientActivityBarChart:
+        return KIcons.clientActivity;
+      case DashboardID.Temperature:
+        return KIcons.temperatureReading;
+      case DashboardID.Memory:
+        return KIcons.memoryUsage;
+      case DashboardID.QueryTypes:
+        return KIcons.memoryUsage;
+      case DashboardID.ForwardDestinations:
+        return KIcons.memoryUsage;
+      case DashboardID.TopPermittedDomains:
+        return KIcons.domainsPermittedTile;
+      case DashboardID.TopBlockedDomains:
+        return KIcons.domainsBlockedTile;
+      case DashboardID.SelectTiles:
+        return KIcons.selectDashboardTiles;
+      case DashboardID.Logs:
+        return KIcons.queryLog; // TODO
+    }
+  }
+}
+
 class _SelectTile extends StatelessWidget {
   const _SelectTile({
     Key? key,
@@ -139,40 +178,7 @@ class _SelectTile extends StatelessWidget {
                 color: entry.enabled ? null : Theme.of(context).disabledColor),
           ),
           leading: GridIcon(
-            (DashboardID id) {
-              switch (id) {
-                case DashboardID.Versions:
-                  return KIcons.appVersion;
-                case DashboardID.TotalQueries:
-                  return KIcons.totalQueries;
-                case DashboardID.TotalQueries:
-                  return KIcons.totalQueries;
-                case DashboardID.QueriesBlocked:
-                  return KIcons.queriesBlocked;
-                case DashboardID.PercentBlocked:
-                  return KIcons.percentBlocked;
-                case DashboardID.DomainsOnBlocklist:
-                  return KIcons.domainsOnBlocklist;
-                case DashboardID.QueriesBarChart:
-                  return KIcons.queriesOverTime;
-                case DashboardID.ClientActivityBarChart:
-                  return KIcons.clientActivity;
-                case DashboardID.Temperature:
-                  return KIcons.temperatureReading;
-                case DashboardID.Memory:
-                  return KIcons.memoryUsage;
-                case DashboardID.QueryTypes:
-                  return KIcons.memoryUsage;
-                case DashboardID.ForwardDestinations:
-                  return KIcons.memoryUsage;
-                case DashboardID.TopPermittedDomains:
-                  return KIcons.domainsPermittedTile;
-                case DashboardID.TopBlockedDomains:
-                  return KIcons.domainsBlockedTile;
-                case DashboardID.SelectTiles:
-                  return KIcons.selectDashboardTiles;
-              }
-            }(entry.id),
+            entry.id.iconData,
             isDark: true,
           ),
           trailing: Row(
@@ -231,40 +237,7 @@ class GridSelectItem extends HookWidget {
                 color: entry.enabled ? null : Theme.of(context).disabledColor),
           ),
           leading: GridIcon(
-            (DashboardID id) {
-              switch (id) {
-                case DashboardID.Versions:
-                  return KIcons.appVersion;
-                case DashboardID.TotalQueries:
-                  return KIcons.totalQueries;
-                case DashboardID.TotalQueries:
-                  return KIcons.totalQueries;
-                case DashboardID.QueriesBlocked:
-                  return KIcons.queriesBlocked;
-                case DashboardID.PercentBlocked:
-                  return KIcons.percentBlocked;
-                case DashboardID.DomainsOnBlocklist:
-                  return KIcons.domainsOnBlocklist;
-                case DashboardID.QueriesBarChart:
-                  return KIcons.queriesOverTime;
-                case DashboardID.ClientActivityBarChart:
-                  return KIcons.clientActivity;
-                case DashboardID.Temperature:
-                  return KIcons.temperatureReading;
-                case DashboardID.Memory:
-                  return KIcons.memoryUsage;
-                case DashboardID.QueryTypes:
-                  return KIcons.memoryUsage;
-                case DashboardID.ForwardDestinations:
-                  return KIcons.memoryUsage;
-                case DashboardID.TopPermittedDomains:
-                  return KIcons.domainsPermittedTile;
-                case DashboardID.TopBlockedDomains:
-                  return KIcons.domainsBlockedTile;
-                case DashboardID.SelectTiles:
-                  return KIcons.selectDashboardTiles;
-              }
-            }(entry.id),
+            entry.id.iconData,
             isDark: true,
           ),
           trailing: Row(

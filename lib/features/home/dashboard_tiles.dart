@@ -6,6 +6,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/logging/log_widgets.dart';
+import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -142,6 +144,7 @@ class QueriesBlockedTile extends HookWidget {
   const QueriesBlockedTile({
     Key? key,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
@@ -176,6 +179,7 @@ class PercentBlockedTile extends HookWidget {
   const PercentBlockedTile({
     Key? key,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
@@ -212,6 +216,7 @@ class DomainsOnBlocklistTile extends HookWidget {
   const DomainsOnBlocklistTile({
     Key? key,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final option = useProvider(sumCacheProvider).state;
@@ -300,12 +305,10 @@ class TopPermittedDomainsTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final pi = useProvider(activePiProvider);
     final topItems = useProvider(activeTopItemsProvider);
     final expanded = useState(false);
     final ticker = useSingleTickerProvider();
     return Card(
-      // color: Colors.blueGrey,
       child: AnimatedSize(
         vsync: ticker,
         duration: kThemeAnimationDuration * 2,
@@ -352,12 +355,12 @@ class TopPermittedDomainsTile extends HookWidget {
               error: (error, stacktrace) => Column(
                 children: [
                   ListTile(
-                    title: CodeCard(
+                    title: ExpandableCode(
                       error.toString(),
                       tappable: false,
                     ),
                   ),
-                  CodeCard(
+                  ExpandableCode(
                     stacktrace.toString(),
                     // tappable: false,
                   ),
@@ -438,12 +441,48 @@ class TopBlockedDomainsTile extends HookWidget {
               loading: () => Container(
                   height: kToolbarHeight * 5,
                   child: Center(child: CircularProgressIndicator())),
-              error: (error, stacktrace) => CodeCard(stacktrace.toString()),
+              error: (error, stacktrace) =>
+                  ExpandableCode(stacktrace.toString()),
             ),
             Container(
               height: 5.0,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+var index = 0;
+
+class LogsTile extends HookWidget {
+  const LogsTile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final logs = useProvider(logStreamProvider);
+    final list = useProvider(logNotifierProvider);
+    final height = useState(kMinTileHeight);
+    return GridCard(
+      child: GridInkWell(
+        // onTap: () {
+        //   if (height.value == kMinTileHeight) {
+        //     height.value = kMinTileHeight * 4;
+        //   } else {
+        //     height.value = kMinTileHeight;
+        //   }
+        //   // context.read(logNotifierProvider.notifier).log(LogCall(
+        //   //     source: 'dashboard',
+        //   //     level: LogLevel.warning,
+        //   //     message: "Hello my fren: ${index++}"));
+        // },
+        child: ListView.builder(
+          itemCount: list.length,
+          itemBuilder: (context, index) {
+            final record = list.elementAt(index);
+            return LogRecordRow(record: record);
+          },
         ),
       ),
     );

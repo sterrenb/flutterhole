@@ -228,8 +228,8 @@ class SinglePiPage extends HookWidget {
           onSelected: (selected) {
             n.updateAccentColor(selected);
           }),
-      StaggeredTile.count(4, 1): SelectTilesButtonTile(),
-      StaggeredTile.count(4, 4): CodeCard(
+      StaggeredTile.count(4, 1): SelectTilesTile(),
+      StaggeredTile.count(4, 4): ExpandableCode(
         (input) {
           JsonEncoder encoder = new JsonEncoder.withIndent('  ');
           String pretty = encoder.convert(input);

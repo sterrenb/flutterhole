@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
@@ -129,23 +130,33 @@ class GridSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(kGridSpacing),
+      padding: const EdgeInsets.symmetric(vertical: kGridSpacing),
       child: Container(
         // color: Colors.red,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GridIcon(iconData),
+        child: 5 > 6
+            ? Center(
+                child: ListTile(
+                  title: TileTitle(title),
+                  leading: GridIcon(iconData),
                 ),
-                TileTitle(title),
-              ],
-            ),
-          ],
-        ),
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 8.0,
+                        ),
+                        child: GridIcon(iconData),
+                      ),
+                      TileTitle(title),
+                    ],
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -262,20 +273,28 @@ class CenteredGridTileErrorIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: CodeCard(error.toString()));
+    return Center(child: ExpandableCode(error.toString()));
   }
 }
 
-// class GridCheckbox extends StatelessWidget {
-//   const GridCheckbox({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Checkbox(
-//       activeColor: pi.primaryColor,
-//       checkColor: pi.primaryColor.computeForegroundColor(),
-//       value: pi.useSsl,
-//       onChanged: onChanged,
-//     );
-//   }
-// }
+class ResizableGridBody extends HookWidget {
+  const ResizableGridBody({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final ticker = useSingleTickerProvider();
+
+    return AnimatedSize(
+      vsync: ticker,
+      duration: kThemeAnimationDuration * 2,
+      alignment: Alignment.center,
+      curve: Curves.ease,
+      child: child,
+    );
+  }
+}

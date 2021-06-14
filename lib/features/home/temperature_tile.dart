@@ -111,7 +111,7 @@ class TemperatureRangeDialog extends HookWidget {
             title: option.fold(
               () => Container(),
               (a) => Text(
-                  '${a.temperature.temperatureInReading(settings.preferences.temperatureReading)}'),
+                  '${(a.temperature ?? 0).temperatureInReading(settings.preferences.temperatureReading)}'),
             ),
             trailing: TemperatureScaleDropdownButton(),
           ),
@@ -167,7 +167,8 @@ class TemperatureTile extends HookWidget {
   }) : super(key: key);
 
   Color preferencesToTemperatureColor(
-      UserPreferences preferences, double temperature) {
+      UserPreferences preferences, double? temperature) {
+    if (temperature == null) return KColors.unknown;
     if (temperature < preferences.temperatureMin) return KColors.temperatureLow;
     if (temperature < preferences.temperatureMax) return KColors.temperatureMed;
     return KColors.temperatureHigh;
@@ -261,7 +262,7 @@ class TemperatureTile extends HookWidget {
                                       onChanged: null,
                                       min: 0,
                                       max: 100,
-                                      value: details.temperature,
+                                      value: details.temperature ?? 0,
                                       activeColor: Colors.blue,
                                       inactiveColor: Colors.blue,
                                     ),
