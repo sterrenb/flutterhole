@@ -1,9 +1,12 @@
+import 'package:animations/animations.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
+import 'package:flutterhole_web/features/layout/transparent_app_bar.dart';
 import 'package:flutterhole_web/formatting.dart';
 import 'package:logging/logging.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -113,11 +116,86 @@ class LogRecordRow extends HookWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  CodeCard(
-                    record.message,
-                    onTap: () {},
+                  Hero(
+                    tag: record.message,
+                    child: CodeCard(
+                      record.message,
+                      onTap: () {
+                        // Navigator.of(context)
+                        //     .push(MaterialPageRoute<void>(builder: (context) {
+                        //   return LogRecordPage(record);
+                        // }));
+
+                        showModal(
+                          context: context,
+                          builder: (context) {
+                            return LogRecordModal(record);
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LogRecordModal extends StatelessWidget {
+  const LogRecordModal(this.record, {Key? key}) : super(key: key);
+
+  final LogRecord record;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          width: MediaQuery.of(context).size.width / 2,
+          // height: MediaQuery.of(context).size.height / 3,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SelectableCodeCard(
+                record.message,
+                // onTap: () {},
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LogRecordPage extends HookWidget {
+  const LogRecordPage(this.record, {Key? key}) : super(key: key);
+
+  final LogRecord record;
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = useScrollController();
+    return Scaffold(
+      appBar: TransparentAppBar(
+        controller: controller,
+        title: Text('Hi there'),
+      ),
+      body: Container(
+        color: Colors.green,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Hero(
+              tag: record.message,
+              child: CodeCard(
+                record.message,
+                onTap: () {},
               ),
             ),
           ],
