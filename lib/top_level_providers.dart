@@ -24,7 +24,8 @@ final debugModeProvider = Provider<bool>((ref) {
 });
 
 final userPreferencesProvider = Provider<UserPreferences>((ref) {
-  return UserPreferences.initial();
+  final settings = ref.watch(settingsNotifierProvider);
+  return settings.preferences;
 });
 
 final dioProvider = Provider.family<Dio, Pi>((ref, pi) {
@@ -66,12 +67,11 @@ final dioProvider = Provider.family<Dio, Pi>((ref, pi) {
               .map((mapEntry) =>
                   '${mapEntry.key}=${mapEntry.key == 'auth' ? '<auth>' : mapEntry.value}')
               .join("&");
-      print(params);
     }
     logger.log(LogCall(
       source: 'dio',
       level: LogLevel.debug,
-      message: '${options.method} ${options.baseUrl}${options.path}${params}',
+      message: '${options.method} ${options.baseUrl}${options.path}$params',
     ));
 
     return handler.next(options);

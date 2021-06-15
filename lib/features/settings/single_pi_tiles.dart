@@ -125,17 +125,6 @@ class ColorCard extends StatelessWidget {
           customBorder: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(kGridSpacing)),
           onTap: () async {
-            // final selectedColor = await showModal<Color?>(
-            //   context: context,
-            //   builder: (context) {
-            //     return ColorDialog(
-            //       initial: initial,
-            //       colors: colors,
-            //       title: title,
-            //     );
-            //   },
-            // );
-
             final selectedColor = await showModalBottomSheet<Color?>(
               context: context,
               builder: (context) {

@@ -70,7 +70,7 @@ class PiStatusToggleIcon extends HookWidget {
               height: 14.0,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: Theme.of(context).textTheme.bodyText1?.color,
+                color: Theme.of(context).colorScheme.onSecondary,
               ),
             ),
             orElse: () => icon,

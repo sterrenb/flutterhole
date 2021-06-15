@@ -56,10 +56,7 @@ final piSummaryProvider =
 
   final api = ref.read(piholeRepositoryProviderFamily(pi));
   final piSummary = await api.fetchPiSummary(cancelToken);
-  // print('sleeping...');
-  // await Future.delayed(Duration(seconds: 2));
   ref.read(sumCacheProvider).state = some(piSummary);
-  print('piSummaryprovider::maintainState');
   ref.maintainState = true;
   return piSummary;
 });
@@ -185,7 +182,6 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
     // await Future.delayed(Duration(seconds: 3));
     try {
       final result = await action;
-      print('result: $result');
       if (mounted) {
         state = result;
       }

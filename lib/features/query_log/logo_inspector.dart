@@ -162,7 +162,10 @@ class _LogoInspectorState extends State<LogoInspector> {
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Logo design by Mathijs Sterrenburg'),
+                        Text(
+                          'Logo design by Mathijs Sterrenburg',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ],
                     ),
                   ),

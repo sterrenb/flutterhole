@@ -22,6 +22,9 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final pi = useProvider(activePiProvider);
     return AppBar(
+      iconTheme: IconThemeData(
+        color: Theme.of(context).colorScheme.onPrimary,
+      ),
       elevation: 0.0,
       // backgroundColor: Theme.of(context).colorScheme.surface,
       titleSpacing: 0.0,
@@ -57,7 +60,9 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
                 onPressed: () => showActivePiDialog(context, context.read),
                 child: Text(
                   pi.title,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.headline6!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                 ),
               ),
               PiStatusIndicator(

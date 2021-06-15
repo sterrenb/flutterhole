@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
+import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 
 Future<void> showErrorDialog(
     BuildContext context, Object e, StackTrace? s) async {
@@ -199,9 +201,7 @@ class DurationDialog extends HookWidget {
             min: 0.0,
             max: 60 * 2,
             divisions: 60 * 2,
-            label: counter.value == 0.0
-                ? 'Disabled'
-                : '${counter.value.round()} seconds',
+            label: counter.value.toInt().secondsOrelse('Disabled'),
             onChanged: (value) => counter.value = value,
           ),
           // Text('${counter.value}'),

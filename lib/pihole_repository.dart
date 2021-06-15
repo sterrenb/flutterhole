@@ -82,8 +82,8 @@ class PiholeRepository {
   }
 
   Future<PiSummary> fetchPiSummary(CancelToken cancelToken) async {
-    print('awaiting summary');
-    await Future.delayed(Duration(seconds: 2));
+    // print('awaiting summary');
+    await Future.delayed(Duration(milliseconds: 500));
 
     try {
       final data = await _get({'summaryRaw': ''}, cancelToken);

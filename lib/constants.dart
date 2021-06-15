@@ -80,6 +80,9 @@ class KUrls {
   static const String githubIssuesUrl =
       'https://github.com/sterrenburg/flutterhole/issues/new/choose';
   static const String logoDesignerUrl = 'https://mathijssterrenburg.com/';
+  static const String payPalUrl = 'https://paypal.me/tsterrenburg';
+  static const String koFiUrl = 'https://ko-fi.com/sterrenburg';
+  static const String githubSponsor = 'https://github.com/sponsors/sterrenburg';
 
   static const String piUpdateUrl =
       'https://github.com/pi-hole/pi-hole/releases/latest';

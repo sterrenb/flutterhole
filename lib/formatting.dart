@@ -1,6 +1,8 @@
 import 'package:flutterhole_web/entities.dart';
 import 'package:intl/intl.dart';
 
+final numberFormat = NumberFormat();
+
 extension doubleX on double {
   double _celciusToKelvin(double temp) => temp + 273.15;
 
@@ -25,6 +27,11 @@ extension doubleX on double {
         return temperatureInKelvin;
     }
   }
+}
+
+extension intX on int {
+  String secondsOrelse(String orElse) => Intl.plural(this,
+      zero: orElse, one: '$this second', other: '$this seconds');
 }
 
 final importFormatting = 123;

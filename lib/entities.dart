@@ -401,7 +401,6 @@ class PiColorTheme with _$PiColorTheme {
   factory PiColorTheme({
     required Color error,
     required Color onError,
-
     required Color totalQueries,
     required Color queriesBlocked,
     required Color percentBlocked,
@@ -419,6 +418,10 @@ class PiColorTheme with _$PiColorTheme {
 
   factory PiColorTheme.dark() => PiColorTheme.light().copyWith(
         error: Color(0xFF913225),
+        totalQueries: Color(0xFF005C32),
+        queriesBlocked: Color(0xFF007997),
+        percentBlocked: Color(0xFFB1720C),
+        domainsOnBlocklist: Color(0xFF913225),
       );
 
   static PiColorTheme of(BuildContext context) {

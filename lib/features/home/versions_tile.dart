@@ -113,7 +113,7 @@ class VersionsTile extends HookWidget {
   Widget build(BuildContext context) {
     final versionsValue = useProvider(activeVersionsProvider);
     return Card(
-      color: KColors.versions,
+      // color: KColors.versions,
       child: Column(
         children: [
           ListTile(

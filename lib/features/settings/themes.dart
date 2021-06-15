@@ -27,29 +27,47 @@ class PiTheme extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = Theme.of(context);
+    final onPrimary = pi.primaryColor.computeForegroundColor();
+    final onAccent = pi.accentColor.computeForegroundColor();
     return Theme(
-      data: ThemeData.from(
-          colorScheme: c.colorScheme.copyWith(
-        primary: pi.primaryColor,
-        onPrimary: Colors.green,
-      )).copyWith(
+      data: Theme.of(context).copyWith(
         primaryColor: pi.primaryColor,
         accentColor: pi.accentColor,
-        primaryColorDark: Colors.pink,
-        textSelectionTheme: c.textSelectionTheme.copyWith(
-          cursorColor: pi.accentColor,
-          selectionColor: pi.accentColor.withOpacity(.5),
-          selectionHandleColor: pi.accentColor,
+        toggleableActiveColor: pi.accentColor,
+        buttonColor: onPrimary,
+        colorScheme: c.colorScheme.copyWith(
+          primary: pi.primaryColor,
+          onPrimary: onPrimary,
+          secondary: pi.accentColor,
+          onSecondary: onAccent,
         ),
-        toggleableActiveColor: pi.primaryColor,
-        buttonColor: pi.primaryColor.computeForegroundColor(),
-        appBarTheme: c.appBarTheme.copyWith(
-          backgroundColor: pi.primaryColor,
-          titleTextStyle: TextStyle(
-            color: Colors.green,
-          ),
+        checkboxTheme: CheckboxThemeData(
+          checkColor: MaterialStateProperty.resolveWith((states) => onAccent),
         ),
       ),
+
+      // data: ThemeData.from(
+      //     colorScheme: c.colorScheme.copyWith(
+      //   primary: pi.primaryColor,
+      //   onPrimary: Colors.green,
+      // )).copyWith(
+      //   primaryColor: pi.primaryColor,
+      //   accentColor: pi.accentColor,
+      //   primaryColorDark: Colors.pink,
+      //   textSelectionTheme: c.textSelectionTheme.copyWith(
+      //     cursorColor: pi.accentColor,
+      //     selectionColor: pi.accentColor.withOpacity(.5),
+      //     selectionHandleColor: pi.accentColor,
+      //   ),
+      //   toggleableActiveColor: pi.primaryColor,
+      //   buttonColor: pi.primaryColor.computeForegroundColor(),
+      //   appBarTheme: c.appBarTheme.copyWith(
+      //     backgroundColor: pi.primaryColor,
+      //     titleTextStyle: TextStyle(
+      //       color: Colors.green,
+      //     ),
+      //   ),
+      // ),
       child: child,
     );
   }

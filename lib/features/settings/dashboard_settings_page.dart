@@ -6,6 +6,7 @@ import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dashboard_grid.dart';
 import 'package:flutterhole_web/features/settings/single_pi_page.dart';
+import 'package:flutterhole_web/features/settings/themes.dart';
 
 class DashboardSettingsPage extends HookWidget {
   const DashboardSettingsPage({
@@ -39,76 +40,76 @@ class DashboardSettingsPage extends HookWidget {
     print('unselected: ${unselectedList.length}');
     print(unselectedList.map((e) => e.id));
 
-    return Scaffold(
-      // extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        // controller: controller,
-        title: Text('Select tiles'),
-        actions: [
-          TextSaveButton(
-            onPressed: () {
-              context.router.pop();
-              onSave(DashboardSettings(entries: localList.value));
-            },
-          ),
-          // IconButton(
-          //     tooltip: 'Reset to default',
-          //     onPressed: () {
-          //       // localList.value = DashboardSettings.initial().entries;
-          //       // context.read(dashboardProvider).state =
-          //       //     _dashboardProviderDefault;
-          //     },
-          //     icon: Icon(
-          //       Icons.update,
-          //     ))
-        ],
-      ),
-      body: ReorderableListView(
-          physics: const BouncingScrollPhysics(),
-          buildDefaultDragHandles: true,
-          children: <Widget>[
-            for (int index = 0; index < localList.value.length; index++)
-              // GridSelectItem(
-              //   index,
-              //   key: Key('$index'),
-              // )
-              _SelectTile(
-                key: Key('$index'),
-                index: index,
-                title: localList.value
-                    .elementAt(index)
-                    .id
-                    .toString()
-                    .split('.')
-                    .last,
-                entry: localList.value.elementAt(index),
-                onTap: () {
-                  print('oioioi');
-                  // List<DashboardEntry> l = List.from(dash.state);
-                  // final newEntry = l.elementAt(index);
-                  // l[index] = newEntry.copyWith(enabled: !newEntry.enabled);
-                  // dash.state = l;
-
-                  final l = List<DashboardEntry>.from(localList.value);
-                  l[index] = l
-                      .elementAt(index)
-                      .copyWith(enabled: !l.elementAt(index).enabled);
-                  localList.value = l;
-                },
-              )
+    return ActivePiTheme(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Select tiles'),
+          actions: [
+            TextSaveButton(
+              onPressed: () {
+                context.router.pop();
+                onSave(DashboardSettings(entries: localList.value));
+              },
+            ),
+            // IconButton(
+            //     tooltip: 'Reset to default',
+            //     onPressed: () {
+            //       // localList.value = DashboardSettings.initial().entries;
+            //       // context.read(dashboardProvider).state =
+            //       //     _dashboardProviderDefault;
+            //     },
+            //     icon: Icon(
+            //       Icons.update,
+            //     ))
           ],
-          onReorder: (oldIndex, newIndex) {
-            if (oldIndex < newIndex) {
-              newIndex -= 1;
-            }
+        ),
+        body: ReorderableListView(
+            physics: const BouncingScrollPhysics(),
+            buildDefaultDragHandles: true,
+            children: <Widget>[
+              for (int index = 0; index < localList.value.length; index++)
+                // GridSelectItem(
+                //   index,
+                //   key: Key('$index'),
+                // )
+                _SelectTile(
+                  key: Key('$index'),
+                  index: index,
+                  title: localList.value
+                      .elementAt(index)
+                      .id
+                      .toString()
+                      .split('.')
+                      .last,
+                  entry: localList.value.elementAt(index),
+                  onTap: () {
+                    print('oioioi');
+                    // List<DashboardEntry> l = List.from(dash.state);
+                    // final newEntry = l.elementAt(index);
+                    // l[index] = newEntry.copyWith(enabled: !newEntry.enabled);
+                    // dash.state = l;
 
-            final list =
-                List<DashboardEntry>.from(localList.value, growable: true);
-            final item = list.removeAt(oldIndex);
-            list.insert(newIndex, item);
-            print('updating localList');
-            localList.value = list;
-          }),
+                    final l = List<DashboardEntry>.from(localList.value);
+                    l[index] = l
+                        .elementAt(index)
+                        .copyWith(enabled: !l.elementAt(index).enabled);
+                    localList.value = l;
+                  },
+                )
+            ],
+            onReorder: (oldIndex, newIndex) {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+
+              final list =
+                  List<DashboardEntry>.from(localList.value, growable: true);
+              final item = list.removeAt(oldIndex);
+              list.insert(newIndex, item);
+              print('updating localList');
+              localList.value = list;
+            }),
+      ),
     );
   }
 }

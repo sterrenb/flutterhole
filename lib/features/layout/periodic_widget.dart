@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutterhole_web/top_level_providers.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 typedef void PeriodicCallback(Timer timer);
 
@@ -43,4 +46,31 @@ class _PeriodicWidgetState extends State<PeriodicWidget> {
   @override
   Widget build(BuildContext context) =>
       widget.child == null ? widget.builder!(context) : widget.child!;
+}
+
+class PerHookWidget extends HookWidget {
+  const PerHookWidget({
+    Key? key,
+    required this.child,
+    required this.onTimer,
+  }) : super(key: key);
+
+  final Widget child;
+  final PeriodicCallback onTimer;
+
+  @override
+  Widget build(BuildContext context) {
+    final prefs = useProvider(userPreferencesProvider);
+    final timer =
+        useState(Timer.periodic(Duration(seconds: 2), (timer) {})..cancel());
+
+    useEffect(() {
+      if (prefs.updateFrequency > Duration.zero) {
+        final newTimer = Timer.periodic(prefs.updateFrequency, onTimer);
+        timer.value = newTimer;
+        return newTimer.cancel;
+      }
+    }, [prefs.updateFrequency]);
+    return child;
+  }
 }

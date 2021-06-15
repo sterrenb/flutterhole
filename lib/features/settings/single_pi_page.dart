@@ -12,6 +12,7 @@ import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dashboard_grid.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/layout/transparent_app_bar.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/single_pi_grid.dart';
@@ -102,7 +103,10 @@ class SinglePiPage extends HookWidget {
     Color(0xFF8A0A3D),
     Color(0xFFB5171D),
     ...Colors.primaries,
-    ...Colors.accents
+    ...Colors.accents,
+    Color(0xFFECF0F5),
+    Color(0xFF222D32),
+    Color(0xFF121212),
   ];
 
   final Pi initial;
@@ -120,15 +124,7 @@ class SinglePiPage extends HookWidget {
     final apiPortController =
         useTextEditingController(text: initial.apiPort.toString());
 
-    final scrollPosition = useState(1.0);
     final hasChanges = pi != initial;
-
-    useEffect(() {
-      pageController.addListener(() {
-        scrollPosition.value =
-            (1 - pageController.position.pixels / kToolbarHeight).clamp(0, 1);
-      });
-    }, [pageController]);
 
     useEffect(() {
       titleController.addListener(() {
@@ -247,13 +243,17 @@ class SinglePiPage extends HookWidget {
       child: Builder(
         builder: (context) => Scaffold(
           extendBodyBehindAppBar: true,
-          appBar: AppBar(
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            title: AnimatedOpacity(
-                duration: kThemeAnimationDuration,
-                opacity: scrollPosition.value > 0.4 ? 1 : 0,
-                child: Text('Editing ${pi.title}')),
+          appBar: TransparentAppBar(
+            controller: pageController,
+            title: Text(
+              'Editing ${pi.title}',
+              // style: TextStyle(
+              //   color: Theme.of(context).colorScheme.onSurface,
+              // ),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
             actions: [
               ElevatedSaveButton(
                 onPressed: () {

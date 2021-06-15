@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,8 +10,10 @@ import 'package:flutterhole_web/entities.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/home/memory_tile.dart';
 import 'package:flutterhole_web/features/home/query_types_tile.dart';
+import 'package:flutterhole_web/features/home/summary_tiles.dart';
 import 'package:flutterhole_web/features/home/temperature_tile.dart';
 import 'package:flutterhole_web/features/home/versions_tile.dart';
+import 'package:flutterhole_web/features/layout/periodic_widget.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
@@ -103,7 +107,10 @@ class SelectTilesTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton.icon(
-      icon: Icon(KIcons.selectDashboardTiles),
+      icon: Icon(
+        KIcons.selectDashboardTiles,
+        color: Theme.of(context).accentColor,
+      ),
       onPressed: () {
         // context.read(loggerProvider('tile')).log(Level.INFO, 'Hi there');
         // context.read(logNotifierProvider.notifier).log(Level.INFO, 'Byeee');
@@ -119,7 +126,14 @@ class SelectTilesTile extends HookWidget {
               }),
         );
       },
-      label: Text('Select tiles'.toUpperCase()),
+      // style: ButtonStyle(
+      //   foregroundColor:
+      //       MaterialStateColor.resolveWith((states) => Colors.green),
+      // ),
+      label: Text(
+        'Select tiles'.toUpperCase(),
+        style: TextStyle(color: Theme.of(context).accentColor),
+      ),
     );
   }
 }
@@ -132,14 +146,15 @@ class DashboardGrid extends HookWidget {
     final dashboardSettings =
         useProvider(settingsNotifierProvider).active.dashboardSettings;
     final tiles = dashboardSettings.entries;
-    final statusNotifier = useProvider(piholeStatusNotifierProvider.notifier);
+    // final statusNotifier = useProvider(piholeStatusNotifierProvider.notifier);
     final activePi = useProvider(activePiProvider);
-
+    final preferences = useProvider(userPreferencesProvider);
     final VoidFutureCallBack onRefresh = () async {
       print('refreshing from DashboardGrid');
       // await Future.delayed(Duration(seconds: 1));
-      statusNotifier.ping();
-      context.refresh(activeSummaryProvider);
+      context.read(piholeStatusNotifierProvider.notifier).ping();
+      // context.refresh(activeSummaryProvider);
+      context.refresh(piSummaryProvider(context.read(activePiProvider)));
       context.refresh(activePiDetailsProvider);
       context.refresh(activeClientActivityProvider);
     };
@@ -149,24 +164,32 @@ class DashboardGrid extends HookWidget {
       onRefresh();
     }, [activePi]);
 
-    return tiles.any((element) => element.enabled)
-        ? _DashboardGridBuilder(
-            onRefresh: onRefresh,
-            tiles: dashboardSettings.entries
-                .where((element) => element.enabled)
-                .map<StaggeredTile>((entry) {
-              final x = staggeredTile.containsKey(entry.id)
-                  ? staggeredTile[entry.id]
-                  : null;
+    return PerHookWidget(
+      onTimer: (timer) {
+        print('tick ${timer.tick}');
+        if (context.router.isRouteActive(HomeRoute.name)) {
+          onRefresh();
+        }
+      },
+      child: tiles.any((element) => element.enabled)
+          ? _DashboardGridBuilder(
+              onRefresh: onRefresh,
+              tiles: dashboardSettings.entries
+                  .where((element) => element.enabled)
+                  .map<StaggeredTile>((entry) {
+                final x = staggeredTile.containsKey(entry.id)
+                    ? staggeredTile[entry.id]
+                    : null;
 
-              if (x != null) return x;
-              return const StaggeredTile.count(4, 1);
-            }).toList(),
-            children: tiles.where((element) => element.enabled).map((e) {
-              return e.id.widget;
-            }).toList(),
-          )
-        : Center(child: SelectTilesTile());
+                if (x != null) return x;
+                return const StaggeredTile.count(4, 1);
+              }).toList(),
+              children: tiles.where((element) => element.enabled).map((e) {
+                return e.id.widget;
+              }).toList(),
+            )
+          : Center(child: SelectTilesTile()),
+    );
   }
 }
 

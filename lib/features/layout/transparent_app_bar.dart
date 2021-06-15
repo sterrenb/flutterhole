@@ -30,6 +30,9 @@ class TransparentAppBar extends HookWidget implements PreferredSizeWidget {
 
     return AppBar(
       elevation: 0.0,
+      leading: BackButton(
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
       backgroundColor: Colors.transparent,
       title: AnimatedOpacity(
         duration: kThemeAnimationDuration,

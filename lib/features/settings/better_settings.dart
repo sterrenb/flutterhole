@@ -10,6 +10,7 @@ import 'package:flutterhole_web/features/layout/snackbar.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
+import 'package:flutterhole_web/formatting.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class _ThemeModeTile extends HookWidget {
@@ -170,9 +171,7 @@ class _UpdateFrequencyTile extends HookWidget {
       title: Text('Update frequency'),
       leading: Icon(KIcons.updateFrequency),
       trailing: TextButton(
-        child: Text(duration.inSeconds == 0
-            ? 'Disabled'
-            : '${duration.inSeconds} seconds'),
+        child: Text(duration.inSeconds.secondsOrelse('Disabled')),
         onPressed: () async {
           final update = await showUpdateFrequencyDialog(context, duration);
           if (update != null) {
