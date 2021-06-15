@@ -25,18 +25,7 @@ class PiStatusIcon extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final piStatus = useProvider(piholeStatusProvider).state;
     final piStatus = useProvider(piholeStatusNotifierProvider);
-    final n = useProvider(piholeStatusNotifierProvider.notifier);
-    final pi = useProvider(activePiProvider);
-
-    // useAsyncEffect(
-    //   () {
-    //     print('pinging from status icon');
-    //     n.ping();
-    //   },
-    //   keys: [pi, n],
-    // );
 
     return Icon(
       KIcons.dot,

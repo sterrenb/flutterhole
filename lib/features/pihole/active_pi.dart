@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final activeSummaryProvider =
     Provider.autoDispose<AsyncValue<PiSummary>>((ref) {
+  print('fetching activeSummaryProvider');
   final pi = ref.watch(activePiProvider);
   return ref.watch(piSummaryProvider(pi));
 });

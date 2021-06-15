@@ -9,6 +9,7 @@ import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
+import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class _ThemeModeTile extends HookWidget {
@@ -114,45 +115,46 @@ class _ResetAllSettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridCard(
-      color: KColors.error,
-      child: GridInkWell(
-        onTap: () => showModal(
-          context: context,
-          builder: (context) => DialogBase(
-            header: DialogHeader(title: 'Reset all settings?'),
-            body: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Text(
-                  'All your preferences and Pi-holes and will be lost. This could help if the app gets stuck.'),
-            ),
-            onSelect: () async {
-              context.router.pop();
-              await context.read(settingsNotifierProvider.notifier).reset();
-              ScaffoldMessenger.of(context).showMessageNow(
-                context,
-                message: 'All settings have been reset',
-                leading: const Icon(
-                  KIcons.delete,
-                  color: KColors.error,
+    return PiColorsBuilder(
+        builder: (context, piColors, child) => GridCard(
+              color: piColors.error,
+              child: GridInkWell(
+                onTap: () => showModal(
+                  context: context,
+                  builder: (context) => ConfirmationDialog(
+                    title: 'Reset all settings?',
+                    onConfirm: () async {
+                      await context
+                          .read(settingsNotifierProvider.notifier)
+                          .reset();
+                      ScaffoldMessenger.of(context).showMessageNow(
+                        context,
+                        message: 'All settings have been reset',
+                        leading: Icon(
+                          KIcons.delete,
+                          color: piColors.error,
+                        ),
+                      );
+                    },
+                    body: Text(
+                        'All your preferences and Pi-holes and will be lost. This could help if the app gets stuck.'),
+                  ),
                 ),
-              );
-            },
-            theme: Theme.of(context),
-          ),
-        ),
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(KIcons.delete),
-              const SizedBox(width: kGridSpacing),
-              Text('Reset all settings'),
-            ],
-          ),
-        ),
-      ),
-    );
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(KIcons.delete, color: piColors.onError),
+                      const SizedBox(width: kGridSpacing),
+                      Text(
+                        'Reset all settings',
+                        style: TextStyle(color: piColors.onError),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ));
   }
 }
 

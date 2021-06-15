@@ -249,6 +249,7 @@ class DialogListBase extends StatelessWidget {
 
   final Widget header;
   final Widget body;
+
   // final VoidCallback onSelect;
   // final VoidCallback onCancel;
   // final ThemeData theme;
@@ -282,6 +283,35 @@ class DialogListBase extends StatelessWidget {
           // ),
         ],
       ),
+    );
+  }
+}
+
+class ConfirmationDialog extends StatelessWidget {
+  const ConfirmationDialog({
+    Key? key,
+    required this.title,
+    required this.onConfirm,
+    required this.body,
+  }) : super(key: key);
+
+  final String title;
+  final VoidCallback onConfirm;
+  final Widget body;
+
+  @override
+  Widget build(BuildContext context) {
+    return DialogBase(
+      header: DialogHeader(title: title),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: body,
+      ),
+      onSelect: () async {
+        context.router.pop();
+        onConfirm();
+      },
+      theme: Theme.of(context),
     );
   }
 }

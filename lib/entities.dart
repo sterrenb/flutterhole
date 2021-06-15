@@ -299,7 +299,6 @@ class SettingsState with _$SettingsState {
   }) = _SettingsState;
 
   late final Pi active = allPis.firstWhere((element) {
-    print("${element.id} == $activeId");
     return element.id == activeId;
   });
 }
@@ -393,4 +392,40 @@ class LogCall with _$LogCall {
     Object? error,
     StackTrace? stackTrace,
   }) = _LogCall;
+}
+
+@freezed
+class PiColorTheme with _$PiColorTheme {
+  PiColorTheme._();
+
+  factory PiColorTheme({
+    required Color error,
+    required Color onError,
+
+    required Color totalQueries,
+    required Color queriesBlocked,
+    required Color percentBlocked,
+    required Color domainsOnBlocklist,
+  }) = _PiColorTheme;
+
+  factory PiColorTheme.light() => PiColorTheme(
+        error: Colors.red,
+        onError: Colors.white,
+        totalQueries: Colors.green,
+        queriesBlocked: Colors.blue,
+        percentBlocked: Colors.orange,
+        domainsOnBlocklist: Colors.redAccent,
+      );
+
+  factory PiColorTheme.dark() => PiColorTheme.light().copyWith(
+        error: Color(0xFF913225),
+      );
+
+  static PiColorTheme of(BuildContext context) {
+    final brightness = MediaQuery.of(context).platformBrightness;
+    print('platform brightness: $brightness');
+    return brightness == Brightness.light
+        ? PiColorTheme.light()
+        : PiColorTheme.dark();
+  }
 }

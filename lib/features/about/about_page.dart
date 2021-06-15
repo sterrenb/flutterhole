@@ -1,8 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/about/app_version.dart';
 import 'package:flutterhole_web/features/about/logo.dart';
 import 'package:flutterhole_web/features/browser_helpers.dart';
+import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:in_app_review/in_app_review.dart';
 
 class ListTitle extends StatelessWidget {
@@ -48,6 +51,14 @@ class AboutPage extends StatelessWidget {
           ),
           Divider(),
           AppVersionListTile(),
+          ListTile(
+            leading: Icon(KIcons.privacy),
+            title: Text('Privacy'),
+            trailing: Icon(KIcons.push),
+            onTap: () {
+              context.router.push(PrivacyRoute());
+            },
+          ),
           Divider(),
           ListTitle('Support the developer'),
           ListTile(
@@ -58,15 +69,40 @@ class AboutPage extends StatelessWidget {
               inAppReview.openStoreListing();
             },
           ),
+          _StarOnGitHubTile(),
           ListTile(
-            leading: Image(
-                width: 24.0,
-                image: AssetImage('assets/icons/github_light.png')),
-            title: Text('Star on GitHub'),
-            onTap: () => launchUrl(KUrls.githubHomeUrl),
+            leading: Icon(KIcons.donate),
+            title: Text('Donate'),
+            onTap: () {},
           ),
         ],
       ),
+    );
+  }
+}
+
+class _StarOnGitHubTile extends HookWidget {
+  const _StarOnGitHubTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
+    return ListTile(
+      leading: Opacity(
+        opacity: isLight ? 0.5 : 1.0,
+        child: Image(
+            width: 24.0,
+            image: AssetImage(
+              isLight
+                  ? 'assets/icons/github_dark.png'
+                  : 'assets/icons/github_light.png',
+            )),
+      ),
+      title: Text('Star on GitHub'),
+      onTap: () => launchUrl(KUrls.githubHomeUrl),
     );
   }
 }

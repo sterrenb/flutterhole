@@ -299,12 +299,6 @@ class SummaryTestTile extends HookWidget {
   Widget build(BuildContext context) {
     final summaryValue = useProvider(piSummaryProvider(pi));
 
-    final color = summaryValue.when(
-      data: (data) => KColors.success,
-      loading: () => KColors.loading,
-      error: (error, stacktrace) => KColors.error,
-    );
-
     final VoidCallback onTap = () {
       final dialog = summaryValue.maybeWhen(
         data: (summary) => DialogListBase(
@@ -342,7 +336,11 @@ class SummaryTestTile extends HookWidget {
       right: IconButton(
         icon: Icon(
           KIcons.dot,
-          color: color,
+          color: summaryValue.when(
+            data: (data) => KColors.success,
+            loading: () => KColors.loading,
+            error: (error, stacktrace) => KColors.error,
+          ),
           size: 8.0,
         ),
         onPressed: onTap,
@@ -362,12 +360,6 @@ class VersionsTestTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final versionsValue = useProvider(topItemsProvider(pi));
-
-    final color = versionsValue.when(
-      data: (data) => KColors.success,
-      loading: () => KColors.loading,
-      error: (error, stacktrace) => KColors.error,
-    );
 
     final VoidCallback onTap = () {
       final dialog = versionsValue.maybeWhen(
@@ -406,7 +398,11 @@ class VersionsTestTile extends HookWidget {
       right: IconButton(
         icon: Icon(
           KIcons.dot,
-          color: color,
+          color: versionsValue.when(
+            data: (data) => KColors.success,
+            loading: () => KColors.loading,
+            error: (error, stacktrace) => KColors.error,
+          ),
           size: 8.0,
         ),
         onPressed: onTap,

@@ -137,6 +137,9 @@ class KIcons {
   static const IconData expand = Icons.keyboard_arrow_down;
   static const IconData shrink = Icons.keyboard_arrow_up;
   static const IconData push = Icons.keyboard_arrow_right;
+  static const IconData openUrl = Icons.open_in_browser;
+  static const IconData donate = Icons.monetization_on;
+
   static const IconData selectDashboardTiles = Icons.playlist_add_check;
 
   static const IconData dangerZone = Icons.warning;
@@ -146,6 +149,7 @@ class KIcons {
   static const IconData authentication = Icons.vpn_key;
   static const IconData qrCode = Icons.qr_code_scanner;
   static const IconData customization = Icons.format_paint;
+  static const IconData privacy = Icons.security;
 
   static const IconData logDebug = Icons.bug_report;
   static const IconData logInfo = Icons.info;
@@ -180,6 +184,7 @@ class KColors {
   static const Color debug = Colors.brown;
   static const Color success = Colors.green;
   static const Color warning = temperatureMed;
+  // TODO deprecate
   static const Color error = temperatureHigh;
 
   static const Color enabled = Colors.green;

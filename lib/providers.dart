@@ -59,9 +59,12 @@ final piSummaryProvider =
   // print('sleeping...');
   // await Future.delayed(Duration(seconds: 2));
   ref.read(sumCacheProvider).state = some(piSummary);
+  print('piSummaryprovider::maintainState');
+  ref.maintainState = true;
   return piSummary;
 });
 
+// TODO deprecate
 final sumCacheProvider = StateProvider<Option<PiSummary>>((ref) => none());
 
 final enablePiProvider =
@@ -196,7 +199,6 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
   }
 
   Future<void> ping() {
-    print('pinging');
     return _perform(_repository.ping(_cancelToken));
   }
 

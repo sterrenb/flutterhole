@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
@@ -9,7 +10,9 @@ import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/logging/log_widgets.dart';
 import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
+import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:flutterhole_web/providers.dart';
+import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -99,6 +102,103 @@ class DashboardListIcon extends StatelessWidget {
   }
 }
 
+class _SquareContainer extends StatelessWidget {
+  const _SquareContainer({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: double.infinity,
+      // color: Colors.orange,
+      child: AspectRatio(
+        aspectRatio: 1.0,
+        child: child,
+      ),
+    );
+  }
+}
+
+class NumberTile extends StatelessWidget {
+  const NumberTile({
+    Key? key,
+    required this.title,
+    required this.iconData,
+    required this.child,
+    required this.isLoading,
+    this.foregroundColor,
+    this.backgroundColor,
+    this.onTap,
+  }) : super(key: key);
+
+  final String title;
+  final IconData iconData;
+  final Color? foregroundColor;
+  final Color? backgroundColor;
+  final Widget child;
+  final bool isLoading;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GridCard(
+      color: backgroundColor,
+      child: GridInkWell(
+        onTap: onTap,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _SquareContainer(
+                child: Icon(
+              iconData,
+              size: 32.0,
+              color: foregroundColor?.withOpacity(.5),
+            )),
+            Expanded(child: child),
+            _SquareContainer(
+                child: Center(
+                    child: AnimatedOpacity(
+              duration: kThemeAnimationDuration,
+              opacity: isLoading ? 1.0 : 0.0,
+              child: CircularProgressIndicator(color: foregroundColor),
+            ))),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TextProgressIndicator extends StatelessWidget {
+  const TextProgressIndicator({
+    Key? key,
+    this.text = '---------',
+    required this.textStyle,
+  }) : super(key: key);
+
+  final String text;
+  final TextStyle textStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedTextKit(
+      animatedTexts: [
+        TypewriterAnimatedText(
+          text,
+          cursor: '-',
+          speed: kThemeAnimationDuration * 2,
+          textStyle: textStyle,
+        ),
+      ],
+      repeatForever: true,
+    );
+  }
+}
+
 class TotalQueriesTile extends HookWidget {
   static const String title = 'Total queries';
 
@@ -108,22 +208,52 @@ class TotalQueriesTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final summaryValue = useProvider(activeSummaryProvider);
+    final textStyle = Theme.of(context).textTheme.headline4!.copyWith(
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        );
+    return PiColorsBuilder(
+        builder: (context, piColors, _) => NumberTile(
+              title: title,
+              iconData: KIcons.totalQueries,
+              foregroundColor: Colors.white,
+              backgroundColor: piColors.totalQueries,
+              isLoading: summaryValue.maybeWhen(
+                loading: () => true,
+                orElse: () => false,
+              ),
+              onTap: () {
+                context
+                    .refresh(piSummaryProvider(context.read(activePiProvider)));
+              },
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TileTitle(title, color: Colors.white),
+                    summaryValue.when(
+                      data: (summary) => Text(
+                          _numberFormat.format(summary.dnsQueriesToday),
+                          style: textStyle),
+                      loading: () =>
+                          // TextProgressIndicator(textStyle: textStyle),
+                          Text('', style: textStyle),
+                      error: (e, s) => Text(
+                        e.toString(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ));
+
     final option = useProvider(sumCacheProvider).state;
 
     return Card(
       color: KColors.totalQueries,
       child: InkWell(
-        onTap: () {
-          // final pi = context.read(activePiProvider);
-          // context.refresh(clientActivityOverTimeProvider(pi.state));
-          // option.fold(
-          //   () {},
-          //   (piSummary) => showOkAlertDialog(
-          //     context: context,
-          //     message: piSummary.toString(),
-          //   ),
-          // );
-        },
+        onTap: () {},
         child: TextTileContent(
           top: TileTitle(
             title,

@@ -90,7 +90,8 @@ class GridIcon extends StatelessWidget {
       // color: Theme.of(context).brightness == Brightness.dark
       //     ? Colors.white.withOpacity(0.5)
       //     : Colors.black.withOpacity(0.5),
-      color: Colors.white.withOpacity(0.5),
+      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+      // color: Colors.white.withOpacity(0.5),
     );
 
     if (subIcon != null) {

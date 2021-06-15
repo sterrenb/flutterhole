@@ -123,19 +123,6 @@ class HomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pi = useProvider(activePiProvider);
-    // return SettingsPage();
-    // final activePi = useProvider(activePiProvider).state;
-    useAsyncEffect(() {
-      // TODO deprecate
-      // print('pinging from homepage');
-      // context.read(piholeStatusNotifierProvider.notifier).ping();
-    }, keys: [
-      piholeStatusNotifierProvider,
-      piSummaryProvider,
-      activePiProvider
-    ]);
-
     return Scaffold(
       appBar: HomeAppBar(),
       drawer: AppDrawer(),

@@ -73,6 +73,26 @@ final themeModeProvider = Provider<ThemeMode>((ref) {
   return ref.watch(settingsNotifierProvider).preferences.themeMode;
 });
 
+// extension HookWidgetX on HookWidget {
+//   Brightness platformBrightness(BuildContext context) =>
+//       MediaQuery.of(context).platformBrightness;
+// }
+
+final piColorThemeProvider =
+    Provider.family<PiColorTheme, Brightness>((ref, platformBrightness) {
+  final themeMode = ref.watch(themeModeProvider);
+  switch (themeMode) {
+    case ThemeMode.system:
+      return platformBrightness == Brightness.light
+          ? PiColorTheme.light()
+          : PiColorTheme.dark();
+    case ThemeMode.light:
+      return PiColorTheme.light();
+    case ThemeMode.dark:
+      return PiColorTheme.dark();
+  }
+});
+
 final updateFrequencyProvider = Provider<Duration>((ref) {
   return ref.watch(settingsNotifierProvider).preferences.updateFrequency;
 });

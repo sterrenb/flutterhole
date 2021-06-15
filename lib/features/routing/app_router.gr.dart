@@ -7,10 +7,11 @@
 import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/material.dart' as _i2;
 
-import '../../entities.dart' as _i11;
+import '../../entities.dart' as _i12;
 import '../../home_page.dart' as _i3;
 import '../../settings_page.dart' as _i5;
 import '../about/about_page.dart' as _i10;
+import '../about/privacy_page.dart' as _i11;
 import '../query_log/query_log_page.dart' as _i4;
 import '../settings/better_settings.dart' as _i6;
 import '../settings/dashboard_settings_page.dart' as _i7;
@@ -66,6 +67,11 @@ class AppRouter extends _i1.RootStackRouter {
         routeData: routeData,
         builder: (_) {
           return const _i10.AboutPage();
+        }),
+    PrivacyRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return const _i11.PrivacyPage();
         })
   };
 
@@ -80,7 +86,8 @@ class AppRouter extends _i1.RootStackRouter {
             path: '/dashboard-settings-page'),
         _i1.RouteConfig(PiEditRoute.name, path: '/pi-edit-page'),
         _i1.RouteConfig(SinglePiRoute.name, path: '/single-pi-page'),
-        _i1.RouteConfig(AboutRoute.name, path: '/about-page')
+        _i1.RouteConfig(AboutRoute.name, path: '/about-page'),
+        _i1.RouteConfig(PrivacyRoute.name, path: '/privacy-page')
       ];
 }
 
@@ -112,8 +119,8 @@ class DashboardSettingsRoute
     extends _i1.PageRouteInfo<DashboardSettingsRouteArgs> {
   DashboardSettingsRoute(
       {_i2.Key? key,
-      required _i11.DashboardSettings initial,
-      required void Function(_i11.DashboardSettings) onSave})
+      required _i12.DashboardSettings initial,
+      required void Function(_i12.DashboardSettings) onSave})
       : super(name,
             path: '/dashboard-settings-page',
             args: DashboardSettingsRouteArgs(
@@ -128,9 +135,9 @@ class DashboardSettingsRouteArgs {
 
   final _i2.Key? key;
 
-  final _i11.DashboardSettings initial;
+  final _i12.DashboardSettings initial;
 
-  final void Function(_i11.DashboardSettings) onSave;
+  final void Function(_i12.DashboardSettings) onSave;
 }
 
 class PiEditRoute extends _i1.PageRouteInfo {
@@ -141,8 +148,8 @@ class PiEditRoute extends _i1.PageRouteInfo {
 
 class SinglePiRoute extends _i1.PageRouteInfo<SinglePiRouteArgs> {
   SinglePiRoute(
-      {required _i11.Pi initial,
-      required void Function(_i11.Pi) onSave,
+      {required _i12.Pi initial,
+      required void Function(_i12.Pi) onSave,
       _i2.Key? key})
       : super(name,
             path: '/single-pi-page',
@@ -156,9 +163,9 @@ class SinglePiRouteArgs {
   const SinglePiRouteArgs(
       {required this.initial, required this.onSave, this.key});
 
-  final _i11.Pi initial;
+  final _i12.Pi initial;
 
-  final void Function(_i11.Pi) onSave;
+  final void Function(_i12.Pi) onSave;
 
   final _i2.Key? key;
 }
@@ -167,4 +174,10 @@ class AboutRoute extends _i1.PageRouteInfo {
   const AboutRoute() : super(name, path: '/about-page');
 
   static const String name = 'AboutRoute';
+}
+
+class PrivacyRoute extends _i1.PageRouteInfo {
+  const PrivacyRoute() : super(name, path: '/privacy-page');
+
+  static const String name = 'PrivacyRoute';
 }

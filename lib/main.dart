@@ -45,7 +45,8 @@ class MyApp extends HookWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.indigo,
-          scaffoldBackgroundColor: Color(0xFFFAFBFC),
+          // scaffoldBackgroundColor: Color(0xFFFAFBFC),
+          scaffoldBackgroundColor: Color(0xFFECF0F5),
         ),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
