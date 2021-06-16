@@ -55,7 +55,7 @@ class PiHoleListBuilder extends HookWidget {
     final pis = _pis;
     return ListView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: pis.length,
       itemBuilder: (context, index) {
         final pi = pis.elementAt(index);

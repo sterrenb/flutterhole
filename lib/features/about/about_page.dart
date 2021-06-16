@@ -24,6 +24,7 @@ class AboutPage extends StatelessWidget {
           title: Text('About'),
         ),
         body: ListView(
+          physics: const BouncingScrollPhysics(),
           children: [
             SizedBox(height: 10),
             ListTile(
@@ -65,58 +66,7 @@ class AboutPage extends StatelessWidget {
               },
             ),
             _StarOnGitHubTile(),
-            ListTile(
-              leading: Icon(KIcons.donate),
-              title: Text('Donate'),
-              onTap: () {
-                showModal(
-                    context: context,
-                    builder: (context) {
-                      return ConfirmationDialog(
-                        title: 'Donate',
-                        onConfirm: () {},
-                        body: Column(
-                          // crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                'You can donate to the developer to support the development of this app.'),
-                            const SizedBox(height: 8.0),
-                            // Text(
-                            //     'The current goal is getting some macOS hardware and an Apple Developer licence to work on an iOS app.'),
-                            // const SizedBox(height: 8.0),
-                            Row(
-                              children: [
-                                Text('Thank you in advance! 💰'),
-                              ],
-                            ),
-                            const SizedBox(height: 8.0),
-                            ListTile(
-                              title: Text('Paypal'),
-                              trailing: Icon(KIcons.push),
-                              onTap: () {
-                                launchUrl(KUrls.payPalUrl);
-                              },
-                            ),
-                            ListTile(
-                              title: Text('Ko-fi'),
-                              trailing: Icon(KIcons.push),
-                              onTap: () {
-                                launchUrl(KUrls.koFiUrl);
-                              },
-                            ),
-                            ListTile(
-                              title: Text('GitHub sponsor'),
-                              trailing: Icon(KIcons.push),
-                              onTap: () {
-                                launchUrl(KUrls.githubSponsor);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    });
-              },
-            ),
+            _DonateTile(),
             Divider(),
             ListTitle('Other'),
             ListTile(
@@ -140,6 +90,64 @@ class AboutPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _DonateTile extends StatelessWidget {
+  const _DonateTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(KIcons.donate),
+      title: Text('Donate'),
+      onTap: () {
+        showModal(
+            context: context,
+            builder: (context) {
+              return ConfirmationDialog(
+                title: 'Donate',
+                onConfirm: () {},
+                body: Column(
+                  children: [
+                    Text(
+                        'You can donate to the developer to support the development of this app.'),
+                    const SizedBox(height: 8.0),
+                    Row(
+                      children: [
+                        Text('Thank you in advance! 💰'),
+                      ],
+                    ),
+                    const SizedBox(height: 8.0),
+                    ListTile(
+                      title: Text('Paypal'),
+                      trailing: Icon(KIcons.push),
+                      onTap: () {
+                        launchUrl(KUrls.payPalUrl);
+                      },
+                    ),
+                    ListTile(
+                      title: Text('Ko-fi'),
+                      trailing: Icon(KIcons.push),
+                      onTap: () {
+                        launchUrl(KUrls.koFiUrl);
+                      },
+                    ),
+                    ListTile(
+                      title: Text('GitHub sponsor'),
+                      trailing: Icon(KIcons.push),
+                      onTap: () {
+                        launchUrl(KUrls.githubSponsor);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            });
+      },
     );
   }
 }

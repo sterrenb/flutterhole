@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/layout/dialog.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';

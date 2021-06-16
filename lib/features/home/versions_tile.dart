@@ -4,6 +4,7 @@ import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/browser_helpers.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
+import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -45,9 +46,11 @@ class _ListTile extends StatelessWidget {
               Text(currentVersion),
               Visibility(
                 visible: updateIsAvailable,
-                child: Text(
-                  ' (update available: $latestVersion)',
-                  style: TextStyle(color: KColors.warning),
+                child: PiColorsBuilder(
+                  builder: (context, piColors, _) => Text(
+                    ' (update available: $latestVersion)',
+                    style: TextStyle(color: piColors.warning),
+                  ),
                 ),
               ),
             ],

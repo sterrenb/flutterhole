@@ -6,11 +6,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/settings/single_pi_grid.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
+import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -323,14 +324,16 @@ class SummaryTestTile extends HookWidget {
       onTap: onTap,
       left: Center(child: Text('Summary')),
       right: IconButton(
-        icon: Icon(
-          KIcons.dot,
-          color: summaryValue.when(
-            data: (data) => KColors.success,
-            loading: () => KColors.loading,
-            error: (error, stacktrace) => KColors.error,
+        icon: PiColorsBuilder(
+          builder: (context, piColors, _) => Icon(
+            KIcons.dot,
+            color: summaryValue.when(
+              data: (data) => piColors.success,
+              loading: () => KColors.loading,
+              error: (error, stacktrace) => piColors.error,
+            ),
+            size: 8.0,
           ),
-          size: 8.0,
         ),
         onPressed: onTap,
       ),
@@ -385,14 +388,16 @@ class VersionsTestTile extends HookWidget {
       onTap: onTap,
       left: Center(child: Text('Top items')),
       right: IconButton(
-        icon: Icon(
-          KIcons.dot,
-          color: versionsValue.when(
-            data: (data) => KColors.success,
-            loading: () => KColors.loading,
-            error: (error, stacktrace) => KColors.error,
+        icon: PiColorsBuilder(
+          builder: (context, piColors, _) => Icon(
+            KIcons.dot,
+            color: versionsValue.when(
+              data: (data) => piColors.success,
+              loading: () => KColors.loading,
+              error: (error, stacktrace) => piColors.error,
+            ),
+            size: 8.0,
           ),
-          size: 8.0,
         ),
         onPressed: onTap,
       ),

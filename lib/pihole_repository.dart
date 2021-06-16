@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutterhole_web/entities.dart';
-import 'package:flutterhole_web/models.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/models/api_models.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 

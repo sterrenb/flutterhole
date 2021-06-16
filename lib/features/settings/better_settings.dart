@@ -6,7 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/list.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
@@ -79,28 +79,50 @@ class _MyCurrentDashboardTile extends HookWidget {
   }
 }
 
+class _PreferencesListView extends StatelessWidget {
+  const _PreferencesListView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          const _ThemeModeTile(),
+          const _TemperatureReadingTile(),
+          const _UpdateFrequencyTile(),
+        ]);
+  }
+}
+
+class _DevPrefsListView extends StatelessWidget {
+  const _DevPrefsListView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          const _ThemeModeTile(),
+          const _TemperatureReadingTile(),
+          const _UpdateFrequencyTile(),
+        ]);
+  }
+}
+
 class BetterSettingsPage extends HookWidget {
   const BetterSettingsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final devMode = useProvider(devModeProvider);
+
     final Map<StaggeredTile, Widget> items = {
-      // StaggeredTile.extent(4, kToolbarHeight): AppVersionListTile(
-      //   title: 'FlutterHole',
-      //   showLicences: false,
-      // ),
-      // StaggeredTile.extent(4, kGridSpacing * 2): Container(),
-      // StaggeredTile.extent(4, kToolbarHeight):
-      //     const GridSectionHeader('Preferences', KIcons.customization),
-      StaggeredTile.extent(4, kToolbarHeight): ListTitle('Preferences'),
-      // StaggeredTile.extent(4, kToolbarHeight): const _MyCurrentDashboardTile(),
-      StaggeredTile.extent(4, kToolbarHeight): const _ThemeModeTile(),
-      StaggeredTile.extent(4, kToolbarHeight): const _TemperatureReadingTile(),
-      StaggeredTile.extent(4, kToolbarHeight): const _UpdateFrequencyTile(),
-      // StaggeredTile.count(4, 1):
-      //     const GridSectionHeader('My Pi-holes', KIcons.pihole),
+      StaggeredTile.fit(4): const ListTitle('Preferences'),
+      StaggeredTile.fit(4): const _PreferencesListView(),
       StaggeredTile.fit(4): Divider(),
-      StaggeredTile.extent(4, kToolbarHeight): ListTitle('My Pi-holes'),
+      StaggeredTile.extent(4, kToolbarHeight): const ListTitle('My Pi-holes'),
       StaggeredTile.extent(4, kToolbarHeight): ListTile(
         leading: Icon(KIcons.add),
         title: Text('Add a new Pi-hole'),
@@ -109,15 +131,24 @@ class BetterSettingsPage extends HookWidget {
       ),
       StaggeredTile.fit(4): PiHoleListBuilder(),
       StaggeredTile.fit(4): Divider(),
-      StaggeredTile.extent(4, kToolbarHeight): ListTitle('Danger zone'),
+      StaggeredTile.extent(4, kToolbarHeight): const ListTitle('Danger zone'),
       // StaggeredTile.count(4, 1):
       //     const GridSectionHeader('Danger zone', KIcons.dangerZone),
       StaggeredTile.count(2, 1): const _ResetActiveDashboardCard(),
       StaggeredTile.count(2, 1): const _DeletePiHolesCard(),
       StaggeredTile.count(2, 1): const _ToggleDevModeCard(),
       StaggeredTile.count(2, 1): const _ResetAllSettingsCard(),
-      StaggeredTile.extent(4, kToolbarHeight): Container(),
     };
+
+    if (devMode) {
+      items.addAll({
+        StaggeredTile.fit(4): const ListTitle('Developer options'),
+      });
+    }
+
+    items.addAll({
+      StaggeredTile.extent(4, kToolbarHeight): Container(),
+    });
 
     return ActivePiTheme(
       child: Scaffold(
@@ -292,14 +323,17 @@ class _ToggleDevModeCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final enabled = useState(false);
+    final enabled = useProvider(devModeProvider);
 
     return PiColorsBuilder(
         builder: (context, piColors, child) => GridCard(
               color: KColors.code,
               child: GridInkWell(
                 onTap: () {
-                  enabled.value = !enabled.value;
+                  // enabled.value = !enabled.value;
+                  context
+                      .read(settingsNotifierProvider.notifier)
+                      .toggleDevMode();
                 },
                 child: Center(
                   child: Row(
@@ -308,7 +342,7 @@ class _ToggleDevModeCard extends HookWidget {
                       Icon(KIcons.logDebug, color: piColors.onWarning),
                       const SizedBox(width: kGridSpacing),
                       Text(
-                        '${enabled.value ? 'Disable ' : 'Enable '} dev mode',
+                        '${enabled ? 'Disable' : 'Enable'} dev mode',
                         style: TextStyle(color: piColors.onWarning),
                       ),
                     ],
@@ -331,7 +365,7 @@ class _UpdateFrequencyTile extends HookWidget {
       title: Text('Update frequency'),
       leading: Icon(KIcons.updateFrequency),
       trailing: TextButton(
-        child: Text(duration.inSeconds.secondsOrelse('Disabled')),
+        child: Text(duration.inSeconds.secondsOrElse('Disabled')),
         onPressed: () async {
           final update = await showUpdateFrequencyDialog(context, duration);
           if (update != null) {

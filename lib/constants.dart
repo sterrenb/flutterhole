@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 
 // const String token = String.fromEnvironment('TOKEN');
 // lol security
@@ -128,6 +129,7 @@ class KIcons {
   static const IconData domainsBlockedTile = Icons.domain_disabled;
   static const IconData queriesOverTime = Icons.stacked_line_chart;
   static const IconData clientActivity = Icons.stacked_bar_chart;
+  static const IconData debugLogs = Icons.bug_report;
 
   static const IconData enablePihole = Icons.play_arrow;
   static const IconData disablePihole = Icons.pause;
@@ -183,16 +185,15 @@ class KColors {
   static const Color timestamp = Colors.amber;
   static const Color link = Colors.blue;
 
-  static const Color temperatureLow = Color(0xFF005C32);
-  static const Color temperatureMed = Color(0xFFB1720C);
-  static const Color temperatureHigh = Color(0xFF913225);
+  // static const Color temperatureLow = Color(0xFF005C32);
+  // static const Color temperatureMed = Color(0xFFB1720C);
+  // static const Color temperatureHigh = Color(0xFF913225);
 
-  static const Color info = Colors.blue;
-  static const Color debug = Colors.brown;
-  static const Color success = Colors.green;
-  static const Color warning = temperatureMed;
-  // TODO deprecate
-  static const Color error = temperatureHigh;
+  // static const Color info = Colors.blue;
+  // static const Color debug = Colors.brown;
+  // static const Color success = Colors.green;
+  // static const Color warning = temperatureMed;
+  // static const Color error = temperatureHigh;
 
   static const Color enabled = Colors.green;
   static const Color disabled = Colors.orange;
@@ -202,8 +203,8 @@ class KColors {
   static const Color cached = Colors.blue;
   static const Color code = Color(0xFF303030);
 
-  static const Color totalQueries = Color(0xFF005C32);
-  static const Color queriesBlocked = Color(0xFF007997);
-  static const Color percentBlocked = Color(0xFFB1720C);
-  static const Color domainsOnBlocklist = Color(0xFF913225);
+  // static const Color totalQueries = Color(0xFF005C32);
+  // static const Color queriesBlocked = Color(0xFF007997);
+  // static const Color percentBlocked = Color(0xFFB1720C);
+  // static const Color domainsOnBlocklist = Color(0xFF913225);
 }

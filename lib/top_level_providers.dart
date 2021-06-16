@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -29,8 +30,6 @@ final userPreferencesProvider = Provider<UserPreferences>((ref) {
 });
 
 final dioProvider = Provider.family<Dio, Pi>((ref, pi) {
-  print('making dio for ${pi.title}');
-
   final logger = ref.watch(logNotifierProvider.notifier);
 
   final dio = Dio(BaseOptions(
@@ -44,7 +43,6 @@ final dioProvider = Provider.family<Dio, Pi>((ref, pi) {
   ));
 
   if (pi.allowSelfSignedCertificates) {
-    print('allowSelfSignedCertificates: true!!');
     // https://github.com/flutterchina/dio/issues/32#issuecomment-487401443
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
@@ -53,11 +51,6 @@ final dioProvider = Provider.family<Dio, Pi>((ref, pi) {
       return client;
     };
   }
-
-  // dio.interceptors.add(LogInterceptor(
-  //   requestBody: false,
-  //   responseBody: true,
-  // ));
 
   dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
     String params = '';

@@ -8,7 +8,6 @@ import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 
 Future<void> showErrorDialog(
     BuildContext context, Object e, StackTrace? s) async {
@@ -93,7 +92,7 @@ class BaseButtonRow extends StatelessWidget {
 
   final List<Widget> extraButtons;
   final VoidCallback onCancel;
-  final VoidCallback onSelect;
+  final VoidCallback? onSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -113,12 +112,14 @@ class BaseButtonRow extends StatelessWidget {
               ),
               onPressed: onCancel,
             ),
-            TextButton(
-              child: Text(
-                MaterialLocalizations.of(context).okButtonLabel,
-              ),
-              onPressed: onSelect,
-            )
+            onSelect != null
+                ? TextButton(
+                    child: Text(
+                      MaterialLocalizations.of(context).okButtonLabel,
+                    ),
+                    onPressed: onSelect,
+                  )
+                : Container(),
           ],
         ),
       ],
@@ -139,7 +140,7 @@ class DialogBase extends StatelessWidget {
 
   final Widget header;
   final Widget body;
-  final VoidCallback onSelect;
+  final VoidCallback? onSelect;
   final VoidCallback? onCancel;
   final ThemeData theme;
   final List<Widget> extraButtons;
@@ -201,7 +202,7 @@ class DurationDialog extends HookWidget {
             min: 0.0,
             max: 60 * 2,
             divisions: 60 * 2,
-            label: counter.value.toInt().secondsOrelse('Disabled'),
+            label: counter.value.toInt().secondsOrElse('Disabled'),
             onChanged: (value) => counter.value = value,
           ),
           // Text('${counter.value}'),
@@ -293,10 +294,12 @@ class ConfirmationDialog extends StatelessWidget {
     required this.title,
     required this.onConfirm,
     required this.body,
+    this.onCancel,
   }) : super(key: key);
 
   final String title;
   final VoidCallback onConfirm;
+  final VoidCallback? onCancel;
   final Widget body;
 
   @override
@@ -311,6 +314,7 @@ class ConfirmationDialog extends StatelessWidget {
         context.router.pop();
         onConfirm();
       },
+      onCancel: onCancel,
       theme: Theme.of(context),
     );
   }

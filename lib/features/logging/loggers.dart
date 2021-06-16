@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 

@@ -1,4 +1,5 @@
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:intl/intl.dart';
 
 final numberFormat = NumberFormat();
@@ -30,7 +31,7 @@ extension doubleX on double {
 }
 
 extension intX on int {
-  String secondsOrelse(String orElse) => Intl.plural(this,
+  String secondsOrElse(String orElse) => Intl.plural(this,
       zero: orElse, one: '$this second', other: '$this seconds');
 }
 

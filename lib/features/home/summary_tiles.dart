@@ -1,12 +1,11 @@
-import 'dart:ui';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
+import 'package:flutterhole_web/features/home/dash_tiles.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/features/pihole/pihole_builders.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
@@ -14,8 +13,6 @@ import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-const Color _foregroundColor = Colors.white;
 
 @Deprecated('fps_hog')
 class TextProgressIndicator extends StatelessWidget {
@@ -44,82 +41,6 @@ class TextProgressIndicator extends StatelessWidget {
   }
 }
 
-class _SquareContainer extends StatelessWidget {
-  const _SquareContainer({
-    Key? key,
-    required this.child,
-  }) : super(key: key);
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: double.infinity,
-      // color: Colors.orange,
-      child: AspectRatio(
-        aspectRatio: 1.0,
-        child: child,
-      ),
-    );
-  }
-}
-
-class NumberTile extends StatelessWidget {
-  const NumberTile({
-    Key? key,
-    required this.iconData,
-    required this.child,
-    required this.isLoading,
-    this.foregroundColor,
-    this.backgroundColor,
-    this.onTap,
-  }) : super(key: key);
-
-  final IconData iconData;
-  final Color? foregroundColor;
-  final Color? backgroundColor;
-  final Widget child;
-  final bool isLoading;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GridCard(
-      color: backgroundColor,
-      child: GridInkWell(
-        onTap: onTap,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _SquareContainer(
-                child: Icon(
-              iconData,
-              size: 32.0,
-              color: foregroundColor?.withOpacity(.5),
-            )),
-            Expanded(child: child),
-            _SquareContainer(
-                child: Center(
-                    child: Container(
-              height: 24.0,
-              width: 24.0,
-              child: AnimatedOpacity(
-                duration: kThemeAnimationDuration,
-                opacity: isLoading ? 0.5 : 0.0,
-                child: CircularProgressIndicator(
-                  color: foregroundColor,
-                  // strokeWidth: 10.0,
-                ),
-              ),
-            ))),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 extension OptionX on Option<PiSummary> {
   String get totalQueries => fold(
       () => '-', (summary) => numberFormat.format(summary.dnsQueriesToday));
@@ -134,13 +55,6 @@ extension OptionX on Option<PiSummary> {
       () => '-', (summary) => numberFormat.format(summary.domainsBeingBlocked));
 }
 
-extension ThemeDataX on ThemeData {
-  TextStyle get summaryStyle => textTheme.headline4!.copyWith(
-        fontWeight: FontWeight.bold,
-        color: _foregroundColor,
-      );
-}
-
 class TotalQueriesTile extends HookWidget {
   const TotalQueriesTile({
     Key? key,
@@ -150,9 +64,9 @@ class TotalQueriesTile extends HookWidget {
   Widget build(BuildContext context) {
     final summaryValue = useProvider(activeSummaryProvider);
     return PiColorsBuilder(
-        builder: (context, piColors, __) => NumberTile(
+        builder: (context, piColors, __) => WideNumberTile(
               iconData: KIcons.totalQueries,
-              foregroundColor: _foregroundColor,
+              foregroundColor: kDashTileColor,
               backgroundColor: piColors.totalQueries,
               isLoading: summaryValue.maybeWhen(
                 loading: () => true,
@@ -164,7 +78,7 @@ class TotalQueriesTile extends HookWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TileTitle('Total queries', color: _foregroundColor),
+                    TileTitle('Total queries', color: kDashTileColor),
                     ActiveSummaryCacheBuilder(
                         builder: (context, option, _) => Text(
                               option.totalQueries,
@@ -186,9 +100,9 @@ class QueriesBlockedTile extends HookWidget {
   Widget build(BuildContext context) {
     final summaryValue = useProvider(activeSummaryProvider);
     return PiColorsBuilder(
-        builder: (context, piColors, __) => NumberTile(
+        builder: (context, piColors, __) => WideNumberTile(
               iconData: KIcons.queriesBlocked,
-              foregroundColor: _foregroundColor,
+              foregroundColor: kDashTileColor,
               backgroundColor: piColors.queriesBlocked,
               isLoading: summaryValue.maybeWhen(
                 loading: () => true,
@@ -200,7 +114,7 @@ class QueriesBlockedTile extends HookWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TileTitle('Queries blocked', color: _foregroundColor),
+                    TileTitle('Queries blocked', color: kDashTileColor),
                     ActiveSummaryCacheBuilder(
                         builder: (context, option, _) => Text(
                               option.queriesBlocked,
@@ -222,9 +136,9 @@ class PercentBlockedTile extends HookWidget {
   Widget build(BuildContext context) {
     final summaryValue = useProvider(activeSummaryProvider);
     return PiColorsBuilder(
-        builder: (context, piColors, __) => NumberTile(
+        builder: (context, piColors, __) => WideNumberTile(
               iconData: KIcons.percentBlocked,
-              foregroundColor: _foregroundColor,
+              foregroundColor: kDashTileColor,
               backgroundColor: piColors.percentBlocked,
               isLoading: summaryValue.maybeWhen(
                 loading: () => true,
@@ -236,7 +150,7 @@ class PercentBlockedTile extends HookWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TileTitle('Queries blocked', color: _foregroundColor),
+                    TileTitle('Queries blocked', color: kDashTileColor),
                     ActiveSummaryCacheBuilder(
                         builder: (context, option, _) => Text(
                               option.percentBlocked,
@@ -258,9 +172,9 @@ class DomainsOnBlocklistTile extends HookWidget {
   Widget build(BuildContext context) {
     final summaryValue = useProvider(activeSummaryProvider);
     return PiColorsBuilder(
-        builder: (context, piColors, __) => NumberTile(
+        builder: (context, piColors, __) => WideNumberTile(
               iconData: KIcons.domainsOnBlocklist,
-              foregroundColor: _foregroundColor,
+              foregroundColor: kDashTileColor,
               backgroundColor: piColors.domainsOnBlocklist,
               isLoading: summaryValue.maybeWhen(
                 loading: () => true,
@@ -272,7 +186,7 @@ class DomainsOnBlocklistTile extends HookWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TileTitle('Queries blocked', color: _foregroundColor),
+                    TileTitle('Queries blocked', color: kDashTileColor),
                     ActiveSummaryCacheBuilder(
                         builder: (context, option, _) => Text(
                               option.domainsOnBlocklist,

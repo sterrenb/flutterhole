@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/doughnut_chart.dart';
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/charts.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
@@ -171,7 +171,7 @@ class QueriesBarChartTile extends HookWidget {
                       entries: [
                         StepLineChartEntry(
                             domainValues.map((e) => e.toDouble()).toList(),
-                            KColors.success),
+                            piColors.success),
                         StepLineChartEntry(
                             adValues.map((e) => e.toDouble()).toList(),
                             piColors.error),

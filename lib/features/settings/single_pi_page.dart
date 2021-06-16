@@ -8,17 +8,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dashboard_grid.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/layout/transparent_app_bar.dart';
+import 'package:flutterhole_web/features/models/settings_models.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/single_pi_grid.dart';
 import 'package:flutterhole_web/features/settings/single_pi_tiles.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
-import 'package:flutterhole_web/models.dart';
 import 'package:flutterhole_web/pihole_repository.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -231,7 +231,7 @@ class SinglePiPage extends HookWidget {
           JsonEncoder encoder = new JsonEncoder.withIndent('  ');
           String pretty = encoder.convert(input);
           return pretty;
-        }(PiModel.fromEntity(pi).toJson()),
+        }(PiModel.fromEntity(pi).toJson()), // TODO prevent model import
         tappable: false,
         expanded: false,
         onTap: () {},

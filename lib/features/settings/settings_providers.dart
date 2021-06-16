@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/settings/settings_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -73,6 +74,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   Future<void> saveTemperatureReading(TemperatureReading reading) =>
       savePreferences(state.preferences.copyWith(temperatureReading: reading));
+
+  Future<void> toggleDevMode() => savePreferences(
+      state.preferences.copyWith(devMode: !state.preferences.devMode));
 }
 
 final temperatureReadingProvider = Provider<TemperatureReading>((ref) {
@@ -81,6 +85,10 @@ final temperatureReadingProvider = Provider<TemperatureReading>((ref) {
 
 final themeModeProvider = Provider<ThemeMode>((ref) {
   return ref.watch(settingsNotifierProvider).preferences.themeMode;
+});
+
+final devModeProvider = Provider<bool>((ref) {
+  return ref.watch(settingsNotifierProvider).preferences.devMode;
 });
 
 final piColorThemeProvider =

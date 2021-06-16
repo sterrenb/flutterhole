@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dashboard_grid.dart';
 import 'package:flutterhole_web/features/settings/single_pi_page.dart';
@@ -93,7 +93,7 @@ class DashboardSettingsPage extends HookWidget {
   }
 }
 
-extension DashboardIDX on DashboardID {
+extension DashboardIDI on DashboardID {
   IconData get iconData {
     switch (this) {
       case DashboardID.Versions:
@@ -127,7 +127,9 @@ extension DashboardIDX on DashboardID {
       case DashboardID.SelectTiles:
         return KIcons.selectDashboardTiles;
       case DashboardID.Logs:
-        return KIcons.queryLog; // TODO
+        return KIcons.debugLogs;
+      case DashboardID.TempTile:
+        return KIcons.add; // TODO
     }
   }
 }

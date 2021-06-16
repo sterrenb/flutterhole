@@ -7,10 +7,11 @@
 import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/material.dart' as _i2;
 
-import '../../entities.dart' as _i11;
 import '../../home_page.dart' as _i3;
 import '../about/about_page.dart' as _i9;
 import '../about/privacy_page.dart' as _i10;
+import '../entities/api_entities.dart' as _i12;
+import '../entities/settings_entities.dart' as _i11;
 import '../query_log/query_log_page.dart' as _i4;
 import '../settings/better_settings.dart' as _i5;
 import '../settings/dashboard_settings_page.dart' as _i6;
@@ -138,8 +139,8 @@ class MyPiHolesRoute extends _i1.PageRouteInfo {
 
 class SinglePiRoute extends _i1.PageRouteInfo<SinglePiRouteArgs> {
   SinglePiRoute(
-      {required _i11.Pi initial,
-      required void Function(_i11.Pi) onSave,
+      {required _i12.Pi initial,
+      required void Function(_i12.Pi) onSave,
       String? title,
       _i2.Key? key})
       : super(name,
@@ -154,9 +155,9 @@ class SinglePiRouteArgs {
   const SinglePiRouteArgs(
       {required this.initial, required this.onSave, this.title, this.key});
 
-  final _i11.Pi initial;
+  final _i12.Pi initial;
 
-  final void Function(_i11.Pi) onSave;
+  final void Function(_i12.Pi) onSave;
 
   final String? title;
 

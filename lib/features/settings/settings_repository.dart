@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutterhole_web/entities.dart';
-import 'package:flutterhole_web/models.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
+import 'package:flutterhole_web/features/models/settings_models.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

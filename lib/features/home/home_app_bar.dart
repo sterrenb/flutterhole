@@ -6,6 +6,7 @@ import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/single_pi_page.dart';
+import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -28,6 +29,7 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
       elevation: 0.0,
       titleSpacing: 0.0,
       actions: [
+        ThemeModeToggle(),
         IconButton(
             onPressed: () async {
               await context.router.push(BetterSettingsRoute());
@@ -63,6 +65,7 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
   }
 }
 
+@Deprecated('not used')
 class PiToggleIconButton extends HookWidget {
   @override
   Widget build(BuildContext context) {

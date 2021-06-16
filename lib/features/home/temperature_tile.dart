@@ -1,14 +1,14 @@
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
-import 'package:flutterhole_web/entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
+import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -24,36 +24,6 @@ String _temperatureReadingToString(TemperatureReading temperatureReading) {
     case TemperatureReading.kelvin:
     default:
       return 'Kelvin (°K)';
-  }
-}
-
-Future<void> showTemperatureReadingDialog(
-    BuildContext context,
-    TemperatureReading initial,
-    ValueChanged<TemperatureReading> onSelected) async {
-  final selectedTemperatureReading = await showConfirmationDialog(
-    context: context,
-    title: 'Temperature scale',
-    message: 'Used for the Pi-hole CPU temperature',
-    initialSelectedActionKey: initial,
-    actions: [
-      AlertDialogAction<TemperatureReading>(
-        key: TemperatureReading.celcius,
-        label: '${_temperatureReadingToString(TemperatureReading.celcius)}',
-      ),
-      AlertDialogAction<TemperatureReading>(
-        key: TemperatureReading.fahrenheit,
-        label: '${_temperatureReadingToString(TemperatureReading.fahrenheit)}',
-      ),
-      AlertDialogAction<TemperatureReading>(
-        key: TemperatureReading.kelvin,
-        label: '${_temperatureReadingToString(TemperatureReading.kelvin)}',
-      ),
-    ],
-  );
-
-  if (selectedTemperatureReading != null) {
-    return onSelected(selectedTemperatureReading);
   }
 }
 
@@ -167,11 +137,13 @@ class TemperatureTile extends HookWidget {
   }) : super(key: key);
 
   Color preferencesToTemperatureColor(
-      UserPreferences preferences, double? temperature) {
+      UserPreferences preferences, PiColorTheme piColors, double? temperature) {
     if (temperature == null) return KColors.unknown;
-    if (temperature < preferences.temperatureMin) return KColors.temperatureLow;
-    if (temperature < preferences.temperatureMax) return KColors.temperatureMed;
-    return KColors.temperatureHigh;
+    if (temperature < preferences.temperatureMin)
+      return piColors.temperatureLow;
+    if (temperature < preferences.temperatureMax)
+      return piColors.temperatureMed;
+    return piColors.temperatureHigh;
   }
 
   @override
@@ -183,114 +155,114 @@ class TemperatureTile extends HookWidget {
     //     useProvider(temperatureRangeEnabledProvider).state;
     final detailsValue = useProvider(activePiDetailsProvider);
     return Card(
-      child: AnimatedContainer(
-        duration: kThemeChangeDuration * 2,
-        color: detailsValue.when(
-          loading: () => KColors.temperatureMed,
-          data: (details) => preferencesToTemperatureColor(
-              settings.preferences, details.temperature),
-          error: (e, s) => KColors.unknown,
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: detailsValue.when(
-              loading: () => null,
-              data: (details) => () {
-                String message;
-                switch (settings.preferences.temperatureReading) {
-                  case TemperatureReading.celcius:
-                    message = details.temperatureInCelcius;
-                    break;
-                  case TemperatureReading.fahrenheit:
-                    message = details.temperatureInCelcius;
-                    break;
-                  case TemperatureReading.kelvin:
-                    message = details.temperatureInCelcius;
+      child: PiColorsBuilder(
+        builder: (context, piColors, _) => AnimatedContainer(
+          duration: kThemeChangeDuration * 2,
+          color: detailsValue.when(
+            loading: () => KColors.loading,
+            data: (details) => preferencesToTemperatureColor(
+                settings.preferences, piColors, details.temperature),
+            error: (e, s) => KColors.unknown,
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: detailsValue.when(
+                loading: () => null,
+                data: (details) => () {
+                  String message;
+                  switch (settings.preferences.temperatureReading) {
+                    case TemperatureReading.celcius:
+                      message = details.temperatureInCelcius;
+                      break;
+                    case TemperatureReading.fahrenheit:
+                      message = details.temperatureInCelcius;
+                      break;
+                    case TemperatureReading.kelvin:
+                      message = details.temperatureInCelcius;
+                  }
+
+                  ScaffoldMessenger.of(context).showThemedMessageNow(context,
+                      message: 'Temperature: ${[
+                        details.temperatureInCelcius,
+                        details.temperatureInFahrenheit,
+                        details.temperatureInKelvin
+                      ].join(' | ')}',
+                      leading: Icon(KIcons.temperatureReading));
+                },
+                error: (e, s) => null,
+              ),
+              onLongPress: () async {
+                final selectedRange =
+                    await showTemperatureRangeDialog(context, context.read);
+                if (selectedRange != null) {
+                  context
+                      .read(settingsNotifierProvider.notifier)
+                      .savePreferences(settings.preferences.copyWith(
+                        temperatureMin: selectedRange.start,
+                        temperatureMax: selectedRange.end,
+                      ));
                 }
-
-                print(message);
-
-                ScaffoldMessenger.of(context).showThemedMessageNow(context,
-                    message: 'Temperature: ${[
-                      details.temperatureInCelcius,
-                      details.temperatureInFahrenheit,
-                      details.temperatureInKelvin
-                    ].join(' | ')}',
-                    leading: Icon(KIcons.temperatureReading));
               },
-              error: (e, s) => null,
-            ),
-            onLongPress: () async {
-              final selectedRange =
-                  await showTemperatureRangeDialog(context, context.read);
-              if (selectedRange != null) {
-                context
-                    .read(settingsNotifierProvider.notifier)
-                    .savePreferences(settings.preferences.copyWith(
-                      temperatureMin: selectedRange.start,
-                      temperatureMax: selectedRange.end,
-                    ));
-              }
-            },
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Positioned(
-                  bottom: 10,
-                  child: Container(
-                      // color: Colors.red,
-                      height: 10,
-                      child: SliderTheme(
-                          data: SliderThemeData(
-                            disabledActiveTrackColor: Colors.white,
-                            disabledInactiveTrackColor: Colors.white,
-                            disabledThumbColor: Colors.white,
-                            trackHeight: 1.0,
-                            // thumbShape: RoundSliderThumbShape(
-                            //   disabledThumbRadius: 5.0,
-                            //   elevation: 0,
-                            // ),
-                            thumbShape: SliderComponentShape.noOverlay,
-                          ),
-                          child: detailsValue.when(
-                              loading: () => Container(),
-                              error: (e, s) => Container(),
-                              data: (details) => Opacity(
-                                    opacity: 0.5,
-                                    child: Slider(
-                                      onChanged: null,
-                                      min: 0,
-                                      max: 100,
-                                      value: details.temperature ?? 0,
-                                      activeColor: Colors.blue,
-                                      inactiveColor: Colors.blue,
-                                    ),
-                                  )))),
-                ),
-                TextTileContent(
-                  top: TileTitle(
-                    'Temperature',
-                    color: Colors.white,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Positioned(
+                    bottom: 10,
+                    child: Container(
+                        // color: Colors.red,
+                        height: 10,
+                        child: SliderTheme(
+                            data: SliderThemeData(
+                              disabledActiveTrackColor: Colors.white,
+                              disabledInactiveTrackColor: Colors.white,
+                              disabledThumbColor: Colors.white,
+                              trackHeight: 1.0,
+                              // thumbShape: RoundSliderThumbShape(
+                              //   disabledThumbRadius: 5.0,
+                              //   elevation: 0,
+                              // ),
+                              thumbShape: SliderComponentShape.noOverlay,
+                            ),
+                            child: detailsValue.when(
+                                loading: () => Container(),
+                                error: (e, s) => Container(),
+                                data: (details) => Opacity(
+                                      opacity: 0.5,
+                                      child: Slider(
+                                        onChanged: null,
+                                        min: 0,
+                                        max: 100,
+                                        value: details.temperature ?? 0,
+                                        activeColor: Colors.blue,
+                                        inactiveColor: Colors.blue,
+                                      ),
+                                    )))),
                   ),
-                  bottom: TextTileBottomText(detailsValue.when(
-                      error: (e, s) => '???',
-                      loading: () => '---',
-                      data: (details) {
-                        switch (settings.preferences.temperatureReading) {
-                          case TemperatureReading.celcius:
-                            return details.temperatureInCelcius;
-                          case TemperatureReading.fahrenheit:
-                            return details.temperatureInFahrenheit;
-                          case TemperatureReading.kelvin:
-                          default:
-                            return details.temperatureInKelvin;
-                        }
-                      })),
-                  iconData: KIcons.temperatureReading,
-                  iconTop: 16.0,
-                ),
-              ],
+                  TextTileContent(
+                    top: TileTitle(
+                      'Temperature',
+                      color: Colors.white,
+                    ),
+                    bottom: TextTileBottomText(detailsValue.when(
+                        error: (e, s) => '???',
+                        loading: () => '---',
+                        data: (details) {
+                          switch (settings.preferences.temperatureReading) {
+                            case TemperatureReading.celcius:
+                              return details.temperatureInCelcius;
+                            case TemperatureReading.fahrenheit:
+                              return details.temperatureInFahrenheit;
+                            case TemperatureReading.kelvin:
+                            default:
+                              return details.temperatureInKelvin;
+                          }
+                        })),
+                    iconData: KIcons.temperatureReading,
+                    iconTop: 16.0,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
