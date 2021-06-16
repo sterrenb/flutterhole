@@ -26,10 +26,6 @@ class SettingsRepository {
     final pis = piIds.map((id) => _singlePi(id)).toList();
 
     if (pis.isEmpty) return [Pi.initial()];
-    // .copyWith(
-    // primaryColor: Colors.accents
-    //     .elementAt(Random().nextInt(Colors.accents.length))
-    //     .value)
     pis.sort((a, b) => a.id - b.id);
     return pis;
   }
@@ -38,7 +34,12 @@ class SettingsRepository {
 
   Future<void> setActivePiId(int id) => _sp.setInt("active", id);
 
-  Future<void> clear() => _sp.clear();
+  Future<void> clearAll() => _sp.clear();
+
+  Future<void> clearPiHoles() async {
+    final piIds = _sp.getKeys().map((e) => int.tryParse(e)).whereType<int>();
+    await Future.wait(piIds.map((e) => _sp.remove(e.toString())));
+  }
 
   Future<void> savePi(Pi pi) async {
     final model = PiModel.fromEntity(pi);

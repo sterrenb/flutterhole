@@ -7,31 +7,11 @@ import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/about/app_version.dart';
 import 'package:flutterhole_web/features/about/logo.dart';
 import 'package:flutterhole_web/features/browser_helpers.dart';
+import 'package:flutterhole_web/features/layout/list.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
 import 'package:in_app_review/in_app_review.dart';
-
-class ListTitle extends StatelessWidget {
-  const ListTitle(
-    this.message, {
-    Key? key,
-  }) : super(key: key);
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        message,
-        style: Theme.of(context)
-            .textTheme
-            .subtitle2!
-            .copyWith(color: Theme.of(context).accentColor),
-      ),
-    );
-  }
-}
+import 'package:share_plus/share_plus.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({Key? key}) : super(key: key);
@@ -55,6 +35,8 @@ class AboutPage extends StatelessWidget {
             ),
             Divider(),
             AppVersionListTile(),
+            Divider(),
+            ListTitle('Help'),
             ListTile(
               leading: Icon(KIcons.privacy),
               title: Text('Privacy'),
@@ -63,11 +45,20 @@ class AboutPage extends StatelessWidget {
                 context.router.push(PrivacyRoute());
               },
             ),
+            ListTile(
+              leading: Icon(KIcons.bugReport),
+              title: Text('Submit a bug report'),
+              trailing: Icon(KIcons.push),
+              onTap: () {
+                launchUrl(KUrls.githubIssuesUrl);
+              },
+            ),
             Divider(),
             ListTitle('Support the developer'),
             ListTile(
               leading: Icon(KIcons.review),
               title: Text('Write a review'),
+              trailing: Icon(KIcons.push),
               onTap: () {
                 final InAppReview inAppReview = InAppReview.instance;
                 inAppReview.openStoreListing();
@@ -90,9 +81,9 @@ class AboutPage extends StatelessWidget {
                             Text(
                                 'You can donate to the developer to support the development of this app.'),
                             const SizedBox(height: 8.0),
-                            Text(
-                                'The current goal is getting some macOS hardware and an Apple Developer licence to work on an iOS app.'),
-                            const SizedBox(height: 8.0),
+                            // Text(
+                            //     'The current goal is getting some macOS hardware and an Apple Developer licence to work on an iOS app.'),
+                            // const SizedBox(height: 8.0),
                             Row(
                               children: [
                                 Text('Thank you in advance! 💰'),
@@ -126,6 +117,26 @@ class AboutPage extends StatelessWidget {
                     });
               },
             ),
+            Divider(),
+            ListTitle('Other'),
+            ListTile(
+              leading: Icon(KIcons.share),
+              title: Text('Share this app'),
+              trailing: Icon(KIcons.push),
+              onTap: () {
+                Share.share(
+                    'Check out FlutterHole for Pi-Hole®: ${KUrls.playStoreUrl}');
+              },
+            ),
+            ListTile(
+              leading: Icon(KIcons.pihole),
+              title: Text('Visit the Pi-hole website'),
+              trailing: Icon(KIcons.push),
+              onTap: () {
+                launchUrl(KUrls.piHomeUrl);
+              },
+            ),
+            ListTile(),
           ],
         ),
       ),
@@ -154,6 +165,7 @@ class _StarOnGitHubTile extends HookWidget {
             )),
       ),
       title: Text('Star on GitHub'),
+      trailing: Icon(KIcons.push),
       onTap: () => launchUrl(KUrls.githubHomeUrl),
     );
   }

@@ -82,9 +82,13 @@ class AppVersionListTile extends HookWidget {
       trailing: showLicences
           ? TextButton(
               onPressed: packageInfo.maybeWhen(
-                  orElse: () => null,
-                  data: (info) => () => showAppDetailsDialog(context, info)),
-              child: Text('Licences'))
+                data: (info) => () => showAppDetailsDialog(context, info),
+                orElse: () => null,
+              ),
+              child: Text(
+                'Licences'.toUpperCase(),
+                style: TextStyle(color: Theme.of(context).accentColor),
+              ))
           : null,
     );
   }

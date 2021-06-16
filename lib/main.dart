@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -27,7 +28,14 @@ Future<void> main() async {
     ],
     child: MyApp(),
   ));
-  runApp(ProviderScope(child: MyApp()));
+
+  runApp(ProviderScope(
+    child: DevicePreview(
+      enabled: false,
+      // enabled: !kReleaseMode,
+      builder: (context) => MyApp(),
+    ),
+  ));
 }
 
 class MyApp extends HookWidget {
@@ -63,9 +71,9 @@ class MyApp extends HookWidget {
         themeMode: themeMode,
         routerDelegate: router.delegate(),
         routeInformationParser: router.defaultRouteParser(),
-        // home: const HomeScreen(),
-        // home: const DashboardPage(),
-        // home: const QueryLogScreen(),
+        locale: Locale('en' 'us'),
+        builder: DevicePreview.appBuilder,
+        // locale: Localizations.localeOf(context),
       ),
     );
   }

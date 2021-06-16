@@ -15,7 +15,7 @@ dependencies:
   flutter_hooks: ^0.17.0
   hooks_riverpod: ^0.14.0+4
   intl: ^0.17.0
-  package_info_plus: ^1.0.2
+  package_info_plus: ^1.0.3
   url_launcher: ^6.0.3
   freezed_annotation: ^0.14.2
   dartz: ^0.10.0-nullsafety.2
@@ -36,6 +36,8 @@ dependencies:
   timeago: ^3.1.0
   flutter_markdown: ^0.6.2
   animated_text_kit: ^4.2.1
+  share_plus: ^2.1.4
+  device_preview: ^0.7.3
 dev_dependencies:
   build_runner: ^2.0.4
   flutter_test:

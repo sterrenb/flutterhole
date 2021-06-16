@@ -399,6 +399,8 @@ class PiColorTheme with _$PiColorTheme {
   PiColorTheme._();
 
   factory PiColorTheme({
+    required Color warning,
+    required Color onWarning,
     required Color error,
     required Color onError,
     required Color totalQueries,
@@ -408,6 +410,8 @@ class PiColorTheme with _$PiColorTheme {
   }) = _PiColorTheme;
 
   factory PiColorTheme.light() => PiColorTheme(
+        warning: Colors.orange,
+        onWarning: Colors.white,
         error: Colors.red,
         onError: Colors.white,
         totalQueries: Colors.green,
@@ -417,6 +421,7 @@ class PiColorTheme with _$PiColorTheme {
       );
 
   factory PiColorTheme.dark() => PiColorTheme.light().copyWith(
+        warning: Color(0xFFB1720C),
         error: Color(0xFF913225),
         totalQueries: Color(0xFF005C32),
         queriesBlocked: Color(0xFF007997),
@@ -426,7 +431,6 @@ class PiColorTheme with _$PiColorTheme {
 
   static PiColorTheme of(BuildContext context) {
     final brightness = MediaQuery.of(context).platformBrightness;
-    print('platform brightness: $brightness');
     return brightness == Brightness.light
         ? PiColorTheme.light()
         : PiColorTheme.dark();

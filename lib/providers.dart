@@ -178,6 +178,9 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
   }
 
   Future<void> _perform(Future<PiholeStatus> action) async {
+    // while (state is PiholeStatusLoading) {
+    //   print('just spinning');
+    // }
     state = PiholeStatus.loading();
     // await Future.delayed(Duration(seconds: 3));
     try {
@@ -194,13 +197,11 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
     }
   }
 
-  Future<void> ping() {
-    return _perform(_repository.ping(_cancelToken));
-  }
+  Future<void> ping() => _perform(_repository.ping(_cancelToken));
 
-  Future<void> enable() async => _perform(_repository.enable(_cancelToken));
+  Future<void> enable() => _perform(_repository.enable(_cancelToken));
 
-  Future<void> disable() async => _perform(_repository.disable(_cancelToken));
+  Future<void> disable() => _perform(_repository.disable(_cancelToken));
 
   Future<void> sleep(Duration duration) async {
     await _perform(_repository.sleep(duration, _cancelToken));

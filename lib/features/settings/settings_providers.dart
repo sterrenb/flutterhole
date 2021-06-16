@@ -19,7 +19,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   final SettingsRepository _repository;
 
   Future<void> reset() async {
-    await _repository.clear();
+    await _repository.clearAll();
     state = SettingsState(
       allPis: _repository.allPis(),
       activeId: _repository.activePiId(),
@@ -28,8 +28,18 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     );
   }
 
+  Future<void> resetPiHoles() async {
+    await _repository.clearPiHoles();
+    state = state.copyWith(
+      allPis: _repository.allPis(),
+      activeId: _repository.activePiId(),
+    );
+  }
+
+  Future<void> resetDashboard() => savePi(
+      state.active.copyWith(dashboardSettings: DashboardSettings.initial()));
+
   Future<void> savePi(Pi pi) async {
-    print('saving ${pi.title} ${pi.id}');
     await _repository.savePi(pi);
     // TODO skip activating
     await _repository.setActivePiId(pi.id);
@@ -43,9 +53,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     await _repository.setActivePiId(id);
     state = state.copyWith(activeId: id);
   }
-
-  Future<void> resetDashboard() => savePi(
-      state.active.copyWith(dashboardSettings: DashboardSettings.initial()));
 
   Future<void> updateDashboardEntries(List<DashboardEntry> entries) async {
     savePi(state.active.copyWith(
@@ -63,6 +70,9 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
 
   Future<void> saveUpdateFrequency(Duration frequency) =>
       savePreferences(state.preferences.copyWith(updateFrequency: frequency));
+
+  Future<void> saveTemperatureReading(TemperatureReading reading) =>
+      savePreferences(state.preferences.copyWith(temperatureReading: reading));
 }
 
 final temperatureReadingProvider = Provider<TemperatureReading>((ref) {
@@ -72,11 +82,6 @@ final temperatureReadingProvider = Provider<TemperatureReading>((ref) {
 final themeModeProvider = Provider<ThemeMode>((ref) {
   return ref.watch(settingsNotifierProvider).preferences.themeMode;
 });
-
-// extension HookWidgetX on HookWidget {
-//   Brightness platformBrightness(BuildContext context) =>
-//       MediaQuery.of(context).platformBrightness;
-// }
 
 final piColorThemeProvider =
     Provider.family<PiColorTheme, Brightness>((ref, platformBrightness) {

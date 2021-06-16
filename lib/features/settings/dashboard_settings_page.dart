@@ -51,16 +51,6 @@ class DashboardSettingsPage extends HookWidget {
                 onSave(DashboardSettings(entries: localList.value));
               },
             ),
-            // IconButton(
-            //     tooltip: 'Reset to default',
-            //     onPressed: () {
-            //       // localList.value = DashboardSettings.initial().entries;
-            //       // context.read(dashboardProvider).state =
-            //       //     _dashboardProviderDefault;
-            //     },
-            //     icon: Icon(
-            //       Icons.update,
-            //     ))
           ],
         ),
         body: ReorderableListView(
@@ -68,10 +58,6 @@ class DashboardSettingsPage extends HookWidget {
             buildDefaultDragHandles: true,
             children: <Widget>[
               for (int index = 0; index < localList.value.length; index++)
-                // GridSelectItem(
-                //   index,
-                //   key: Key('$index'),
-                // )
                 _SelectTile(
                   key: Key('$index'),
                   index: index,
@@ -83,12 +69,6 @@ class DashboardSettingsPage extends HookWidget {
                       .last,
                   entry: localList.value.elementAt(index),
                   onTap: () {
-                    print('oioioi');
-                    // List<DashboardEntry> l = List.from(dash.state);
-                    // final newEntry = l.elementAt(index);
-                    // l[index] = newEntry.copyWith(enabled: !newEntry.enabled);
-                    // dash.state = l;
-
                     final l = List<DashboardEntry>.from(localList.value);
                     l[index] = l
                         .elementAt(index)
@@ -106,7 +86,6 @@ class DashboardSettingsPage extends HookWidget {
                   List<DashboardEntry>.from(localList.value, growable: true);
               final item = list.removeAt(oldIndex);
               list.insert(newIndex, item);
-              print('updating localList');
               localList.value = list;
             }),
       ),
@@ -191,65 +170,6 @@ class _SelectTile extends StatelessWidget {
                 child: Checkbox(
                   value: entry.enabled,
                   onChanged: (_) => onTap(),
-                ),
-              ),
-              ReorderableDragStartListener(
-                index: index,
-                child: IconButton(
-                  onPressed: null,
-                  icon: Icon(Icons.drag_handle),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Divider(height: 0),
-      ],
-    );
-  }
-}
-
-class GridSelectItem extends HookWidget {
-  const GridSelectItem(this.index, {Key? key}) : super(key: key);
-
-  final int index;
-
-  @override
-  Widget build(BuildContext context) {
-    // final dash = useProvider(dashboardProvider);
-    final dash = [];
-    final entry = dash.elementAt(index);
-
-    final VoidCallback toggle = () {
-      // List<DashboardEntry> l = List.from(dash.state);
-      // final newEntry = l.elementAt(index);
-      // l[index] = newEntry.copyWith(enabled: !newEntry.enabled);
-      // dash.state = l;
-    };
-
-    return Column(
-      children: [
-        Divider(height: 0),
-        ListTile(
-          onTap: toggle,
-          title: Text(
-            entry.id.toString().split('.').last,
-            style: TextStyle(
-                color: entry.enabled ? null : Theme.of(context).disabledColor),
-          ),
-          leading: GridIcon(
-            entry.id.iconData,
-            isDark: true,
-          ),
-          trailing: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Tooltip(
-                message: 'Toggle visibility',
-                child: Checkbox(
-                  value: entry.enabled,
-                  onChanged: (_) => toggle(),
                 ),
               ),
               ReorderableDragStartListener(

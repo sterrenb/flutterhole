@@ -11,6 +11,7 @@ class PageGrid extends StatelessWidget {
     this.crossAxisCount = 4,
     required this.tiles,
     required this.children,
+    this.padding = const EdgeInsets.all(0),
   })  : assert(tiles.length == children.length),
         super(key: key);
 
@@ -18,6 +19,7 @@ class PageGrid extends StatelessWidget {
   final int crossAxisCount;
   final List<StaggeredTile> tiles;
   final List<Widget> children;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class PageGrid extends StatelessWidget {
       crossAxisCount: 4,
       mainAxisSpacing: kGridSpacing,
       crossAxisSpacing: kGridSpacing,
-      padding: const EdgeInsets.all(kGridSpacing),
+      padding: const EdgeInsets.all(kGridSpacing).add(padding),
       physics: const BouncingScrollPhysics(),
       staggeredTiles: tiles,
       children: children,

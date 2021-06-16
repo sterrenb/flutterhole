@@ -7,16 +7,15 @@
 import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/material.dart' as _i2;
 
-import '../../entities.dart' as _i12;
+import '../../entities.dart' as _i11;
 import '../../home_page.dart' as _i3;
-import '../../settings_page.dart' as _i5;
-import '../about/about_page.dart' as _i10;
-import '../about/privacy_page.dart' as _i11;
+import '../about/about_page.dart' as _i9;
+import '../about/privacy_page.dart' as _i10;
 import '../query_log/query_log_page.dart' as _i4;
-import '../settings/better_settings.dart' as _i6;
-import '../settings/dashboard_settings_page.dart' as _i7;
-import '../settings/pi_edit_page.dart' as _i8;
-import '../settings/single_pi_page.dart' as _i9;
+import '../settings/better_settings.dart' as _i5;
+import '../settings/dashboard_settings_page.dart' as _i6;
+import '../settings/my_pi_holes_page.dart' as _i7;
+import '../settings/single_pi_page.dart' as _i8;
 
 class AppRouter extends _i1.RootStackRouter {
   AppRouter([_i2.GlobalKey<_i2.NavigatorState>? navigatorKey])
@@ -34,44 +33,42 @@ class AppRouter extends _i1.RootStackRouter {
         builder: (_) {
           return const _i4.QueryLogPage();
         }),
-    SettingsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
-        routeData: routeData,
-        builder: (_) {
-          return _i5.SettingsPage();
-        }),
     BetterSettingsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return const _i6.BetterSettingsPage();
+          return const _i5.BetterSettingsPage();
         }),
     DashboardSettingsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (data) {
           final args = data.argsAs<DashboardSettingsRouteArgs>();
-          return _i7.DashboardSettingsPage(
+          return _i6.DashboardSettingsPage(
               key: args.key, initial: args.initial, onSave: args.onSave);
         }),
-    PiEditRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+    MyPiHolesRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return const _i8.PiEditPage();
+          return const _i7.MyPiHolesPage();
         }),
     SinglePiRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (data) {
           final args = data.argsAs<SinglePiRouteArgs>();
-          return _i9.SinglePiPage(
-              initial: args.initial, onSave: args.onSave, key: args.key);
+          return _i8.SinglePiPage(
+              initial: args.initial,
+              onSave: args.onSave,
+              title: args.title,
+              key: args.key);
         }),
     AboutRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return const _i10.AboutPage();
+          return const _i9.AboutPage();
         }),
     PrivacyRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return const _i11.PrivacyPage();
+          return const _i10.PrivacyPage();
         })
   };
 
@@ -79,12 +76,11 @@ class AppRouter extends _i1.RootStackRouter {
   List<_i1.RouteConfig> get routes => [
         _i1.RouteConfig(HomeRoute.name, path: '/'),
         _i1.RouteConfig(QueryLogRoute.name, path: '/query-log-page'),
-        _i1.RouteConfig(SettingsRoute.name, path: '/settings-page'),
         _i1.RouteConfig(BetterSettingsRoute.name,
             path: '/better-settings-page'),
         _i1.RouteConfig(DashboardSettingsRoute.name,
             path: '/dashboard-settings-page'),
-        _i1.RouteConfig(PiEditRoute.name, path: '/pi-edit-page'),
+        _i1.RouteConfig(MyPiHolesRoute.name, path: '/my-pi-holes-page'),
         _i1.RouteConfig(SinglePiRoute.name, path: '/single-pi-page'),
         _i1.RouteConfig(AboutRoute.name, path: '/about-page'),
         _i1.RouteConfig(PrivacyRoute.name, path: '/privacy-page')
@@ -103,12 +99,6 @@ class QueryLogRoute extends _i1.PageRouteInfo {
   static const String name = 'QueryLogRoute';
 }
 
-class SettingsRoute extends _i1.PageRouteInfo {
-  const SettingsRoute() : super(name, path: '/settings-page');
-
-  static const String name = 'SettingsRoute';
-}
-
 class BetterSettingsRoute extends _i1.PageRouteInfo {
   const BetterSettingsRoute() : super(name, path: '/better-settings-page');
 
@@ -119,8 +109,8 @@ class DashboardSettingsRoute
     extends _i1.PageRouteInfo<DashboardSettingsRouteArgs> {
   DashboardSettingsRoute(
       {_i2.Key? key,
-      required _i12.DashboardSettings initial,
-      required void Function(_i12.DashboardSettings) onSave})
+      required _i11.DashboardSettings initial,
+      required void Function(_i11.DashboardSettings) onSave})
       : super(name,
             path: '/dashboard-settings-page',
             args: DashboardSettingsRouteArgs(
@@ -135,37 +125,40 @@ class DashboardSettingsRouteArgs {
 
   final _i2.Key? key;
 
-  final _i12.DashboardSettings initial;
+  final _i11.DashboardSettings initial;
 
-  final void Function(_i12.DashboardSettings) onSave;
+  final void Function(_i11.DashboardSettings) onSave;
 }
 
-class PiEditRoute extends _i1.PageRouteInfo {
-  const PiEditRoute() : super(name, path: '/pi-edit-page');
+class MyPiHolesRoute extends _i1.PageRouteInfo {
+  const MyPiHolesRoute() : super(name, path: '/my-pi-holes-page');
 
-  static const String name = 'PiEditRoute';
+  static const String name = 'MyPiHolesRoute';
 }
 
 class SinglePiRoute extends _i1.PageRouteInfo<SinglePiRouteArgs> {
   SinglePiRoute(
-      {required _i12.Pi initial,
-      required void Function(_i12.Pi) onSave,
+      {required _i11.Pi initial,
+      required void Function(_i11.Pi) onSave,
+      String? title,
       _i2.Key? key})
       : super(name,
             path: '/single-pi-page',
-            args:
-                SinglePiRouteArgs(initial: initial, onSave: onSave, key: key));
+            args: SinglePiRouteArgs(
+                initial: initial, onSave: onSave, title: title, key: key));
 
   static const String name = 'SinglePiRoute';
 }
 
 class SinglePiRouteArgs {
   const SinglePiRouteArgs(
-      {required this.initial, required this.onSave, this.key});
+      {required this.initial, required this.onSave, this.title, this.key});
 
-  final _i12.Pi initial;
+  final _i11.Pi initial;
 
-  final void Function(_i12.Pi) onSave;
+  final void Function(_i11.Pi) onSave;
+
+  final String? title;
 
   final _i2.Key? key;
 }

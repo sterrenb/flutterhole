@@ -26,7 +26,6 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
         color: Theme.of(context).colorScheme.onPrimary,
       ),
       elevation: 0.0,
-      // backgroundColor: Theme.of(context).colorScheme.surface,
       titleSpacing: 0.0,
       actions: [
         IconButton(
@@ -41,22 +40,8 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
           child: Row(
             children: [
               TextButton(
-                onLongPress: () async {
-                  // AutoRouter
-                  await pushAndSaveSinglePiRoute(context, pi);
-                  // context.router.push(SinglePiRoute(
-                  //   initial: pi,
-                  //   onSave: (update) {
-                  //     context
-                  //         .read(settingsNotifierProvider.notifier)
-                  //         .savePi(update);
-                  //
-                  //     context
-                  //         .read(piholeStatusNotifierProvider.notifier)
-                  //         .ping();
-                  //   },
-                  // ));
-                },
+                onLongPress: () =>
+                    context.router.pushAndSaveSinglePiRoute(context, pi),
                 onPressed: () => showActivePiDialog(context, context.read),
                 child: Text(
                   pi.title,
@@ -70,18 +55,6 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
                   context.read(piholeStatusNotifierProvider.notifier).ping();
                 },
               ),
-              // PeriodicWidget(
-              //   child: Container(),
-              //   // child: PiTemperatureText(),
-              //   duration: updateFrequency.state,
-              //   onTimer: (timer) {
-              //     // TODO debug
-              //     // print('onTimer');
-              //     // context.refresh(piDetailsProvider(pi));
-              //     // context
-              //     //     .refresh(piSummaryProvider(context.read(simplePiProvider)));
-              //   },
-              // ),
             ],
           ),
         ),

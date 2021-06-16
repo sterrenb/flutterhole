@@ -116,24 +116,21 @@ class LogRecordRow extends HookWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Hero(
-                    tag: record.message,
-                    child: CodeCard(
-                      record.message,
-                      onTap: () {
-                        // Navigator.of(context)
-                        //     .push(MaterialPageRoute<void>(builder: (context) {
-                        //   return LogRecordPage(record);
-                        // }));
+                  CodeCard(
+                    record.message,
+                    onTap: () {
+                      // Navigator.of(context)
+                      //     .push(MaterialPageRoute<void>(builder: (context) {
+                      //   return LogRecordPage(record);
+                      // }));
 
-                        showModal(
-                          context: context,
-                          builder: (context) {
-                            return LogRecordModal(record);
-                          },
-                        );
-                      },
-                    ),
+                      showModal(
+                        context: context,
+                        builder: (context) {
+                          return LogRecordModal(record);
+                        },
+                      );
+                    },
                   ),
                 ],
               ),
@@ -191,12 +188,9 @@ class LogRecordPage extends HookWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Hero(
-              tag: record.message,
-              child: CodeCard(
-                record.message,
-                onTap: () {},
-              ),
+            CodeCard(
+              record.message,
+              onTap: () {},
             ),
           ],
         ),

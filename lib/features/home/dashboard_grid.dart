@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -146,17 +144,21 @@ class DashboardGrid extends HookWidget {
     final dashboardSettings =
         useProvider(settingsNotifierProvider).active.dashboardSettings;
     final tiles = dashboardSettings.entries;
-    // final statusNotifier = useProvider(piholeStatusNotifierProvider.notifier);
     final activePi = useProvider(activePiProvider);
-    final preferences = useProvider(userPreferencesProvider);
+
+    final mounted = useIsMounted();
+
     final VoidFutureCallBack onRefresh = () async {
-      print('refreshing from DashboardGrid');
-      // await Future.delayed(Duration(seconds: 1));
-      context.read(piholeStatusNotifierProvider.notifier).ping();
-      // context.refresh(activeSummaryProvider);
-      context.refresh(piSummaryProvider(context.read(activePiProvider)));
-      context.refresh(activePiDetailsProvider);
-      context.refresh(activeClientActivityProvider);
+      print('refreshing from DashboardGrid: ${mounted()}');
+
+      if (mounted()) {
+        // await Future.delayed(Duration(seconds: 1));
+        context.read(piholeStatusNotifierProvider.notifier).ping();
+        // context.refresh(activeSummaryProvider);
+        context.refresh(piSummaryProvider(context.read(activePiProvider)));
+        context.refresh(activePiDetailsProvider);
+        context.refresh(activeClientActivityProvider);
+      }
     };
 
     useEffect(() {

@@ -64,35 +64,42 @@ class DoughnutChart extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final selected = useProvider(doughnutChartProvider(title));
-    return Container(
-      child: PieChart(PieChartData(
-        startDegreeOffset: 270,
-        borderData: FlBorderData(show: false),
-        pieTouchData:
-            PieTouchData(touchCallback: (PieTouchResponse pieTouchResponse) {
-          final desiredTouch =
-              pieTouchResponse.touchInput is! PointerExitEvent &&
-                  pieTouchResponse.touchInput is! PointerUpEvent;
-          if (desiredTouch && pieTouchResponse.touchedSection != null) {
-            final index = pieTouchResponse.touchedSection!.touchedSectionIndex;
-            if (index >= 0) {
-              selected.state = dataSource.elementAt(index).x;
-              return;
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 200,
+          maxHeight: 200,
+        ),
+        child: PieChart(PieChartData(
+          startDegreeOffset: 270,
+          borderData: FlBorderData(show: false),
+          pieTouchData:
+              PieTouchData(touchCallback: (PieTouchResponse pieTouchResponse) {
+            final desiredTouch =
+                pieTouchResponse.touchInput is! PointerExitEvent &&
+                    pieTouchResponse.touchInput is! PointerUpEvent;
+            if (desiredTouch && pieTouchResponse.touchedSection != null) {
+              final index =
+                  pieTouchResponse.touchedSection!.touchedSectionIndex;
+              if (index >= 0) {
+                selected.state = dataSource.elementAt(index).x;
+                return;
+              }
             }
-          }
-          selected.state = '';
-        }),
-        sectionsSpace: selected.state.isNotEmpty ? 4.0 : 2.0,
-        sections: dataSource
-            .map((data) => PieChartSectionData(
-                  title: '${data.y.toStringAsFixed(0)}%',
-                  value: data.y,
-                  color: data.color,
-                  showTitle: data.y >= kShowTitleThresholdPercentage,
-                  radius: selected.state == data.x ? 45 : 40,
-                ))
-            .toList(),
-      )),
+            selected.state = '';
+          }),
+          sectionsSpace: selected.state.isNotEmpty ? 4.0 : 2.0,
+          sections: dataSource
+              .map((data) => PieChartSectionData(
+                    title: '${data.y.toStringAsFixed(0)}%',
+                    value: data.y,
+                    color: data.color,
+                    showTitle: data.y >= kShowTitleThresholdPercentage,
+                    radius: selected.state == data.x ? 45 : 40,
+                  ))
+              .toList(),
+        )),
+      ),
     );
   }
 }

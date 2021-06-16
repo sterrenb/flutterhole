@@ -227,7 +227,7 @@ class AppDrawer extends StatelessWidget {
           _DrawerTile(
             'Settings',
             KIcons.settings,
-            SettingsRoute(),
+            BetterSettingsRoute(),
           ),
         ],
       ),

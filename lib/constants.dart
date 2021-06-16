@@ -84,6 +84,7 @@ class KUrls {
   static const String koFiUrl = 'https://ko-fi.com/sterrenburg';
   static const String githubSponsor = 'https://github.com/sponsors/sterrenburg';
 
+  static const String piHomeUrl = 'https://pi-hole.net/';
   static const String piUpdateUrl =
       'https://github.com/pi-hole/pi-hole/releases/latest';
   static const String webInterfaceUpdateUrl =
@@ -106,10 +107,10 @@ class KIcons {
   static const IconData updateFrequency = Icons.update;
   static const IconData refresh = Icons.refresh;
 
-  static const IconData appVersion = Icons.developer_board;
-  static const IconData pihole = Icons.computer;
-
   static const IconData dot = Icons.brightness_1;
+
+  static const IconData appVersion = Icons.developer_board;
+  static const IconData pihole = dot;
 
   static const IconData dashboard = Icons.dashboard;
   static const IconData queryLog = Icons.list;
@@ -135,12 +136,14 @@ class KIcons {
 
   static const IconData toggleVisible = Icons.visibility;
   static const IconData toggleInvisible = Icons.visibility_off;
+  static const IconData add = Icons.add;
   static const IconData save = Icons.save;
 
   static const IconData expand = Icons.keyboard_arrow_down;
   static const IconData shrink = Icons.keyboard_arrow_up;
   static const IconData push = Icons.keyboard_arrow_right;
   static const IconData openUrl = Icons.open_in_browser;
+  static const IconData share = Icons.share;
   static const IconData donate = Icons.monetization_on;
 
   static const IconData selectDashboardTiles = Icons.playlist_add_check;
@@ -153,6 +156,7 @@ class KIcons {
   static const IconData qrCode = Icons.qr_code_scanner;
   static const IconData customization = Icons.format_paint;
   static const IconData privacy = Icons.security;
+  static const IconData bugReport = Icons.bug_report;
 
   static const IconData logDebug = Icons.bug_report;
   static const IconData logInfo = Icons.info;

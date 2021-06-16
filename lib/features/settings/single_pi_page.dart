@@ -24,15 +24,11 @@ import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
-// final singlePiProvider = StateProvider.autoDispose<Pi>((ref) => debugPis.first);
-
-final whitespaceFormatter =
+final _whitespaceFormatter =
     FilteringTextInputFormatter.deny(RegExp(r"\s\b|\b\s"));
 
-class SinglePiNotifier extends StateNotifier<Pi> {
-  SinglePiNotifier(Pi initial) : super(initial);
-
-  // void update(Pi pi) => state = pi;
+class _SinglePiNotifier extends StateNotifier<Pi> {
+  _SinglePiNotifier(Pi initial) : super(initial);
 
   void updateTitle(String title) {
     state = state.copyWith(title: title);
@@ -76,25 +72,29 @@ class SinglePiNotifier extends StateNotifier<Pi> {
 }
 
 final singlePiProvider = StateNotifierProvider.autoDispose
-    .family<SinglePiNotifier, Pi, Pi>((ref, initial) {
-  return SinglePiNotifier(initial);
+    .family<_SinglePiNotifier, Pi, Pi>((ref, initial) {
+  return _SinglePiNotifier(initial);
 });
 
-Future<void> pushAndSaveSinglePiRoute(BuildContext context, Pi initial) async {
-  await context.router.push(SinglePiRoute(
-    initial: initial,
-    onSave: (update) {
-      context.read(settingsNotifierProvider.notifier).savePi(update);
+extension StackRouterX on StackRouter {
+  Future<void> pushAndSaveSinglePiRoute(
+      BuildContext context, Pi initial) async {
+    await context.router.push(SinglePiRoute(
+      initial: initial,
+      onSave: (update) {
+        context.read(settingsNotifierProvider.notifier).savePi(update);
 
-      context.read(piholeStatusNotifierProvider.notifier).ping();
-    },
-  ));
+        context.read(piholeStatusNotifierProvider.notifier).ping();
+      },
+    ));
+  }
 }
 
 class SinglePiPage extends HookWidget {
   const SinglePiPage({
     required this.initial,
     required this.onSave,
+    this.title,
     Key? key,
   }) : super(key: key);
 
@@ -111,6 +111,7 @@ class SinglePiPage extends HookWidget {
 
   final Pi initial;
   final ValueChanged<Pi> onSave;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -246,23 +247,19 @@ class SinglePiPage extends HookWidget {
           appBar: TransparentAppBar(
             controller: pageController,
             title: Text(
-              'Editing ${pi.title}',
-              // style: TextStyle(
-              //   color: Theme.of(context).colorScheme.onSurface,
-              // ),
+              title ?? 'Editing ${initial.title}',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             actions: [
               ElevatedSaveButton(
-                onPressed: () {
-                  if (hasChanges) {
-                    onSave(pi);
-                  }
-
-                  context.router.pop();
-                },
+                onPressed: hasChanges
+                    ? () {
+                        onSave(pi);
+                        context.router.pop();
+                      }
+                    : null,
               ),
             ],
           ),
@@ -272,11 +269,37 @@ class SinglePiPage extends HookWidget {
             },
             child: PageGrid(
               pageController: pageController,
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).orientation ==
+                          Orientation.landscape
+                      ? MediaQuery.of(context).size.width / 5
+                      : 0.0),
               tiles: items.keys.toList(),
               children: items.values.toList(),
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class HalfWidthInLandScape extends StatelessWidget {
+  const HalfWidthInLandScape({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: MediaQuery.of(context).orientation == Orientation.landscape
+            ? MediaQuery.of(context).size.width / 2
+            : null,
+        child: child,
       ),
     );
   }
@@ -392,7 +415,7 @@ class ElevatedSaveButton extends StatelessWidget {
     required this.onPressed,
   }) : super(key: key);
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -525,7 +548,7 @@ class ApiPathCard extends StatelessWidget {
         inputFormatters: [
           LengthLimitingTextInputFormatter(30),
           FilteringTextInputFormatter.singleLineFormatter,
-          whitespaceFormatter,
+          _whitespaceFormatter,
         ],
         hintText: 'API path',
 
@@ -589,7 +612,7 @@ class ApiTokenCard extends HookWidget {
           inputFormatters: [
             LengthLimitingTextInputFormatter(200),
             FilteringTextInputFormatter.singleLineFormatter,
-            whitespaceFormatter,
+            _whitespaceFormatter,
           ],
           hintText: pi.apiTokenRequired ? 'API token' : kNoApiTokenNeeded,
           obscureText: !show.value,
@@ -634,7 +657,7 @@ class BaseUrlCard extends StatelessWidget {
         inputFormatters: [
           LengthLimitingTextInputFormatter(30),
           FilteringTextInputFormatter.singleLineFormatter,
-          whitespaceFormatter,
+          _whitespaceFormatter,
         ],
         hintText: 'Base URL',
         decoration: InputDecoration(
