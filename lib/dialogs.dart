@@ -4,18 +4,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/formatting/entity_formatting.dart';
+import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/layout/media_queries.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-Future<void> showErrorDialog(
-    BuildContext context, Object e, StackTrace? s) async {
-  await showConfirmationDialog(
-      context: context,
-      title: 'Error: $e',
-      message: 'Stacktrace: \n\n$s $s $s');
-}
 
 Future<void> showFailureDialog(
     BuildContext context, String title, String message) async {
@@ -147,24 +143,28 @@ class DialogBase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          header,
-          const Divider(height: 0),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: body,
-          ),
-          const Divider(height: 0),
-          BaseButtonRow(
-            onCancel: onCancel != null ? onCancel! : () => context.router.pop(),
-            onSelect: onSelect,
-            extraButtons: extraButtons,
-          )
-        ],
+    return Padding(
+      padding: context.clampedBodyPadding,
+      child: Dialog(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            header,
+            const Divider(height: 0),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: body,
+            ),
+            const Divider(height: 0),
+            BaseButtonRow(
+              onCancel:
+                  onCancel != null ? onCancel! : () => context.router.pop(),
+              onSelect: onSelect,
+              extraButtons: extraButtons,
+            )
+          ],
+        ),
       ),
     );
   }
@@ -193,10 +193,14 @@ class DurationDialog extends HookWidget {
     return DialogBase(
       header: DialogHeader(
         title: title,
-        message: message,
+        // message: message,
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Text(message),
+          ),
           Slider(
             value: counter.value,
             min: 0.0,
@@ -225,7 +229,8 @@ Future<Duration?> showUpdateFrequencyDialog(
     configuration: FadeScaleTransitionConfiguration(),
     builder: (context) => DurationDialog(
       title: 'Update frequency',
-      message: 'The time between automatic updates on the dashboard.',
+      message:
+          'The time between automatic updates on the dashboard.\n\nSetting this value too low can cause timeouts.',
       initialValue: initialValue,
       onSelect: pop,
       theme: theme,
@@ -258,31 +263,34 @@ class DialogListBase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: CustomScrollView(
-        shrinkWrap: true,
-        // physics: BouncingScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(child: header),
-          body,
-          // SliverToBoxAdapter(
-          //     child: Column(
-          //   children: [body],
-          // )),
-          // const Divider(height: 0),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-          //   child: body,
-          // ),
-          // const Divider(height: 0),
-          // SliverToBoxAdapter(
-          //   child: BaseButtonRow(
-          //     onCancel: onCancel,
-          //     onSelect: onSelect,
-          //     extraButtons: extraButtons,
-          //   ),
-          // ),
-        ],
+    return Padding(
+      padding: context.clampedBodyPadding.add(context.clampedListPadding),
+      child: Dialog(
+        child: CustomScrollView(
+          shrinkWrap: true,
+          // physics: BouncingScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(child: header),
+            body,
+            // SliverToBoxAdapter(
+            //     child: Column(
+            //   children: [body],
+            // )),
+            // const Divider(height: 0),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+            //   child: body,
+            // ),
+            // const Divider(height: 0),
+            // SliverToBoxAdapter(
+            //   child: BaseButtonRow(
+            //     onCancel: onCancel,
+            //     onSelect: onSelect,
+            //     extraButtons: extraButtons,
+            //   ),
+            // ),
+          ],
+        ),
       ),
     );
   }
@@ -317,5 +325,71 @@ class ConfirmationDialog extends StatelessWidget {
       onCancel: onCancel,
       theme: Theme.of(context),
     );
+  }
+}
+
+String _errorToTitle(Object e) {
+  if (e is PiholeApiFailure) {
+    return e.toString();
+  }
+  return e.runtimeType.toString();
+}
+
+String _errorToDescription(Object e) {
+  if (e is PiholeApiFailure) {
+    return e.description;
+  }
+  return e.toString();
+}
+
+Future<void> showErrorDialog(BuildContext context, Object e, [StackTrace? s]) =>
+    showModal(context: context, builder: (context) => _ErrorDialog(e, s));
+
+class _ErrorDialog extends HookWidget {
+  const _ErrorDialog(
+    this.e,
+    this.s, {
+    Key? key,
+  }) : super(key: key);
+
+  final Object e;
+  final StackTrace? s;
+
+  @override
+  Widget build(BuildContext context) {
+    return DialogListBase(
+        header: DialogHeader(
+          title: 'Error',
+          // title: _errorToTitle(e),
+        ),
+        // onConfirm: () {},
+        body: SliverList(
+          // shrinkWrap: true,
+          delegate: SliverChildListDelegate([
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0)
+                  .add(EdgeInsets.only(bottom: 16.0)),
+              child: Text(_errorToDescription(e)),
+            ),
+            HookBuilder(
+              builder: (context) {
+                final devMode = useProvider(devModeProvider);
+                return ExpansionTile(
+                  initiallyExpanded: devMode,
+                  title: Row(
+                    children: [
+                      Expanded(child: CodeCard(_errorToTitle(e))),
+                    ],
+                  ),
+                  children: [
+                    SelectableCodeCard(
+                      (_errorToTitle(e) + '\n\n' + s.toString()),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ]),
+        ));
   }
 }

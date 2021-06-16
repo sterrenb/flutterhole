@@ -19,7 +19,7 @@ Future<bool> launchUrl(String url) async {
 
 Future<String> fetchPrivacyMarkdown() async {
   try {
-    final Response response = await _dio.get(KUrls.privacyUrl);
+    final Response response = await _dio.get(KUrls.privacyRawUrl);
     return response.data.toString();
   } catch (e) {
     return 'Failed to get privacy information: \n\n$e';

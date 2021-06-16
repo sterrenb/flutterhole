@@ -5,8 +5,8 @@ import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
+import 'package:flutterhole_web/features/settings/developer_widgets.dart';
 import 'package:flutterhole_web/features/settings/single_pi_page.dart';
-import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -62,32 +62,5 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
         ),
       ),
     );
-  }
-}
-
-@Deprecated('not used')
-class PiToggleIconButton extends HookWidget {
-  @override
-  Widget build(BuildContext context) {
-    final piStatus = useProvider(piholeStatusNotifierProvider);
-
-    return IconButton(
-        icon: PiStatusToggleIcon(),
-        tooltip: piStatus.when(
-          enabled: () => 'Disable Pi-hole',
-          disabled: () => 'Enable Pi-hole',
-          loading: () => 'Loading',
-          failure: (error) => error.toString(),
-          sleeping: (duration, _) => 'Sleeping $duration',
-        ),
-        onPressed: piStatus.maybeWhen(
-          enabled: () => () {
-            context.read(piholeStatusNotifierProvider.notifier).disable();
-          },
-          disabled: () => () {
-            context.read(piholeStatusNotifierProvider.notifier).enable();
-          },
-          orElse: () => null,
-        ));
   }
 }

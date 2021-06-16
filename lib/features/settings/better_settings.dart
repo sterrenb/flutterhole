@@ -1,115 +1,21 @@
 import 'package:animations/animations.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
-import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/list.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
-import 'package:flutterhole_web/features/routing/app_router.gr.dart';
+import 'package:flutterhole_web/features/settings/developer_preferences.dart';
+import 'package:flutterhole_web/features/settings/developer_widgets.dart';
 import 'package:flutterhole_web/features/settings/my_pi_holes_page.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
+import 'package:flutterhole_web/features/settings/user_preferences.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
-import 'package:flutterhole_web/formatting.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-class _ThemeModeTile extends HookWidget {
-  const _ThemeModeTile({Key? key}) : super(key: key);
-
-  String _themeModeToString(ThemeMode themeMode) {
-    switch (themeMode) {
-      case ThemeMode.light:
-        return 'Light';
-      case ThemeMode.dark:
-        return 'Dark';
-      case ThemeMode.system:
-      default:
-        return 'System';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final themeMode = useProvider(themeModeProvider);
-    return Center(
-      child: ListTile(
-        leading: Icon(KIcons.lightTheme),
-        title: Text('Theme mode'),
-        trailing: DropdownButton<ThemeMode>(
-          value: themeMode,
-          onChanged: (update) {
-            if (update != null) {
-              context
-                  .read(settingsNotifierProvider.notifier)
-                  .saveThemeMode(update);
-            }
-          },
-          items: ThemeMode.values
-              .map<DropdownMenuItem<ThemeMode>>((e) => DropdownMenuItem(
-                    value: e,
-                    child: Text(_themeModeToString(e)),
-                  ))
-              .toList(),
-        ),
-      ),
-    );
-  }
-}
-
-class _MyCurrentDashboardTile extends HookWidget {
-  const _MyCurrentDashboardTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: ListTile(
-        leading: Icon(KIcons.pihole),
-        title: Text('My Pi-holes'),
-        trailing: Icon(KIcons.push),
-        onTap: () {
-          AutoRouter.of(context).push(MyPiHolesRoute());
-        },
-      ),
-    );
-  }
-}
-
-class _PreferencesListView extends StatelessWidget {
-  const _PreferencesListView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          const _ThemeModeTile(),
-          const _TemperatureReadingTile(),
-          const _UpdateFrequencyTile(),
-        ]);
-  }
-}
-
-class _DevPrefsListView extends StatelessWidget {
-  const _DevPrefsListView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          const _ThemeModeTile(),
-          const _TemperatureReadingTile(),
-          const _UpdateFrequencyTile(),
-        ]);
-  }
-}
 
 class BetterSettingsPage extends HookWidget {
   const BetterSettingsPage({Key? key}) : super(key: key);
@@ -120,7 +26,7 @@ class BetterSettingsPage extends HookWidget {
 
     final Map<StaggeredTile, Widget> items = {
       StaggeredTile.fit(4): const ListTitle('Preferences'),
-      StaggeredTile.fit(4): const _PreferencesListView(),
+      StaggeredTile.fit(4): const UserPreferencesListView(),
       StaggeredTile.fit(4): Divider(),
       StaggeredTile.extent(4, kToolbarHeight): const ListTitle('My Pi-holes'),
       StaggeredTile.extent(4, kToolbarHeight): ListTile(
@@ -132,17 +38,18 @@ class BetterSettingsPage extends HookWidget {
       StaggeredTile.fit(4): PiHoleListBuilder(),
       StaggeredTile.fit(4): Divider(),
       StaggeredTile.extent(4, kToolbarHeight): const ListTitle('Danger zone'),
-      // StaggeredTile.count(4, 1):
-      //     const GridSectionHeader('Danger zone', KIcons.dangerZone),
       StaggeredTile.count(2, 1): const _ResetActiveDashboardCard(),
       StaggeredTile.count(2, 1): const _DeletePiHolesCard(),
       StaggeredTile.count(2, 1): const _ToggleDevModeCard(),
       StaggeredTile.count(2, 1): const _ResetAllSettingsCard(),
+      // StaggeredTile.count(4, 1):
+      //     const GridSectionHeader('Danger zone', KIcons.dangerZone),
     };
 
     if (devMode) {
       items.addAll({
-        StaggeredTile.fit(4): const ListTitle('Developer options'),
+        StaggeredTile.fit(4): const ListTitle('Developer'),
+        StaggeredTile.fit(4): const DeveloperPreferencesListView(),
       });
     }
 
@@ -154,10 +61,13 @@ class BetterSettingsPage extends HookWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Settings'),
+          actions: [
+            ThemeModeToggle(),
+          ],
         ),
-        body: PageGrid(
+        body: PortraitPageGrid(
           // pageController: pageController,
-          crossAxisCount: 4,
+          // crossAxisCount: 4,
           tiles: items.keys.toList(),
           children: items.values.toList(),
         ),
@@ -350,74 +260,5 @@ class _ToggleDevModeCard extends HookWidget {
                 ),
               ),
             ));
-  }
-}
-
-class _UpdateFrequencyTile extends HookWidget {
-  const _UpdateFrequencyTile({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final duration = useProvider(updateFrequencyProvider);
-    return ListTile(
-      title: Text('Update frequency'),
-      leading: Icon(KIcons.updateFrequency),
-      trailing: TextButton(
-        child: Text(duration.inSeconds.secondsOrElse('Disabled')),
-        onPressed: () async {
-          final update = await showUpdateFrequencyDialog(context, duration);
-          if (update != null) {
-            context
-                .read(settingsNotifierProvider.notifier)
-                .saveUpdateFrequency(update);
-          }
-        },
-      ),
-    );
-  }
-}
-
-class _TemperatureReadingTile extends HookWidget {
-  const _TemperatureReadingTile({
-    Key? key,
-  }) : super(key: key);
-
-  String _temperatureReadingToString(TemperatureReading temperatureReading) {
-    switch (temperatureReading) {
-      case TemperatureReading.celcius:
-        return 'Celcius (°C)';
-      case TemperatureReading.fahrenheit:
-        return 'Fahrenheit (°F)';
-      case TemperatureReading.kelvin:
-      default:
-        return 'Kelvin (°K)';
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final settings = useProvider(settingsNotifierProvider);
-    return ListTile(
-      title: Text('Temperature'),
-      leading: Icon(KIcons.temperatureReading),
-      trailing: DropdownButton<TemperatureReading>(
-          value: settings.preferences.temperatureReading,
-          onChanged: (update) {
-            if (update != null) {
-              context
-                  .read(settingsNotifierProvider.notifier)
-                  .saveTemperatureReading(update);
-            }
-          },
-          items: TemperatureReading.values
-              .map<DropdownMenuItem<TemperatureReading>>(
-                  (e) => DropdownMenuItem(
-                        child: Text(_temperatureReadingToString(e)),
-                        value: e,
-                      ))
-              .toList()),
-    );
   }
 }

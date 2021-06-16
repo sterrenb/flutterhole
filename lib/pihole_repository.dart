@@ -77,7 +77,13 @@ class PiholeRepository {
         return PiholeApiFailure.cancelled();
       case DioErrorType.other:
       default:
-        return PiholeApiFailure.unknown(e);
+        // print('oh no:');
+        // print(e.message);
+        if (e.message.contains('Failed host lookup')) {
+          return PiholeApiFailure.hostname();
+        }
+
+        return PiholeApiFailure.general(e.message);
     }
   }
 

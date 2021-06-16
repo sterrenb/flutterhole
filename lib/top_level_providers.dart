@@ -26,8 +26,11 @@ final debugModeProvider = Provider<bool>((ref) {
 
 final userPreferencesProvider = Provider<UserPreferences>((ref) {
   final settings = ref.watch(settingsNotifierProvider);
-  return settings.preferences;
+  return settings.userPreferences;
 });
+
+final logLevelProvider = Provider<LogLevel>(
+    (ref) => ref.watch(developerPreferencesProvider).logLevel);
 
 final dioProvider = Provider.family<Dio, Pi>((ref, pi) {
   final logger = ref.watch(logNotifierProvider.notifier);

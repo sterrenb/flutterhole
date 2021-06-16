@@ -3,6 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/layout/media_queries.dart';
+
+const importGridLayout = null;
 
 class PageGrid extends StatelessWidget {
   const PageGrid({
@@ -32,6 +35,28 @@ class PageGrid extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       staggeredTiles: tiles,
       children: children,
+    );
+  }
+}
+
+class PortraitPageGrid extends StatelessWidget {
+  const PortraitPageGrid({
+    Key? key,
+    this.pageController,
+    required this.tiles,
+    required this.children,
+  }) : super(key: key);
+  final ScrollController? pageController;
+  final List<StaggeredTile> tiles;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return PageGrid(
+      pageController: pageController,
+      tiles: tiles,
+      children: children,
+      padding: context.clampedBodyPadding,
     );
   }
 }

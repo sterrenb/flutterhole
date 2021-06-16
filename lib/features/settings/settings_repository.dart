@@ -10,6 +10,10 @@ final settingsRepositoryProvider =
     Provider<SettingsRepository>((ref) => throw UnimplementedError());
 
 class SettingsRepository {
+  static const _active = 'active';
+  static const _userPreferences = 'userPreferences';
+  static const _developerPreferences = 'developerPreferences';
+
   const SettingsRepository(this._sp);
 
   final SharedPreferences _sp;
@@ -26,14 +30,14 @@ class SettingsRepository {
     final piIds = _sp.getKeys().map((e) => int.tryParse(e)).whereType<int>();
     final pis = piIds.map((id) => _singlePi(id)).toList();
 
-    if (pis.isEmpty) return [Pi.initial()];
+    if (pis.isEmpty) return [PiModel().entity];
     pis.sort((a, b) => a.id - b.id);
     return pis;
   }
 
-  int activePiId() => _sp.getInt("active") ?? 0;
+  int activePiId() => _sp.getInt(_active) ?? 0;
 
-  Future<void> setActivePiId(int id) => _sp.setInt("active", id);
+  Future<void> setActivePiId(int id) => _sp.setInt(_active, id);
 
   Future<void> clearAll() => _sp.clear();
 
@@ -47,16 +51,30 @@ class SettingsRepository {
     await _sp.setString(pi.id.toString(), jsonEncode(model));
   }
 
-  UserPreferences getPreferences() {
-    final String? jsonString = _sp.getString("preferences");
-    if (jsonString == null) return UserPreferences.initial();
+  UserPreferences getUserPreferences() {
+    final String? jsonString = _sp.getString(_userPreferences);
+    if (jsonString == null) return UserPreferencesModel().entity;
 
     final model = UserPreferencesModel.fromJson(jsonDecode(jsonString));
     return model.entity;
   }
 
-  Future<void> savePreferences(UserPreferences preferences) async {
+  Future<void> saveUserPreferences(UserPreferences preferences) async {
     final model = UserPreferencesModel.fromEntity(preferences);
-    await _sp.setString("preferences", jsonEncode(model));
+    await _sp.setString(_userPreferences, jsonEncode(model));
+  }
+
+  DeveloperPreferences getDeveloperPreferences() {
+    final String? jsonString = _sp.getString(_developerPreferences);
+    if (jsonString == null) return DeveloperPreferencesModel().entity;
+
+    final model = DeveloperPreferencesModel.fromJson(jsonDecode(jsonString));
+    return model.entity;
+  }
+
+  Future<void> saveDeveloperPreferences(
+      DeveloperPreferences preferences) async {
+    final model = DeveloperPreferencesModel.fromEntity(preferences);
+    await _sp.setString(_developerPreferences, jsonEncode(model));
   }
 }

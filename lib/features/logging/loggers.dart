@@ -1,8 +1,17 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
+import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
+
+const importLoggers = null;
+
+extension BuildContextX on BuildContext {
+  /// Only works inside [HookWidget]s.
+  void log(LogCall call) => this.read(logNotifierProvider.notifier).log(call);
+}
 
 final loggerProvider = Provider.family<Logger, String>((ref, name) {
   return Logger(name);
@@ -15,6 +24,21 @@ final logNotifierProvider =
   // log.listenToStream(ref.watch(logStreamProvider.stream));
   return log;
 });
+
+extension LogLevelX on LogLevel {
+  Level get level {
+    switch (this) {
+      case LogLevel.debug:
+        return Level.FINE;
+      case LogLevel.info:
+        return Level.INFO;
+      case LogLevel.warning:
+        return Level.WARNING;
+      case LogLevel.error:
+        return Level.SEVERE;
+    }
+  }
+}
 
 class LogNotifier extends StateNotifier<List<LogRecord>> {
   LogNotifier._(this._root) : super([]);
@@ -52,9 +76,11 @@ class LogNotifier extends StateNotifier<List<LogRecord>> {
 }
 
 final rootLoggerProvider = Provider<Logger>((ref) {
-  Logger.root.level = Level.ALL;
+  final level = ref.watch(logLevelProvider);
+  Logger.root.level = level.level;
+  print('making root logger @$level');
   Logger.root.onRecord.listen((record) {
-    // print('${record.level.name}: ${record.time}: ${record.message}');
+    print('${record.level.name}: ${record.time}: ${record.message}');
   });
 
   return Logger.root;

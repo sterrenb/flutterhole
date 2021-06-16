@@ -13,23 +13,24 @@ class PiModel with _$PiModel {
   PiModel._();
 
   factory PiModel({
-    required int id,
-    required String title,
-    required String description,
-    required int primaryColor,
-    required int accentColor,
-    required String baseUrl,
-    required bool useSsl,
-    required String apiPath,
-    required int apiPort,
-    required String apiToken,
-    required bool apiTokenRequired,
-    required bool allowSelfSignedCertificates,
-    required String basicAuthenticationUsername,
-    required String basicAuthenticationPassword,
-    required String proxyUrl,
-    required int proxyPort,
-    required DashboardSettingsModel dashboardSettings,
+    @Default(0) int id,
+    @Default("Pi-hole") String title,
+    @Default("") String description,
+    @Default(4284955319) int primaryColor,
+    @Default(4294945600) int accentColor,
+    @Default("pi.hole") String baseUrl,
+    @Default(false) bool useSsl,
+    @Default("/admin/api.php") String apiPath,
+    @Default(80) int apiPort,
+    @Default("3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c")
+        String apiToken,
+    @Default(true) bool apiTokenRequired,
+    @Default(false) bool allowSelfSignedCertificates,
+    @Default("") String basicAuthenticationUsername,
+    @Default("") String basicAuthenticationPassword,
+    @Default("") String proxyUrl,
+    @Default(8080) int proxyPort,
+    DashboardSettingsModel? dashboardSettings,
   }) = _PiModel;
 
   factory PiModel.fromJson(Map<String, dynamic> json) =>
@@ -62,7 +63,8 @@ class PiModel with _$PiModel {
     description: description,
     primaryColor: Color(primaryColor),
     accentColor: Color(accentColor),
-    dashboardSettings: dashboardSettings.entity,
+    dashboardSettings:
+        (dashboardSettings ?? DashboardSettingsModel.initial()).entity,
     baseUrl: baseUrl,
     useSsl: useSsl,
     apiPath: apiPath,
@@ -115,6 +117,12 @@ class DashboardSettingsModel with _$DashboardSettingsModel {
   factory DashboardSettingsModel.fromJson(Map<String, dynamic> json) =>
       _$DashboardSettingsModelFromJson(json);
 
+  factory DashboardSettingsModel.initial() => DashboardSettingsModel(entries: [
+        ...DashboardID.values
+            .sublist(0, 4)
+            .map((e) => DashboardEntryModel(id: e, enabled: true))
+      ]);
+
   late final DashboardSettings entity =
       DashboardSettings(entries: entries.map((e) => e.entity).toList());
 }
@@ -154,5 +162,32 @@ class UserPreferencesModel with _$UserPreferencesModel {
     temperatureMax: temperatureMax,
     updateFrequency: Duration(seconds: updateFrequency),
     devMode: devMode,
+  );
+}
+
+@freezed
+class DeveloperPreferencesModel with _$DeveloperPreferencesModel {
+  DeveloperPreferencesModel._();
+
+  factory DeveloperPreferencesModel({
+    @Default(false) bool useThemeToggle,
+    @Default(LogLevel.warning) LogLevel logLevel,
+    @Default(false) bool useAggressiveFetching,
+  }) = _DeveloperPreferencesModel;
+
+  factory DeveloperPreferencesModel.fromJson(Map<String, dynamic> json) =>
+      _$DeveloperPreferencesModelFromJson(json);
+
+  factory DeveloperPreferencesModel.fromEntity(DeveloperPreferences entity) =>
+      DeveloperPreferencesModel(
+        useThemeToggle: entity.useThemeToggle,
+        logLevel: entity.logLevel,
+        useAggressiveFetching: entity.useAggressiveFetching,
+      );
+
+  late final DeveloperPreferences entity = DeveloperPreferences(
+    useThemeToggle: useThemeToggle,
+    logLevel: logLevel,
+    useAggressiveFetching: useAggressiveFetching,
   );
 }

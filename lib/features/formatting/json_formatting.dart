@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
+
 num numFromJson(dynamic value) {
   if (value is num) return value;
   if (value is String) return num.parse(value);
-  throw Exception('unknown NumString: $value (${value.runtimeType})');
+  debugPrint('unknown NumString: $value (${value.runtimeType})');
+  return -1;
 }
 
 DateTime piQueriesStringToDateTime(String key) =>

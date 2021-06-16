@@ -1,8 +1,8 @@
 ---
 name: flutterhole_web
-description: A new Flutter application.
+description: FlutterHole with preliminary web support.
 publish_to: none
-version: 1.0.0+1
+version: 6.0.0+2
 environment:
   sdk: '>=2.12.0 <3.0.0'
 dependencies:

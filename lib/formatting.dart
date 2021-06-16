@@ -1,4 +1,3 @@
-import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:intl/intl.dart';
 
@@ -50,19 +49,4 @@ extension DateTimeX on DateTime {
 
   String get hms => _hms.format(this);
   String get jms => _jms.format(this);
-}
-
-extension PiholeApiFailureX on PiholeApiFailure {
-  String get title => when(
-        notFound: () => 'Not found',
-        notAuthenticated: () => 'Not authenticated',
-        invalidResponse: (statusCode) => 'Invalid response',
-        emptyString: () => 'Empty response',
-        emptyList: () => 'Empty response',
-        cancelled: () => 'Cancelled',
-        timeout: () => 'Timeout',
-        unknown: (e) => 'Unknown',
-      );
-
-  String get description => title;
 }

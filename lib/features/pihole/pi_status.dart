@@ -10,7 +10,6 @@ import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/layout/dialog.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
-import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -211,6 +210,8 @@ class PiStatusMessenger extends HookWidget {
             emptyList: () => 'emptyList',
             cancelled: () => 'cancelled',
             timeout: () => 'timeout',
+            hostname: () => 'hostname',
+            general: (message) => message,
             unknown: (e) => 'unknown',
           );
         },
@@ -300,7 +301,7 @@ class PiToggleFloatingActionButton extends HookWidget {
             context.read(piholeStatusNotifierProvider.notifier).enable();
           },
           failure: (failure) => () {
-            showFailureDialog(context, failure.title, failure.description);
+            showErrorDialog(context, failure);
           },
           orElse: () => null,
         ),

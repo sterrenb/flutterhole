@@ -33,13 +33,13 @@ class TemperatureScaleDropdownButton extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final settings = useProvider(settingsNotifierProvider);
-    final selected = useState(settings.preferences.temperatureReading);
+    final selected = useState(settings.userPreferences.temperatureReading);
     return DropdownButton<TemperatureReading>(
         value: selected.value,
         onChanged: (update) {
           if (update != null) {
-            context.read(settingsNotifierProvider.notifier).savePreferences(
-                settings.preferences.copyWith(temperatureReading: update));
+            context.read(settingsNotifierProvider.notifier).saveUserPreferences(
+                settings.userPreferences.copyWith(temperatureReading: update));
           }
         },
         items: TemperatureReading.values
@@ -63,8 +63,8 @@ class TemperatureRangeDialog extends HookWidget {
 
     final settings = useProvider(settingsNotifierProvider);
     final currentRange = useState(RangeValues(
-        settings.preferences.temperatureMin,
-        settings.preferences.temperatureMax));
+        settings.userPreferences.temperatureMin,
+        settings.userPreferences.temperatureMax));
     final option = useProvider(piDetailsOptionProvider).state;
 
     return DialogBase(
@@ -81,7 +81,7 @@ class TemperatureRangeDialog extends HookWidget {
             title: option.fold(
               () => Container(),
               (a) => Text(
-                  '${(a.temperature ?? 0).temperatureInReading(settings.preferences.temperatureReading)}'),
+                  '${(a.temperature ?? 0).temperatureInReading(settings.userPreferences.temperatureReading)}'),
             ),
             trailing: TemperatureScaleDropdownButton(),
           ),
@@ -95,15 +95,15 @@ class TemperatureRangeDialog extends HookWidget {
                   values: currentRange.value,
                   min: 0,
                   max: 100,
-                  divisions: settings.preferences.temperatureReading ==
+                  divisions: settings.userPreferences.temperatureReading ==
                           TemperatureReading.fahrenheit
                       ? 180
                       : 100,
                   labels: RangeLabels(
                     currentRange.value.start.temperatureInReading(
-                        settings.preferences.temperatureReading),
+                        settings.userPreferences.temperatureReading),
                     currentRange.value.end.temperatureInReading(
-                        settings.preferences.temperatureReading),
+                        settings.userPreferences.temperatureReading),
                   ),
                   onChanged: (RangeValues changed) {
                     if ((changed.start - changed.end).abs() >= 2) {
@@ -161,7 +161,7 @@ class TemperatureTile extends HookWidget {
           color: detailsValue.when(
             loading: () => KColors.loading,
             data: (details) => preferencesToTemperatureColor(
-                settings.preferences, piColors, details.temperature),
+                settings.userPreferences, piColors, details.temperature),
             error: (e, s) => KColors.unknown,
           ),
           child: Material(
@@ -170,18 +170,6 @@ class TemperatureTile extends HookWidget {
               onTap: detailsValue.when(
                 loading: () => null,
                 data: (details) => () {
-                  String message;
-                  switch (settings.preferences.temperatureReading) {
-                    case TemperatureReading.celcius:
-                      message = details.temperatureInCelcius;
-                      break;
-                    case TemperatureReading.fahrenheit:
-                      message = details.temperatureInCelcius;
-                      break;
-                    case TemperatureReading.kelvin:
-                      message = details.temperatureInCelcius;
-                  }
-
                   ScaffoldMessenger.of(context).showThemedMessageNow(context,
                       message: 'Temperature: ${[
                         details.temperatureInCelcius,
@@ -198,7 +186,7 @@ class TemperatureTile extends HookWidget {
                 if (selectedRange != null) {
                   context
                       .read(settingsNotifierProvider.notifier)
-                      .savePreferences(settings.preferences.copyWith(
+                      .saveUserPreferences(settings.userPreferences.copyWith(
                         temperatureMin: selectedRange.start,
                         temperatureMax: selectedRange.end,
                       ));
@@ -248,7 +236,7 @@ class TemperatureTile extends HookWidget {
                         error: (e, s) => '???',
                         loading: () => '---',
                         data: (details) {
-                          switch (settings.preferences.temperatureReading) {
+                          switch (settings.userPreferences.temperatureReading) {
                             case TemperatureReading.celcius:
                               return details.temperatureInCelcius;
                             case TemperatureReading.fahrenheit:

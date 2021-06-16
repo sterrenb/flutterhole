@@ -8,6 +8,7 @@ const String token =
     "3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c";
 
 const double kGridSpacing = 4.0;
+const Duration kRefreshDuration = Duration(milliseconds: 200);
 
 final debugPis = <Pi>[
   Pi(
@@ -72,8 +73,10 @@ final debugPis = <Pi>[
 class KUrls {
   KUrls._();
 
-  static const String privacyUrl =
+  static const String privacyRawUrl =
       'https://raw.githubusercontent.com/sterrenburg/flutterhole/master/PRIVACY.md';
+  static const String privacyUrl =
+      'https://github.com/sterrenburg/flutterhole/blob/master/PRIVACY.md';
   static const String playStoreUrl =
       'https://play.google.com/store/apps/details?id=sterrenburg.github.flutterhole';
   static const String githubHomeUrl =
@@ -97,9 +100,11 @@ class KUrls {
 class KIcons {
   KIcons._();
 
-  static const IconData lightTheme = Icons.wb_sunny;
-  static const IconData darkTheme = Icons.wb_cloudy;
-  static const IconData systemTheme = Icons.wb_auto;
+  static const IconData lightTheme = Icons.lightbulb;
+  static const IconData darkTheme = Icons.lightbulb_outline;
+  static const IconData systemTheme = Icons.flashlight_on;
+  static const IconData theme = Icons.wb_sunny;
+  static const IconData toggle = Icons.toggle_on;
 
   static const IconData piholeTitle = Icons.handyman_sharp;
 
@@ -112,12 +117,13 @@ class KIcons {
 
   static const IconData appVersion = Icons.developer_board;
   static const IconData pihole = dot;
+  static const IconData playStore = Icons.storefront;
 
   static const IconData dashboard = Icons.dashboard;
   static const IconData queryLog = Icons.list;
   static const IconData settings = Icons.settings;
   static const IconData about = Icons.favorite;
-  static const IconData info = Icons.favorite;
+  static const IconData info = Icons.info;
   static const IconData github = Icons.favorite;
   static const IconData review = Icons.star;
 
@@ -148,7 +154,7 @@ class KIcons {
   static const IconData share = Icons.share;
   static const IconData donate = Icons.monetization_on;
 
-  static const IconData selectDashboardTiles = Icons.playlist_add_check;
+  static const IconData selectDashboardTiles = Icons.dashboard_customize;
 
   static const IconData dangerZone = Icons.warning;
   static const IconData delete = Icons.delete;

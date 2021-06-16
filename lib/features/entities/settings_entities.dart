@@ -1,14 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:logging/logging.dart';
 
 part 'settings_entities.freezed.dart';
 
 /// TODOs when adding a new tile:
 /// 1. append a memorable value to [DashboardID].
+///   - optionally set it as devOnly in [DevDashboardID].
 /// 2. create the new widget.
 /// 3. add the widget to [DashboardIDX.widget].
 /// 4. add an icon to [DashboardIDI.iconData].
@@ -35,6 +33,14 @@ enum DashboardID {
   TempTile,
 }
 
+extension DevDashboardID on DashboardID {
+  bool get devOnly => [
+        DashboardID.Logs,
+        DashboardID.Versions,
+        DashboardID.TempTile,
+      ].contains(this);
+}
+
 @freezed
 class SettingsState with _$SettingsState {
   SettingsState._();
@@ -42,10 +48,12 @@ class SettingsState with _$SettingsState {
   factory SettingsState({
     required List<Pi> allPis,
     required int activeId,
-    required UserPreferences preferences,
+    required UserPreferences userPreferences,
+    required DeveloperPreferences developerPreferences,
     required bool dev,
   }) = _SettingsState;
 
+  // TODO this can still throw
   late final Pi active = allPis.firstWhere((element) {
     return element.id == activeId;
   });
@@ -72,8 +80,25 @@ class DashboardSettings with _$DashboardSettings {
   factory DashboardSettings.initial() => DashboardSettings(entries: [
         ...DashboardID.values
             .map<DashboardEntry>((e) => DashboardEntry(id: e, enabled: true))
-            .toList()
-            .sublist(0, DashboardID.values.length ~/ 2),
+            .toList(),
+        DashboardEntry(id: DashboardID.SelectTiles, enabled: true),
+      ]);
+
+  late final List<DashboardID> keys = entries.map((e) => e.id).toList();
+}
+
+@freezed
+class DeveloperSettings with _$DeveloperSettings {
+  DeveloperSettings._();
+
+  factory DeveloperSettings({
+    required List<DashboardEntry> entries,
+  }) = _DeveloperSettings;
+
+  factory DeveloperSettings.initial() => DeveloperSettings(entries: [
+        ...DashboardID.values
+            .map<DashboardEntry>((e) => DashboardEntry(id: e, enabled: true))
+            .toList(),
         DashboardEntry(id: DashboardID.SelectTiles, enabled: true),
       ]);
 
@@ -98,15 +123,6 @@ class UserPreferences with _$UserPreferences {
     required Duration updateFrequency,
     required bool devMode,
   }) = _UserPreferences;
-
-  factory UserPreferences.initial() => UserPreferences(
-        themeMode: ThemeMode.system,
-        temperatureReading: TemperatureReading.celcius,
-        temperatureMin: 40.0,
-        temperatureMax: 60.0,
-        updateFrequency: Duration(seconds: 30),
-        devMode: false,
-      );
 }
 
 enum LogLevel {
@@ -116,19 +132,15 @@ enum LogLevel {
   error,
 }
 
-extension LogLevelX on LogLevel {
-  Level get level {
-    switch (this) {
-      case LogLevel.debug:
-        return Level.FINE;
-      case LogLevel.info:
-        return Level.INFO;
-      case LogLevel.warning:
-        return Level.WARNING;
-      case LogLevel.error:
-        return Level.SEVERE;
-    }
-  }
+@freezed
+class DeveloperPreferences with _$DeveloperPreferences {
+  DeveloperPreferences._();
+
+  factory DeveloperPreferences({
+    required bool useThemeToggle,
+    required LogLevel logLevel,
+    required bool useAggressiveFetching,
+  }) = _DeveloperPreferences;
 }
 
 @freezed

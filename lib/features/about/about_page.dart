@@ -8,6 +8,7 @@ import 'package:flutterhole_web/features/about/app_version.dart';
 import 'package:flutterhole_web/features/about/logo.dart';
 import 'package:flutterhole_web/features/browser_helpers.dart';
 import 'package:flutterhole_web/features/layout/list.dart';
+import 'package:flutterhole_web/features/layout/media_queries.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -24,6 +25,7 @@ class AboutPage extends StatelessWidget {
           title: Text('About'),
         ),
         body: ListView(
+          padding: context.clampedBodyPadding,
           physics: const BouncingScrollPhysics(),
           children: [
             SizedBox(height: 10),
@@ -74,8 +76,16 @@ class AboutPage extends StatelessWidget {
               title: Text('Share this app'),
               trailing: Icon(KIcons.push),
               onTap: () {
-                Share.share(
-                    'Check out FlutterHole for Pi-Hole®: ${KUrls.playStoreUrl}');
+                Share.share('${KUrls.playStoreUrl}',
+                    subject: 'FlutterHole for Pi-Hole®');
+              },
+            ),
+            ListTile(
+              leading: Icon(KIcons.playStore),
+              title: Text('Visit the Google Play page'),
+              trailing: Icon(KIcons.push),
+              onTap: () {
+                launchUrl(KUrls.playStoreUrl);
               },
             ),
             ListTile(
@@ -116,11 +126,7 @@ class _DonateTile extends StatelessWidget {
                     Text(
                         'You can donate to the developer to support the development of this app.'),
                     const SizedBox(height: 8.0),
-                    Row(
-                      children: [
-                        Text('Thank you in advance! 💰'),
-                      ],
-                    ),
+                    Text('Thank you in advance! 💰'),
                     const SizedBox(height: 8.0),
                     ListTile(
                       title: Text('Paypal'),

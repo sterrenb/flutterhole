@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/chart_tiles.dart';
 import 'package:flutterhole_web/constants.dart';
+import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/home/details_tiles.dart';
@@ -13,7 +14,8 @@ import 'package:flutterhole_web/features/home/summary_tiles.dart';
 import 'package:flutterhole_web/features/home/temperature_tile.dart';
 import 'package:flutterhole_web/features/home/versions_tile.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
-import 'package:flutterhole_web/features/pihole/active_pi.dart';
+import 'package:flutterhole_web/features/logging/loggers.dart';
+import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/providers.dart';
@@ -139,6 +141,8 @@ class SelectTilesTile extends HookWidget {
   }
 }
 
+typedef Future<dynamic> DashRefreshCallback();
+
 class DashboardGrid extends HookWidget {
   const DashboardGrid({Key? key}) : super(key: key);
 
@@ -148,34 +152,64 @@ class DashboardGrid extends HookWidget {
         useProvider(settingsNotifierProvider).active.dashboardSettings;
     final tiles = dashboardSettings.entries;
     final activePi = useProvider(activePiProvider);
-
-    final mounted = useIsMounted();
+    final useAggressiveFetching = useProvider(useAggressiveFetchingProvider);
 
     final VoidFutureCallBack onRefresh = () async {
-      print('refreshing from DashboardGrid: ${mounted()}');
+      final homeIsActive = context.router.isRouteActive(HomeRoute.name);
+      // print('refreshing from DashboardGrid: $homeIsActive');
+      if (homeIsActive) {
+        await Future.delayed(Duration(milliseconds: 100));
 
-      if (mounted()) {
-        // TODO this causes some initial build issues
-        await Future.delayed(Duration(seconds: 1));
-        context.read(piholeStatusNotifierProvider.notifier).ping();
+        // List futures = [
+        List<DashRefreshCallback> futures = [
+          () => context.read(piholeStatusNotifierProvider.notifier).ping(),
+          () => context.refresh(piSummaryProvider(activePi)),
+          () => context.refresh(queryTypesProvider(activePi)),
+          () => context.refresh(clientActivityOverTimeProvider(activePi)),
+          () => context.refresh(piDetailsProvider(activePi)),
+          () => context.refresh(clientActivityOverTimeProvider(activePi)),
+        ];
 
-        context.refresh(piSummaryProvider(context.read(activePiProvider)));
-        context.refresh(activePiDetailsProvider);
-        context.refresh(activeClientActivityProvider);
+        if (useAggressiveFetching) {
+          final real = futures.map((e) => e()).toList();
+          print('directly awaiting ${real.length} futures');
+          try {
+            await Future.wait(real, eagerError: false);
+          } catch (e) {
+            if (e == PiholeApiFailure.cancelled()) {
+              return;
+            } else {
+              context.log(LogCall(
+                  source: 'dashboard',
+                  level: LogLevel.warning,
+                  message: 'refresh failed',
+                  error: e));
+            }
+          }
+        } else {
+          for (final f in futures) {
+            await Future.delayed(kRefreshDuration);
+            print('waited, now running $f');
+            f();
+          }
+
+          context.log(LogCall(
+              source: 'dashboard',
+              level: LogLevel.debug,
+              message: 'Done refreshing',
+              error: {'licc': 'meee'}));
+        }
       }
     };
 
-    useEffect(() {
+    useAsyncEffect(() {
       print('triggering refresh for new pi ${activePi.title}');
-      // onRefresh();
-    }, [activePi]);
+      onRefresh();
+    }, keys: [activePi]);
 
     return PerHookWidget(
       onTimer: (timer) {
-        // print('tick ${timer.tick}');
-        if (context.router.isRouteActive(HomeRoute.name)) {
-          onRefresh();
-        }
+        onRefresh();
       },
       child: tiles.any((element) => element.enabled)
           ? _DashboardGridBuilder(

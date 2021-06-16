@@ -83,8 +83,8 @@ class PiHoleListBuilder extends HookWidget {
               ],
             ),
           ),
-          title: Text('${pi.title} ${pi.id}'),
-          subtitle: Text(pi.baseApiUrl),
+          title: Text(pi.title),
+          subtitle: Text(pi.dioBase),
           trailing: AnimatedOpacity(
               opacity: pi.id == active.id ? 1 : 0,
               duration: kThemeChangeDuration,

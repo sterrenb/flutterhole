@@ -11,35 +11,49 @@ class PiSummaryModel with _$PiSummaryModel {
 
   factory PiSummaryModel({
     @JsonKey(fromJson: numFromJson, name: 'domains_being_blocked')
-        required num domainsBeingBlocked,
+    @Default(0)
+        num domainsBeingBlocked,
     @JsonKey(fromJson: numFromJson, name: 'dns_queries_today')
-        required num dnsQueriesToday,
+    @Default(0)
+        num dnsQueriesToday,
     @JsonKey(fromJson: numFromJson, name: 'ads_blocked_today')
-        required num adsBlockedToday,
+    @Default(0)
+        num adsBlockedToday,
     @JsonKey(fromJson: numFromJson, name: 'ads_percentage_today')
-        required num adsPercentageToday,
+    @Default(0)
+        num adsPercentageToday,
     @JsonKey(fromJson: numFromJson, name: 'unique_domains')
-        required num uniqueDomains,
+    @Default(0)
+        num uniqueDomains,
     @JsonKey(fromJson: numFromJson, name: 'queries_forwarded')
-        required num queriesForwarded,
+    @Default(0)
+        num queriesForwarded,
     @JsonKey(fromJson: numFromJson, name: 'queries_cached')
-        required num queriesCached,
+    @Default(0)
+        num queriesCached,
     @JsonKey(fromJson: numFromJson, name: 'clients_ever_seen')
-        required num clientsEverSeen,
+    @Default(0)
+        num clientsEverSeen,
     @JsonKey(fromJson: numFromJson, name: 'unique_clients')
-        required num uniqueClients,
+    @Default(0)
+        num uniqueClients,
     @JsonKey(fromJson: numFromJson, name: 'dns_queries_all_types')
-        required num dnsQueriesAllTypes,
+    @Default(0)
+        num dnsQueriesAllTypes,
     @JsonKey(fromJson: numFromJson, name: 'reply_NODATA')
-        required num replyNoData,
+    @Default(0)
+        num replyNoData,
     @JsonKey(fromJson: numFromJson, name: 'reply_NXDOMAIN')
-        required num replyNxDomain,
+    @Default(0)
+        num replyNxDomain,
     @JsonKey(fromJson: numFromJson, name: 'reply_CNAME')
-        required num replyCName,
-    @JsonKey(fromJson: numFromJson, name: 'reply_IP') required num replyIP,
+    @Default(0)
+        num replyCName,
+    @JsonKey(fromJson: numFromJson, name: 'reply_IP') @Default(0) num replyIP,
     @JsonKey(fromJson: numFromJson, name: 'privacy_level')
-        required num privacyLevel,
-    @JsonKey(name: 'status') required String status,
+    @Default(0)
+        num privacyLevel,
+    @JsonKey(name: 'status') @Default('unknown') String status,
   }) = _PiSummaryModel;
 
   factory PiSummaryModel.fromJson(Map<String, dynamic> json) =>

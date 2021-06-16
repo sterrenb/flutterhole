@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:animations/animations.dart';
@@ -9,12 +8,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/formatting/entity_formatting.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dashboard_grid.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/layout/transparent_app_bar.dart';
-import 'package:flutterhole_web/features/models/settings_models.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
+import 'package:flutterhole_web/features/settings/developer_widgets.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/single_pi_grid.dart';
 import 'package:flutterhole_web/features/settings/single_pi_tiles.dart';
@@ -180,6 +180,9 @@ class SinglePiPage extends HookWidget {
       ),
       // StaggeredTile.count(2, 1): Container(),
       StaggeredTile.count(2, 1): SummaryTestTile(pi: pi),
+      StaggeredTile.count(4, 1): Card(
+        child: Text(pi.baseApiUrl),
+      ),
 
       StaggeredTile.count(4, 1):
           const GridSectionHeader('Authentication', KIcons.authentication),
@@ -226,16 +229,8 @@ class SinglePiPage extends HookWidget {
             n.updateAccentColor(selected);
           }),
       StaggeredTile.count(4, 1): SelectTilesTile(),
-      StaggeredTile.count(4, 4): ExpandableCode(
-        (input) {
-          JsonEncoder encoder = new JsonEncoder.withIndent('  ');
-          String pretty = encoder.convert(input);
-          return pretty;
-        }(PiModel.fromEntity(pi).toJson()), // TODO prevent model import
-        tappable: false,
-        expanded: false,
-        onTap: () {},
-      ),
+      StaggeredTile.fit(4):
+          DevOnlyBuilder(child: SelectableCodeCard(pi.toReadableJson())),
       StaggeredTile.count(4, 1): Container(),
     };
 
@@ -267,39 +262,13 @@ class SinglePiPage extends HookWidget {
             onTap: () {
               FocusScope.of(context).unfocus();
             },
-            child: PageGrid(
+            child: PortraitPageGrid(
               pageController: pageController,
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).orientation ==
-                          Orientation.landscape
-                      ? MediaQuery.of(context).size.width / 5
-                      : 0.0),
               tiles: items.keys.toList(),
               children: items.values.toList(),
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class HalfWidthInLandScape extends StatelessWidget {
-  const HalfWidthInLandScape({
-    Key? key,
-    required this.child,
-  }) : super(key: key);
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: MediaQuery.of(context).orientation == Orientation.landscape
-            ? MediaQuery.of(context).size.width / 2
-            : null,
-        child: child,
       ),
     );
   }
@@ -522,10 +491,14 @@ class _QrScanDialogState extends State<_QrScanDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return QRView(
-      key: qrKey,
-      onQRViewCreated: onQRViewCreated,
-    );
+    try {
+      return QRView(
+        key: qrKey,
+        onQRViewCreated: onQRViewCreated,
+      );
+    } catch (e) {
+      return Text('oh no! $e');
+    }
   }
 }
 
