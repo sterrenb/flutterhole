@@ -98,7 +98,8 @@ final Map<DashboardID, StaggeredTile> staggeredTile =
             case DashboardID.Versions:
               return const StaggeredTile.fit(4);
             case DashboardID.Logs:
-              return const StaggeredTile.count(4, 3);
+              return const StaggeredTile.fit(4);
+            // return const StaggeredTile.count(4, 3);
             default:
               return const StaggeredTile.count(4, 1);
           }
@@ -154,6 +155,7 @@ class DashboardGrid extends HookWidget {
     final activePi = useProvider(activePiProvider);
     final useAggressiveFetching = useProvider(useAggressiveFetchingProvider);
 
+    final c = useContext();
     final VoidFutureCallBack onRefresh = () async {
       final homeIsActive = context.router.isRouteActive(HomeRoute.name);
       // print('refreshing from DashboardGrid: $homeIsActive');
@@ -161,13 +163,25 @@ class DashboardGrid extends HookWidget {
         await Future.delayed(Duration(milliseconds: 100));
 
         // List futures = [
+
+        // List<DashRefreshCallback> futures = [
+        //       () async {
+        //     print('done bois');
+        //
+        //     context.log(LogCall(
+        //       source: 'dash',
+        //       level: LogLevel.error,
+        //       message: 'Testing done',
+        //     ));
+        //   }
+        // ];
+        // if (false)
         List<DashRefreshCallback> futures = [
-          () => context.read(piholeStatusNotifierProvider.notifier).ping(),
-          () => context.refresh(piSummaryProvider(activePi)),
+          // () => context.read(piholeStatusNotifierProvider.notifier).ping(),
+          // () => context.refresh(piSummaryProvider(activePi)),
+          () => context.refresh(clientActivityOverTimeProvider(activePi)),
           () => context.refresh(queryTypesProvider(activePi)),
-          () => context.refresh(clientActivityOverTimeProvider(activePi)),
-          () => context.refresh(piDetailsProvider(activePi)),
-          () => context.refresh(clientActivityOverTimeProvider(activePi)),
+          // () => c.refresh(piDetailsProvider(activePi)),
         ];
 
         if (useAggressiveFetching) {
@@ -189,15 +203,14 @@ class DashboardGrid extends HookWidget {
         } else {
           for (final f in futures) {
             await Future.delayed(kRefreshDuration);
-            print('waited, now running $f');
-            f();
+            await f();
           }
 
-          context.log(LogCall(
-              source: 'dashboard',
-              level: LogLevel.debug,
-              message: 'Done refreshing',
-              error: {'licc': 'meee'}));
+          // context.log(LogCall(
+          //     source: 'dashboard',
+          //     level: LogLevel.debug,
+          //     message: 'Done refreshing',
+          //     error: {'licc': 'meee'}));
         }
       }
     };

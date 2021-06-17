@@ -8,7 +8,8 @@ const String token =
     "3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c";
 
 const double kGridSpacing = 4.0;
-const Duration kRefreshDuration = Duration(milliseconds: 200);
+const Duration kRefreshDuration = Duration(milliseconds: 2000);
+final int kLogCacheLength = 3;
 
 final debugPis = <Pi>[
   Pi(

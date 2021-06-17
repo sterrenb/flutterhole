@@ -31,7 +31,6 @@ class __RefreshableQueryItemListState extends State<_RefreshableQueryItemList> {
   final RefreshController controller = RefreshController();
 
   void onRefresh() async {
-    print('refreshing');
     await widget.onRefresh();
     controller.refreshCompleted();
   }

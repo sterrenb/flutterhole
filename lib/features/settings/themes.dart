@@ -31,20 +31,25 @@ class PiTheme extends StatelessWidget {
     final onAccent = pi.accentColor.computeForegroundColor();
     return Theme(
       data: Theme.of(context).copyWith(
-        primaryColor: pi.primaryColor,
-        accentColor: pi.accentColor,
-        toggleableActiveColor: pi.accentColor,
-        buttonColor: onPrimary,
-        colorScheme: c.colorScheme.copyWith(
-          primary: pi.primaryColor,
-          onPrimary: onPrimary,
-          secondary: pi.accentColor,
-          onSecondary: onAccent,
-        ),
-        checkboxTheme: CheckboxThemeData(
-          checkColor: MaterialStateProperty.resolveWith((states) => onAccent),
-        ),
-      ),
+          primaryColor: pi.primaryColor,
+          accentColor: pi.accentColor,
+          toggleableActiveColor: pi.accentColor,
+          buttonColor: onPrimary,
+          colorScheme: c.colorScheme.copyWith(
+            primary: pi.primaryColor,
+            onPrimary: onPrimary,
+            secondary: pi.accentColor,
+            onSecondary: onAccent,
+          ),
+          checkboxTheme: CheckboxThemeData(
+            checkColor: MaterialStateProperty.resolveWith((states) => onAccent),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(
+              foregroundColor:
+                  MaterialStateProperty.resolveWith((states) => pi.accentColor),
+            ),
+          )),
 
       // data: ThemeData.from(
       //     colorScheme: c.colorScheme.copyWith(

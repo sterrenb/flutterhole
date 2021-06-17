@@ -33,7 +33,7 @@ final logLevelProvider = Provider<LogLevel>(
     (ref) => ref.watch(developerPreferencesProvider).logLevel);
 
 final dioProvider = Provider.family<Dio, Pi>((ref, pi) {
-  final logger = ref.watch(logNotifierProvider.notifier);
+  // final logger = ref.watch(logNotifierProvider.notifier);
 
   final dio = Dio(BaseOptions(
     baseUrl: pi.dioBase,
@@ -64,11 +64,11 @@ final dioProvider = Provider.family<Dio, Pi>((ref, pi) {
                   '${mapEntry.key}=${mapEntry.key == 'auth' ? '<auth>' : mapEntry.value}')
               .join("&");
     }
-    logger.log(LogCall(
-      source: 'dio',
-      level: LogLevel.debug,
-      message: '${options.method} ${options.baseUrl}${options.path}$params',
-    ));
+    ref.read(logNotifierProvider.notifier).log(LogCall(
+          source: 'dio',
+          level: LogLevel.debug,
+          message: '${options.method} ${options.baseUrl}${options.path}$params',
+        ));
 
     return handler.next(options);
   }, onResponse: (response, handler) {

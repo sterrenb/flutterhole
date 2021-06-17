@@ -1,23 +1,22 @@
+import 'dart:async';
 import 'dart:ui';
 
-import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/layout/periodic_widget.dart';
 import 'package:flutterhole_web/features/logging/log_widgets.dart';
 import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
-import 'package:flutterhole_web/features/pihole/pihole_builders.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
-import 'package:flutterhole_web/providers.dart';
-import 'package:flutterhole_web/top_level_providers.dart';
+import 'package:flutterhole_web/formatting.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
-
-final _numberFormat = NumberFormat();
+import 'package:logging/logging.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 const double kMinTileHeight = 150.0;
 
@@ -309,7 +308,7 @@ class TopBlockedDomainsTile extends HookWidget {
   }
 }
 
-var index = 0;
+// var index = 0;
 
 class LogsTile extends HookWidget {
   const LogsTile({Key? key}) : super(key: key);
@@ -332,12 +331,272 @@ class LogsTile extends HookWidget {
         //   //     level: LogLevel.warning,
         //   //     message: "Hello my fren: ${index++}"));
         // },
-        child: ListView.builder(
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            final record = list.elementAt(index);
-            return LogRecordRow(record: record);
-          },
+        child: 5 < 6
+            ? LogsLiveList()
+            : ListView.builder(
+                itemCount: list.length,
+                itemBuilder: (context, index) {
+                  final record = list.elementAt(index);
+                  return LogRecordRow(record: record);
+                },
+              ),
+      ),
+    );
+  }
+}
+
+class DifferenceText extends HookWidget {
+  const DifferenceText(this.dateTime, {Key? key}) : super(key: key);
+
+  final DateTime dateTime;
+
+  @override
+  Widget build(BuildContext context) {
+    final now = useState(DateTime.now());
+    final duration = now.value.difference(dateTime);
+    final dif = now.value.subtract(duration);
+    //
+    // useEffect(() {
+    //   return Timer.periodic(Duration(seconds: 2), (timer) {
+    //     print('tick ${timer.tick}');
+    //     now.value = now.value.add(Duration(seconds: 2));
+    //   }).cancel;
+    // }, const []);
+
+    return PeriodicWidget(
+      duration: kRefreshDuration,
+      onTimer: (timer) {
+        now.value = now.value.add(kRefreshDuration);
+      },
+      child: Text(
+        timeago.format(dif),
+        style: Theme.of(context).textTheme.caption,
+      ),
+    );
+  }
+}
+
+extension LevelX on Level {
+  IconData get iconData {
+    switch (this.name) {
+      case 'ALL':
+      case 'FINEST':
+      case 'FINER':
+      case 'FINE':
+      case 'CONFIG':
+        return KIcons.debugLogs;
+      case 'INFO':
+        return KIcons.info;
+      case 'WARNING':
+        return KIcons.logWarning;
+      case 'SEVERE':
+      case 'SHOUT':
+      case 'OFF':
+      default:
+        return KIcons.logError;
+    }
+  }
+
+  Color getColor(PiColorTheme piColors) {
+    switch (this.name) {
+      case 'ALL':
+      case 'FINEST':
+      case 'FINER':
+      case 'FINE':
+      case 'CONFIG':
+        return piColors.debug;
+      case 'INFO':
+        return piColors.info;
+      case 'WARNING':
+        return piColors.warning;
+      case 'SEVERE':
+      case 'SHOUT':
+      case 'OFF':
+      default:
+        return piColors.error;
+    }
+  }
+}
+
+class _LogRecordTile extends StatelessWidget {
+  const _LogRecordTile(
+    this.index,
+    this.record,
+    this.onTap,
+    this.animation, {
+    Key? key,
+  }) : super(key: key);
+
+  final int index;
+  final LogRecord record;
+  final VoidCallback? onTap;
+  final Animation<double> animation;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizeTransition(
+      axis: Axis.vertical,
+      sizeFactor: animation,
+      // axisAlignment: 1.0,
+      child: FadeTransition(
+        opacity: animation,
+        child: ListTile(
+          leading: PiColorsBuilder(
+            builder: (context, piColors, _) => Icon(
+              record.level.iconData,
+              color: record.level.getColor(piColors),
+            ),
+          ),
+          title: CodeCard(record.message),
+          trailing: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                record.time.hms,
+                style: Theme.of(context).textTheme.caption,
+              ),
+              DifferenceText(record.time),
+            ],
+          ),
+          onTap: onTap,
+        ),
+      ),
+    );
+  }
+}
+
+class LogsLiveList extends HookWidget {
+  const LogsLiveList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final List<LogRecord> records = useProvider(logNotifierProvider);
+    final list = useState(records);
+    final k = useState(GlobalKey<AnimatedListState>()).value;
+
+    void deleteLast() {
+      final record = list.value.last;
+      list.value = [...list.value..removeAt(list.value.length - 1)];
+      k.currentState?.removeItem(list.value.length,
+          (context, animation) => _LogRecordTile(0, record, null, animation));
+    }
+
+    void deleteAtIndex(LogRecord record, int index) {
+      list.value = [...list.value..removeAt(index)];
+      k.currentState?.removeItem(
+          index,
+          (context, animation) =>
+              _LogRecordTile(index, record, null, animation));
+    }
+
+    void clearAll() async {
+      final reversed = list.value;
+      for (int index = reversed.length - 1; index >= 0; index--) {
+        final x = 0;
+        final record = reversed.elementAt(x);
+        deleteAtIndex(record, x);
+        await Future.delayed(Duration(milliseconds: 100));
+      }
+    }
+
+    Widget buildClearButton() => Visibility(
+          visible: true,
+          child: TextButton(
+            onPressed: list.value.isEmpty
+                ? null
+                : () {
+                    // deleteFirst();
+                    // deleteLast();
+                    clearAll();
+                  },
+            child: Text('Clear'),
+          ),
+        );
+
+    useEffect(() {
+      if (records.isNotEmpty && records.last != list.value.first) {
+        list.value = [
+          records.last,
+          ...list.value,
+        ];
+        // q.value.add(records.last);
+
+        k.currentState?.insertItem(0);
+
+        if (list.value.length > kLogCacheLength) {
+          deleteLast();
+        }
+      }
+    }, [records]);
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 0.0,
+        // maxHeight: kToolbarHeight * (kLogCacheLength + 3),
+      ),
+      child: Scrollbar(
+        child: ListView(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            ListTile(
+              title: TileTitle('Logs'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  buildClearButton(),
+                  Visibility(
+                    visible: false,
+                    child: TextButton(
+                      child: Text('Add'),
+                      onPressed: () {
+                        context.log(LogCall(
+                            source: 'add',
+                            level: LogLevel.warning,
+                            message: 'yooo ${records.length}'));
+                        // list.value = [
+                        //   LogRecord(
+                        //     Level.FINE,
+                        //     'Testing ${list.value.length}',
+                        //     'mememe',
+                        //   ),
+                        //   ...list.value
+                        // ];
+                        // k.currentState?.insertItem(0);
+                        //
+                        // if (list.value.length > kLogCacheLength) {
+                        //   deleteLast();
+                        // }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            AnimatedList(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              key: k,
+              initialItemCount: list.value.length,
+              itemBuilder: (context, index, animation) {
+                final record = list.value.elementAt(index);
+                return _LogRecordTile(index, record, () {
+                  deleteAtIndex(record, index);
+                }, animation);
+              },
+            ),
+            ListTile(
+              // subtitle: Text('${list.value.length}/${records.length}'),
+              // leading: buildClearButton(),
+              trailing: TextButton(
+                child: Text(
+                    'View ${numberFormat.format(records.length * 59)} logs'),
+                onPressed: () {},
+              ),
+            ),
+          ],
         ),
       ),
     );
