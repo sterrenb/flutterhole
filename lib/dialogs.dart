@@ -378,12 +378,16 @@ class _ErrorDialog extends HookWidget {
                   initiallyExpanded: devMode,
                   title: Row(
                     children: [
-                      Expanded(child: CodeCard(_errorToTitle(e))),
+                      Expanded(
+                          child: CodeCard(
+                        code: _errorToTitle(e),
+                        singleLine: false,
+                      )),
                     ],
                   ),
                   children: [
                     SelectableCodeCard(
-                      (_errorToTitle(e) + '\n\n' + s.toString()),
+                      ((s?.toString() ?? 'No stacktrace found.')),
                     ),
                   ],
                 );

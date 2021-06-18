@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/formatting/entity_formatting.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dashboard_grid.dart';
@@ -243,9 +243,9 @@ class SinglePiPage extends HookWidget {
             controller: pageController,
             title: Text(
               title ?? 'Editing ${initial.title}',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+              // style: TextStyle(
+              //   color: Theme.of(context).colorScheme.onSurface,
+              // ),
             ),
             actions: [
               ElevatedSaveButton(

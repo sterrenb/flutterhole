@@ -27,7 +27,6 @@ class MemoryTile extends HookWidget {
     final detailsCache = useState<PiDetails?>(null);
     useEffect(() {
       detailsValue.whenData((value) {
-        print('updating cache');
         return detailsCache.value = value;
       });
     }, [detailsValue, detailsCache]);
@@ -57,7 +56,10 @@ class MemoryTile extends HookWidget {
                 loading: () => TextTileBottomText(detailsCache.value != null
                     ? memoryUsageToString(detailsCache.value!.memoryUsage)
                     : '-'),
-                error: (error, stacktrace) => ExpandableCode(error.toString()),
+                error: (error, stacktrace) => ExpandableCode(
+                  code: error.toString(),
+                  singleLine: false,
+                ),
               ),
               iconData: KIcons.memoryUsage,
               iconTop: 16.0,

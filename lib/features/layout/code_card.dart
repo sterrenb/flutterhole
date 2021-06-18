@@ -10,15 +10,23 @@ final mono = GoogleFonts.firaMono(
 );
 
 class _CodeText extends StatelessWidget {
-  const _CodeText(this.code, {Key? key}) : super(key: key);
+  const _CodeText({
+    Key? key,
+    required this.code,
+    required this.singleLine,
+  }) : super(key: key);
 
   final String code;
+  final bool singleLine;
 
   @override
   Widget build(BuildContext context) {
     return Text(
       code,
       style: mono,
+      overflow: TextOverflow.fade,
+      maxLines: 10,
+      softWrap: !singleLine,
     );
   }
 }
@@ -38,14 +46,16 @@ class _SelectableCodeText extends StatelessWidget {
 }
 
 class CodeCard extends StatelessWidget {
-  const CodeCard(
-    this.code, {
+  const CodeCard({
     Key? key,
+    required this.code,
     this.onTap,
+    required this.singleLine,
   }) : super(key: key);
 
   final String code;
   final VoidCallback? onTap;
+  final bool singleLine;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +68,10 @@ class CodeCard extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: _CodeText(code),
+          child: _CodeText(
+            code: code,
+            singleLine: singleLine,
+          ),
         ),
       ),
     );
@@ -94,9 +107,10 @@ class SelectableCodeCard extends StatelessWidget {
 }
 
 class ExpandableCode extends HookWidget {
-  const ExpandableCode(
-    this.code, {
+  const ExpandableCode({
     Key? key,
+    required this.code,
+    this.singleLine = false,
     this.tappable = true,
     this.expanded = false,
     this.onTap,
@@ -106,6 +120,7 @@ class ExpandableCode extends HookWidget {
   final bool tappable;
   final bool expanded;
   final VoidCallback? onTap;
+  final bool singleLine;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +141,10 @@ class ExpandableCode extends HookWidget {
           // physics: const BouncingScrollPhysics(),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: _CodeText(code),
+            child: _CodeText(
+              code: code,
+              singleLine: singleLine,
+            ),
           ),
         ),
       ),

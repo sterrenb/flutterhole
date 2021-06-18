@@ -23,7 +23,6 @@ class DashboardSettingsPage extends HookWidget {
     final unselectedList = staggeredTile.keys
         .where((id) => !initial.keys.contains(id))
         .map<DashboardEntry>((id) {
-      print('returning extra tile for $id');
       return DashboardEntry(
         id: id,
         enabled: false,
@@ -35,10 +34,10 @@ class DashboardSettingsPage extends HookWidget {
       ...unselectedList,
     ]);
 
-    print(
-        'available: ${localList.value.length} / ${staggeredTile.keys.length}');
-    print('unselected: ${unselectedList.length}');
-    print(unselectedList.map((e) => e.id));
+    // print(
+    //     'available: ${localList.value.length} / ${staggeredTile.keys.length}');
+    // print('unselected: ${unselectedList.length}');
+    // print(unselectedList.map((e) => e.id));
 
     return ActivePiTheme(
       child: Scaffold(

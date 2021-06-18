@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/chart_tiles.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/home/details_tiles.dart';
@@ -15,10 +14,9 @@ import 'package:flutterhole_web/features/home/temperature_tile.dart';
 import 'package:flutterhole_web/features/home/versions_tile.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
 import 'package:flutterhole_web/features/logging/loggers.dart';
-import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
+import 'package:flutterhole_web/features/settings/developer_widgets.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
-import 'package:flutterhole_web/providers.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -98,8 +96,9 @@ final Map<DashboardID, StaggeredTile> staggeredTile =
             case DashboardID.Versions:
               return const StaggeredTile.fit(4);
             case DashboardID.Logs:
-              return const StaggeredTile.fit(4);
-            // return const StaggeredTile.count(4, 3);
+              return StaggeredTile.extent(
+                  4, (kLogsDashboardCacheLength + 2) * kToolbarHeight);
+            // return const StaggeredTile.fit(4);
             default:
               return const StaggeredTile.count(4, 1);
           }
@@ -123,7 +122,6 @@ class SelectTilesTile extends HookWidget {
           DashboardSettingsRoute(
               initial: context.read(activePiProvider).dashboardSettings,
               onSave: (update) {
-                print('updating');
                 context
                     .read(settingsNotifierProvider.notifier)
                     .updateDashboardEntries(update.entries);
@@ -142,7 +140,7 @@ class SelectTilesTile extends HookWidget {
   }
 }
 
-typedef Future<dynamic> DashRefreshCallback();
+typedef Future<dynamic> DashRefreshCallback(BuildContext context);
 
 class DashboardGrid extends HookWidget {
   const DashboardGrid({Key? key}) : super(key: key);
@@ -154,14 +152,20 @@ class DashboardGrid extends HookWidget {
     final tiles = dashboardSettings.entries;
     final activePi = useProvider(activePiProvider);
     final useAggressiveFetching = useProvider(useAggressiveFetchingProvider);
-
     final c = useContext();
-    final VoidFutureCallBack onRefresh = () async {
+    final Future<void> Function(Pi pi) onRefresh = (Pi pi) async {
       final homeIsActive = context.router.isRouteActive(HomeRoute.name);
       // print('refreshing from DashboardGrid: $homeIsActive');
       if (homeIsActive) {
-        await Future.delayed(Duration(milliseconds: 100));
+        // Future.microtask(
+        //     () => context.read(piholeStatusNotifierProvider.notifier).ping());
+        // final x = Future.microtask(
+        //     () => context.refresh(clientActivityOverTimeProvider(pi)));
 
+        context.read(logNotifierProvider.notifier).log(fakeLogCall());
+        if (5 < 6) return;
+
+        // context.refresh(clientActivityOverTimeProvider(activePi))
         // List futures = [
 
         // List<DashRefreshCallback> futures = [
@@ -176,57 +180,59 @@ class DashboardGrid extends HookWidget {
         //   }
         // ];
         // if (false)
-        List<DashRefreshCallback> futures = [
-          // () => context.read(piholeStatusNotifierProvider.notifier).ping(),
-          // () => context.refresh(piSummaryProvider(activePi)),
-          () => context.refresh(clientActivityOverTimeProvider(activePi)),
-          () => context.refresh(queryTypesProvider(activePi)),
-          // () => c.refresh(piDetailsProvider(activePi)),
-        ];
-
-        if (useAggressiveFetching) {
-          final real = futures.map((e) => e()).toList();
-          print('directly awaiting ${real.length} futures');
-          try {
-            await Future.wait(real, eagerError: false);
-          } catch (e) {
-            if (e == PiholeApiFailure.cancelled()) {
-              return;
-            } else {
-              context.log(LogCall(
-                  source: 'dashboard',
-                  level: LogLevel.warning,
-                  message: 'refresh failed',
-                  error: e));
-            }
-          }
-        } else {
-          for (final f in futures) {
-            await Future.delayed(kRefreshDuration);
-            await f();
-          }
-
-          // context.log(LogCall(
-          //     source: 'dashboard',
-          //     level: LogLevel.debug,
-          //     message: 'Done refreshing',
-          //     error: {'licc': 'meee'}));
-        }
+        // List<DashRefreshCallback> futures = [
+        //   (context) =>
+        //       context.read(piholeStatusNotifierProvider.notifier).ping(),
+        //   // () => context.refresh(piSummaryProvider(activePi)),
+        //   (context) =>
+        //       context.refresh(clientActivityOverTimeProvider(pi)),
+        //   (context) => context.refresh(queryTypesProvider(pi)),
+        //   // () => c.refresh(piDetailsProvider(activePi)),
+        // ];
+        //
+        // if (useAggressiveFetching) {
+        //   final real = futures.map((e) => e(context)).toList();
+        //   print('directly awaiting ${real.length} futures');
+        //   try {
+        //     await Future.wait(real, eagerError: true);
+        //   } catch (e) {
+        //     if (e == PiholeApiFailure.cancelled()) {
+        //       return;
+        //     } else {
+        //       context.log(LogCall(
+        //           source: 'dashboard',
+        //           level: LogLevel.warning,
+        //           message: 'refresh failed',
+        //           error: e));
+        //     }
+        //   }
+        // } else {
+        //   for (final f in futures) {
+        //     await Future.delayed(kRefreshDuration);
+        //     await f(c);
+        //   }
+        //
+        //   // context.log(LogCall(
+        //   //     source: 'dashboard',
+        //   //     level: LogLevel.debug,
+        //   //     message: 'Done refreshing',
+        //   //     error: {'licc': 'meee'}));
+        // }
       }
     };
 
-    useAsyncEffect(() {
-      print('triggering refresh for new pi ${activePi.title}');
-      onRefresh();
-    }, keys: [activePi]);
+    // useAsyncEffect(() {
+    //   print('triggering refresh for new pi ${activePi.baseApiUrl}');
+    //   onRefresh(activePi);
+    // }, keys: [activePi.baseApiUrl]);
 
     return PerHookWidget(
       onTimer: (timer) {
-        onRefresh();
+        onRefresh(activePi);
       },
       child: tiles.any((element) => element.enabled)
           ? _DashboardGridBuilder(
-              onRefresh: onRefresh,
+              onRefresh: () => onRefresh(activePi),
               tiles: dashboardSettings.entries
                   .where((element) => element.enabled)
                   .map<StaggeredTile>((entry) {

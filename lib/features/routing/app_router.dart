@@ -1,10 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutterhole_web/features/about/about_page.dart';
 import 'package:flutterhole_web/features/about/privacy_page.dart';
+import 'package:flutterhole_web/features/logging/logs_page.dart';
 import 'package:flutterhole_web/features/query_log/query_log_page.dart';
-import 'package:flutterhole_web/features/settings/better_settings.dart';
 import 'package:flutterhole_web/features/settings/dashboard_settings_page.dart';
 import 'package:flutterhole_web/features/settings/my_pi_holes_page.dart';
+import 'package:flutterhole_web/features/settings/settings_page.dart';
 import 'package:flutterhole_web/features/settings/single_pi_page.dart';
 import 'package:flutterhole_web/home_page.dart';
 
@@ -13,7 +14,8 @@ import 'package:flutterhole_web/home_page.dart';
   routes: <AutoRoute>[
     AutoRoute(page: HomePage, initial: true),
     AutoRoute(page: QueryLogPage),
-    AutoRoute(page: BetterSettingsPage),
+    AutoRoute(page: SettingsPage),
+    AutoRoute(page: LogsPage, fullscreenDialog: true),
     AutoRoute(page: DashboardSettingsPage),
     AutoRoute(page: MyPiHolesPage),
     AutoRoute(page: SinglePiPage),

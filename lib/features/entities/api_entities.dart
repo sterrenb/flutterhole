@@ -6,67 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'api_entities.freezed.dart';
 
-@freezed
-class Pi with _$Pi {
-  Pi._();
 
-  factory Pi({
-    // annotation
-    required int id,
-    required String title,
-    required String description,
-    required Color primaryColor,
-    required Color accentColor,
-
-    // host details
-    required String baseUrl,
-    required bool useSsl,
-    required String apiPath,
-    required int apiPort,
-
-    // authentication
-    required String apiToken,
-    required bool apiTokenRequired,
-    required bool allowSelfSignedCertificates,
-    required String basicAuthenticationUsername,
-    required String basicAuthenticationPassword,
-
-    // proxy
-    required String proxyUrl,
-    required int proxyPort,
-    required DashboardSettings dashboardSettings,
-  }) = _Pi;
-
-  // factory Pi.initial() => Pi(
-  //       id: 0,
-  //       title: "Pi-hole",
-  //       description: "",
-  //       primaryColor: Colors.deepPurple,
-  //       accentColor: Colors.orangeAccent,
-  //       dashboardSettings: DashboardSettings.initial(),
-  //       baseUrl: "pi.hole",
-  //       useSsl: false,
-  //       apiPath: "/admin/api.php",
-  //       apiPort: 80,
-  //       apiToken:
-  //           "3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c",
-  //       apiTokenRequired: true,
-  //       allowSelfSignedCertificates: false,
-  //       basicAuthenticationUsername: "",
-  //       basicAuthenticationPassword: "",
-  //       proxyUrl: "",
-  //       proxyPort: 8080,
-  //     );
-
-  late final String host = '$baseUrl:$apiPort';
-
-  late final String dioBase =
-      '${useSsl ? 'https://' : 'http://'}$baseUrl${(apiPort == 80 && useSsl == false) || (apiPort == 443 && useSsl == true) ? '' : ':$apiPort'}';
-
-  late final String baseApiUrl = '$dioBase$apiPath';
-
-  late final String adminHome = '/admin';
-}
 
 @freezed
 class PiholeApiFailure with _$PiholeApiFailure {

@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutterhole_web/features/entities/api_entities.dart';
-import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/models/api_models.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
@@ -11,14 +10,26 @@ import 'package:html/parser.dart';
 /// https://github.com/sterrenburg/flutterhole/issues/79
 const String kNoApiTokenNeeded = 'No password set';
 
-class PiholeRepository {
-  const PiholeRepository(this.dio, this.pi);
+class ApiRepositoryParams {
+  const ApiRepositoryParams(
+    this.dio,
+    this.apiPath,
+    this.apiTokenRequired,
+    this.apiToken,
+    this.adminHome,
+  );
 
   final Dio dio;
-  final Pi pi;
-  // final LogCaller log;
+  final String apiPath;
+  final bool apiTokenRequired;
+  final String apiToken;
+  final String adminHome;
+}
 
-  static const String title = 'API';
+class ApiRepository {
+  const ApiRepository(this.params);
+
+  final ApiRepositoryParams params;
 
   Future<dynamic> _get(
     Map<String, dynamic> queryParameters,
@@ -26,8 +37,8 @@ class PiholeRepository {
   ) async {
     // log(LogCall(title, LogLevel.info, 'GET /${queryParameters.keys.first}'));
 
-    final response = await dio.get(
-      pi.apiPath,
+    final response = await params.dio.get(
+      params.apiPath,
       queryParameters: queryParameters,
       cancelToken: cancelToken,
     );
@@ -42,12 +53,12 @@ class PiholeRepository {
     Map<String, dynamic> queryParameters,
     CancelToken cancelToken,
   ) async {
-    if (pi.apiTokenRequired && pi.apiToken.isEmpty) {
+    if (params.apiTokenRequired && params.apiToken.isEmpty) {
       throw PiholeApiFailure.notAuthenticated();
     }
 
-    String apiToken = pi.apiToken;
-    if (pi.apiTokenRequired == false && pi.apiToken.isEmpty) {
+    String apiToken = params.apiToken;
+    if (params.apiTokenRequired == false && params.apiToken.isEmpty) {
       apiToken = kNoApiTokenNeeded;
     }
 
@@ -195,7 +206,7 @@ class PiholeRepository {
 
   Future<PiDetails> fetchPiDetails() async {
     try {
-      final response = await dio.get(pi.adminHome);
+      final response = await params.dio.get(params.adminHome);
       final data = response.data;
 
       if (data is String && data.isEmpty) {

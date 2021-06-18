@@ -29,15 +29,25 @@ class TransparentAppBar extends HookWidget implements PreferredSizeWidget {
     }, [controller]);
 
     return AppBar(
+      iconTheme: IconThemeData(
+          // color: Colors.green,
+          color: Theme.of(context).colorScheme.onSurface),
       elevation: 0.0,
-      leading: BackButton(
-        color: Theme.of(context).colorScheme.onSurface,
-      ),
+      // leading: BackButton(
+      //   color: Theme.of(context).colorScheme.onSurface,
+      // ),
       backgroundColor: Colors.transparent,
-      title: AnimatedOpacity(
-        duration: kThemeAnimationDuration,
-        opacity: scrollPosition.value > 0.4 ? 1 : 0,
-        child: title,
+      title: Theme(
+        data: Theme.of(context).copyWith(
+          appBarTheme: Theme.of(context)
+              .appBarTheme
+              .copyWith(titleTextStyle: TextStyle(color: Colors.green)),
+        ),
+        child: AnimatedOpacity(
+          duration: kThemeAnimationDuration,
+          opacity: scrollPosition.value > 0.4 ? 1 : 0,
+          child: title,
+        ),
       ),
       actions: actions,
     );

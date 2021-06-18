@@ -17,8 +17,8 @@ import 'package:flutterhole_web/features/settings/user_preferences.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class BetterSettingsPage extends HookWidget {
-  const BetterSettingsPage({Key? key}) : super(key: key);
+class SettingsPage extends HookWidget {
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

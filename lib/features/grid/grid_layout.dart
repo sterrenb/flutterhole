@@ -301,7 +301,7 @@ class CenteredGridTileErrorIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: ExpandableCode(error.toString()));
+    return Center(child: ExpandableCode(code: error.toString()));
   }
 }
 

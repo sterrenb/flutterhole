@@ -59,8 +59,6 @@ class TempTile extends HookWidget {
               final x = useProvider(activePiDetailsProvider);
               return InkWell(
                   onTap: () {
-                    print('hi');
-
                     x.maybeWhen(
                       error: (e, s) => showErrorDialog(context, e, s),
                       orElse: () {},

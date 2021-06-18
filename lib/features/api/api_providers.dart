@@ -3,39 +3,25 @@ import 'dart:io';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
-import 'package:flutterhole_web/features/logging/loggers.dart';
-import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// final activePiProvider = StateProvider<Pi>((_) => debugPis.first);
+import 'api_repository.dart';
 
-final activePiProvider = Provider<Pi>((ref) {
-  final settings = ref.watch(settingsNotifierProvider);
-  return settings.active;
-});
+class DioProviderParams {
+  const DioProviderParams(
+    this.baseUrl,
+    this.allowSelfSignedCertificates,
+  );
 
-final allPisProvider = Provider<List<Pi>>((ref) {
-  final settings = ref.watch(settingsNotifierProvider);
-  return settings.allPis;
-});
+  final String baseUrl;
+  final bool allowSelfSignedCertificates;
+}
 
-final debugModeProvider = Provider<bool>((ref) {
-  return false;
-});
-
-final userPreferencesProvider = Provider<UserPreferences>((ref) {
-  final settings = ref.watch(settingsNotifierProvider);
-  return settings.userPreferences;
-});
-
-final logLevelProvider = Provider<LogLevel>(
-    (ref) => ref.watch(developerPreferencesProvider).logLevel);
-
-final oldDioProvider = Provider.family<Dio, Pi>((ref, pi) {
+final dioProvider = Provider.family<Dio, DioProviderParams>((ref, params) {
   // final logger = ref.watch(logNotifierProvider.notifier);
 
   final dio = Dio(BaseOptions(
-    baseUrl: pi.dioBase,
+    baseUrl: params.baseUrl,
     headers: {
       HttpHeaders.userAgentHeader: "flutterhole",
     },
@@ -44,7 +30,7 @@ final oldDioProvider = Provider.family<Dio, Pi>((ref, pi) {
     receiveTimeout: 2000,
   ));
 
-  if (pi.allowSelfSignedCertificates) {
+  if (params.allowSelfSignedCertificates) {
     // https://github.com/flutterchina/dio/issues/32#issuecomment-487401443
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
@@ -63,15 +49,32 @@ final oldDioProvider = Provider.family<Dio, Pi>((ref, pi) {
                   '${mapEntry.key}=${mapEntry.key == 'auth' ? '<auth>' : mapEntry.value}')
               .join("&");
     }
-    ref.read(logNotifierProvider.notifier).log(LogCall(
-          source: 'dio',
-          level: LogLevel.debug,
-          message: '${options.method} ${options.baseUrl}${options.path}$params',
-        ));
+    print('TODO ${options.method} ${options.baseUrl}${options.path}$params');
+    // ref.read(logNotifierProvider.notifier).log(LogCall(
+    //   source: 'dio',
+    //   level: LogLevel.debug,
+    //   message: '${options.method} ${options.baseUrl}${options.path}$params',
+    // ));
 
     return handler.next(options);
   }, onResponse: (response, handler) {
     return handler.next(response);
   }));
   return dio;
+});
+
+final apiRepositoryProvider = Provider.family<ApiRepository, Pi>((ref, pi) {
+  final x = ref.watch(dioProvider(DioProviderParams(
+    pi.baseUrl,
+    pi.allowSelfSignedCertificates,
+  )));
+
+  print('making ApiRepository for ${pi.baseApiUrl}');
+  return ApiRepository(ApiRepositoryParams(
+    x,
+    pi.apiPath,
+    pi.apiTokenRequired,
+    pi.apiToken,
+    pi.adminHome,
+  ));
 });

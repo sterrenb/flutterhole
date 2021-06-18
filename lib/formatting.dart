@@ -39,6 +39,7 @@ final importFormatting = 123;
 final _hm = DateFormat.Hm();
 final _hms = DateFormat.Hms();
 final _jms = DateFormat('H:m:s.S');
+final _full = DateFormat.yMd();
 
 extension DateTimeX on DateTime {
   String beforeAfter(Duration duration) {
@@ -49,4 +50,20 @@ extension DateTimeX on DateTime {
 
   String get hms => _hms.format(this);
   String get jms => _jms.format(this);
+  String get full => _full.format(this);
+}
+
+extension LogLevelX on LogLevel {
+  String get readable {
+    switch (this) {
+      case LogLevel.debug:
+        return 'Debug';
+      case LogLevel.info:
+        return 'Info';
+      case LogLevel.warning:
+        return 'Warning';
+      case LogLevel.error:
+        return 'Error';
+    }
+  }
 }

@@ -1,13 +1,20 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/features/grid/grid_layout.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/layout/media_queries.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
-import 'package:flutterhole_web/features/layout/transparent_app_bar.dart';
+import 'package:flutterhole_web/features/logging/loggers.dart';
+import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:flutterhole_web/formatting.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -21,7 +28,6 @@ extension LogRecordX on LogRecord {
       case 'FINER':
       case 'FINE':
       case 'CONFIG':
-        return KIcons.logDebug;
       case 'WARNING':
         return KIcons.logDebug;
       case 'SEVERE':
@@ -34,116 +40,70 @@ extension LogRecordX on LogRecord {
   }
 }
 
-class LogRecordRow extends HookWidget {
-  const LogRecordRow({
-    Key? key,
-    required this.record,
-  }) : super(key: key);
+extension LevelX on Level {
+  IconData get iconData {
+    switch (this.name) {
+      case 'ALL':
+      case 'FINEST':
+      case 'FINER':
+      case 'FINE':
+      case 'CONFIG':
+        return KIcons.debugLogs;
+      case 'INFO':
+        return KIcons.info;
+      case 'WARNING':
+        return KIcons.logWarning;
+      case 'SEVERE':
+      case 'SHOUT':
+      case 'OFF':
+      default:
+        return KIcons.logError;
+    }
+  }
 
-  final LogRecord record;
+  String get readable {
+    switch (this.name) {
+      case 'ALL':
+      case 'FINEST':
+      case 'FINER':
+      case 'FINE':
+      case 'CONFIG':
+        return 'Debug';
+      case 'INFO':
+        return 'Info';
+      case 'WARNING':
+        return 'Warning';
+      case 'SEVERE':
+      case 'SHOUT':
+      case 'OFF':
+      default:
+        return 'Error';
+    }
+  }
 
-  static const refreshDuration = Duration(seconds: 1);
-
-  @override
-  Widget build(BuildContext context) {
-    final now = useState(DateTime.now());
-    final toggled = useState(false);
-    final duration = now.value.difference(record.time);
-    final dif = now.value.subtract(duration);
-    return Card(
-      key: ValueKey(record),
-      elevation: 0.0,
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            Flexible(
-              flex: 3,
-              child: Tooltip(
-                message: record.time.jms,
-                child: Card(
-                  elevation: 0.0,
-                  color: Colors.transparent,
-                  child: GridInkWell(
-                    onTap: () {
-                      toggled.value = !toggled.value;
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          record.iconData,
-                          // size: 12.0,
-                        ),
-                        SizedBox(width: 8.0),
-                        PeriodicWidget(
-                          duration: refreshDuration,
-                          onTimer: (_) {
-                            now.value = now.value.add(refreshDuration);
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(record.time.hms),
-                              AnimatedSwitcher(
-                                duration: kThemeAnimationDuration,
-                                child: toggled.value
-                                    ? Text('+${duration.inSeconds}S',
-                                        key: const ValueKey('seconds'),
-                                        style:
-                                            Theme.of(context).textTheme.caption)
-                                    : Text(
-                                        timeago.format(dif),
-                                        key: const ValueKey('timeago'),
-                                        style:
-                                            Theme.of(context).textTheme.caption,
-                                        // overflow: TextOverflow.ellipsis,
-                                        // softWrap: true,
-                                        // maxLines: 2,
-                                      ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            // Icon(KIcons.info),
-            Expanded(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  CodeCard(
-                    record.message,
-                    onTap: () {
-                      // Navigator.of(context)
-                      //     .push(MaterialPageRoute<void>(builder: (context) {
-                      //   return LogRecordPage(record);
-                      // }));
-
-                      showModal(
-                        context: context,
-                        builder: (context) {
-                          return LogRecordModal(record);
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  Color getColor(PiColorTheme piColors) {
+    switch (this.name) {
+      case 'ALL':
+      case 'FINEST':
+      case 'FINER':
+      case 'FINE':
+      case 'CONFIG':
+        return piColors.debug;
+      case 'INFO':
+        return piColors.info;
+      case 'WARNING':
+        return piColors.warning;
+      case 'SEVERE':
+      case 'SHOUT':
+      case 'OFF':
+      default:
+        return piColors.error;
+    }
   }
 }
 
-class LogRecordModal extends StatelessWidget {
-  const LogRecordModal(this.record, {Key? key}) : super(key: key);
+class _LogRecordModal extends StatelessWidget {
+  const _LogRecordModal(this.record, {Key? key}) : super(key: key);
 
   final LogRecord record;
 
@@ -151,13 +111,27 @@ class LogRecordModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          width: MediaQuery.of(context).size.width / 2,
-          // height: MediaQuery.of(context).size.height / 3,
+        padding: context.dialogPadding,
+        child: Card(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              ListTile(
+                leading: _RecordIconBuilder(record: record),
+                title: Text('${record.level.readable}'),
+                trailing: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${record.time.hms}',
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                    DifferenceText(record.time),
+                  ],
+                ),
+                // subtitle: Text('name: ${record.loggerName}'),
+              ),
               SelectableCodeCard(
                 record.message,
                 // onTap: () {},
@@ -170,31 +144,181 @@ class LogRecordModal extends StatelessWidget {
   }
 }
 
-class LogRecordPage extends HookWidget {
-  const LogRecordPage(this.record, {Key? key}) : super(key: key);
+class _LogRecordTile extends HookWidget {
+  const _LogRecordTile(
+    this.index,
+    this.record,
+    this.onTap,
+    this.animation,
+    this.singleLine, {
+    Key? key,
+  }) : super(key: key);
+
+  final int index;
+  final LogRecord record;
+  final VoidCallback? onTap;
+  final Animation<double> animation;
+  final bool singleLine;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizeTransition(
+      axis: Axis.vertical,
+      sizeFactor: animation,
+      // axisAlignment: 1.0,
+      child: FadeTransition(
+        opacity: animation,
+        child: ListTile(
+          leading: _RecordIconBuilder(record: record),
+          title: CodeCard(
+            code: record.message,
+            singleLine: singleLine,
+          ),
+          trailing: Column(
+            // mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment:
+                singleLine ? MainAxisAlignment.center : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                record.time.hms,
+                style: Theme.of(context).textTheme.caption,
+              ),
+              DifferenceText(record.time),
+            ],
+          ),
+          // onTap: onTap,
+          onTap: () {
+            showModal(
+              context: context,
+              builder: (context) {
+                return _LogRecordModal(record);
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _RecordIconBuilder extends StatelessWidget {
+  const _RecordIconBuilder({
+    Key? key,
+    required this.record,
+  }) : super(key: key);
 
   final LogRecord record;
 
   @override
   Widget build(BuildContext context) {
-    final controller = useScrollController();
-    return Scaffold(
-      appBar: TransparentAppBar(
-        controller: controller,
-        title: Text('Hi there'),
+    return PiColorsBuilder(
+      builder: (context, piColors, _) => Icon(
+        record.level.iconData,
+        color: record.level.getColor(piColors),
       ),
-      body: Container(
-        color: Colors.green,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            CodeCard(
-              record.message,
-              onTap: () {},
-            ),
-          ],
-        ),
+    );
+  }
+}
+
+class DifferenceText extends HookWidget {
+  const DifferenceText(this.dateTime, {Key? key}) : super(key: key);
+
+  final DateTime dateTime;
+
+  @override
+  Widget build(BuildContext context) {
+    final now = useState(DateTime.now());
+    final duration = now.value.difference(dateTime);
+    final dif = now.value.subtract(duration);
+    //
+    // useEffect(() {
+    //   return Timer.periodic(Duration(seconds: 2), (timer) {
+    //     print('tick ${timer.tick}');
+    //     now.value = now.value.add(Duration(seconds: 2));
+    //   }).cancel;
+    // }, const []);
+
+    return PeriodicWidget(
+      duration: kRefreshDuration,
+      onTimer: (timer) {
+        now.value = now.value.add(kRefreshDuration);
+      },
+      child: Text(
+        timeago.format(dif),
+        style: Theme.of(context).textTheme.caption,
       ),
+    );
+  }
+}
+
+class AnimatedLogsList extends HookWidget {
+  const AnimatedLogsList({
+    Key? key,
+    this.controller,
+    required this.maxLength,
+    required this.shrinkWrap,
+    required this.singleLine,
+  }) : super(key: key);
+
+  final ScrollController? controller;
+  final int maxLength;
+  final bool singleLine;
+  final bool shrinkWrap;
+
+  @override
+  Widget build(BuildContext context) {
+    final List<LogRecord> records = useProvider(logNotifierProvider);
+    final list = useState(records.sublist(0, min(maxLength, records.length)));
+    final k = useState(GlobalKey<AnimatedListState>()).value;
+
+    void deleteAtIndex(LogRecord record, int index) {
+      list.value = [...list.value..removeAt(index)];
+      k.currentState?.removeItem(
+          index,
+          (context, animation) =>
+              _LogRecordTile(index, record, null, animation, singleLine));
+    }
+
+    void deleteLast() {
+      final record = list.value.last;
+      list.value = [...list.value..removeAt(list.value.length - 1)];
+      k.currentState?.removeItem(
+          list.value.length,
+          (context, animation) =>
+              _LogRecordTile(0, record, null, animation, singleLine));
+    }
+
+    useEffect(() {
+      if (records.isEmpty ||
+          (list.value.isNotEmpty && list.value.first == records.last)) {
+        return;
+      }
+
+      list.value = [
+        records.first,
+        ...list.value,
+      ];
+
+      k.currentState?.insertItem(0);
+
+      if (list.value.length > maxLength) {
+        deleteLast();
+      }
+    }, [records]);
+
+    return AnimatedList(
+      controller: controller,
+      shrinkWrap: shrinkWrap,
+      physics: NeverScrollableScrollPhysics(),
+      key: k,
+      initialItemCount: list.value.length,
+      itemBuilder: (context, index, animation) {
+        final record = list.value.elementAt(index);
+        return _LogRecordTile(index, record, () {
+          deleteAtIndex(record, index);
+        }, animation, singleLine);
+      },
     );
   }
 }

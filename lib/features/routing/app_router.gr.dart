@@ -8,15 +8,15 @@ import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/material.dart' as _i2;
 
 import '../../home_page.dart' as _i3;
-import '../about/about_page.dart' as _i9;
-import '../about/privacy_page.dart' as _i10;
-import '../entities/api_entities.dart' as _i12;
-import '../entities/settings_entities.dart' as _i11;
+import '../about/about_page.dart' as _i10;
+import '../about/privacy_page.dart' as _i11;
+import '../entities/settings_entities.dart' as _i12;
+import '../logging/logs_page.dart' as _i6;
 import '../query_log/query_log_page.dart' as _i4;
-import '../settings/better_settings.dart' as _i5;
-import '../settings/dashboard_settings_page.dart' as _i6;
-import '../settings/my_pi_holes_page.dart' as _i7;
-import '../settings/single_pi_page.dart' as _i8;
+import '../settings/dashboard_settings_page.dart' as _i7;
+import '../settings/my_pi_holes_page.dart' as _i8;
+import '../settings/settings_page.dart' as _i5;
+import '../settings/single_pi_page.dart' as _i9;
 
 class AppRouter extends _i1.RootStackRouter {
   AppRouter([_i2.GlobalKey<_i2.NavigatorState>? navigatorKey])
@@ -34,28 +34,34 @@ class AppRouter extends _i1.RootStackRouter {
         builder: (_) {
           return const _i4.QueryLogPage();
         }),
-    BetterSettingsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+    SettingsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return const _i5.BetterSettingsPage();
+          return const _i5.SettingsPage();
         }),
+    LogsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return const _i6.LogsPage();
+        },
+        fullscreenDialog: true),
     DashboardSettingsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (data) {
           final args = data.argsAs<DashboardSettingsRouteArgs>();
-          return _i6.DashboardSettingsPage(
+          return _i7.DashboardSettingsPage(
               key: args.key, initial: args.initial, onSave: args.onSave);
         }),
     MyPiHolesRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return const _i7.MyPiHolesPage();
+          return const _i8.MyPiHolesPage();
         }),
     SinglePiRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (data) {
           final args = data.argsAs<SinglePiRouteArgs>();
-          return _i8.SinglePiPage(
+          return _i9.SinglePiPage(
               initial: args.initial,
               onSave: args.onSave,
               title: args.title,
@@ -64,12 +70,12 @@ class AppRouter extends _i1.RootStackRouter {
     AboutRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return const _i9.AboutPage();
+          return const _i10.AboutPage();
         }),
     PrivacyRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return const _i10.PrivacyPage();
+          return const _i11.PrivacyPage();
         })
   };
 
@@ -77,8 +83,8 @@ class AppRouter extends _i1.RootStackRouter {
   List<_i1.RouteConfig> get routes => [
         _i1.RouteConfig(HomeRoute.name, path: '/'),
         _i1.RouteConfig(QueryLogRoute.name, path: '/query-log-page'),
-        _i1.RouteConfig(BetterSettingsRoute.name,
-            path: '/better-settings-page'),
+        _i1.RouteConfig(SettingsRoute.name, path: '/settings-page'),
+        _i1.RouteConfig(LogsRoute.name, path: '/logs-page'),
         _i1.RouteConfig(DashboardSettingsRoute.name,
             path: '/dashboard-settings-page'),
         _i1.RouteConfig(MyPiHolesRoute.name, path: '/my-pi-holes-page'),
@@ -100,18 +106,24 @@ class QueryLogRoute extends _i1.PageRouteInfo {
   static const String name = 'QueryLogRoute';
 }
 
-class BetterSettingsRoute extends _i1.PageRouteInfo {
-  const BetterSettingsRoute() : super(name, path: '/better-settings-page');
+class SettingsRoute extends _i1.PageRouteInfo {
+  const SettingsRoute() : super(name, path: '/settings-page');
 
-  static const String name = 'BetterSettingsRoute';
+  static const String name = 'SettingsRoute';
+}
+
+class LogsRoute extends _i1.PageRouteInfo {
+  const LogsRoute() : super(name, path: '/logs-page');
+
+  static const String name = 'LogsRoute';
 }
 
 class DashboardSettingsRoute
     extends _i1.PageRouteInfo<DashboardSettingsRouteArgs> {
   DashboardSettingsRoute(
       {_i2.Key? key,
-      required _i11.DashboardSettings initial,
-      required void Function(_i11.DashboardSettings) onSave})
+      required _i12.DashboardSettings initial,
+      required void Function(_i12.DashboardSettings) onSave})
       : super(name,
             path: '/dashboard-settings-page',
             args: DashboardSettingsRouteArgs(
@@ -126,9 +138,9 @@ class DashboardSettingsRouteArgs {
 
   final _i2.Key? key;
 
-  final _i11.DashboardSettings initial;
+  final _i12.DashboardSettings initial;
 
-  final void Function(_i11.DashboardSettings) onSave;
+  final void Function(_i12.DashboardSettings) onSave;
 }
 
 class MyPiHolesRoute extends _i1.PageRouteInfo {

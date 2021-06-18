@@ -12,7 +12,7 @@ Future<bool> launchUrl(String url) async {
   if (await canLaunch(url)) {
     return await launch(url);
   } else {
-    print('nope');
+    print('Cannot launch $url');
     return false;
   }
 }

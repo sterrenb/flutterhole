@@ -69,12 +69,13 @@ extension PiholeApiFailureX on PiholeApiFailure {
     return when(
       notFound: () => 'The requested resource was not found.\n\n$hostHelp',
       notAuthenticated: () =>
-          'Authentication failed.\n\nMake sure you have set the API token.',
+          'Authentication failed.\n\nMake sure you have entered the correct API token.',
       invalidResponse: (statusCode) => 'Invalid response $statusCode.',
       emptyString: () => 'Empty response.\n\n$hostHelp',
       emptyList: () => 'Empty list response.\n\n$hostHelp',
-      cancelled: () => 'Cancelled.',
-      timeout: () => 'Timeout.\n\n$hostHelp',
+      cancelled: () => 'Cancelled by application.',
+      timeout: () =>
+          'A timeout occurred.\n\n$hostHelp\n\nConsider lowering the update frequency.',
       hostname: () =>
           'Hostname not found.\n\nIf your domain is pi.hole, try using the IP address of your Pi-hole instead.',
       general: (message) => message,

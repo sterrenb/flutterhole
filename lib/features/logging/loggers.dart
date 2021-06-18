@@ -18,7 +18,8 @@ final loggerProvider = Provider.family<Logger, String>((ref, name) {
 });
 
 final logNotifierProvider =
-    StateNotifierProvider<LogNotifier, List<LogRecord>>((ref) {
+    StateNotifierProvider.autoDispose<LogNotifier, List<LogRecord>>((ref) {
+  print('making logNotifierProvider');
   final log = LogNotifier.fromStream(
       ref.watch(rootLoggerProvider), ref.watch(logStreamProvider.stream));
   // log.listenToStream(ref.watch(logStreamProvider.stream));
@@ -44,6 +45,7 @@ class LogNotifier extends StateNotifier<List<LogRecord>> {
   LogNotifier._(this._root) : super([]);
 
   factory LogNotifier.fromStream(Logger root, Stream<LogRecord> stream) {
+    print('LogNotifier from $stream');
     final log = LogNotifier._(root);
     log.listenToStream(stream);
     return log;
@@ -60,8 +62,27 @@ class LogNotifier extends StateNotifier<List<LogRecord>> {
   }
 
   void onData(LogRecord record) {
-    // print('got ${record.message}');
-    state = [record, ...state];
+    if (state.isEmpty) {
+      print('adding first log record');
+      state = [record, ...state];
+      return;
+    }
+
+    final x = state.first;
+    final y = record;
+
+    print('---');
+    print('x == y: ${x == y}');
+    print('x.props == y.props: ${x.message == y.message}');
+    print('diff: ${x.time.difference(y.time)}');
+    print(x);
+    print(y);
+    print('---');
+
+    if (state.first != record)
+
+      // if (state.isEmpty || state.isNotEmpty && state.first != record) {
+      state = [record, ...state];
   }
 
   // TODO multiple?
@@ -86,12 +107,8 @@ final rootLoggerProvider = Provider<Logger>((ref) {
   return Logger.root;
 });
 
-final logStreamProvider = StreamProvider<LogRecord>((ref) async* {
+final logStreamProvider = StreamProvider.autoDispose<LogRecord>((ref) async* {
   yield* ref.watch(rootLoggerProvider).onRecord;
-});
-
-final logListProvider = FutureProvider<List<LogRecord>>((ref) async {
-  return ref.watch(rootLoggerProvider).onRecord.toList();
 });
 
 class ProviderLogger extends ProviderObserver {

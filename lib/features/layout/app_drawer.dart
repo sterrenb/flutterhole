@@ -2,7 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
+import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
@@ -81,16 +82,17 @@ class _DrawerTile extends StatelessWidget {
           // print(info.routeName);
 
           if (router.current.name == info.routeName) {
-            print('popping');
             router.pop();
           } else {
             router.pop();
             if (info.routeName == HomeRoute.name) {
-              print('popping to home');
               router.popUntilRoot();
               return;
             }
-            print('pushing ${info.routeName}');
+            context.log(LogCall(
+                source: 'drawer',
+                level: LogLevel.debug,
+                message: 'pushing ${info.routeName}'));
             router.push(info);
           }
 
@@ -227,7 +229,7 @@ class AppDrawer extends StatelessWidget {
           _DrawerTile(
             'Settings',
             KIcons.settings,
-            BetterSettingsRoute(),
+            SettingsRoute(),
           ),
         ],
       ),

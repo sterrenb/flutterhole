@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -31,6 +31,10 @@ class PiTheme extends StatelessWidget {
     final onAccent = pi.accentColor.computeForegroundColor();
     return Theme(
       data: Theme.of(context).copyWith(
+          textTheme: Theme.of(context).textTheme.copyWith(
+                  bodyText1: TextStyle(
+                color: Colors.green,
+              )),
           primaryColor: pi.primaryColor,
           accentColor: pi.accentColor,
           toggleableActiveColor: pi.accentColor,

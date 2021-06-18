@@ -32,7 +32,7 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
         ThemeModeToggle(),
         IconButton(
             onPressed: () async {
-              await context.router.push(BetterSettingsRoute());
+              await context.router.push(SettingsRoute());
             },
             icon: Icon(KIcons.settings)),
       ],

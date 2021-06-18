@@ -6,30 +6,17 @@ import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/pihole_repository.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-// static String getUserExceptionMessage(DioError dioError) {
-// return '${dioError.response.statusCode}: ${dioError.response.statusMessage}.\nURL: ${dioError.request.path}';
-// }
 
 final cancelTokenStateProvider = StateProvider<CancelToken>((ref) {
   return CancelToken();
 });
 
 final oldThemeModeProvider = StateProvider((_) => ThemeMode.system);
-
-// final temperatureReadingProvider = StateProvider<TemperatureReading>(
-//   (_) => TemperatureReading.celcius,
-// );
-//
-// final updateFrequencyProvider = StateProvider((_) => Duration(seconds: 10));
-//
-// final temperatureRangeProvider =
-//     StateProvider<RangeValues>((_) => RangeValues(30, 70));
-// final temperatureRangeEnabledProvider = StateProvider<bool>((_) => true);
 
 final packageInfoProvider =
     FutureProvider<PackageInfo>((_) => PackageInfo.fromPlatform());
@@ -40,14 +27,10 @@ final simplePiProvider = Provider<Pi>((ref) {
 
 final piholeRepositoryProviderFamily =
     Provider.family<PiholeRepository, Pi>((ref, pi) {
-  final dio = ref.watch(dioProvider(pi));
+  final dio = ref.watch(oldDioProvider(pi));
+
   return PiholeRepository(dio, pi);
 });
-
-// final piStatusProvider = Provider<AsyncValue<PiholeStatus>>((ref) {
-//   final piSummary = ref.watch(piSummaryProvider);
-//   return piSummary.whenData((value) => value.status);
-// });
 
 final piSummaryProvider =
     FutureProvider.autoDispose.family<PiSummary, Pi>((ref, pi) async {
@@ -178,11 +161,7 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
   }
 
   Future<void> _perform(Future<PiholeStatus> action) async {
-    // while (state is PiholeStatusLoading) {
-    //   print('just spinning');
-    // }
     state = PiholeStatus.loading();
-    // await Future.delayed(Duration(seconds: 3));
     try {
       final result = await action;
       if (mounted) {

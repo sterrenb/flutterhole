@@ -6,7 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/settings/single_pi_grid.dart';
@@ -295,7 +295,7 @@ class SummaryTestTile extends HookWidget {
           header: DialogHeader(title: 'Success'),
           body: SliverToBoxAdapter(
             child: ExpandableCode(
-              summary.toString(),
+              code: summary.toString(),
               expanded: false,
               tappable: false,
             ),
@@ -304,7 +304,7 @@ class SummaryTestTile extends HookWidget {
         error: (e, s) => DialogListBase(
           header: DialogHeader(title: e.toString()),
           body: SliverToBoxAdapter(
-            child: ExpandableCode(s.toString()),
+            child: ExpandableCode(code: s.toString()),
           ),
         ),
         orElse: () => null,
@@ -359,7 +359,7 @@ class VersionsTestTile extends HookWidget {
           header: DialogHeader(title: 'Success'),
           body: SliverToBoxAdapter(
             child: ExpandableCode(
-              versions.toString(),
+              code: versions.toString(),
               expanded: false,
               tappable: false,
             ),
@@ -368,7 +368,7 @@ class VersionsTestTile extends HookWidget {
         error: (e, s) => DialogListBase(
           header: DialogHeader(title: e.toString()),
           body: SliverToBoxAdapter(
-            child: ExpandableCode(s.toString()),
+            child: ExpandableCode(code: s.toString()),
           ),
         ),
         orElse: () => null,

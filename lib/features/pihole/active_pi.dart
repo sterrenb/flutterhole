@@ -53,6 +53,11 @@ final activePiDetailsProvider =
   return ref.watch(piDetailsProvider(pi));
 });
 
+final activeBaseApiUrlProvider = Provider<String>((ref) {
+  final pi = ref.watch(activePiProvider);
+  return pi.baseApiUrl;
+});
+
 class ActivePiTitle extends HookWidget {
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'settings_entities.freezed.dart';
@@ -39,6 +38,47 @@ extension DevDashboardID on DashboardID {
         DashboardID.Versions,
         DashboardID.TempTile,
       ].contains(this);
+}
+
+@freezed
+class Pi with _$Pi {
+  Pi._();
+
+  factory Pi({
+    // annotation
+    required int id,
+    required String title,
+    required String description,
+    required Color primaryColor,
+    required Color accentColor,
+
+    // host details
+    required String baseUrl,
+    required bool useSsl,
+    required String apiPath,
+    required int apiPort,
+
+    // authentication
+    required String apiToken,
+    required bool apiTokenRequired,
+    required bool allowSelfSignedCertificates,
+    required String basicAuthenticationUsername,
+    required String basicAuthenticationPassword,
+
+    // proxy
+    required String proxyUrl,
+    required int proxyPort,
+    required DashboardSettings dashboardSettings,
+  }) = _Pi;
+
+  late final String host = '$baseUrl:$apiPort';
+
+  late final String dioBase =
+      '${useSsl ? 'https://' : 'http://'}$baseUrl${(apiPort == 80 && useSsl == false) || (apiPort == 443 && useSsl == true) ? '' : ':$apiPort'}';
+
+  late final String baseApiUrl = '$dioBase$apiPath';
+
+  late final String adminHome = '/admin';
 }
 
 @freezed
