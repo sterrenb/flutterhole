@@ -1,43 +1,15 @@
-import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:animations/animations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/formatting/entity_formatting.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/layout/media_queries.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/formatting.dart';
-import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-Future<void> showFailureDialog(
-    BuildContext context, String title, String message) async {
-  await showOkAlertDialog(
-      context: context, title: 'Error: $title', message: message);
-}
-
-Future<void> showActivePiDialog(BuildContext context, Reader read) async {
-  final pi = read(activePiProvider);
-  final allPis = read(allPisProvider);
-  final selectedPi = await showConfirmationDialog(
-    context: context,
-    title: 'Select Pi-hole',
-    initialSelectedActionKey: pi,
-    actions: allPis.map<AlertDialogAction>((dPi) {
-      return AlertDialogAction(
-        key: dPi,
-        label: dPi.title,
-      );
-    }).toList(),
-  );
-
-  if (selectedPi != null) {
-    context.read(settingsNotifierProvider.notifier).activate(selectedPi.id);
-  }
-}
+import 'package:pihole_api/pihole_api.dart';
 
 class DialogHeader extends StatelessWidget {
   const DialogHeader({
@@ -132,6 +104,7 @@ class DialogBase extends StatelessWidget {
     this.onCancel,
     required this.theme,
     this.extraButtons = const [],
+    this.canCancel = true,
   }) : super(key: key);
 
   final Widget header;
@@ -140,6 +113,7 @@ class DialogBase extends StatelessWidget {
   final VoidCallback? onCancel;
   final ThemeData theme;
   final List<Widget> extraButtons;
+  final bool canCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -157,11 +131,38 @@ class DialogBase extends StatelessWidget {
               child: body,
             ),
             const Divider(height: 0),
-            BaseButtonRow(
-              onCancel:
-                  onCancel != null ? onCancel! : () => context.router.pop(),
-              onSelect: onSelect,
-              extraButtons: extraButtons,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ButtonBar(
+                  layoutBehavior: ButtonBarLayoutBehavior.constrained,
+                  children: extraButtons,
+                ),
+                ButtonBar(
+                  layoutBehavior: ButtonBarLayoutBehavior.constrained,
+                  children: [
+                    canCancel
+                        ? TextButton(
+                            child: Text(
+                              MaterialLocalizations.of(context)
+                                  .cancelButtonLabel,
+                            ),
+                            onPressed: onCancel != null
+                                ? onCancel!
+                                : () => context.router.pop(),
+                          )
+                        : Container(),
+                    onSelect != null
+                        ? TextButton(
+                            child: Text(
+                              MaterialLocalizations.of(context).okButtonLabel,
+                            ),
+                            onPressed: onSelect,
+                          )
+                        : Container(),
+                  ],
+                ),
+              ],
             )
           ],
         ),
@@ -271,12 +272,17 @@ class DialogListBase extends StatelessWidget {
           // physics: BouncingScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(child: header),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: const Divider(height: 1),
+              ),
+            ),
             body,
             // SliverToBoxAdapter(
             //     child: Column(
             //   children: [body],
             // )),
-            // const Divider(height: 0),
             // Padding(
             //   padding: const EdgeInsets.symmetric(vertical: 8.0),
             //   child: body,
@@ -303,12 +309,14 @@ class ConfirmationDialog extends StatelessWidget {
     required this.onConfirm,
     required this.body,
     this.onCancel,
+    this.canCancel = true,
   }) : super(key: key);
 
   final String title;
   final VoidCallback onConfirm;
   final VoidCallback? onCancel;
   final Widget body;
+  final bool canCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -323,6 +331,7 @@ class ConfirmationDialog extends StatelessWidget {
         onConfirm();
       },
       onCancel: onCancel,
+      canCancel: canCancel,
       theme: Theme.of(context),
     );
   }
@@ -343,10 +352,10 @@ String _errorToDescription(Object e) {
 }
 
 Future<void> showErrorDialog(BuildContext context, Object e, [StackTrace? s]) =>
-    showModal(context: context, builder: (context) => _ErrorDialog(e, s));
+    showModal(context: context, builder: (context) => ErrorDialog(e, s));
 
-class _ErrorDialog extends HookWidget {
-  const _ErrorDialog(
+class ErrorDialog extends HookWidget {
+  const ErrorDialog(
     this.e,
     this.s, {
     Key? key,
@@ -374,22 +383,25 @@ class _ErrorDialog extends HookWidget {
             HookBuilder(
               builder: (context) {
                 final devMode = useProvider(devModeProvider);
-                return ExpansionTile(
-                  initiallyExpanded: devMode,
-                  title: Row(
+                return Tooltip(
+                  message: 'Expand stacktrace',
+                  child: ExpansionTile(
+                    initiallyExpanded: devMode,
+                    title: Row(
+                      children: [
+                        Expanded(
+                            child: CodeCard(
+                          code: _errorToTitle(e),
+                          singleLine: false,
+                        )),
+                      ],
+                    ),
                     children: [
-                      Expanded(
-                          child: CodeCard(
-                        code: _errorToTitle(e),
-                        singleLine: false,
-                      )),
+                      SelectableCodeCard(
+                        ((s?.toString() ?? 'No stacktrace found.')),
+                      ),
                     ],
                   ),
-                  children: [
-                    SelectableCodeCard(
-                      ((s?.toString() ?? 'No stacktrace found.')),
-                    ),
-                  ],
                 );
               },
             ),

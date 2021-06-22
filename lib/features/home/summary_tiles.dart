@@ -3,16 +3,15 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dash_tiles.dart';
-import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/features/pihole/pihole_builders.dart';
+import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:flutterhole_web/formatting.dart';
-import 'package:flutterhole_web/providers.dart';
-import 'package:flutterhole_web/top_level_providers.dart';
+import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pihole_api/pihole_api.dart';
 
 @Deprecated('fps_hog')
 class TextProgressIndicator extends StatelessWidget {
@@ -72,8 +71,8 @@ class TotalQueriesTile extends HookWidget {
                 loading: () => true,
                 orElse: () => false,
               ),
-              onTap: () => context
-                  .refresh(piSummaryProvider(context.read(activePiProvider))),
+              onTap: () => context.refresh(
+                  piSummaryProvider(context.read(activePiParamsProvider))),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -108,8 +107,8 @@ class QueriesBlockedTile extends HookWidget {
                 loading: () => true,
                 orElse: () => false,
               ),
-              onTap: () => context
-                  .refresh(piSummaryProvider(context.read(activePiProvider))),
+              onTap: () => context.refresh(
+                  piSummaryProvider(context.read(activePiParamsProvider))),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -144,8 +143,8 @@ class PercentBlockedTile extends HookWidget {
                 loading: () => true,
                 orElse: () => false,
               ),
-              onTap: () => context
-                  .refresh(piSummaryProvider(context.read(activePiProvider))),
+              onTap: () => context.refresh(
+                  piSummaryProvider(context.read(activePiParamsProvider))),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -180,8 +179,8 @@ class DomainsOnBlocklistTile extends HookWidget {
                 loading: () => true,
                 orElse: () => false,
               ),
-              onTap: () => context
-                  .refresh(piSummaryProvider(context.read(activePiProvider))),
+              onTap: () => context.refresh(
+                  piSummaryProvider(context.read(activePiParamsProvider))),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

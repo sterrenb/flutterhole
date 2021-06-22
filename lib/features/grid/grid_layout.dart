@@ -130,13 +130,10 @@ class GridIcon extends StatelessWidget {
           Positioned(
               left: 18.0,
               top: 18.0,
-              child: Container(
-                // color: Colors.purple,
-                child: Icon(
-                  subIcon,
-                  size: 24.0,
-                  color: subIconColor,
-                ),
+              child: Icon(
+                subIcon,
+                size: 24.0,
+                color: subIconColor,
               )),
         ],
       );

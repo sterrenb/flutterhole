@@ -9,6 +9,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/layout/list.dart';
 import 'package:flutterhole_web/features/layout/media_queries.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
 import 'package:flutterhole_web/features/logging/loggers.dart';
@@ -144,8 +145,52 @@ class _LogRecordModal extends StatelessWidget {
   }
 }
 
-class _LogRecordTile extends HookWidget {
-  const _LogRecordTile(
+class RecordTile extends StatelessWidget {
+  const RecordTile({
+    Key? key,
+    required this.record,
+    required this.singleLine,
+  }) : super(key: key);
+
+  final LogRecord record;
+  final bool singleLine;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: _RecordIconBuilder(record: record),
+      title: CodeCard(
+        code: record.message,
+        singleLine: singleLine,
+      ),
+      trailing: Column(
+        // mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment:
+            singleLine ? MainAxisAlignment.center : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            record.time.hms,
+            style: Theme.of(context).textTheme.caption,
+          ),
+          DifferenceText(record.time),
+        ],
+      ),
+      // onTap: onTap,
+      onTap: () {
+        showModal(
+          context: context,
+          builder: (context) {
+            return _LogRecordModal(record);
+          },
+        );
+      },
+    );
+  }
+}
+
+class AnimatedRecordTile extends HookWidget {
+  const AnimatedRecordTile(
     this.index,
     this.record,
     this.onTap,
@@ -162,43 +207,9 @@ class _LogRecordTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizeTransition(
-      axis: Axis.vertical,
-      sizeFactor: animation,
-      // axisAlignment: 1.0,
-      child: FadeTransition(
-        opacity: animation,
-        child: ListTile(
-          leading: _RecordIconBuilder(record: record),
-          title: CodeCard(
-            code: record.message,
-            singleLine: singleLine,
-          ),
-          trailing: Column(
-            // mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment:
-                singleLine ? MainAxisAlignment.center : MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                record.time.hms,
-                style: Theme.of(context).textTheme.caption,
-              ),
-              DifferenceText(record.time),
-            ],
-          ),
-          // onTap: onTap,
-          onTap: () {
-            showModal(
-              context: context,
-              builder: (context) {
-                return _LogRecordModal(record);
-              },
-            );
-          },
-        ),
-      ),
-    );
+    return AnimatedListTile(
+        animation: animation,
+        child: RecordTile(record: record, singleLine: singleLine));
   }
 }
 
@@ -222,9 +233,11 @@ class _RecordIconBuilder extends StatelessWidget {
 }
 
 class DifferenceText extends HookWidget {
-  const DifferenceText(this.dateTime, {Key? key}) : super(key: key);
+  const DifferenceText(this.dateTime, {Key? key, this.textStyle})
+      : super(key: key);
 
   final DateTime dateTime;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -246,7 +259,39 @@ class DifferenceText extends HookWidget {
       },
       child: Text(
         timeago.format(dif),
-        style: Theme.of(context).textTheme.caption,
+        style: textStyle ?? Theme.of(context).textTheme.caption,
+      ),
+    );
+  }
+}
+
+class LogsListView extends HookWidget {
+  const LogsListView({
+    Key? key,
+    this.controller,
+    this.maxLength,
+    required this.shrinkWrap,
+    required this.singleLine,
+  }) : super(key: key);
+
+  final ScrollController? controller;
+  final int? maxLength;
+  final bool singleLine;
+  final bool shrinkWrap;
+
+  @override
+  Widget build(BuildContext context) {
+    final List<LogRecord> records = useProvider(logNotifierProvider);
+
+    return ListView.builder(
+      controller: controller,
+      shrinkWrap: shrinkWrap,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount:
+          maxLength != null ? min(records.length, maxLength!) : records.length,
+      itemBuilder: (context, index) => RecordTile(
+        record: records.elementAt(index),
+        singleLine: singleLine,
       ),
     );
   }
@@ -277,7 +322,7 @@ class AnimatedLogsList extends HookWidget {
       k.currentState?.removeItem(
           index,
           (context, animation) =>
-              _LogRecordTile(index, record, null, animation, singleLine));
+              AnimatedRecordTile(index, record, null, animation, singleLine));
     }
 
     void deleteLast() {
@@ -286,7 +331,7 @@ class AnimatedLogsList extends HookWidget {
       k.currentState?.removeItem(
           list.value.length,
           (context, animation) =>
-              _LogRecordTile(0, record, null, animation, singleLine));
+              AnimatedRecordTile(0, record, null, animation, singleLine));
     }
 
     useEffect(() {
@@ -310,12 +355,12 @@ class AnimatedLogsList extends HookWidget {
     return AnimatedList(
       controller: controller,
       shrinkWrap: shrinkWrap,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       key: k,
       initialItemCount: list.value.length,
       itemBuilder: (context, index, animation) {
         final record = list.value.elementAt(index);
-        return _LogRecordTile(index, record, () {
+        return AnimatedRecordTile(index, record, () {
           deleteAtIndex(record, index);
         }, animation, singleLine);
       },

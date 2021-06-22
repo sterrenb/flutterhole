@@ -12,6 +12,7 @@ import 'package:flutterhole_web/features/formatting/entity_formatting.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dashboard_grid.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/layout/context_extensions.dart';
 import 'package:flutterhole_web/features/layout/transparent_app_bar.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/developer_widgets.dart';
@@ -19,9 +20,9 @@ import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/single_pi_grid.dart';
 import 'package:flutterhole_web/features/settings/single_pi_tiles.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
-import 'package:flutterhole_web/pihole_repository.dart';
-import 'package:flutterhole_web/providers.dart';
+import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pihole_api/pihole_api.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 final _whitespaceFormatter =
@@ -99,11 +100,12 @@ class SinglePiPage extends HookWidget {
   }) : super(key: key);
 
   static final colors = [
+    ...preselectedColors.reversed.toList(),
+    ...Colors.accents,
+    ...Colors.primaries,
     Color(0xFF341037),
     Color(0xFF8A0A3D),
     Color(0xFFB5171D),
-    ...Colors.primaries,
-    ...Colors.accents,
     Color(0xFFECF0F5),
     Color(0xFF222D32),
     Color(0xFF121212),
@@ -180,9 +182,21 @@ class SinglePiPage extends HookWidget {
       ),
       // StaggeredTile.count(2, 1): Container(),
       StaggeredTile.count(2, 1): SummaryTestTile(pi: pi),
-      StaggeredTile.count(4, 1): Card(
-        child: Text(pi.baseApiUrl),
-      ),
+      StaggeredTile.count(4, 1): Center(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('Base URL: '),
+          Flexible(
+            child: CodeCard(
+              code: pi.baseApiUrl,
+              onTap: () async {
+                await context.openUrl(pi.baseApiUrl);
+              },
+            ),
+          ),
+        ],
+      )),
 
       StaggeredTile.count(4, 1):
           const GridSectionHeader('Authentication', KIcons.authentication),
@@ -198,6 +212,8 @@ class SinglePiPage extends HookWidget {
         },
         pi: pi,
       ),
+      StaggeredTile.count(2, 1): TopItemsTestTile(pi: pi),
+      StaggeredTile.count(2, 1): Card(),
       StaggeredTile.count(2, 2): UseApiKeyCard(
         value: pi.apiTokenRequired,
         onChanged: (value) {
@@ -210,7 +226,7 @@ class SinglePiPage extends HookWidget {
           if (value != null) n.updateAllowSelfSignedCertificates(value);
         },
       ),
-      StaggeredTile.count(2, 1): VersionsTestTile(pi: pi),
+      // StaggeredTile.count(2, 1): Card(),
 
       StaggeredTile.count(4, 1):
           const GridSectionHeader('Customization', KIcons.customization),
@@ -224,7 +240,7 @@ class SinglePiPage extends HookWidget {
       StaggeredTile.count(2, 2): ColorCard(
           title: 'Accent color',
           currentColor: pi.accentColor,
-          colors: colors.reversed.toList(),
+          colors: colors,
           onSelected: (selected) {
             n.updateAccentColor(selected);
           }),
@@ -243,11 +259,12 @@ class SinglePiPage extends HookWidget {
             controller: pageController,
             title: Text(
               title ?? 'Editing ${initial.title}',
-              // style: TextStyle(
-              //   color: Theme.of(context).colorScheme.onSurface,
-              // ),
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyText2!.color),
+              overflow: TextOverflow.fade,
             ),
             actions: [
+              ThemeModeToggle(),
               ElevatedSaveButton(
                 onPressed: hasChanges
                     ? () {
@@ -432,7 +449,7 @@ class QrScanCard extends StatelessWidget {
     };
 
     return Tooltip(
-      message: 'Scan QR code',
+      message: 'Scan API token',
       child: PiGridCard(
         onTap: onTap,
         child: IconButton(
@@ -571,9 +588,9 @@ class ApiTokenCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final show = useState(true);
-    return Card(
-      child: Center(
+    final show = useState(false);
+    return Center(
+      child: Card(
         child: TileTextField(
           // enabled: pi.apiTokenRequired,
           controller: apiTokenController,
@@ -594,6 +611,7 @@ class ApiTokenCard extends HookWidget {
           expands: show.value,
           decoration: InputDecoration(
             suffixIcon: IconButton(
+              tooltip: (!show.value ? 'Enable' : 'Disable') + ' visibility',
               onPressed: () {
                 show.value = !show.value;
               },

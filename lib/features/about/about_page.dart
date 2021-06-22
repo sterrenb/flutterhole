@@ -7,9 +7,11 @@ import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/about/app_version.dart';
 import 'package:flutterhole_web/features/about/logo.dart';
 import 'package:flutterhole_web/features/browser_helpers.dart';
+import 'package:flutterhole_web/features/layout/context_extensions.dart';
 import 'package:flutterhole_web/features/layout/list.dart';
 import 'package:flutterhole_web/features/layout/media_queries.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
+import 'package:flutterhole_web/features/settings/developer_widgets.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:share_plus/share_plus.dart';
@@ -23,6 +25,9 @@ class AboutPage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text('About'),
+          actions: [
+            ThemeModeToggle(),
+          ],
         ),
         body: ListView(
           padding: context.clampedBodyPadding,
@@ -34,7 +39,11 @@ class AboutPage extends StatelessWidget {
                 'FlutterHole for Pi-Hole®',
               ),
               subtitle: Text('Made by Thomas Sterrenburg'),
-              leading: LogoIcon(),
+              trailing: Container(
+                // roughly center the logo with the `licences button`
+                width: 80.0,
+                child: Center(child: LogoIcon()),
+              ),
             ),
             Divider(),
             AppVersionListTile(),
@@ -46,6 +55,20 @@ class AboutPage extends StatelessWidget {
               trailing: Icon(KIcons.push),
               onTap: () {
                 context.router.push(PrivacyRoute());
+              },
+            ),
+            ListTile(
+              leading: Opacity(
+                opacity: context.isLight ? 0.5 : 1.0,
+                child: ThemedLogoImage(
+                  width: 24.0,
+                  height: 24.0,
+                ),
+              ),
+              title: Text('View the introduction'),
+              trailing: Icon(KIcons.push),
+              onTap: () {
+                context.router.push(OnboardingRoute(isInitialPage: false));
               },
             ),
             ListTile(
@@ -121,10 +144,12 @@ class _DonateTile extends StatelessWidget {
               return ConfirmationDialog(
                 title: 'Donate',
                 onConfirm: () {},
+                canCancel: false,
                 body: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                        'You can donate to the developer to support the development of this app.'),
+                        'Your donation supports the development of this free app.'),
                     const SizedBox(height: 8.0),
                     Text('Thank you in advance! 💰'),
                     const SizedBox(height: 8.0),
@@ -143,7 +168,7 @@ class _DonateTile extends StatelessWidget {
                       },
                     ),
                     ListTile(
-                      title: Text('GitHub sponsor'),
+                      title: Text('GitHub'),
                       trailing: Icon(KIcons.push),
                       onTap: () {
                         launchUrl(KUrls.githubSponsor);
@@ -165,22 +190,31 @@ class _StarOnGitHubTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-
     return ListTile(
       leading: Opacity(
-        opacity: isLight ? 0.5 : 1.0,
-        child: Image(
-            width: 24.0,
-            image: AssetImage(
-              isLight
-                  ? 'assets/icons/github_dark.png'
-                  : 'assets/icons/github_light.png',
-            )),
+        opacity: context.isLight ? 0.5 : 1.0,
+        child: GithubImage(width: 24.0),
       ),
       title: Text('Star on GitHub'),
       trailing: Icon(KIcons.push),
       onTap: () => launchUrl(KUrls.githubHomeUrl),
     );
+  }
+}
+
+class GithubImage extends StatelessWidget {
+  const GithubImage({Key? key, this.width}) : super(key: key);
+
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image(
+        width: width,
+        image: AssetImage(
+          context.isLight
+              ? 'assets/icons/github_dark.png'
+              : 'assets/icons/github_light.png',
+        ));
   }
 }

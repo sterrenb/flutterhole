@@ -1,34 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/features/entities/logging_entities.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
-import 'package:flutterhole_web/features/models/settings_models.dart';
 import 'package:flutterhole_web/features/settings/settings_repository.dart';
+import 'package:flutterhole_web/package_providers.dart';
+import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pihole_api/pihole_api.dart';
 
 final settingsNotifierProvider =
     StateNotifierProvider<SettingsNotifier, SettingsState>(
         (ref) => SettingsNotifier(ref.read(settingsRepositoryProvider)));
 
 class SettingsNotifier extends StateNotifier<SettingsState> {
-  SettingsNotifier(this._repository) : super(_initial(_repository));
+  SettingsNotifier(this._repository)
+      : super(SettingsState(
+          allPis: _repository.allPis(),
+          activeId: _repository.activePiId(),
+          userPreferences: _repository.getUserPreferences(),
+        ));
 
   final SettingsRepository _repository;
 
-  // TODO this is pretty janky
-  static SettingsState _initial(SettingsRepository _repository) {
-    final userPreferences = _repository.getUserPreferences();
-    return SettingsState(
-      allPis: _repository.allPis(),
-      activeId: _repository.activePiId(),
-      userPreferences: userPreferences,
-      developerPreferences: _repository.getDeveloperPreferences(),
-      dev: userPreferences.devMode,
-    );
-  }
-
   Future<void> reset() async {
     await _repository.clearAll();
-    state = _initial(_repository);
+    state = SettingsState(
+      allPis: _repository.allPis(),
+      activeId: _repository.activePiId(),
+      userPreferences: _repository.getUserPreferences(),
+    );
   }
 
   Future<void> resetPiHoles() async {
@@ -68,12 +67,6 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(userPreferences: preferences);
   }
 
-  Future<void> saveDeveloperPreferences(
-      DeveloperPreferences preferences) async {
-    await _repository.saveDeveloperPreferences(preferences);
-    state = state.copyWith(developerPreferences: preferences);
-  }
-
   Future<void> saveThemeMode(ThemeMode themeMode) =>
       saveUserPreferences(state.userPreferences.copyWith(themeMode: themeMode));
 
@@ -87,17 +80,16 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   Future<void> toggleDevMode() => saveUserPreferences(
       state.userPreferences.copyWith(devMode: !state.userPreferences.devMode));
 
-  Future<void> toggleUseThemeToggle() => saveDeveloperPreferences(state
-      .developerPreferences
-      .copyWith(useThemeToggle: !state.developerPreferences.useThemeToggle));
+  Future<void> toggleUseThemeToggle() =>
+      saveUserPreferences(state.userPreferences
+          .copyWith(useThemeToggle: !state.userPreferences.useThemeToggle));
 
   Future<void> toggleAggressiveFetching() =>
-      saveDeveloperPreferences(state.developerPreferences.copyWith(
-          useAggressiveFetching:
-              !state.developerPreferences.useAggressiveFetching));
+      saveUserPreferences(state.userPreferences.copyWith(
+          useAggressiveFetching: !state.userPreferences.useAggressiveFetching));
 
-  Future<void> saveLogLevel(LogLevel level) => saveDeveloperPreferences(
-      state.developerPreferences.copyWith(logLevel: level));
+  Future<void> saveLogLevel(LogLevel level) =>
+      saveUserPreferences(state.userPreferences.copyWith(logLevel: level));
 }
 
 final temperatureReadingProvider = Provider<TemperatureReading>((ref) {
@@ -131,19 +123,30 @@ final updateFrequencyProvider = Provider<Duration>((ref) {
   return ref.watch(settingsNotifierProvider).userPreferences.updateFrequency;
 });
 
-final developerPreferencesProvider = Provider<DeveloperPreferences>((ref) {
-  final settings = ref.watch(settingsNotifierProvider);
-
-  // Return the defaults when devMode is off
-  if (settings.userPreferences.devMode == false) {
-    print('returning default DeveloperPreferences');
-    return DeveloperPreferencesModel().entity;
-  }
-  return settings.developerPreferences;
-});
-
 final useAggressiveFetchingProvider = Provider<bool>((ref) {
   final devMode = ref.watch(devModeProvider);
   if (devMode == false) return false;
-  return ref.watch(developerPreferencesProvider).useAggressiveFetching;
+  return ref.watch(userPreferencesProvider).useAggressiveFetching;
+});
+
+final activePiProvider = Provider<Pi>((ref) {
+  final settings = ref.watch(settingsNotifierProvider);
+  return settings.active;
+});
+
+final activePiParamsProvider = Provider<PiholeRepositoryParams>((ref) {
+  final pi = ref.watch(activePiProvider);
+  final dio = ref.watch(newDioProvider(pi));
+
+  return PiholeRepositoryParams(
+    dio: dio,
+    baseUrl: pi.baseUrl,
+    useSsl: pi.useSsl,
+    apiPath: pi.apiPath,
+    apiPort: pi.apiPort,
+    apiTokenRequired: pi.apiTokenRequired,
+    apiToken: pi.apiToken,
+    allowSelfSignedCertificates: pi.allowSelfSignedCertificates,
+    adminHome: pi.adminHome,
+  );
 });

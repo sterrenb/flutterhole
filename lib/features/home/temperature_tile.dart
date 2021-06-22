@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
@@ -6,11 +7,10 @@ import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
-import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:flutterhole_web/formatting.dart';
-import 'package:flutterhole_web/providers.dart';
+import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'dashboard_tiles.dart';
@@ -65,7 +65,8 @@ class TemperatureRangeDialog extends HookWidget {
     final currentRange = useState(RangeValues(
         settings.userPreferences.temperatureMin,
         settings.userPreferences.temperatureMax));
-    final option = useProvider(piDetailsOptionProvider).state;
+    // TODO remove option
+    final option = none(); // useProvider(piDetailsOptionProvider).state;
 
     return DialogBase(
       onSelect: () => pop(currentRange.value),

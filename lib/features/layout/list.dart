@@ -37,6 +37,9 @@ class OverScrollMessage extends HookWidget {
   final Widget child;
   final double threshold;
 
+  static const double min = 0.0;
+  static const double max = 1.0;
+
   @override
   Widget build(BuildContext context) {
     final scrollPosition = useState(1.0);
@@ -53,7 +56,7 @@ class OverScrollMessage extends HookWidget {
       ignoring: true,
       child: AnimatedOpacity(
         duration: kThemeAnimationDuration,
-        opacity: scrollPosition.value <= threshold ? 1.0 : 0.0,
+        opacity: scrollPosition.value <= threshold ? max : min,
         child: Row(
           children: [
             Expanded(
@@ -70,6 +73,31 @@ class OverScrollMessage extends HookWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class AnimatedListTile extends StatelessWidget {
+  const AnimatedListTile({
+    Key? key,
+    required this.animation,
+    required this.child,
+  }) : super(key: key);
+
+  final Animation<double> animation;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final animation1 = animation.drive(CurveTween(curve: Curves.easeInOut));
+    return SizeTransition(
+      axis: Axis.vertical,
+      sizeFactor: animation1,
+      // axisAlignment: 1.0,
+      child: FadeTransition(
+        opacity: animation1,
+        child: child,
       ),
     );
   }

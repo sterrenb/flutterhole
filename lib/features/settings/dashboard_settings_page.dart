@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
-import 'package:flutterhole_web/features/home/dashboard_grid.dart';
+import 'package:flutterhole_web/features/models/settings_models.dart';
 import 'package:flutterhole_web/features/settings/single_pi_page.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
 
@@ -20,13 +20,13 @@ class DashboardSettingsPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unselectedList = staggeredTile.keys
+    final unselectedList = DashboardTileConstraints.defaults.keys
         .where((id) => !initial.keys.contains(id))
         .map<DashboardEntry>((id) {
       return DashboardEntry(
-        id: id,
-        enabled: false,
-      );
+          id: id,
+          enabled: false,
+          constraints: DashboardTileConstraints.defaults[id]!);
     }).toList();
 
     final localList = useState([
@@ -148,43 +148,47 @@ class _SelectTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Divider(height: 0),
-        ListTile(
-          onTap: onTap,
-          title: Text(
-            title,
-            style: TextStyle(
-                color: entry.enabled ? null : Theme.of(context).disabledColor),
-          ),
-          leading: GridIcon(
-            entry.id.iconData,
-            isDark: true,
-          ),
-          trailing: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Tooltip(
-                message: 'Toggle visibility',
-                child: Checkbox(
-                  value: entry.enabled,
-                  onChanged: (_) => onTap(),
+    return ReorderableDelayedDragStartListener(
+      index: index,
+      child: Column(
+        children: [
+          Divider(height: 0),
+          ListTile(
+            onTap: onTap,
+            title: Text(
+              title,
+              style: TextStyle(
+                  color:
+                      entry.enabled ? null : Theme.of(context).disabledColor),
+            ),
+            leading: GridIcon(
+              entry.id.iconData,
+              isDark: true,
+            ),
+            trailing: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Tooltip(
+                  message: 'Toggle visibility',
+                  child: Checkbox(
+                    value: entry.enabled,
+                    onChanged: (_) => onTap(),
+                  ),
                 ),
-              ),
-              ReorderableDragStartListener(
-                index: index,
-                child: IconButton(
-                  onPressed: null,
-                  icon: Icon(Icons.drag_handle),
+                ReorderableDragStartListener(
+                  index: index,
+                  child: IconButton(
+                    onPressed: null,
+                    icon: Icon(Icons.drag_handle),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Divider(height: 0),
-      ],
+          Divider(height: 0),
+        ],
+      ),
     );
   }
 }

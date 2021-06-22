@@ -9,10 +9,10 @@ import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/logging/log_widgets.dart';
 import 'package:flutterhole_web/features/logging/loggers.dart';
-import 'package:flutterhole_web/features/pihole/active_pi.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/developer_widgets.dart';
 import 'package:flutterhole_web/formatting.dart';
+import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 const double kMinTileHeight = 150.0;
@@ -312,13 +312,8 @@ class LogsTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final logs = useProvider(logStreamProvider);
-    final list = useProvider(logNotifierProvider);
-    // final height = useState(kMinTileHeight);
     return GridCard(
       child: Column(
-        // shrinkWrap: true,
-        // physics: NeverScrollableScrollPhysics(),
         children: [
           ListTile(
             title: TileTitle('Logs'),
@@ -331,7 +326,6 @@ class LogsTile extends HookWidget {
             ),
           ),
           ListTile(
-            // subtitle: Text('${list.value.length}/${records.length}'),
             leading: AddLogTextButton(),
             trailing: TextButton(
               child: HookBuilder(

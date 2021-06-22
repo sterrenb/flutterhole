@@ -106,7 +106,6 @@ class _LogoInspectorState extends State<LogoInspector> {
     return AnimatedContainer(
       duration: Duration(seconds: 1),
       decoration: BoxDecoration(
-        // TODO perhaps not white if we make this image a png
         color: _color,
       ),
       curve: Curves.easeInOut,

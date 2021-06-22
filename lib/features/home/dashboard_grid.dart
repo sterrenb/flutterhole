@@ -14,11 +14,14 @@ import 'package:flutterhole_web/features/home/temperature_tile.dart';
 import 'package:flutterhole_web/features/home/versions_tile.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
 import 'package:flutterhole_web/features/logging/loggers.dart';
+import 'package:flutterhole_web/features/models/settings_models.dart';
+import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/developer_widgets.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
-import 'package:flutterhole_web/top_level_providers.dart';
+import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pihole_api/pihole_api.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 extension DashboardIDX on DashboardID {
@@ -60,49 +63,49 @@ extension DashboardIDX on DashboardID {
   }
 }
 
-final Map<DashboardID, StaggeredTile> staggeredTile =
-    DashboardID.values.asMap().map((index, id) => MapEntry(
-        id,
-        (id) {
-          switch (id) {
-            case DashboardID.SelectTiles:
-              return const StaggeredTile.count(4, 1);
-            case DashboardID.TotalQueries:
-              return const StaggeredTile.count(4, 1);
-            case DashboardID.QueriesBlocked:
-              return const StaggeredTile.count(4, 1);
-            case DashboardID.PercentBlocked:
-              return const StaggeredTile.count(4, 1);
-            case DashboardID.DomainsOnBlocklist:
-              return const StaggeredTile.count(4, 1);
-            case DashboardID.QueriesBarChart:
-              return const StaggeredTile.fit(4);
-            case DashboardID.ClientActivityBarChart:
-              return const StaggeredTile.fit(4);
-            case DashboardID.Temperature:
-              return const StaggeredTile.count(2, 2);
-            case DashboardID.Memory:
-              return const StaggeredTile.count(2, 2);
-            case DashboardID.QueryTypes:
-              return const StaggeredTile.count(4, 2);
-            case DashboardID.ForwardDestinations:
-              return const StaggeredTile.count(4, 2);
-            case DashboardID.TopPermittedDomains:
-              return const StaggeredTile.fit(4);
-            case DashboardID.TopBlockedDomains:
-              return const StaggeredTile.fit(4);
-            case DashboardID.Versions:
-              return const StaggeredTile.fit(4);
-            case DashboardID.Versions:
-              return const StaggeredTile.fit(4);
-            case DashboardID.Logs:
-              return StaggeredTile.extent(
-                  4, (kLogsDashboardCacheLength + 2) * kToolbarHeight);
-            // return const StaggeredTile.fit(4);
-            default:
-              return const StaggeredTile.count(4, 1);
-          }
-        }(id)));
+// final Map<DashboardID, StaggeredTile> staggeredTile =
+//     DashboardID.values.asMap().map((index, id) => MapEntry(
+//         id,
+//         (id) {
+//           switch (id) {
+//             case DashboardID.SelectTiles:
+//               return const StaggeredTile.count(4, 1);
+//             case DashboardID.TotalQueries:
+//               return const StaggeredTile.count(4, 1);
+//             case DashboardID.QueriesBlocked:
+//               return const StaggeredTile.count(4, 1);
+//             case DashboardID.PercentBlocked:
+//               return const StaggeredTile.count(4, 1);
+//             case DashboardID.DomainsOnBlocklist:
+//               return const StaggeredTile.count(4, 1);
+//             case DashboardID.QueriesBarChart:
+//               return const StaggeredTile.fit(4);
+//             case DashboardID.ClientActivityBarChart:
+//               return const StaggeredTile.fit(4);
+//             case DashboardID.Temperature:
+//               return const StaggeredTile.count(2, 2);
+//             case DashboardID.Memory:
+//               return const StaggeredTile.count(2, 2);
+//             case DashboardID.QueryTypes:
+//               return const StaggeredTile.count(4, 2);
+//             case DashboardID.ForwardDestinations:
+//               return const StaggeredTile.count(4, 2);
+//             case DashboardID.TopPermittedDomains:
+//               return const StaggeredTile.fit(4);
+//             case DashboardID.TopBlockedDomains:
+//               return const StaggeredTile.fit(4);
+//             case DashboardID.Versions:
+//               return const StaggeredTile.fit(4);
+//             case DashboardID.Versions:
+//               return const StaggeredTile.fit(4);
+//             case DashboardID.Logs:
+//               return StaggeredTile.extent(
+//                   4, (kLogsDashboardCacheLength + 2) * kToolbarHeight);
+//             // return const StaggeredTile.fit(4);
+//             default:
+//               return const StaggeredTile.count(4, 1);
+//           }
+//         }(id)));
 
 class SelectTilesTile extends HookWidget {
   const SelectTilesTile({Key? key}) : super(key: key);
@@ -150,10 +153,10 @@ class DashboardGrid extends HookWidget {
     final dashboardSettings =
         useProvider(settingsNotifierProvider).active.dashboardSettings;
     final tiles = dashboardSettings.entries;
-    final activePi = useProvider(activePiProvider);
+    final activeParams = useProvider(activePiParamsProvider);
     final useAggressiveFetching = useProvider(useAggressiveFetchingProvider);
-    final c = useContext();
-    final Future<void> Function(Pi pi) onRefresh = (Pi pi) async {
+
+    Future<void> onRefresh(PiholeRepositoryParams pi) async {
       final homeIsActive = context.router.isRouteActive(HomeRoute.name);
       // print('refreshing from DashboardGrid: $homeIsActive');
       if (homeIsActive) {
@@ -162,6 +165,8 @@ class DashboardGrid extends HookWidget {
         // final x = Future.microtask(
         //     () => context.refresh(clientActivityOverTimeProvider(pi)));
 
+        context.refresh(clientActivityOverTimeProvider(pi));
+        context.read(piholeStatusNotifierProvider.notifier).ping();
         context.read(logNotifierProvider.notifier).log(fakeLogCall());
         if (5 < 6) return;
 
@@ -219,28 +224,42 @@ class DashboardGrid extends HookWidget {
         //   //     error: {'licc': 'meee'}));
         // }
       }
-    };
+    }
+
+    ;
 
     // useAsyncEffect(() {
     //   print('triggering refresh for new pi ${activePi.baseApiUrl}');
     //   onRefresh(activePi);
     // }, keys: [activePi.baseApiUrl]);
 
+    useAsyncEffect(() {
+      print('triggering initial ping');
+      context.read(piholeStatusNotifierProvider.notifier).ping();
+    }, keys: []);
+
     return PerHookWidget(
       onTimer: (timer) {
-        onRefresh(activePi);
+        onRefresh(activeParams);
       },
       child: tiles.any((element) => element.enabled)
           ? _DashboardGridBuilder(
-              onRefresh: () => onRefresh(activePi),
+              onRefresh: () => onRefresh(activeParams),
               tiles: dashboardSettings.entries
                   .where((element) => element.enabled)
                   .map<StaggeredTile>((entry) {
-                final matchingTile = staggeredTile.containsKey(entry.id)
-                    ? staggeredTile[entry.id]
-                    : null;
+                final matchingTile =
+                    DashboardTileConstraints.defaults.containsKey(entry.id)
+                        ? DashboardTileConstraints.defaults[entry.id]
+                        : null;
 
-                if (matchingTile != null) return matchingTile;
+                if (matchingTile != null) {
+                  return matchingTile.when(
+                    count: (c, m) => StaggeredTile.count(c, m.toDouble()),
+                    extent: (c, m) => StaggeredTile.extent(c, m),
+                    fit: (c) => StaggeredTile.fit(c),
+                  );
+                }
                 return const StaggeredTile.count(4, 1);
               }).toList(),
               children: tiles.where((element) => element.enabled).map((e) {

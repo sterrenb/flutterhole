@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/browser_helpers.dart';
-import 'package:flutterhole_web/features/layout/buttons.dart';
+import 'package:flutterhole_web/features/layout/error_builders.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -42,18 +42,7 @@ class PrivacyPage extends HookWidget {
             loading: () => Center(
               child: CircularProgressIndicator(),
             ),
-            error: (e, s) => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(e.toString()),
-                  const SizedBox(height: 8.0),
-                  TryAgainButton(onTap: () {
-                    context.refresh(_markdownProvider);
-                  }),
-                ],
-              ),
-            ),
+            error: (e, s) => CenteredErrorMessage(e, s),
           ),
         ),
       ),

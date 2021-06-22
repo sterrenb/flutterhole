@@ -2,17 +2,17 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/layout/dialog.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
-import 'package:flutterhole_web/providers.dart';
-import 'package:flutterhole_web/top_level_providers.dart';
+import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pihole_api/pihole_api.dart';
 
 class PiStatusIcon extends HookWidget {
   const PiStatusIcon({
@@ -193,11 +193,11 @@ class PiStatusMessenger extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final PiholeStatus piStatus = useProvider(piholeStatusNotifierProvider);
-    final debugMode = useProvider(debugModeProvider);
+    final debugMode = kDebugMode;
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     useAsyncEffect(() {
       final message = piStatus.when<String?>(
-        loading: () => debugMode ? 'Loading' : null,
+        loading: () => null,
         enabled: () => debugMode ? 'Enabled' : null,
         disabled: () => debugMode ? 'Disabled' : null,
         sleeping: (duration, start) => 'Sleeping',
@@ -290,7 +290,10 @@ class PiToggleFloatingActionButton extends HookWidget {
           sleeping: (duration, _) => 'Wake up',
           orElse: () => null,
         ),
-        onPressed: piStatus.maybeWhen(
+        onPressed: piStatus.when(
+          loading: () => () {
+            context.read(piholeStatusNotifierProvider.notifier).ping();
+          },
           enabled: () => () {
             context.read(piholeStatusNotifierProvider.notifier).disable();
           },
@@ -303,7 +306,6 @@ class PiToggleFloatingActionButton extends HookWidget {
           failure: (failure) => () {
             showErrorDialog(context, failure);
           },
-          orElse: () => null,
         ),
       ),
     );

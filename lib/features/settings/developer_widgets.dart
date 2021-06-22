@@ -4,9 +4,10 @@ import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/features/entities/settings_entities.dart';
+import 'package:flutterhole_web/features/entities/logging_entities.dart';
 import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
+import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final faker = Faker();
@@ -35,7 +36,7 @@ class ThemeModeToggle extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dev = useProvider(developerPreferencesProvider);
+    final dev = useProvider(userPreferencesProvider);
 
     return dev.useThemeToggle == false ? Container() : _ThemeModeToggle();
   }

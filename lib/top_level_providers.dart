@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutterhole_web/features/entities/logging_entities.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
@@ -9,18 +10,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // final activePiProvider = StateProvider<Pi>((_) => debugPis.first);
 
-final activePiProvider = Provider<Pi>((ref) {
-  final settings = ref.watch(settingsNotifierProvider);
-  return settings.active;
-});
+// final activePiProvider = Provider<Pi>((ref) {
+//   final settings = ref.watch(settingsNotifierProvider);
+//   return settings.active;
+// });
 
 final allPisProvider = Provider<List<Pi>>((ref) {
   final settings = ref.watch(settingsNotifierProvider);
   return settings.allPis;
-});
-
-final debugModeProvider = Provider<bool>((ref) {
-  return false;
 });
 
 final userPreferencesProvider = Provider<UserPreferences>((ref) {
@@ -28,8 +25,8 @@ final userPreferencesProvider = Provider<UserPreferences>((ref) {
   return settings.userPreferences;
 });
 
-final logLevelProvider = Provider<LogLevel>(
-    (ref) => ref.watch(developerPreferencesProvider).logLevel);
+final logLevelProvider =
+    Provider<LogLevel>((ref) => ref.watch(userPreferencesProvider).logLevel);
 
 final oldDioProvider = Provider.family<Dio, Pi>((ref, pi) {
   // final logger = ref.watch(logNotifierProvider.notifier);
@@ -66,6 +63,7 @@ final oldDioProvider = Provider.family<Dio, Pi>((ref, pi) {
     ref.read(logNotifierProvider.notifier).log(LogCall(
           source: 'dio',
           level: LogLevel.debug,
+          // message: '${options.method} ${options.path}$params',
           message: '${options.method} ${options.baseUrl}${options.path}$params',
         ));
 

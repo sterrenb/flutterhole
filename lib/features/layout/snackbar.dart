@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+const importSnackBarExtensions = null;
+
 extension ScaffoldMessengerStateX on ScaffoldMessengerState {
+  /// Clears all SnackBars and shows [snackbar].
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBarNow(
       SnackBar snackBar) {
     clearSnackBars();
@@ -36,8 +39,7 @@ extension ScaffoldMessengerStateX on ScaffoldMessengerState {
     ));
   }
 
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showMessageNow(
-    BuildContext context, {
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showMessageNow({
     required String message,
     Widget? leading,
   }) {
@@ -62,5 +64,3 @@ extension ScaffoldMessengerStateX on ScaffoldMessengerState {
     ));
   }
 }
-
-final importSnackBarMixins = null;

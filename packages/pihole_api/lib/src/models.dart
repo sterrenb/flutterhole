@@ -1,9 +1,10 @@
-import 'package:flutterhole_web/features/entities/api_entities.dart';
-import 'package:flutterhole_web/features/formatting/json_formatting.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'api_models.freezed.dart';
-part 'api_models.g.dart';
+import 'entities.dart';
+import 'formatting.dart';
+
+part 'models.freezed.dart';
+part 'models.g.dart';
 
 @freezed
 class PiSummaryModel with _$PiSummaryModel {
@@ -184,6 +185,7 @@ class QueryItemModel with _$QueryItemModel {
     required String clientName,
     required QueryStatus queryStatus,
     required DnsSecStatus dnsSecStatus,
+    required double delta,
   }) = _QueryItemModel;
 
   factory QueryItemModel.fromList(List<dynamic> list) => QueryItemModel(
@@ -194,7 +196,11 @@ class QueryItemModel with _$QueryItemModel {
         clientName: list.elementAt(3) as String,
         queryStatus: piStringToQueryStatus(list.elementAt(4)),
         dnsSecStatus: piStringToDnsSecStatus(list.elementAt(5)),
+        delta: (double.tryParse(list.elementAt(7)) ?? 0.0) / 10,
       );
+
+  factory QueryItemModel.fromJson(Map<String, dynamic> json) =>
+      _$QueryItemModelFromJson(json);
 
   late final QueryItem entity = QueryItem(
     timestamp: timestamp,
@@ -203,6 +209,7 @@ class QueryItemModel with _$QueryItemModel {
     clientName: clientName,
     queryStatus: queryStatus,
     dnsSecStatus: dnsSecStatus,
+    delta: delta,
   );
 }
 

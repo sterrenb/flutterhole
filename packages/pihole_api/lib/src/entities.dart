@@ -1,12 +1,29 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-import 'package:flutterhole_web/features/entities/settings_entities.dart';
+import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'api_entities.freezed.dart';
+part 'entities.freezed.dart';
 
+@freezed
+class PiholeRepositoryParams with _$PiholeRepositoryParams {
+  PiholeRepositoryParams._();
 
+  factory PiholeRepositoryParams({
+    required Dio dio,
+    required String baseUrl,
+    required bool useSsl,
+    required String apiPath,
+    required int apiPort,
+    required bool apiTokenRequired,
+    required String apiToken,
+    required bool allowSelfSignedCertificates,
+    required String adminHome,
+  }) = _PiholeRepositoryParams;
+
+  late final String dioBase =
+      '${useSsl ? 'https://' : 'http://'}$baseUrl${(apiPort == 80 && useSsl == false) || (apiPort == 443 && useSsl == true) ? '' : ':$apiPort'}';
+}
 
 @freezed
 class PiholeApiFailure with _$PiholeApiFailure {
@@ -148,6 +165,7 @@ class QueryItem with _$QueryItem {
     required String clientName,
     required QueryStatus queryStatus,
     required DnsSecStatus dnsSecStatus,
+    required double delta, // milliseconds
   }) = _QueryItem;
 
   late final int pageKey = (timestamp.millisecondsSinceEpoch / 1000).round();
@@ -165,7 +183,8 @@ class TopItems with _$TopItems {
 
 @freezed
 class SleepPiParams with _$SleepPiParams {
-  factory SleepPiParams(Pi pi, Duration duration) = _SleepPiParams;
+  factory SleepPiParams(PiholeRepositoryParams params, Duration duration) =
+      _SleepPiParams;
 }
 
 @freezed

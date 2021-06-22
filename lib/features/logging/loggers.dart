@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutterhole_web/features/entities/settings_entities.dart';
+import 'package:flutterhole_web/features/entities/logging_entities.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
@@ -18,7 +18,7 @@ final loggerProvider = Provider.family<Logger, String>((ref, name) {
 });
 
 final logNotifierProvider =
-    StateNotifierProvider.autoDispose<LogNotifier, List<LogRecord>>((ref) {
+    StateNotifierProvider<LogNotifier, List<LogRecord>>((ref) {
   print('making logNotifierProvider');
   final log = LogNotifier.fromStream(
       ref.watch(rootLoggerProvider), ref.watch(logStreamProvider.stream));
@@ -107,7 +107,7 @@ final rootLoggerProvider = Provider<Logger>((ref) {
   return Logger.root;
 });
 
-final logStreamProvider = StreamProvider.autoDispose<LogRecord>((ref) async* {
+final logStreamProvider = StreamProvider<LogRecord>((ref) async* {
   yield* ref.watch(rootLoggerProvider).onRecord;
 });
 

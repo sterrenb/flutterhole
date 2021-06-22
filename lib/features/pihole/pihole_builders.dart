@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
-import 'package:flutterhole_web/features/pihole/active_pi.dart';
+import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pihole_api/pihole_api.dart';
 
 class ActiveSummaryCacheBuilder extends HookWidget {
   const ActiveSummaryCacheBuilder({

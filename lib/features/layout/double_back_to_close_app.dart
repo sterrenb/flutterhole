@@ -8,9 +8,11 @@ class DoubleBackToCloseApp extends StatefulWidget {
   DoubleBackToCloseApp({
     Key? key,
     required this.child,
+    this.enabled = true,
   }) : super(key: key);
 
   final Widget child;
+  final bool enabled;
 
   @override
   _DoubleBackToCloseAppState createState() => _DoubleBackToCloseAppState();
@@ -34,6 +36,8 @@ class _DoubleBackToCloseAppState extends State<DoubleBackToCloseApp> {
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.enabled) return widget.child;
+
     return WillPopScope(
       onWillPop: () async {
         if (_isDoubleBack || _willHandlePopInternally) {

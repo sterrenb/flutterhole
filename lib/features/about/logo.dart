@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole_web/features/query_log/logo_inspector.dart';
+import 'package:flutterhole_web/features/about/logo_inspector.dart';
+import 'package:flutterhole_web/features/layout/image_builders.dart';
 
 class LogoIcon extends StatelessWidget {
   const LogoIcon({Key? key}) : super(key: key);
@@ -22,6 +23,27 @@ class LogoIcon extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+class ThemedLogoImage extends StatelessWidget {
+  const ThemedLogoImage({
+    Key? key,
+    this.width,
+    this.height,
+  }) : super(key: key);
+
+  final double? width;
+  final double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    return ThemedImage(
+      lightAssetName: 'assets/icons/logo_dark.png',
+      darkAssetName: 'assets/icons/logo.png',
+      width: width,
+      height: height,
     );
   }
 }

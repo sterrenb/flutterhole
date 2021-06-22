@@ -113,6 +113,8 @@ class KIcons {
   static const IconData memoryUsage = Icons.memory;
   static const IconData updateFrequency = Icons.update;
   static const IconData refresh = Icons.refresh;
+  static const IconData top = Icons.keyboard_arrow_up;
+  static const IconData bottom = Icons.keyboard_arrow_down;
 
   static const IconData dot = Icons.brightness_1;
 
@@ -124,6 +126,7 @@ class KIcons {
   static const IconData queryLog = Icons.list;
   static const IconData settings = Icons.settings;
   static const IconData about = Icons.favorite;
+  static const IconData onboarding = Icons.favorite;
   static const IconData info = Icons.info;
   static const IconData github = Icons.favorite;
   static const IconData review = Icons.star;
@@ -147,6 +150,10 @@ class KIcons {
   static const IconData toggleInvisible = Icons.visibility_off;
   static const IconData add = Icons.add;
   static const IconData save = Icons.save;
+  static const IconData filter = Icons.filter_list;
+  static const IconData search = Icons.search;
+  static const IconData cancel = Icons.cancel;
+  static const IconData upperLimit = Icons.upgrade;
 
   static const IconData expand = Icons.keyboard_arrow_down;
   static const IconData shrink = Icons.keyboard_arrow_up;
@@ -172,6 +179,11 @@ class KIcons {
   static const IconData logWarning = Icons.warning;
   static const IconData logError = Icons.error;
   static const IconData unknown = Icons.device_unknown;
+
+  static const IconData forwarded = Icons.check_circle;
+  // static const IconData forwarded = Icons.arrow_circle_up;
+  static const IconData cached = Icons.refresh;
+  static const IconData blocked = Icons.cancel;
 }
 
 class KColors {
@@ -192,7 +204,7 @@ class KColors {
   static const Color timestamp = Colors.amber;
   static const Color link = Colors.blue;
 
-  // static const Color temperatureLow = Color(0xFF005C32);
+  // static const Color temperatureLow = Color(0xFF1B5E20);
   // static const Color temperatureMed = Color(0xFFB1720C);
   // static const Color temperatureHigh = Color(0xFF913225);
 
@@ -210,7 +222,7 @@ class KColors {
   static const Color cached = Colors.blue;
   static const Color code = Color(0xFF303030);
 
-  // static const Color totalQueries = Color(0xFF005C32);
+  // static const Color totalQueries = Color(0xFF1B5E20);
   // static const Color queriesBlocked = Color(0xFF007997);
   // static const Color percentBlocked = Color(0xFFB1720C);
   // static const Color domainsOnBlocklist = Color(0xFF913225);

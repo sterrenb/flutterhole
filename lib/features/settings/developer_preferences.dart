@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/features/entities/settings_entities.dart';
+import 'package:flutterhole_web/features/entities/logging_entities.dart';
 import 'package:flutterhole_web/features/formatting/entity_formatting.dart';
 import 'package:flutterhole_web/features/layout/buttons.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
@@ -36,14 +36,8 @@ class _PreferencesCodeCard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final userPrefs = useProvider(userPreferencesProvider);
-    final devPrefs = useProvider(developerPreferencesProvider);
 
-    final map = {
-      'preferences': {
-        'user': userPrefs.toReadableMap(),
-        'developer': devPrefs.toReadableMap(),
-      }
-    };
+    final map = {'preferences': userPrefs.toReadableMap()};
     return SelectableCodeCard(map.toJsonString());
   }
 }
@@ -53,7 +47,7 @@ class _UseThemeToggleButtonTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final x = useProvider(developerPreferencesProvider);
+    final x = useProvider(userPreferencesProvider);
     return CheckboxListTile(
         title: Text('Use theme toggle'),
         subtitle: Text('Shows a theme toggle on most pages.'),

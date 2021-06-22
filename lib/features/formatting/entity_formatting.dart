@@ -1,18 +1,16 @@
 import 'dart:convert';
 
-import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/models/settings_models.dart';
+import 'package:flutterhole_web/formatting.dart';
+import 'package:pihole_api/pihole_api.dart';
 
 const importEntityFormatting = null;
 
 final JsonEncoder _jsonEncoder = new JsonEncoder.withIndent('  ');
 
-String mapToJsonString(Map<String, dynamic> input) =>
-    _jsonEncoder.convert(input);
-
 extension MapX on Map<String, dynamic> {
-  String toJsonString() => mapToJsonString(this);
+  String toJsonString() => _jsonEncoder.convert(this);
 }
 
 extension PiX on Pi {
@@ -21,16 +19,35 @@ extension PiX on Pi {
     final input = model.toJson();
     // if (input.containsKey('apiToken')) input['apiToken'] = '<token>';
     input.update('apiToken', (value) => '<token>');
-    input.update('dashboardSettings', (value) {
-      if (model.dashboardSettings != null) {
-        return model.dashboardSettings!.toJson()
-          ..update(
-              'entries',
-              (value) => (value as List<DashboardEntryModel>)
-                  .map((e) => e.id.toString().replaceFirst('DashboardID.', ''))
-                  .toList());
-      }
-    });
+    // input.update('dashboardSettings', (value) {
+    //   if (model.dashboardSettings != null) {
+    //     return model.dashboardSettings!.toJson()
+    //       ..update(
+    //           'entries',
+    //           (value) => (value as List<DashboardEntryModel>)
+    //               .map((e) => e.id.toString().replaceFirst('DashboardID.', ''))
+    //               .toList());
+    //   }
+    // });
+    return input.toJsonString();
+  }
+}
+
+extension QueryItemX on QueryItem {
+  String toReadableJson() {
+    final model = QueryItemModel(
+      timestamp: timestamp,
+      queryType: queryType,
+      domain: domain,
+      clientName: clientName,
+      queryStatus: queryStatus,
+      dnsSecStatus: dnsSecStatus,
+      delta: delta,
+    );
+
+    final input = model.toJson();
+    input.update('timestamp', (value) => timestamp.full);
+
     return input.toJsonString();
   }
 }
@@ -42,11 +59,6 @@ extension UserPreferencesX on UserPreferences {
             (value) => value.toString().replaceFirst('TemperatureReading.', ''))
         ..update('themeMode',
             (value) => value.toString().replaceFirst('ThemeMode.', ''));
-}
-
-extension DeveloperPreferencesX on DeveloperPreferences {
-  Map<String, dynamic> toReadableMap() =>
-      DeveloperPreferencesModel.fromEntity(this).toJson();
 }
 
 const String hostHelp = 'Make sure your host details are correct.';

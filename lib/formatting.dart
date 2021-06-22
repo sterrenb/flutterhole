@@ -1,3 +1,4 @@
+import 'package:flutterhole_web/features/entities/logging_entities.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:intl/intl.dart';
 
@@ -39,7 +40,7 @@ final importFormatting = 123;
 final _hm = DateFormat.Hm();
 final _hms = DateFormat.Hms();
 final _jms = DateFormat('H:m:s.S');
-final _full = DateFormat.yMd();
+final _full = DateFormat.yMd().addPattern(_hms.pattern);
 
 extension DateTimeX on DateTime {
   String beforeAfter(Duration duration) {

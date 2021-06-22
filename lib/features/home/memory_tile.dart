@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
-import 'package:flutterhole_web/providers.dart';
-import 'package:flutterhole_web/top_level_providers.dart';
+import 'package:flutterhole_web/features/settings/settings_providers.dart';
+import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pihole_api/pihole_api.dart';
 
 class MemoryTile extends HookWidget {
   const MemoryTile({Key? key}) : super(key: key);
@@ -21,13 +21,13 @@ class MemoryTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pi = useProvider(activePiProvider);
+    final pi = useProvider(activePiParamsProvider);
     final detailsValue = useProvider(piDetailsProvider(pi));
 
     final detailsCache = useState<PiDetails?>(null);
     useEffect(() {
       detailsValue.whenData((value) {
-        return detailsCache.value = value;
+        detailsCache.value = value;
       });
     }, [detailsValue, detailsCache]);
 

@@ -50,7 +50,7 @@ class CodeCard extends StatelessWidget {
     Key? key,
     required this.code,
     this.onTap,
-    required this.singleLine,
+    this.singleLine = false,
   }) : super(key: key);
 
   final String code;

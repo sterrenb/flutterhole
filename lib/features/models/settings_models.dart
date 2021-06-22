@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutterhole_web/features/entities/api_entities.dart';
+import 'package:flutterhole_web/constants.dart';
+import 'package:flutterhole_web/features/entities/logging_entities.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -14,9 +15,9 @@ class PiModel with _$PiModel {
 
   factory PiModel({
     @Default(0) int id,
-    @Default("Pi-hole") String title,
+    @Default("FlutterHole") String title,
     @Default("") String description,
-    @Default(4284955319) int primaryColor,
+    @Default(4294940672) int primaryColor,
     @Default(4294945600) int accentColor,
     @Default("pi.hole") String baseUrl,
     @Default(false) bool useSsl,
@@ -80,12 +81,79 @@ class PiModel with _$PiModel {
 }
 
 @freezed
+class DashboardTileConstraints with _$DashboardTileConstraints {
+  const factory DashboardTileConstraints.count(
+    int crossAxisCount,
+    int mainAxisCount,
+  ) = _Count;
+
+  const factory DashboardTileConstraints.extent(
+    int crossAxisCount,
+    double mainAxisExtent,
+  ) = _Extent;
+
+  const factory DashboardTileConstraints.fit(
+    int crossAxisCount,
+  ) = _Fit;
+
+  factory DashboardTileConstraints.fromJson(Map<String, dynamic> json) =>
+      _$DashboardTileConstraintsFromJson(json);
+
+  static final Map<DashboardID, DashboardTileConstraints> defaults =
+      DashboardID.values.asMap().map((index, id) => MapEntry(
+          id,
+          (id) {
+            switch (id) {
+              case DashboardID.SelectTiles:
+                return const DashboardTileConstraints.count(4, 1);
+              case DashboardID.TotalQueries:
+                return const DashboardTileConstraints.count(4, 1);
+              case DashboardID.QueriesBlocked:
+                return const DashboardTileConstraints.count(4, 1);
+              case DashboardID.PercentBlocked:
+                return const DashboardTileConstraints.count(4, 1);
+              case DashboardID.DomainsOnBlocklist:
+                return const DashboardTileConstraints.count(4, 1);
+              case DashboardID.QueriesBarChart:
+                return const DashboardTileConstraints.fit(4);
+              case DashboardID.ClientActivityBarChart:
+                return const DashboardTileConstraints.fit(4);
+              case DashboardID.Temperature:
+                return const DashboardTileConstraints.count(2, 2);
+              case DashboardID.Memory:
+                return const DashboardTileConstraints.count(2, 2);
+              case DashboardID.QueryTypes:
+                return const DashboardTileConstraints.count(4, 2);
+              case DashboardID.ForwardDestinations:
+                return const DashboardTileConstraints.count(4, 2);
+              case DashboardID.TopPermittedDomains:
+                return const DashboardTileConstraints.fit(4);
+              case DashboardID.TopBlockedDomains:
+                return const DashboardTileConstraints.fit(4);
+              case DashboardID.Versions:
+                return const DashboardTileConstraints.fit(4);
+              case DashboardID.Versions:
+                return const DashboardTileConstraints.fit(4);
+              case DashboardID.Logs:
+                return DashboardTileConstraints.extent(
+                    4, (kLogsDashboardCacheLength + 2) * kToolbarHeight);
+              case DashboardID.TempTile:
+                return const DashboardTileConstraints.count(2, 3);
+
+              default:
+                throw StateError('unsupported DashboardID $id');
+            }
+          }(id)));
+}
+
+@freezed
 class DashboardEntryModel with _$DashboardEntryModel {
   DashboardEntryModel._();
 
   factory DashboardEntryModel({
     required DashboardID id,
     required bool enabled,
+    required DashboardTileConstraints constraints,
   }) = _DashboardEntryModel;
 
   factory DashboardEntryModel.fromJson(Map<String, dynamic> json) =>
@@ -95,9 +163,14 @@ class DashboardEntryModel with _$DashboardEntryModel {
       DashboardEntryModel(
         id: entry.id,
         enabled: entry.enabled,
+        constraints: entry.constraints,
       );
 
-  late final DashboardEntry entity = DashboardEntry(id: id, enabled: enabled);
+  late final DashboardEntry entity = DashboardEntry(
+    id: id,
+    enabled: enabled,
+    constraints: constraints,
+  );
 }
 
 @freezed
@@ -118,9 +191,12 @@ class DashboardSettingsModel with _$DashboardSettingsModel {
       _$DashboardSettingsModelFromJson(json);
 
   factory DashboardSettingsModel.initial() => DashboardSettingsModel(entries: [
-        ...DashboardID.values
-            .sublist(0, 4)
-            .map((e) => DashboardEntryModel(id: e, enabled: true))
+        ...DashboardID.values.sublist(0, 4).map(
+              (e) => DashboardEntryModel(
+                  id: e,
+                  enabled: true,
+                  constraints: DashboardTileConstraints.defaults[e]!),
+            )
       ]);
 
   late final DashboardSettings entity =
@@ -132,12 +208,17 @@ class UserPreferencesModel with _$UserPreferencesModel {
   UserPreferencesModel._();
 
   factory UserPreferencesModel({
-    @Default('ThemeMode.system') String themeMode,
-    @Default('TemperatureReading.celcius') String temperatureReading,
-    @Default(30) double temperatureMin,
-    @Default(70) double temperatureMax,
+    @Default(ThemeMode.system) ThemeMode themeMode,
+    @Default(TemperatureReading.celcius) TemperatureReading temperatureReading,
+    @Default(40) double temperatureMin,
+    @Default(60) double temperatureMax,
     @Default(60) int updateFrequency,
     @Default(false) bool devMode,
+    @Default(false) bool useThemeToggle,
+    @Default(LogLevel.warning) LogLevel logLevel,
+    @Default(false) bool useAggressiveFetching,
+    @Default(100) int queryLogMax,
+    @Default(null) DateTime? lastStartup,
   }) = _UserPreferencesModel;
 
   factory UserPreferencesModel.fromJson(Map<String, dynamic> json) =>
@@ -145,49 +226,30 @@ class UserPreferencesModel with _$UserPreferencesModel {
 
   factory UserPreferencesModel.fromEntity(UserPreferences entity) =>
       UserPreferencesModel(
-        themeMode: entity.themeMode.toString(),
-        temperatureReading: entity.temperatureReading.toString(),
+        themeMode: entity.themeMode,
+        temperatureReading: entity.temperatureReading,
         temperatureMin: entity.temperatureMin,
         temperatureMax: entity.temperatureMax,
         updateFrequency: entity.updateFrequency.inSeconds,
         devMode: entity.devMode,
+        useThemeToggle: entity.useThemeToggle,
+        logLevel: entity.logLevel,
+        useAggressiveFetching: entity.useAggressiveFetching,
+        queryLogMax: entity.queryLogMax,
       );
 
   late final UserPreferences entity = UserPreferences(
-    themeMode: ThemeMode.values
-        .firstWhere((element) => element.toString() == themeMode),
+    themeMode: ThemeMode.values.firstWhere((element) => element == themeMode),
     temperatureReading: TemperatureReading.values
-        .firstWhere((element) => element.toString() == temperatureReading),
+        .firstWhere((element) => element == temperatureReading),
     temperatureMin: temperatureMin,
     temperatureMax: temperatureMax,
     updateFrequency: Duration(seconds: updateFrequency),
     devMode: devMode,
-  );
-}
-
-@freezed
-class DeveloperPreferencesModel with _$DeveloperPreferencesModel {
-  DeveloperPreferencesModel._();
-
-  factory DeveloperPreferencesModel({
-    @Default(false) bool useThemeToggle,
-    @Default(LogLevel.warning) LogLevel logLevel,
-    @Default(false) bool useAggressiveFetching,
-  }) = _DeveloperPreferencesModel;
-
-  factory DeveloperPreferencesModel.fromJson(Map<String, dynamic> json) =>
-      _$DeveloperPreferencesModelFromJson(json);
-
-  factory DeveloperPreferencesModel.fromEntity(DeveloperPreferences entity) =>
-      DeveloperPreferencesModel(
-        useThemeToggle: entity.useThemeToggle,
-        logLevel: entity.logLevel,
-        useAggressiveFetching: entity.useAggressiveFetching,
-      );
-
-  late final DeveloperPreferences entity = DeveloperPreferences(
     useThemeToggle: useThemeToggle,
     logLevel: logLevel,
     useAggressiveFetching: useAggressiveFetching,
+    queryLogMax: queryLogMax,
+    lastStartup: lastStartup,
   );
 }

@@ -3,10 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/browser_helpers.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
-import 'package:flutterhole_web/features/pihole/active_pi.dart';
+import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
-import 'package:flutterhole_web/providers.dart';
-import 'package:flutterhole_web/top_level_providers.dart';
+import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class _ListTile extends StatelessWidget {
@@ -121,8 +120,8 @@ class VersionsTile extends HookWidget {
         children: [
           ListTile(
             onTap: () {
-              context
-                  .refresh(piVersionsProvider(context.read(activePiProvider)));
+              context.refresh(
+                  piVersionsProvider(context.read(activePiParamsProvider)));
             },
             title: TileTitle('Versions'),
             // leading: DashboardTileIcon(KIcons.appVersion),

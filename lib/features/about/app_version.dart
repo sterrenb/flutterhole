@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/browser_helpers.dart';
-import 'package:flutterhole_web/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
+final packageInfoProvider =
+    FutureProvider<PackageInfo>((_) => PackageInfo.fromPlatform());
 
 void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
   return showAboutDialog(
@@ -20,7 +22,7 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
           style: Theme.of(context).textTheme.bodyText2,
           children: <TextSpan>[
             TextSpan(
-                text: 'FlutterHole is a free third party Android application '
+                text: 'FlutterHole is a free third party application '
                     'for interacting with your Pi-Hole® server. '
                     '\n\n'
                     'FlutterHole is open source, which means anyone '
@@ -56,6 +58,37 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
   );
 }
 
+class PackageVersionText extends HookWidget {
+  const PackageVersionText({
+    Key? key,
+    this.includeBuild = true,
+    this.textStyle,
+  }) : super(key: key);
+
+  final bool includeBuild;
+  final TextStyle? textStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final packageInfo = useProvider(packageInfoProvider);
+    return packageInfo.when(
+      data: (PackageInfo info) => Text(
+        'v${info.version}' +
+            (includeBuild ? ' (build #${info.buildNumber})' : ''),
+        style: textStyle,
+      ),
+      loading: () => Text(
+        '',
+        style: textStyle,
+      ),
+      error: (o, s) => Text(
+        'No version information found',
+        style: textStyle,
+      ),
+    );
+  }
+}
+
 class AppVersionListTile extends HookWidget {
   const AppVersionListTile({
     Key? key,
@@ -73,12 +106,7 @@ class AppVersionListTile extends HookWidget {
       leading: Icon(KIcons.appVersion),
       title: Text(title),
       // subtitle: Text('${packageInfo.toString()}'),
-      subtitle: packageInfo.when(
-        data: (PackageInfo info) =>
-            Text('${info.version} (build #${info.buildNumber})'),
-        loading: () => Text(''),
-        error: (o, s) => Text('No version information found'),
-      ),
+      subtitle: PackageVersionText(),
       trailing: showLicences
           ? TextButton(
               onPressed: packageInfo.maybeWhen(

@@ -1,8 +1,8 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
@@ -17,7 +17,7 @@ Future<void> main() async {
   final preferences = await SharedPreferences.getInstance();
 
   runApp(ProviderScope(
-    observers: false
+    observers: kDebugMode
         ? <ProviderObserver>[
             ProviderLogger(),
           ]
@@ -52,26 +52,28 @@ class MyApp extends HookWidget {
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.indigo,
+          primarySwatch: Colors.orange,
+          accentColor: Colors.orangeAccent,
           // scaffoldBackgroundColor: Color(0xFFFAFBFC),
           scaffoldBackgroundColor: Color(0xFFECF0F5),
         ),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
+          primarySwatch: Colors.orange,
           accentColor: Colors.orangeAccent,
           toggleableActiveColor: Colors.orangeAccent,
-          colorScheme: ColorScheme.dark(
-            secondary: Colors.orangeAccent,
-          ),
+          // colorScheme: ColorScheme.dark(
+          //   secondary: Colors.orangeAccent,
+          // ),
           scaffoldBackgroundColor: Color(0xFF121212),
           // canvasColor: Color(0xFF121212),
-          cardColor: KColors.versions,
-          dialogBackgroundColor: KColors.versions,
+          cardColor: Color(0xFF1E1E1E),
+          dialogBackgroundColor: Color(0xFF1E1E1E),
         ),
         themeMode: themeMode,
         routerDelegate: router.delegate(),
         routeInformationParser: router.defaultRouteParser(),
-        locale: Locale('en' 'us'),
+        locale: Locale('en', 'us'),
         builder: DevicePreview.appBuilder,
         // locale: Localizations.localeOf(context),
       ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhole_web/features/entities/logging_entities.dart';
+import 'package:flutterhole_web/features/models/settings_models.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'settings_entities.freezed.dart';
@@ -30,6 +32,17 @@ enum DashboardID {
   Versions,
   Logs,
   TempTile,
+}
+
+@freezed
+class DashboardEntry with _$DashboardEntry {
+  DashboardEntry._();
+
+  factory DashboardEntry({
+    required DashboardID id,
+    required bool enabled,
+    required DashboardTileConstraints constraints,
+  }) = _DashboardEntry;
 }
 
 extension DevDashboardID on DashboardID {
@@ -71,13 +84,14 @@ class Pi with _$Pi {
     required DashboardSettings dashboardSettings,
   }) = _Pi;
 
-  late final String host = '$baseUrl:$apiPort';
+  // late final String host = '$baseUrl:$apiPort';
 
   late final String dioBase =
       '${useSsl ? 'https://' : 'http://'}$baseUrl${(apiPort == 80 && useSsl == false) || (apiPort == 443 && useSsl == true) ? '' : ':$apiPort'}';
 
-  late final String baseApiUrl = '$dioBase$apiPath';
+  late final String baseApiUrl = '$dioBase/$apiPath';
 
+  // TODO add to editable fields
   late final String adminHome = '/admin';
 }
 
@@ -89,24 +103,14 @@ class SettingsState with _$SettingsState {
     required List<Pi> allPis,
     required int activeId,
     required UserPreferences userPreferences,
-    required DeveloperPreferences developerPreferences,
-    required bool dev,
   }) = _SettingsState;
 
   // TODO this can still throw
   late final Pi active = allPis.firstWhere((element) {
     return element.id == activeId;
   });
-}
 
-@freezed
-class DashboardEntry with _$DashboardEntry {
-  DashboardEntry._();
-
-  factory DashboardEntry({
-    required DashboardID id,
-    required bool enabled,
-  }) = _DashboardEntry;
+  late final bool dev = userPreferences.devMode;
 }
 
 @freezed
@@ -119,27 +123,16 @@ class DashboardSettings with _$DashboardSettings {
 
   factory DashboardSettings.initial() => DashboardSettings(entries: [
         ...DashboardID.values
-            .map<DashboardEntry>((e) => DashboardEntry(id: e, enabled: true))
+            .map<DashboardEntry>((e) => DashboardEntry(
+                id: e,
+                enabled: true,
+                constraints: DashboardTileConstraints.defaults[e]!))
             .toList(),
-        DashboardEntry(id: DashboardID.SelectTiles, enabled: true),
-      ]);
-
-  late final List<DashboardID> keys = entries.map((e) => e.id).toList();
-}
-
-@freezed
-class DeveloperSettings with _$DeveloperSettings {
-  DeveloperSettings._();
-
-  factory DeveloperSettings({
-    required List<DashboardEntry> entries,
-  }) = _DeveloperSettings;
-
-  factory DeveloperSettings.initial() => DeveloperSettings(entries: [
-        ...DashboardID.values
-            .map<DashboardEntry>((e) => DashboardEntry(id: e, enabled: true))
-            .toList(),
-        DashboardEntry(id: DashboardID.SelectTiles, enabled: true),
+        DashboardEntry(
+            id: DashboardID.SelectTiles,
+            enabled: true,
+            constraints:
+                DashboardTileConstraints.defaults[DashboardID.SelectTiles]!),
       ]);
 
   late final List<DashboardID> keys = entries.map((e) => e.id).toList();
@@ -162,38 +155,14 @@ class UserPreferences with _$UserPreferences {
     required double temperatureMax,
     required Duration updateFrequency,
     required bool devMode,
-  }) = _UserPreferences;
-}
-
-enum LogLevel {
-  debug,
-  info,
-  warning,
-  error,
-}
-
-@freezed
-class DeveloperPreferences with _$DeveloperPreferences {
-  DeveloperPreferences._();
-
-  factory DeveloperPreferences({
     required bool useThemeToggle,
     required LogLevel logLevel,
     required bool useAggressiveFetching,
-  }) = _DeveloperPreferences;
-}
+    required int queryLogMax,
+    required DateTime? lastStartup,
+  }) = _UserPreferences;
 
-@freezed
-class LogCall with _$LogCall {
-  LogCall._();
-
-  factory LogCall({
-    required String source,
-    required LogLevel level,
-    required Object message,
-    Object? error,
-    StackTrace? stackTrace,
-  }) = _LogCall;
+  late final bool firstUse = lastStartup == null;
 }
 
 @freezed
@@ -241,11 +210,12 @@ class PiColorTheme with _$PiColorTheme {
   factory PiColorTheme.dark() => PiColorTheme.light().copyWith(
         warning: Color(0xFFB1720C),
         error: Color(0xFF913225),
-        totalQueries: Color(0xFF005C32),
+        totalQueries: Color(0xFF1B5E20),
+        // totalQueries: Color(0xFF005C32),
         queriesBlocked: Color(0xFF007997),
         percentBlocked: Color(0xFFB1720C),
         domainsOnBlocklist: Color(0xFF913225),
-        temperatureLow: Color(0xFF005C32),
+        temperatureLow: Color(0xFF1B5E20),
         temperatureMed: Color(0xFFB1720C),
         temperatureHigh: Color(0xFF913225),
       );

@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -10,8 +11,9 @@ import 'package:flutterhole_web/features/layout/list.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
 import 'package:flutterhole_web/features/settings/developer_preferences.dart';
 import 'package:flutterhole_web/features/settings/developer_widgets.dart';
-import 'package:flutterhole_web/features/settings/my_pi_holes_page.dart';
+import 'package:flutterhole_web/features/settings/pi_builders.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
+import 'package:flutterhole_web/features/settings/single_pi_page.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
 import 'package:flutterhole_web/features/settings/user_preferences.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
@@ -29,13 +31,12 @@ class SettingsPage extends HookWidget {
       StaggeredTile.fit(4): const UserPreferencesListView(),
       StaggeredTile.fit(4): Divider(),
       StaggeredTile.extent(4, kToolbarHeight): const ListTitle('My Pi-holes'),
-      StaggeredTile.extent(4, kToolbarHeight): ListTile(
-        leading: Icon(KIcons.add),
-        title: Text('Add a new Pi-hole'),
-        onTap: () {},
-        trailing: Icon(KIcons.push),
+      StaggeredTile.extent(4, kToolbarHeight): AddPiTile(),
+      StaggeredTile.fit(4): PiListBuilder(
+        onTap: (pi) {
+          context.router.pushAndSaveSinglePiRoute(context, pi);
+        },
       ),
-      StaggeredTile.fit(4): PiHoleListBuilder(),
       StaggeredTile.fit(4): Divider(),
       StaggeredTile.extent(4, kToolbarHeight): const ListTitle('Danger zone'),
       StaggeredTile.count(2, 1): const _ResetActiveDashboardCard(),
@@ -96,7 +97,6 @@ class _ResetAllSettingsCard extends StatelessWidget {
                           .read(settingsNotifierProvider.notifier)
                           .reset();
                       ScaffoldMessenger.of(context).showMessageNow(
-                        context,
                         message: 'All settings have been reset.',
                         leading: Icon(
                           KIcons.refresh,
@@ -146,7 +146,6 @@ class _DeletePiHolesCard extends StatelessWidget {
                           .read(settingsNotifierProvider.notifier)
                           .resetPiHoles();
                       ScaffoldMessenger.of(context).showMessageNow(
-                        context,
                         message: 'All Pi-holes have been deleted.',
                         leading: Icon(
                           KIcons.delete,
@@ -196,7 +195,6 @@ class _ResetActiveDashboardCard extends StatelessWidget {
                           .read(settingsNotifierProvider.notifier)
                           .resetDashboard();
                       ScaffoldMessenger.of(context).showMessageNow(
-                        context,
                         message: 'Dashboard has been reset.',
                         leading: Icon(
                           KIcons.delete,

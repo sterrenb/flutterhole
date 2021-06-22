@@ -7,6 +7,8 @@ import 'package:flutterhole_web/features/logging/log_widgets.dart';
 import 'package:flutterhole_web/features/settings/developer_widgets.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
 
+final bool animated = false;
+
 class LogsPage extends HookWidget {
   const LogsPage({Key? key}) : super(key: key);
 
@@ -29,19 +31,23 @@ class LogsPage extends HookWidget {
         ),
         extendBodyBehindAppBar: true,
         body: Stack(
-          alignment: Alignment.topRight,
-          fit: StackFit.expand,
+          alignment: Alignment.topCenter,
           children: [
             Scrollbar(
               child: ListView(
                 physics: BouncingScrollPhysics(),
                 controller: controller,
                 children: [
-                  AnimatedLogsList(
-                    maxLength: kLogsPageCacheLength,
-                    shrinkWrap: true,
-                    singleLine: false,
-                  ),
+                  animated
+                      ? AnimatedLogsList(
+                          maxLength: kLogsPageCacheLength,
+                          shrinkWrap: true,
+                          singleLine: false,
+                        )
+                      : LogsListView(
+                          shrinkWrap: true,
+                          singleLine: false,
+                        ),
                   // AnimatedLogsList(controller: controller),
                 ],
               ),
@@ -52,7 +58,7 @@ class LogsPage extends HookWidget {
               threshold: -.8,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('The logs are refreshed automatically.'),
+                child: Text('The logs are automatically refreshed.'),
               ),
             ),
             OverScrollMessage(

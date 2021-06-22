@@ -9,11 +9,14 @@ import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
+import 'package:flutterhole_web/features/layout/media_queries.dart';
 import 'package:flutterhole_web/features/settings/single_pi_grid.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
-import 'package:flutterhole_web/providers.dart';
+import 'package:flutterhole_web/package_providers.dart';
+import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pihole_api/pihole_api.dart';
 
 class TileTextField extends HookWidget {
   const TileTextField({
@@ -186,7 +189,7 @@ class ColorGrid extends HookWidget {
 
     return StaggeredGridView.countBuilder(
       controller: controller,
-      crossAxisCount: 4,
+      crossAxisCount: context.isLandscape ? 8 : 4,
       itemCount: colors.length,
       itemBuilder: (context, index) {
         final color = colors.elementAt(index);
@@ -287,7 +290,17 @@ class SummaryTestTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final summaryValue = useProvider(piSummaryProvider(pi));
+    final summaryValue = useProvider(piSummaryProvider(PiholeRepositoryParams(
+      dio: useProvider(newDioProvider(pi)),
+      baseUrl: pi.baseUrl,
+      useSsl: pi.useSsl,
+      apiPath: pi.apiPath,
+      apiPort: pi.apiPort,
+      apiTokenRequired: pi.apiTokenRequired,
+      apiToken: pi.apiToken,
+      allowSelfSignedCertificates: pi.allowSelfSignedCertificates,
+      adminHome: pi.adminHome,
+    )));
 
     final VoidCallback onTap = () {
       final dialog = summaryValue.maybeWhen(
@@ -301,12 +314,7 @@ class SummaryTestTile extends HookWidget {
             ),
           ),
         ),
-        error: (e, s) => DialogListBase(
-          header: DialogHeader(title: e.toString()),
-          body: SliverToBoxAdapter(
-            child: ExpandableCode(code: s.toString()),
-          ),
-        ),
+        error: (e, s) => ErrorDialog(e, s),
         orElse: () => null,
       );
 
@@ -341,8 +349,8 @@ class SummaryTestTile extends HookWidget {
   }
 }
 
-class VersionsTestTile extends HookWidget {
-  const VersionsTestTile({
+class TopItemsTestTile extends HookWidget {
+  const TopItemsTestTile({
     Key? key,
     required this.pi,
   }) : super(key: key);
@@ -351,26 +359,32 @@ class VersionsTestTile extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final versionsValue = useProvider(topItemsProvider(pi));
+    // TODO add params
+    final topItemsValue = useProvider(topItemsProvider(PiholeRepositoryParams(
+      dio: useProvider(newDioProvider(pi)),
+      baseUrl: pi.baseUrl,
+      useSsl: pi.useSsl,
+      apiPath: pi.apiPath,
+      apiPort: pi.apiPort,
+      apiTokenRequired: pi.apiTokenRequired,
+      apiToken: pi.apiToken,
+      allowSelfSignedCertificates: pi.allowSelfSignedCertificates,
+      adminHome: pi.adminHome,
+    )));
 
     final VoidCallback onTap = () {
-      final dialog = versionsValue.maybeWhen(
-        data: (versions) => DialogListBase(
+      final dialog = topItemsValue.maybeWhen(
+        data: (topItems) => DialogListBase(
           header: DialogHeader(title: 'Success'),
           body: SliverToBoxAdapter(
             child: ExpandableCode(
-              code: versions.toString(),
+              code: topItems.toString(),
               expanded: false,
               tappable: false,
             ),
           ),
         ),
-        error: (e, s) => DialogListBase(
-          header: DialogHeader(title: e.toString()),
-          body: SliverToBoxAdapter(
-            child: ExpandableCode(code: s.toString()),
-          ),
-        ),
+        error: (e, s) => ErrorDialog(e, s),
         orElse: () => null,
       );
 
@@ -391,7 +405,7 @@ class VersionsTestTile extends HookWidget {
         icon: PiColorsBuilder(
           builder: (context, piColors, _) => Icon(
             KIcons.dot,
-            color: versionsValue.when(
+            color: topItemsValue.when(
               data: (data) => piColors.success,
               loading: () => KColors.loading,
               error: (error, stacktrace) => piColors.error,
