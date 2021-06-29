@@ -1,8 +1,11 @@
+import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
-import 'package:pihole_api/src/entities.dart';
-import 'package:pihole_api/src/models.dart';
+
+import 'entities.dart';
+import 'formatting.dart';
+import 'models.dart';
 
 /// The string that counts as the API token on Pi-holes
 /// without authentication.
@@ -68,13 +71,11 @@ class PiholeRepository {
       case DioErrorType.receiveTimeout:
         return PiholeApiFailure.timeout();
       case DioErrorType.response:
-        return PiholeApiFailure.invalidResponse(e.response!.statusCode!);
+        return PiholeApiFailure.invalidResponse(e.response?.statusCode ?? 500);
       case DioErrorType.cancel:
         return PiholeApiFailure.cancelled();
       case DioErrorType.other:
       default:
-        // print('oh no:');
-        // print(e.message);
         if (e.message.contains('Failed host lookup')) {
           return PiholeApiFailure.hostname();
         }
@@ -83,10 +84,7 @@ class PiholeRepository {
     }
   }
 
-  Future<PiSummary> fetchPiSummary(CancelToken cancelToken) async {
-    // print('awaiting summary');
-    await Future.delayed(Duration(milliseconds: 500));
-
+  Future<PiSummary> fetchSummary(CancelToken cancelToken) async {
     try {
       final data = await _get({'summaryRaw': ''}, cancelToken);
       final piSummary = PiSummaryModel.fromJson(data);
@@ -115,14 +113,6 @@ class PiholeRepository {
           await _getSecure({'getForwardDestinations': ''}, cancelToken);
 
       final forwardDestinations = PiForwardDestinationsModel.fromJson(data);
-      // final Map<String, double> map = Map.from(forwardDestinations.destinations)
-      // ..addAll({
-      //   'testje': 12.34,
-      //   'testje2': 12.34,
-      //   'testje34454532453543': 12.34,
-      //   'tesyasyayayaytje': 12.34
-      // })
-      // ;
       return forwardDestinations.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
@@ -135,9 +125,6 @@ class PiholeRepository {
       final data = await _getSecure({'overTimeData10mins': ''}, cancelToken);
 
       var queries = PiQueriesOverTimeModel.fromJson(data);
-      // queries = queries.copyWith(
-      //     domainsOverTime: queries.domainsOverTime
-      //         .map((key, value) => MapEntry(key, value * 1)));
       return queries.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
@@ -160,37 +147,42 @@ class PiholeRepository {
   }
 
   double _docToTemperature(Document doc) {
-    return double.tryParse(doc.getElementById('rawtemp')!.innerHtml) ?? -1;
+    return double.tryParse(doc.getElementById('rawtemp')?.innerHtml ?? "") ??
+        -1;
   }
 
   double _docToMemoryUsage(Document doc) {
-    try {
-      final string = doc.outerHtml;
-      final startIndex = string.indexOf('Memory usage');
-      final sub = string.substring(startIndex);
-      final endIndex = sub.indexOf('</span>');
-      final end = sub.substring(0, endIndex);
-      final numbers = end.getNumbers();
-      return numbers.first.toDouble();
-    } catch (e) {
-      return -1;
-    }
+    final string = doc.outerHtml;
+    final startIndex = string.indexOf('usage:');
+    if (startIndex < 0) return -1;
+
+    final sub = string.substring(startIndex);
+    final endIndex = sub.indexOf('</span>');
+    if (endIndex < 0) return -1;
+
+    final end = sub.substring(0, endIndex);
+    final numbers = end.getNumbers();
+    if (numbers.isEmpty) return -1;
+
+    return numbers.first.toDouble();
   }
 
-  List<double> _docToLoad(Document doc) {
-    final element = doc
-        .getElementsByClassName('fa fa-circle text-green-light')
-        .elementAt(1)
-        .parent;
+  List<double> _docToLoads(Document doc) {
+    final list = doc.getElementsByClassName('fa fa-circle text-green-light');
 
-    if (element == null) return [];
+    if (list.isEmpty) return [];
 
-    return List<double>.from(element.innerHtml.getNumbers());
+    final element = list.elementAt(1).parent;
+
+    return List<double>.from((element?.innerHtml ?? "").getNumbers());
   }
 
-  Future<PiDetails> fetchPiDetails() async {
+  Future<PiDetails> fetchPiDetails(CancelToken cancelToken) async {
     try {
-      final response = await params.dio.get(params.adminHome);
+      final response = await params.dio.get(
+        params.adminHome,
+        cancelToken: cancelToken,
+      );
       final data = response.data;
 
       if (data is String && data.isEmpty) {
@@ -199,32 +191,10 @@ class PiholeRepository {
 
       final Document doc = parse(data);
 
-      double? temperature;
-
-      try {
-        temperature = _docToTemperature(doc);
-      } catch (e) {
-        print('temperature error: $e');
-      }
-
-      List<double> loads = [];
-      try {
-        loads = _docToLoad(doc);
-      } catch (e) {
-        print('loads error: $e');
-      }
-
-      double? memoryUsage = 0;
-      try {
-        memoryUsage = _docToMemoryUsage(doc);
-      } catch (e) {
-        print('memoryUsage error: $e');
-      }
-
       return PiDetails(
-        temperature: temperature,
-        cpuLoads: loads,
-        memoryUsage: memoryUsage,
+        temperature: _docToTemperature(doc),
+        cpuLoads: _docToLoads(doc),
+        memoryUsage: _docToMemoryUsage(doc),
       );
     } on DioError catch (e) {
       throw _onDioError(e);
@@ -271,7 +241,7 @@ class PiholeRepository {
 
       final status = PiholeStatusModel.fromJson(data);
       return status.entity.maybeWhen(
-        disabled: () => PiholeStatus.sleeping(duration, DateTime.now()),
+        disabled: () => PiholeStatus.sleeping(duration, clock.now()),
         orElse: () => status.entity,
       );
     } on DioError catch (e) {
@@ -279,13 +249,11 @@ class PiholeRepository {
     }
   }
 
-  Future<List<QueryItem>> fetchQueryItems(CancelToken cancelToken,
-      [int? maxResults, int? pageKey]) async {
+  Future<List<QueryItem>> fetchQueryItems(
+      CancelToken cancelToken, int maxResults) async {
     try {
-      // await Future.delayed(Duration(seconds: 2));
       final params = <String, dynamic>{
-        'getAllQueries': maxResults?.toString() ?? '',
-        '_': pageKey ?? ''
+        'getAllQueries': maxResults.toString(),
       };
       final data = await _getSecure(params, cancelToken);
       final list = data['data'] as List<dynamic>;
@@ -298,7 +266,6 @@ class PiholeRepository {
     }
   }
 
-  // TODO add maxResults for fake pagination
   Future<TopItems> fetchTopItems(CancelToken cancelToken) async {
     try {
       final data = await _getSecure({'topItems': ''}, cancelToken);
@@ -313,25 +280,10 @@ class PiholeRepository {
   Future<PiVersions> fetchVersions(CancelToken cancelToken) async {
     try {
       final data = await _get({'versions': ''}, cancelToken);
-      await Future.delayed(Duration(seconds: 1));
       final versions = PiVersionsModel.fromJson(data);
       return versions.entity;
     } on DioError catch (e) {
       throw _onDioError(e);
     }
-  }
-}
-
-final RegExp _numberRegex = RegExp(r'\d+.\d+');
-
-extension StringExtension on String {
-  List<num> getNumbers() {
-    if (_numberRegex.hasMatch(this))
-      return _numberRegex
-          .allMatches(this)
-          .map((RegExpMatch match) => num.tryParse(match.group(0)!) ?? -1)
-          .toList();
-    else
-      return [];
   }
 }

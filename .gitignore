@@ -51,4 +51,5 @@ app.*.map.json
 *.freezed.dart
 *.config.dart
 *.iconfig.dart
-/coverage/
+**/coverage/
+**/build/

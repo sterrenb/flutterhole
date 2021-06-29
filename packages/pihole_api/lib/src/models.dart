@@ -140,10 +140,10 @@ class PiQueriesOverTimeModel with _$PiQueriesOverTimeModel {
   }) = _PiQueriesOverTimeModel;
 
   late final PiQueriesOverTime entity = PiQueriesOverTime(
-    domainsOverTime: domainsOverTime.map((key, value) =>
-        MapEntry(piQueriesStringToDateTime(key), value.toInt())),
-    adsOverTime: adsOverTime.map((key, value) =>
-        MapEntry(piQueriesStringToDateTime(key), value.toInt())),
+    domainsOverTime: domainsOverTime.map(
+        (key, value) => MapEntry(dateTimeFromPiholeString(key), value.toInt())),
+    adsOverTime: adsOverTime.map(
+        (key, value) => MapEntry(dateTimeFromPiholeString(key), value.toInt())),
   );
 
   factory PiQueriesOverTimeModel.fromJson(Map<String, dynamic> json) =>

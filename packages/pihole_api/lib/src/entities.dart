@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'formatting.dart';
+
 part 'entities.freezed.dart';
 
 @freezed
@@ -86,10 +88,6 @@ class PiSummary with _$PiSummary {
   }) = _PiSummary;
 }
 
-double _celciusToKelvin(double temp) => temp + 273.15;
-
-double _celciusToFahrenheit(double temp) => (temp * (9 / 5)) + 32;
-
 @freezed
 class PiDetails with _$PiDetails {
   PiDetails._();
@@ -104,10 +102,10 @@ class PiDetails with _$PiDetails {
       '${(temperature ?? 0).toStringAsFixed(1)} °C';
 
   late final String temperatureInFahrenheit =
-      '${_celciusToFahrenheit((temperature ?? 0)).toStringAsFixed(1)} °F';
+      '${celciusToFahrenheit((temperature ?? 0)).toStringAsFixed(1)} °F';
 
   late final String temperatureInKelvin =
-      '${_celciusToKelvin((temperature ?? 0)).toStringAsFixed(1)} °K';
+      '${celciusToKelvin((temperature ?? 0)).toStringAsFixed(1)} °K';
 }
 
 @freezed

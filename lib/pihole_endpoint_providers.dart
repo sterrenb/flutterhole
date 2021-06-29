@@ -10,7 +10,7 @@ final piSummaryProvider = FutureProvider.autoDispose
   ref.onDispose(() => cancelToken.cancel());
 
   final api = ref.read(piholeRepositoryProviderFamily(pi));
-  final piSummary = await api.fetchPiSummary(cancelToken);
+  final piSummary = await api.fetchSummary(cancelToken);
   ref.maintainState = true;
   return piSummary;
 });
@@ -148,7 +148,7 @@ final piDetailsProvider = FutureProvider.autoDispose
   ref.onDispose(() => cancelToken.cancel());
 
   final api = ref.read(piholeRepositoryProviderFamily(params));
-  final piDetails = await api.fetchPiDetails();
+  final piDetails = await api.fetchPiDetails(cancelToken);
   return piDetails;
 });
 
@@ -166,10 +166,11 @@ final queryLogMaxProvider = StateProvider<int>((ref) {
 final queryLogProvider = FutureProvider.autoDispose
     .family<List<QueryItem>, PiholeRepositoryParams>((ref, params) async {
   final cancelToken = CancelToken();
+  final maxResults = ref.watch(queryLogMaxProvider).state;
   ref.onDispose(() => cancelToken.cancel());
 
   final api = ref.read(piholeRepositoryProviderFamily(params));
-  final queryItems = await api.fetchQueryItems(cancelToken);
+  final queryItems = await api.fetchQueryItems(cancelToken, maxResults);
   return queryItems;
 });
 
