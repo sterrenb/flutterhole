@@ -15,8 +15,6 @@ class PiholeRepository {
 
   final PiholeRepositoryParams params;
 
-  static const String title = 'API';
-
   Future<dynamic> _get(
     Map<String, dynamic> queryParameters,
     CancelToken cancelToken,
