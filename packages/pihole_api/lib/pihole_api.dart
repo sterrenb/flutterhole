@@ -1,3 +1,3 @@
-export 'package:pihole_api/src/pihole_repository.dart';
-export 'package:pihole_api/src/entities.dart';
-export 'package:pihole_api/src/models.dart';
+export 'src/entities.dart';
+export 'src/models.dart';
+export 'src/pihole_repository.dart';

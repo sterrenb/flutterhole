@@ -3,9 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/doughnut_chart.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
-import 'package:flutterhole_web/features/home/charts.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:flutterhole_web/formatting.dart';
@@ -14,125 +12,6 @@ import 'package:flutterhole_web/step_line_chart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:pihole_api/pihole_api.dart';
-
-class QueryTypesTile extends HookWidget {
-  static const String title = 'Query Types';
-
-  static const List<Color> _chartColors = [
-    Colors.blue,
-    Colors.orange,
-    Colors.green,
-    Colors.red,
-    Colors.yellow,
-    Colors.purple,
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final queryTypes = useProvider(activeQueryTypesProvider);
-    final selected = useProvider(doughnutChartProvider(title));
-
-    return Card(
-      child: Center(
-        child: queryTypes.when(
-          data: (types) {
-            return DoughnutScaffold(
-                left: LegendTileList(
-                  title: title,
-                  legendTiles: (PiQueryTypes queryTypes) {
-                    int index = 0;
-
-                    return queryTypes.types.entries.map((queryTypeEntry) {
-                      return Tooltip(
-                        message:
-                            '${queryTypeEntry.key}: ${queryTypeEntry.value.toStringAsFixed(2)}%',
-                        child: LegendTile(
-                          title: queryTypeEntry.key,
-                          trailing:
-                              '${queryTypeEntry.value.toStringAsFixed(0)}%',
-                          selected: selected.state == queryTypeEntry.key,
-                          color: _chartColors
-                              .elementAt(index++ % _chartColors.length),
-                        ),
-                      );
-                    }).toList();
-                  }(types),
-                ),
-                right: PiQueriesDoughnutChart(title, types));
-          },
-          loading: () => CircularProgressIndicator(),
-          error: (e, s) => Text('${e.toString()}'),
-        ),
-      ),
-    );
-  }
-}
-
-class ForwardDestinationsTile extends HookWidget {
-  static const String title = 'Queries answered by';
-
-  static const List<Color> _chartColors = [
-    Colors.red,
-    Colors.yellow,
-    Colors.purple,
-    Colors.blue,
-    Colors.orange,
-    Colors.green,
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final forwardDestinations = useProvider(activeForwardDestinationsProvider);
-    final selected = useProvider(doughnutChartProvider(title));
-
-    return Card(
-      child: Center(
-        child: forwardDestinations.when(
-          data: (PiForwardDestinations destinations) {
-            return DoughnutScaffold(
-              left: LegendTileList(
-                title: title,
-                legendTiles: (PiForwardDestinations destinations) {
-                  int index = 0;
-
-                  return destinations.destinations.entries.map((destination) {
-                    final domain = destination.key.split('|').first;
-                    return Tooltip(
-                      message:
-                          '$domain: ${destination.value.toStringAsFixed(2)}%',
-                      child: LegendTile(
-                        title: domain,
-                        trailing: '${destination.value.toStringAsFixed(0)}%',
-                        selected: selected.state == destination.key,
-                        color: _chartColors
-                            .elementAt(index++ % _chartColors.length),
-                      ),
-                    );
-                  }).toList();
-                }(destinations),
-              ),
-              right: DoughnutChart(
-                title: title,
-                dataSource: (PiForwardDestinations forwardDestinations) {
-                  int index = 0;
-                  return forwardDestinations.destinations.entries
-                      .map((e) => DoughnutChartData(
-                          e.key,
-                          e.value,
-                          _chartColors
-                              .elementAt(index++ % _chartColors.length)))
-                      .toList();
-                }(destinations),
-              ),
-            );
-          },
-          loading: () => CircularProgressIndicator(),
-          error: (e, s) => Text(e.toString()),
-        ),
-      ),
-    );
-  }
-}
 
 final format = DateFormat.Hm();
 

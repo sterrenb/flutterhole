@@ -751,7 +751,7 @@ packages:
     source: hosted
     version: "1.0.0"
   pull_to_refresh:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: pull_to_refresh
       url: "https://pub.dartlang.org"
@@ -764,6 +764,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.1"
+  refreshables:
+    dependency: "direct main"
+    description:
+      path: "packages/refreshables"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   riverpod:
     dependency: transitive
     description:
@@ -771,13 +778,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.14.0+3"
-  scrollable_positioned_list:
-    dependency: "direct main"
-    description:
-      name: scrollable_positioned_list
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0-nullsafety.0"
   share_plus:
     dependency: "direct main"
     description:

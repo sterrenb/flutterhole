@@ -8,7 +8,7 @@ import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/features/settings/settings_repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:refreshables/refreshables.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -46,8 +46,7 @@ class MyApp extends HookWidget {
     final router = useState(AppRouter()).value;
     // trigger root logger
     // useProvider(rootLoggerProvider);
-    return RefreshConfiguration(
-      headerBuilder: () => WaterDropMaterialHeader(),
+    return RefreshableWaterDropConfiguration(
       child: MaterialApp.router(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,

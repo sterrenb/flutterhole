@@ -22,7 +22,7 @@ import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:refreshables/refreshables.dart';
 
 extension DashboardIDX on DashboardID {
   Widget get widget {
@@ -243,7 +243,12 @@ class DashboardGrid extends HookWidget {
         onRefresh(activeParams);
       },
       child: tiles.any((element) => element.enabled)
-          ? _DashboardGridBuilder(
+          ? RefreshableGridBuilder(
+              crossAxisCount:
+                  (MediaQuery.of(context).orientation == Orientation.landscape)
+                      ? 8
+                      : 4,
+              spacing: kGridSpacing,
               onRefresh: () => onRefresh(activeParams),
               tiles: dashboardSettings.entries
                   .where((element) => element.enabled)
@@ -267,48 +272,6 @@ class DashboardGrid extends HookWidget {
               }).toList(),
             )
           : Center(child: SelectTilesTile()),
-    );
-  }
-}
-
-class _DashboardGridBuilder extends HookWidget {
-  const _DashboardGridBuilder({
-    Key? key,
-    required this.onRefresh,
-    required this.tiles,
-    required this.children,
-  })  : assert(tiles.length == children.length),
-        super(key: key);
-
-  final VoidFutureCallBack onRefresh;
-  final List<StaggeredTile> tiles;
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = useState(RefreshController());
-
-    void _onRefresh() async {
-      await onRefresh();
-      controller.value.refreshCompleted();
-    }
-
-    return SmartRefresher(
-      controller: controller.value,
-      onRefresh: _onRefresh,
-      enablePullDown: true,
-      child: StaggeredGridView.count(
-        crossAxisCount:
-            (MediaQuery.of(context).orientation == Orientation.landscape)
-                ? 8
-                : 4,
-        staggeredTiles: this.tiles,
-        children: this.children,
-        mainAxisSpacing: kGridSpacing,
-        crossAxisSpacing: kGridSpacing,
-        padding: const EdgeInsets.all(kGridSpacing),
-        physics: const BouncingScrollPhysics(),
-      ),
     );
   }
 }
