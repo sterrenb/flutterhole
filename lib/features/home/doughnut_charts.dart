@@ -1,5 +1,5 @@
+import 'package:charts/charts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole_web/doughnut_chart.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 class PiQueriesDoughnutChart extends StatelessWidget {

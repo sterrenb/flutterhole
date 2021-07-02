@@ -13,8 +13,8 @@ import 'package:flutterhole_web/home_page.dart';
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
-    AutoRoute(page: OnboardingPage, initial: true),
-    AutoRoute(page: HomePage),
+    AutoRoute(page: OnboardingPage),
+    AutoRoute(page: HomePage, initial: true),
     AutoRoute(page: BetterQueryLogPage),
     AutoRoute(page: SettingsPage),
     AutoRoute(page: LogsPage, fullscreenDialog: true),

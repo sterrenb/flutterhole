@@ -141,6 +141,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  charts:
+    dependency: "direct main"
+    description:
+      path: "packages/charts"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   checked_yaml:
     dependency: transitive
     description:
@@ -282,7 +289,7 @@ packages:
     source: hosted
     version: "1.0.0"
   fl_chart:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: fl_chart
       url: "https://pub.dartlang.org"
@@ -402,20 +409,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  hive:
-    dependency: "direct main"
-    description:
-      name: hive
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.4"
-  hive_generator:
-    dependency: "direct dev"
-    description:
-      name: hive_generator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
   hooks_riverpod:
     dependency: "direct main"
     description:
@@ -424,7 +417,7 @@ packages:
     source: hosted
     version: "0.14.0+4"
   html:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: html
       url: "https://pub.dartlang.org"
@@ -437,13 +430,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.13.3"
-  http_mock_adapter:
-    dependency: "direct dev"
-    description:
-      name: http_mock_adapter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.1"
   http_multi_server:
     dependency: transitive
     description:
@@ -458,13 +444,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
-  implicitly_animated_reorderable_list:
-    dependency: "direct main"
-    description:
-      name: implicitly_animated_reorderable_list
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.0"
   in_app_review:
     dependency: "direct main"
     description:
@@ -916,13 +895,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  source_helper:
-    dependency: transitive
-    description:
-      name: source_helper
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
   source_map_stack_trace:
     dependency: transitive
     description:

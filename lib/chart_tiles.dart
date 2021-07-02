@@ -1,4 +1,4 @@
-import 'package:fl_chart/fl_chart.dart';
+import 'package:charts/charts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,7 +8,6 @@ import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
 import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/pihole_endpoint_providers.dart';
-import 'package:flutterhole_web/step_line_chart.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:pihole_api/pihole_api.dart';
@@ -48,10 +47,10 @@ class QueriesBarChartTile extends HookWidget {
                   child: PiColorsBuilder(
                     builder: (context, piColors, _) => StepLineChart(
                       entries: [
-                        StepLineChartEntry(
+                        StepLineChartData(
                             domainValues.map((e) => e.toDouble()).toList(),
                             piColors.success),
-                        StepLineChartEntry(
+                        StepLineChartData(
                             adValues.map((e) => e.toDouble()).toList(),
                             piColors.error),
                       ],
@@ -202,7 +201,7 @@ class ClientActivityBarChartTile extends HookWidget {
           padding: const EdgeInsets.only(left: 8.0, right: 24.0),
           child: StepLineChart(
             entries: activity.byClient.entries
-                .map((entry) => StepLineChartEntry(
+                .map((entry) => StepLineChartData(
                     entry.value.map((e) => e.toDouble()).toList(),
                     _chartColors.elementAt(activity.clients.indexOf(entry.key) %
                         _chartColors.length)))

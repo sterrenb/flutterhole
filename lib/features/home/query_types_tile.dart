@@ -1,10 +1,10 @@
+import 'package:charts/charts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
-import 'package:flutterhole_web/doughnut_chart.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
-import 'package:flutterhole_web/features/home/charts.dart';
+import 'package:flutterhole_web/features/home/doughnut_charts.dart';
 import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -16,11 +16,11 @@ class QueryTypesTileTwo extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final queryTypesValue = useProvider(activeQueryTypesProvider);
-    final selected = useProvider(doughnutChartProvider(title));
+    final selected = useProvider(doughnutChartSelectedProvider(title));
 
     final left = queryTypesValue.when(
-      data: (queryTypes) => DoughnutChartLegendList(
-        title: title,
+      data: (queryTypes) => LegendList(
+        title: TileTitle(title),
         iconData: KIcons.about,
         builder: (context, index) {
           final queryTypeEntry = queryTypes.types.entries.elementAt(index);
@@ -66,12 +66,12 @@ class ForwardDestinationsTileTwo extends HookWidget {
   Widget build(BuildContext context) {
     final forwardDestinationsValue =
         useProvider(activeForwardDestinationsProvider);
-    final selected = useProvider(doughnutChartProvider(title));
+    final selected = useProvider(doughnutChartSelectedProvider(title));
 
     return DoubleGridCard(
       left: forwardDestinationsValue.when(
-        data: (forwardDestinations) => DoughnutChartLegendList(
-          title: title,
+        data: (forwardDestinations) => LegendList(
+          title: TileTitle(title),
           iconData: KIcons.about,
           builder: (context, index) {
             final destination =

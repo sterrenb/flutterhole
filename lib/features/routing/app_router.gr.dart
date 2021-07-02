@@ -91,8 +91,8 @@ class AppRouter extends _i1.RootStackRouter {
 
   @override
   List<_i1.RouteConfig> get routes => [
-        _i1.RouteConfig(OnboardingRoute.name, path: '/'),
-        _i1.RouteConfig(HomeRoute.name, path: '/home-page'),
+        _i1.RouteConfig(OnboardingRoute.name, path: '/onboarding-page'),
+        _i1.RouteConfig(HomeRoute.name, path: '/'),
         _i1.RouteConfig(BetterQueryLogRoute.name,
             path: '/better-query-log-page'),
         _i1.RouteConfig(SettingsRoute.name, path: '/settings-page'),
@@ -109,7 +109,7 @@ class AppRouter extends _i1.RootStackRouter {
 class OnboardingRoute extends _i1.PageRouteInfo<OnboardingRouteArgs> {
   OnboardingRoute({_i2.Key? key, bool isInitialPage = true})
       : super(name,
-            path: '/',
+            path: '/onboarding-page',
             args: OnboardingRouteArgs(key: key, isInitialPage: isInitialPage));
 
   static const String name = 'OnboardingRoute';
@@ -124,7 +124,7 @@ class OnboardingRouteArgs {
 }
 
 class HomeRoute extends _i1.PageRouteInfo {
-  const HomeRoute() : super(name, path: '/home-page');
+  const HomeRoute() : super(name, path: '/');
 
   static const String name = 'HomeRoute';
 }
