@@ -26,7 +26,7 @@ import 'package:pihole_api/pihole_api.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 final _whitespaceFormatter =
-    FilteringTextInputFormatter.deny(RegExp(r"\s\b|\b\s"));
+    FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'));
 
 class _SinglePiNotifier extends StateNotifier<Pi> {
   _SinglePiNotifier(Pi initial) : super(initial);
@@ -103,12 +103,12 @@ class SinglePiPage extends HookWidget {
     ...preselectedColors.reversed.toList(),
     ...Colors.accents,
     ...Colors.primaries,
-    Color(0xFF341037),
-    Color(0xFF8A0A3D),
-    Color(0xFFB5171D),
-    Color(0xFFECF0F5),
-    Color(0xFF222D32),
-    Color(0xFF121212),
+    const Color(0xFF341037),
+    const Color(0xFF8A0A3D),
+    const Color(0xFFB5171D),
+    const Color(0xFFECF0F5),
+    const Color(0xFF222D32),
+    const Color(0xFF121212),
   ];
 
   final Pi initial;
@@ -149,7 +149,6 @@ class SinglePiPage extends HookWidget {
 
     useEffect(() {
       apiTokenController.addListener(() {
-        print('update: ${apiTokenController.text}');
         n.updateApiToken(apiTokenController.text);
       });
     }, [apiTokenController]);
@@ -161,17 +160,25 @@ class SinglePiPage extends HookWidget {
     }, [apiPortController]);
 
     final Map<StaggeredTile, Widget> items = {
+      // ignore: prefer_const_constructors
       StaggeredTile.extent(4, kToolbarHeight * 2): Container(),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(4, 1): TitleCard(titleController),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(4, 1):
           const GridSectionHeader('Host details', KIcons.host),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 1):
           BaseUrlCard(baseUrlController: baseUrlController, useSsl: pi.useSsl),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 2):
           ApiPortCard(apiPortController: apiPortController),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 1):
           ApiPathCard(apiPathController: apiPathController),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 1): UseSslCard(
+        // ignore: prefer_const_constructors
         pi: pi,
         onChanged: (value) {
           if (value != null) n.updateUseSsl(value);
@@ -181,12 +188,15 @@ class SinglePiPage extends HookWidget {
         },
       ),
       // StaggeredTile.count(2, 1): Container(),
-      StaggeredTile.count(2, 1): SummaryTestTile(pi: pi),
+      StaggeredTile.count(2, 1): // ignore: prefer_const_constructors
+          SummaryTestTile(pi: pi), // ignore: prefer_const_constructors
+      // ignore: prefer_const_constructors
       StaggeredTile.count(4, 1): Center(
+          // ignore: prefer_const_constructors
           child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Base URL: '),
+          const Text('Base URL: '),
           Flexible(
             child: CodeCard(
               code: pi.baseApiUrl,
@@ -198,28 +208,34 @@ class SinglePiPage extends HookWidget {
         ],
       )),
 
-      StaggeredTile.count(4, 1):
+      StaggeredTile.count(4, 1): // ignore: prefer_const_constructors
           const GridSectionHeader('Authentication', KIcons.authentication),
 
+      // ignore: prefer_const_constructors
       StaggeredTile.count(3, 1): ApiTokenCard(
         apiTokenController: apiTokenController,
         pi: pi,
       ),
-
+      // ignore: prefer_const_constructors
       StaggeredTile.count(1, 1): QrScanCard(
         onScan: (scan) {
           apiTokenController.text = scan;
         },
         pi: pi,
       ),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 1): TopItemsTestTile(pi: pi),
-      StaggeredTile.count(2, 1): Card(),
+      // ignore: prefer_const_constructors
+      StaggeredTile.count(2, 1): const Card(),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 2): UseApiKeyCard(
+        // ignore: prefer_const_constructors
         value: pi.apiTokenRequired,
         onChanged: (value) {
           if (value != null) n.updateApiTokenRequired(value);
         },
       ),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 2): AllowSelfSignedCertificatesCard(
         value: pi.allowSelfSignedCertificates,
         onChanged: (value) {
@@ -228,8 +244,9 @@ class SinglePiPage extends HookWidget {
       ),
       // StaggeredTile.count(2, 1): Card(),
 
-      StaggeredTile.count(4, 1):
+      StaggeredTile.count(4, 1): // ignore: prefer_const_constructors
           const GridSectionHeader('Customization', KIcons.customization),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 2): ColorCard(
           title: 'Primary color',
           currentColor: pi.primaryColor,
@@ -237,6 +254,7 @@ class SinglePiPage extends HookWidget {
           onSelected: (selected) {
             n.updatePrimaryColor(selected);
           }),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 2): ColorCard(
           title: 'Accent color',
           currentColor: pi.accentColor,
@@ -244,9 +262,12 @@ class SinglePiPage extends HookWidget {
           onSelected: (selected) {
             n.updateAccentColor(selected);
           }),
-      StaggeredTile.count(4, 1): SelectTilesTile(),
+      // ignore: prefer_const_constructors
+      StaggeredTile.count(4, 1): const SelectTilesTile(),
+      // ignore: prefer_const_constructors
       StaggeredTile.fit(4):
           DevOnlyBuilder(child: SelectableCodeCard(pi.toReadableJson())),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(4, 1): Container(),
     };
 
@@ -264,7 +285,7 @@ class SinglePiPage extends HookWidget {
               overflow: TextOverflow.fade,
             ),
             actions: [
-              ThemeModeToggle(),
+              const ThemeModeToggle(),
               ElevatedSaveButton(
                 onPressed: hasChanges
                     ? () {
@@ -305,9 +326,9 @@ class UseApiKeyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return TriplePiGridCard(
       onTap: () => onChanged(!value),
-      left: Center(
+      left: const Center(
           child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0),
         child: Text('Require API key'),
       )),
       right: Checkbox(
@@ -341,9 +362,9 @@ class AllowSelfSignedCertificatesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return TriplePiGridCard(
       onTap: () => onChanged(!value),
-      left: Center(
+      left: const Center(
           child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.0),
         child: Text(
           'Allow self signed certificates',
         ),
@@ -437,26 +458,23 @@ class QrScanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final VoidCallback? onTap = () async {
+    onTap() async {
       final barcode = await showModal<String>(
         context: context,
         builder: (context) {
-          return _QrScanDialog();
+          return const _QrScanDialog();
         },
       );
 
       if (barcode != null) onScan(barcode);
-    };
+    }
 
     return Tooltip(
       message: 'Scan API token',
       child: PiGridCard(
         onTap: onTap,
         child: IconButton(
-          icon: Icon(
-            KIcons.qrCode,
-            // size: constraints.maxHeight / 2,
-          ),
+          icon: const Icon(KIcons.qrCode),
           onPressed: onTap,
         ),
       ),

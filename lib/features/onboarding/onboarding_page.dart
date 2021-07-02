@@ -31,7 +31,7 @@ class OnboardingPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('isInitialPage: $isInitialPage');
+    debugPrint('isInitialPage: $isInitialPage');
 
     final pageController = usePageController();
 
@@ -60,7 +60,7 @@ class OnboardingPage extends HookWidget {
         backgroundColor: Colors.transparent,
         actions: [
           Text('${prefs.firstUse}: ${prefs.lastStartup}'),
-          ThemeModeToggle(),
+          const ThemeModeToggle(),
         ],
       ),
       extendBodyBehindAppBar: true,
@@ -88,45 +88,39 @@ class OnboardingPage extends HookWidget {
                     )),
                     title: Text.rich(
                       TextSpan(
-                        text: "",
+                        text: '',
                         style: Theme.of(context).textTheme.headline4,
                         children: <TextSpan>[
-                          TextSpan(text: "Free and "),
-                          TextSpan(text: "open-source", style: titleStyle),
-                          TextSpan(text: "."),
+                          const TextSpan(text: 'Free and '),
+                          TextSpan(text: 'open-source', style: titleStyle),
+                          const TextSpan(text: '.'),
                           // can add more TextSpans here...
                         ],
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    description: Container(
-                      // color: Colors.orange,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Text("Perform all the commands:"),
-                          Container(
-                            // color: Colors.blueAccent,
-                            child: Column(
-                              // mainAxisSize: MainAxisSize.min,
-                              // crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                Text(
-                                  'You can find the code and support this project on GitHub.',
-                                  style: descriptionStyle,
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: 16.0),
-                                CodeCard(
-                                  code: KUrls.githubHomeUrl,
-                                  onTap: () => launchUrl(KUrls.githubHomeUrl),
-                                ),
-                                // Text('GitHub', style: descriptionStyle),
-                              ],
+                    description: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Text("Perform all the commands:"),
+                        Column(
+                          // mainAxisSize: MainAxisSize.min,
+                          // crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              'You can find the code and support this project on GitHub.',
+                              style: descriptionStyle,
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                        ],
-                      ),
+                            const SizedBox(height: 16.0),
+                            CodeCard(
+                              code: KUrls.githubHomeUrl,
+                              onTap: () => launchUrl(KUrls.githubHomeUrl),
+                            ),
+                            // Text('GitHub', style: descriptionStyle),
+                          ],
+                        ),
+                      ],
                     ),
                   )
                 ],
@@ -150,10 +144,10 @@ class OnboardingPage extends HookWidget {
                           child: Visibility(
                             visible: isInitialPage,
                             child: TextButton(
-                              child: Text("Skip setup"),
+                              child: const Text('Skip setup'),
                               onPressed: () async {
                                 if (kDebugMode) {
-                                  context.router.replace(HomeRoute());
+                                  context.router.replace(const HomeRoute());
                                   return;
                                 }
 
@@ -162,9 +156,10 @@ class OnboardingPage extends HookWidget {
                                     builder: (context) => ConfirmationDialog(
                                         title: 'Skip setup?',
                                         onConfirm: () {
-                                          context.router.replace(HomeRoute());
+                                          context.router
+                                              .replace(const HomeRoute());
                                         },
-                                        body: Text(
+                                        body: const Text(
                                             'If you already know your Pi-hole information, you can directly go to the dashboard.\n\nFor full functionality, add your API token in the Pi-hole settings.')));
 
                                 // Navigator.of(context).push(MaterialPageRoute(
@@ -197,7 +192,7 @@ class OnboardingPage extends HookWidget {
                           child: Visibility(
                             visible: isInitialPage,
                             child: TextButton(
-                              child: Text("Get started"),
+                              child: const Text('Get started'),
                               onPressed: () {},
                               // onPressed: () => ExtendedNavigator.of(context)
                               //     .pushSignInPage(
@@ -226,7 +221,7 @@ class _MonitorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _Page(
-      leading: Container(
+      leading: const SizedBox(
           width: 300.0,
           // color: Colors.purple.withOpacity(.2),
           child: Card(
@@ -235,18 +230,19 @@ class _MonitorPage extends StatelessWidget {
                   opacity: .8, child: Center(child: _AnimatedDemoLogList())))),
       title: Text.rich(
         TextSpan(
-          text: "",
+          text: '',
           style: Theme.of(context).textTheme.headline4,
           children: <TextSpan>[
-            TextSpan(text: "Easily "),
-            TextSpan(text: "monitor", style: titleStyle),
-            TextSpan(text: " your network."),
+            const TextSpan(text: 'Easily '),
+            TextSpan(text: 'monitor', style: titleStyle),
+            const TextSpan(text: ' your network.'),
             // can add more TextSpans here...
           ],
         ),
         textAlign: TextAlign.center,
       ),
-      description: _PageDescription("Inspect and triage all DNS requests."),
+      description:
+          const _PageDescription('Inspect and triage all DNS requests.'),
     );
   }
 }
@@ -275,40 +271,34 @@ class _ControlPage extends StatelessWidget {
       ),
       title: Text.rich(
         TextSpan(
-          text: "",
+          text: '',
           style: Theme.of(context).textTheme.headline4,
           children: <TextSpan>[
-            TextSpan(text: "Control", style: titleStyle),
-            TextSpan(text: " your Pi-hole."),
+            TextSpan(text: 'Control', style: titleStyle),
+            const TextSpan(text: ' your Pi-hole.'),
             // can add more TextSpans here...
           ],
         ),
         textAlign: TextAlign.center,
       ),
-      description: Container(
-        // color: Colors.orange,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Text("Perform all the commands:"),
-            Container(
-              // color: Colors.blueAccent,
-              child: Wrap(
-                // mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Text('Use commands like ', style: descriptionStyle),
-                  CodeCard(code: 'enable'),
-                  Text(', ', style: descriptionStyle),
-                  CodeCard(code: 'disable'),
-                  Text(' and ', style: descriptionStyle),
-                  CodeCard(code: 'sleep'),
-                  Text(' with ease.', style: descriptionStyle),
-                ],
-              ),
-            ),
-          ],
-        ),
+      description: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Text("Perform all the commands:"),
+          Wrap(
+            // mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text('Use commands like ', style: descriptionStyle),
+              const CodeCard(code: 'enable'),
+              Text(', ', style: descriptionStyle),
+              const CodeCard(code: 'disable'),
+              Text(' and ', style: descriptionStyle),
+              const CodeCard(code: 'sleep'),
+              Text(' with ease.', style: descriptionStyle),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -325,7 +315,7 @@ class _DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _Page(
-      leading: Container(
+      leading: SizedBox(
         width: 300.0,
         child: Center(
           child: StaggeredGridView.count(
@@ -334,14 +324,14 @@ class _DashboardPage extends StatelessWidget {
             mainAxisSpacing: kGridSpacing,
             crossAxisSpacing: kGridSpacing,
             padding: const EdgeInsets.all(kGridSpacing),
-            physics: NeverScrollableScrollPhysics(),
-            staggeredTiles: [
+            physics: const NeverScrollableScrollPhysics(),
+            staggeredTiles: const [
               StaggeredTile.count(3, 1),
               StaggeredTile.count(1, 2),
               StaggeredTile.count(2, 1),
               StaggeredTile.count(1, 1),
             ],
-            children: [
+            children: const [
               _ColorCard(duration: Duration(seconds: 2)),
               _ColorCard(duration: Duration(seconds: 3)),
               _ColorCard(duration: Duration(seconds: 4)),
@@ -352,18 +342,18 @@ class _DashboardPage extends StatelessWidget {
       ),
       title: Text.rich(
         TextSpan(
-          text: "",
+          text: '',
           style: Theme.of(context).textTheme.headline4,
           children: <TextSpan>[
-            TextSpan(text: "Customize", style: titleStyle),
-            TextSpan(text: " your dashboard."),
+            TextSpan(text: 'Customize', style: titleStyle),
+            const TextSpan(text: ' your dashboard.'),
             // can add more TextSpans here...
           ],
         ),
         textAlign: TextAlign.center,
       ),
-      description: _PageDescription(
-          "Select which information you want, in which order."),
+      description: const _PageDescription(
+          'Select which information you want, in which order.'),
     );
   }
 }
@@ -395,7 +385,7 @@ class _AnimatedDemoLogList extends HookWidget {
     }
 
     useEffect(() {
-      final timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      final timer = Timer.periodic(const Duration(seconds: 2), (timer) {
         deleteAtIndex(list.value.length - 1);
       });
 
@@ -440,7 +430,7 @@ class _DemoLogTile extends HookWidget {
               children: [
                 Card(
                   color: Theme.of(context).colorScheme.onSurface,
-                  child: Container(
+                  child: SizedBox(
                     height: Theme.of(context).textTheme.headline6!.fontSize,
                     width: constraints.maxWidth * (id / 120),
                   ),
@@ -455,7 +445,7 @@ class _DemoLogTile extends HookWidget {
               children: [
                 Card(
                   color: Theme.of(context).colorScheme.onSurface,
-                  child: Container(
+                  child: SizedBox(
                     height: Theme.of(context).textTheme.bodyText2!.fontSize,
                     width: constraints.maxWidth * ((id / 200) + .4),
                   ),
@@ -500,17 +490,17 @@ class _Page extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      minimum: EdgeInsets.all(20.0),
+      minimum: const EdgeInsets.all(20.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Spacer(),
+          const Spacer(),
           Expanded(child: leading),
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
           title,
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           description,
-          Spacer(),
+          const Spacer(),
         ],
       ),
     );

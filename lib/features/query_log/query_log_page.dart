@@ -46,7 +46,7 @@ class _Bottom extends HookWidget implements PreferredSizeWidget {
       color: Theme.of(context).primaryColor,
       child: filteredValue.maybeWhen(
         data: (queries) => SafeArea(
-          minimum: EdgeInsets.symmetric(horizontal: 16.0),
+          minimum: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -100,8 +100,8 @@ class _SearchTextField extends StatelessWidget {
   }
 }
 
-class BetterQueryLogPage extends HookWidget {
-  const BetterQueryLogPage({Key? key}) : super(key: key);
+class QueryLogPage extends HookWidget {
+  const QueryLogPage({Key? key}) : super(key: key);
 
   static const String _title = 'Query log';
 
@@ -140,7 +140,7 @@ class BetterQueryLogPage extends HookWidget {
               iconData,
               color: Theme.of(context).colorScheme.onSurface,
             ),
-            SizedBox(width: 12.0),
+            const SizedBox(width: 12.0),
             Text(title),
           ],
         );
@@ -164,22 +164,19 @@ class BetterQueryLogPage extends HookWidget {
           child: Scaffold(
             appBar: AppBar(
               elevation: 0.0,
-              title: Container(
-                // color: Colors.orangeAccent.withOpacity(.2),
-                child: Stack(
-                  alignment: Alignment.centerLeft,
-                  children: [
-                    Visibility(
-                        visible: isSearching.value,
-                        maintainState: true,
-                        child: _SearchTextField(searchController, searchNode)),
-                    Visibility(
-                      visible:
-                          !isSearching.value && searchController.text.isEmpty,
-                      child: Text(_title),
-                    ),
-                  ],
-                ),
+              title: Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  Visibility(
+                      visible: isSearching.value,
+                      maintainState: true,
+                      child: _SearchTextField(searchController, searchNode)),
+                  Visibility(
+                    visible:
+                        !isSearching.value && searchController.text.isEmpty,
+                    child: const Text(_title),
+                  ),
+                ],
               ),
               bottom: _Bottom(
                 lastRefresh: lastRefresh.value,
@@ -190,37 +187,37 @@ class BetterQueryLogPage extends HookWidget {
                   duration: kThemeAnimationDuration * 2,
                   child: isSearching.value
                       ? IconButton(
-                          key: ValueKey('cancel'),
+                          key: const ValueKey('cancel'),
                           tooltip: 'Cancel search',
                           onPressed: () {
                             searchController.text = '';
                             isSearching.value = false;
                             FocusScope.of(context).requestFocus(FocusNode());
                           },
-                          icon: Icon(KIcons.cancel))
+                          icon: const Icon(KIcons.cancel))
                       : IconButton(
-                          key: ValueKey('search'),
+                          key: const ValueKey('search'),
                           tooltip: 'Search queries',
                           onPressed: () {
                             FocusScope.of(context).requestFocus(searchNode);
                             isSearching.value = true;
                           },
-                          icon: Icon(KIcons.search)),
+                          icon: const Icon(KIcons.search)),
                 ),
-                ThemeModeToggle(),
+                const ThemeModeToggle(),
                 PopupMenuButton<String>(
                   onSelected: (String selected) async {
                     if (selected == 'filters') {
                       showModal(
                           context: context,
-                          builder: (context) => QueryLogFiltersDialog());
+                          builder: (context) => const QueryLogFiltersDialog());
                       return;
                     }
 
                     if (selected == 'max_results') {
                       final update = await showModal<int>(
                           context: context,
-                          builder: (context) => MaxResultsDialog());
+                          builder: (context) => const MaxResultsDialog());
 
                       if (update != null) {
                         context.read(queryLogMaxProvider).state = update;
@@ -276,7 +273,7 @@ class BetterQueryLogPage extends HookWidget {
                     },
                     loading: () => Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         CircularProgressIndicator(),
                       ],
                     ),
@@ -327,7 +324,7 @@ class _NavigateToBottomFab extends HookWidget {
           heroTag: 'fab_bottom',
           elevation: 0.0,
           tooltip: 'Navigate to bottom',
-          child: Icon(KIcons.bottom),
+          child: const Icon(KIcons.bottom),
           onPressed: () async {
             scrollController
                 .jumpTo(scrollController.position.maxScrollExtent - 50);
@@ -379,7 +376,7 @@ class _NavigateToTopFab extends HookWidget {
           heroTag: 'fab_top',
           elevation: 0.0,
           tooltip: 'Navigate to top',
-          child: Icon(KIcons.top),
+          child: const Icon(KIcons.top),
           onPressed: () async {
             scrollController.jumpTo(50);
 
@@ -406,7 +403,7 @@ class MaxResultsDialog extends HookWidget {
   Widget build(BuildContext context) {
     final x = useState(context.read(queryLogMaxProvider).state);
     return DialogBase(
-      header: DialogHeader(
+      header: const DialogHeader(
         title: 'Max results',
         message: 'The maximum amount of queries to fetch.',
       ),
@@ -501,7 +498,7 @@ class QueryLogFiltersDialog extends HookWidget {
         );
 
     return DialogListBase(
-      header: DialogHeader(
+      header: const DialogHeader(
         title: 'Filters',
         message: 'Show queries based on their status.',
       ),

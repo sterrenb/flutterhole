@@ -4,12 +4,12 @@ import 'package:flutterhole_web/features/entities/settings_entities.dart';
 // const String token = String.fromEnvironment('TOKEN');
 // lol security
 const String token =
-    "3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c";
+    '3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c';
 
 const double kGridSpacing = 4.0;
 const Duration kRefreshDuration = Duration(milliseconds: 2000);
-final int kLogsDashboardCacheLength = 5;
-final int kLogsPageCacheLength = 100;
+const int kLogsDashboardCacheLength = 5;
+const int kLogsPageCacheLength = 100;
 
 final debugPis = <Pi>[
   Pi(

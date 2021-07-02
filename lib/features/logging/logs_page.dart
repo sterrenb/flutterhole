@@ -7,7 +7,8 @@ import 'package:flutterhole_web/features/logging/log_widgets.dart';
 import 'package:flutterhole_web/features/settings/developer_widgets.dart';
 import 'package:flutterhole_web/features/settings/themes.dart';
 
-final bool animated = false;
+// TODO parameterize?
+const bool animated = false;
 
 class LogsPage extends HookWidget {
   const LogsPage({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class LogsPage extends HookWidget {
             style:
                 TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
           ),
-          actions: [
+          actions: const [
             ThemeModeToggle(),
             AddLogTextButton(),
           ],
@@ -35,9 +36,9 @@ class LogsPage extends HookWidget {
           children: [
             Scrollbar(
               child: ListView(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 controller: controller,
-                children: [
+                children: const [
                   animated
                       ? AnimatedLogsList(
                           maxLength: kLogsPageCacheLength,
@@ -56,8 +57,8 @@ class LogsPage extends HookWidget {
               controller: controller,
               height: 200.0,
               threshold: -.8,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text('The logs are automatically refreshed.'),
               ),
             ),
@@ -65,13 +66,13 @@ class LogsPage extends HookWidget {
               controller: controller,
               height: 300.0,
               threshold: -1.5,
-              child: Text('Patience is a virtue.'),
+              child: const Text('Patience is a virtue.'),
             ),
             OverScrollMessage(
               controller: controller,
               height: 400.0,
               threshold: -1.8,
-              child: Text('Enough swiping for today.'),
+              child: const Text('Enough swiping for today.'),
             ),
           ],
         ),

@@ -15,21 +15,21 @@ class PiModel with _$PiModel {
 
   factory PiModel({
     @Default(0) int id,
-    @Default("FlutterHole") String title,
-    @Default("") String description,
+    @Default('FlutterHole') String title,
+    @Default('') String description,
     @Default(4294940672) int primaryColor,
     @Default(4294945600) int accentColor,
-    @Default("pi.hole") String baseUrl,
+    @Default('pi.hole') String baseUrl,
     @Default(false) bool useSsl,
-    @Default("/admin/api.php") String apiPath,
+    @Default('/admin/api.php') String apiPath,
     @Default(80) int apiPort,
-    @Default("3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c")
+    @Default('3f4fa74468f336df5c4cf1d343d160f8948375732f82ea1a057138ae7d35055c')
         String apiToken,
     @Default(true) bool apiTokenRequired,
     @Default(false) bool allowSelfSignedCertificates,
-    @Default("") String basicAuthenticationUsername,
-    @Default("") String basicAuthenticationPassword,
-    @Default("") String proxyUrl,
+    @Default('') String basicAuthenticationUsername,
+    @Default('') String basicAuthenticationPassword,
+    @Default('') String proxyUrl,
     @Default(8080) int proxyPort,
     DashboardSettingsModel? dashboardSettings,
   }) = _PiModel;
@@ -104,40 +104,38 @@ class DashboardTileConstraints with _$DashboardTileConstraints {
           id,
           (id) {
             switch (id) {
-              case DashboardID.SelectTiles:
+              case DashboardID.selectTiles:
                 return const DashboardTileConstraints.count(4, 1);
-              case DashboardID.TotalQueries:
+              case DashboardID.totalQueries:
                 return const DashboardTileConstraints.count(4, 1);
-              case DashboardID.QueriesBlocked:
+              case DashboardID.queriesBlocked:
                 return const DashboardTileConstraints.count(4, 1);
-              case DashboardID.PercentBlocked:
+              case DashboardID.percentBlocked:
                 return const DashboardTileConstraints.count(4, 1);
-              case DashboardID.DomainsOnBlocklist:
+              case DashboardID.domainsOnBlocklist:
                 return const DashboardTileConstraints.count(4, 1);
-              case DashboardID.QueriesBarChart:
+              case DashboardID.queriesBarChart:
                 return const DashboardTileConstraints.fit(4);
-              case DashboardID.ClientActivityBarChart:
+              case DashboardID.clientActivityBarChart:
                 return const DashboardTileConstraints.fit(4);
-              case DashboardID.Temperature:
+              case DashboardID.temperature:
                 return const DashboardTileConstraints.count(2, 2);
-              case DashboardID.Memory:
+              case DashboardID.memory:
                 return const DashboardTileConstraints.count(2, 2);
-              case DashboardID.QueryTypes:
+              case DashboardID.queryTypes:
                 return const DashboardTileConstraints.count(4, 2);
-              case DashboardID.ForwardDestinations:
+              case DashboardID.forwardDestinations:
                 return const DashboardTileConstraints.count(4, 2);
-              case DashboardID.TopPermittedDomains:
+              case DashboardID.topPermittedDomains:
                 return const DashboardTileConstraints.fit(4);
-              case DashboardID.TopBlockedDomains:
+              case DashboardID.topBlockedDomains:
                 return const DashboardTileConstraints.fit(4);
-              case DashboardID.Versions:
+              case DashboardID.versions:
                 return const DashboardTileConstraints.fit(4);
-              case DashboardID.Versions:
-                return const DashboardTileConstraints.fit(4);
-              case DashboardID.Logs:
-                return DashboardTileConstraints.extent(
+              case DashboardID.logs:
+                return const DashboardTileConstraints.extent(
                     4, (kLogsDashboardCacheLength + 2) * kToolbarHeight);
-              case DashboardID.TempTile:
+              case DashboardID.tempTile:
                 return const DashboardTileConstraints.count(2, 3);
 
               default:

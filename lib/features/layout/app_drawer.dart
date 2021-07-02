@@ -95,7 +95,7 @@ class _DrawerMenu extends HookWidget {
         child: PiListBuilder(
           controller: controller,
           shrinkWrap: true,
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           onTap: (pi) {
             context.read(settingsNotifierProvider.notifier).activate(pi.id);
             context.router.pop();
@@ -135,7 +135,7 @@ class _DrawerHeader extends HookWidget {
         },
         child: UserAccountsDrawerHeader(
           accountName: Row(
-            children: [
+            children: const [
               ActivePiTitle(),
               // PiStatusIndicator(enabled: false),
             ],
@@ -175,56 +175,54 @@ class AppDrawer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Drawer(
-        child: Stack(
-          // alignment: Alignment.centerLeft,
-          alignment: Alignment.bottomCenter,
-          children: [
-            ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                _DrawerHeader(),
-                _DrawerMenu(),
-                _DrawerTile(
-                  'Dashboard',
-                  KIcons.dashboard,
-                  HomeRoute(),
+    return Drawer(
+      child: Stack(
+        // alignment: Alignment.centerLeft,
+        alignment: Alignment.bottomCenter,
+        children: [
+          ListView(
+            padding: EdgeInsets.zero,
+            children: const [
+              _DrawerHeader(),
+              _DrawerMenu(),
+              _DrawerTile(
+                'Dashboard',
+                KIcons.dashboard,
+                HomeRoute(),
+              ),
+              _DrawerTile(
+                'Query Log',
+                KIcons.queryLog,
+                BetterQueryLogRoute(),
+              ),
+              Divider(),
+              _DrawerTile(
+                'About',
+                KIcons.about,
+                AboutRoute(),
+              ),
+              _DrawerTile(
+                'Settings',
+                KIcons.settings,
+                SettingsRoute(),
+              ),
+            ],
+          ),
+          HookBuilder(
+            builder: (context) {
+              final expanded = useProvider(_expandedProvider);
+              return AnimatedOpacity(
+                duration: kThemeChangeDuration,
+                curve: Curves.ease,
+                opacity: expanded.state ? 0 : 0.1,
+                child: const ThemedLogoImage(
+                  width: 150.0,
+                  height: 150.0,
                 ),
-                _DrawerTile(
-                  'Query Log',
-                  KIcons.queryLog,
-                  BetterQueryLogRoute(),
-                ),
-                Divider(),
-                _DrawerTile(
-                  'About',
-                  KIcons.about,
-                  AboutRoute(),
-                ),
-                _DrawerTile(
-                  'Settings',
-                  KIcons.settings,
-                  SettingsRoute(),
-                ),
-              ],
-            ),
-            HookBuilder(
-              builder: (context) {
-                final expanded = useProvider(_expandedProvider);
-                return AnimatedOpacity(
-                  duration: kThemeChangeDuration,
-                  curve: Curves.ease,
-                  opacity: expanded.state ? 0 : 0.1,
-                  child: ThemedLogoImage(
-                    width: 150.0,
-                    height: 150.0,
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

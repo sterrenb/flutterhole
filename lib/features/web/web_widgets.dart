@@ -15,7 +15,8 @@ class NoWebBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return kIsWeb
         ? orElse ??
-            Center(child: Text('This widget is not supported on the web.'))
+            const Center(
+                child: Text('This widget is not supported on the web.'))
         : child;
   }
 }

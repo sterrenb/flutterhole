@@ -7,7 +7,7 @@ import 'package:pihole_api/pihole_api.dart';
 
 const importEntityFormatting = null;
 
-final JsonEncoder _jsonEncoder = new JsonEncoder.withIndent('  ');
+const JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
 
 extension MapX on Map<String, dynamic> {
   String toJsonString() => _jsonEncoder.convert(this);

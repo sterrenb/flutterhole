@@ -24,7 +24,7 @@ class _SquareContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: double.infinity,
       // color: Colors.orange,
       child: AspectRatio(
@@ -71,7 +71,7 @@ class WideNumberTile extends StatelessWidget {
             Expanded(child: child),
             _SquareContainer(
                 child: Center(
-                    child: Container(
+                    child: SizedBox(
               height: 24.0,
               width: 24.0,
               child: AnimatedOpacity(
@@ -126,7 +126,7 @@ class SquareNumberTile extends StatelessWidget {
             Expanded(child: child),
             _SquareContainer(
                 child: Center(
-                    child: Container(
+                    child: SizedBox(
               height: 24.0,
               width: 24.0,
               child: AnimatedOpacity(

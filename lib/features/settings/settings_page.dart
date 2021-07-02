@@ -27,42 +27,55 @@ class SettingsPage extends HookWidget {
     final devMode = useProvider(devModeProvider);
 
     final Map<StaggeredTile, Widget> items = {
+      // ignore: prefer_const_constructors
       StaggeredTile.fit(4): const ListTitle('Preferences'),
+      // ignore: prefer_const_constructors
       StaggeredTile.fit(4): const UserPreferencesListView(),
-      StaggeredTile.fit(4): Divider(),
+      // ignore: prefer_const_constructors
+      StaggeredTile.fit(4): const Divider(),
+      // ignore: prefer_const_constructors
       StaggeredTile.extent(4, kToolbarHeight): const ListTitle('My Pi-holes'),
-      StaggeredTile.extent(4, kToolbarHeight): AddPiTile(),
+      // ignore: prefer_const_constructors
+      StaggeredTile.extent(4, kToolbarHeight): const AddPiTile(),
+      // ignore: prefer_const_constructors
       StaggeredTile.fit(4): PiListBuilder(
         onTap: (pi) {
           context.router.pushAndSaveSinglePiRoute(context, pi);
         },
       ),
-      StaggeredTile.fit(4): Divider(),
+      // ignore: prefer_const_constructors
+      StaggeredTile.fit(4): const Divider(),
+      // ignore: prefer_const_constructors
       StaggeredTile.extent(4, kToolbarHeight): const ListTitle('Danger zone'),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 1): const _ResetActiveDashboardCard(),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 1): const _DeletePiHolesCard(),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 1): const _ToggleDevModeCard(),
+      // ignore: prefer_const_constructors
       StaggeredTile.count(2, 1): const _ResetAllSettingsCard(),
-      // StaggeredTile.count(4, 1):
-      //     const GridSectionHeader('Danger zone', KIcons.dangerZone),
     };
 
     if (devMode) {
       items.addAll({
+        // ignore: prefer_const_constructors
         StaggeredTile.fit(4): const ListTitle('Developer'),
+        // ignore: prefer_const_constructors
         StaggeredTile.fit(4): const DeveloperPreferencesListView(),
       });
     }
 
     items.addAll({
+      // ignore: prefer_const_constructors
       StaggeredTile.extent(4, kToolbarHeight): Container(),
     });
 
     return ActivePiTheme(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Settings'),
-          actions: [
+          title: const Text('Settings'),
+          actions: const [
             ThemeModeToggle(),
           ],
         ),
@@ -104,7 +117,7 @@ class _ResetAllSettingsCard extends StatelessWidget {
                         ),
                       );
                     },
-                    body: Text(
+                    body: const Text(
                         'All your preferences and Pi-holes and will be lost. This could help if the app gets stuck.'),
                   ),
                 ),
@@ -153,7 +166,7 @@ class _DeletePiHolesCard extends StatelessWidget {
                         ),
                       );
                     },
-                    body: Text(
+                    body: const Text(
                         'All your Pi-holes and will be lost. This could help if the app gets stuck.'),
                   ),
                 ),
@@ -202,7 +215,7 @@ class _ResetActiveDashboardCard extends StatelessWidget {
                         ),
                       );
                     },
-                    body: Text(
+                    body: const Text(
                         'Your active dashboard configuration will be lost. Other Pi-holes will be unaffected. Convenient when starting over.'),
                   ),
                 ),

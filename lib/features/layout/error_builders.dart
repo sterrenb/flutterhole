@@ -17,14 +17,14 @@ class CenteredErrorMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: SafeArea(
-        minimum: EdgeInsets.all(20.0),
+        minimum: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(message ?? error.toString()),
             const SizedBox(height: 8.0),
             TextButton(
-                child: Text('View details'),
+                child: const Text('View details'),
                 onPressed: () {
                   showErrorDialog(context, error, stackTrace);
                   // context.refresh(_markdownProvider);

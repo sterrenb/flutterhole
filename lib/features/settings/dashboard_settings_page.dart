@@ -42,7 +42,7 @@ class DashboardSettingsPage extends HookWidget {
     return ActivePiTheme(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Select tiles'),
+          title: const Text('Select tiles'),
           actions: [
             TextSaveButton(
               onPressed: () {
@@ -95,39 +95,37 @@ class DashboardSettingsPage extends HookWidget {
 extension DashboardIDI on DashboardID {
   IconData get iconData {
     switch (this) {
-      case DashboardID.Versions:
+      case DashboardID.versions:
         return KIcons.appVersion;
-      case DashboardID.TotalQueries:
+      case DashboardID.totalQueries:
         return KIcons.totalQueries;
-      case DashboardID.TotalQueries:
-        return KIcons.totalQueries;
-      case DashboardID.QueriesBlocked:
+      case DashboardID.queriesBlocked:
         return KIcons.queriesBlocked;
-      case DashboardID.PercentBlocked:
+      case DashboardID.percentBlocked:
         return KIcons.percentBlocked;
-      case DashboardID.DomainsOnBlocklist:
+      case DashboardID.domainsOnBlocklist:
         return KIcons.domainsOnBlocklist;
-      case DashboardID.QueriesBarChart:
+      case DashboardID.queriesBarChart:
         return KIcons.queriesOverTime;
-      case DashboardID.ClientActivityBarChart:
+      case DashboardID.clientActivityBarChart:
         return KIcons.clientActivity;
-      case DashboardID.Temperature:
+      case DashboardID.temperature:
         return KIcons.temperatureReading;
-      case DashboardID.Memory:
+      case DashboardID.memory:
         return KIcons.memoryUsage;
-      case DashboardID.QueryTypes:
+      case DashboardID.queryTypes:
         return KIcons.memoryUsage;
-      case DashboardID.ForwardDestinations:
+      case DashboardID.forwardDestinations:
         return KIcons.memoryUsage;
-      case DashboardID.TopPermittedDomains:
+      case DashboardID.topPermittedDomains:
         return KIcons.domainsPermittedTile;
-      case DashboardID.TopBlockedDomains:
+      case DashboardID.topBlockedDomains:
         return KIcons.domainsBlockedTile;
-      case DashboardID.SelectTiles:
+      case DashboardID.selectTiles:
         return KIcons.selectDashboardTiles;
-      case DashboardID.Logs:
+      case DashboardID.logs:
         return KIcons.debugLogs;
-      case DashboardID.TempTile:
+      case DashboardID.tempTile:
         return KIcons.add; // TODO
     }
   }
@@ -152,7 +150,7 @@ class _SelectTile extends StatelessWidget {
       index: index,
       child: Column(
         children: [
-          Divider(height: 0),
+          const Divider(height: 0),
           ListTile(
             onTap: onTap,
             title: Text(
@@ -178,7 +176,7 @@ class _SelectTile extends StatelessWidget {
                 ),
                 ReorderableDragStartListener(
                   index: index,
-                  child: IconButton(
+                  child: const IconButton(
                     onPressed: null,
                     icon: Icon(Icons.drag_handle),
                   ),
@@ -186,7 +184,7 @@ class _SelectTile extends StatelessWidget {
               ],
             ),
           ),
-          Divider(height: 0),
+          const Divider(height: 0),
         ],
       ),
     );

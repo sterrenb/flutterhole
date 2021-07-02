@@ -27,11 +27,11 @@ class QueriesBarChartTile extends HookWidget {
     return Card(
       child: ExpandableDashboardTile(
         title,
-        leading: GridIcon(KIcons.queriesOverTime),
-        title: TileTitle(title),
+        leading: const GridIcon(KIcons.queriesOverTime),
+        title: const TileTitle(title),
         child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: kMinTileHeight),
-          child: Container(
+          constraints: const BoxConstraints(minHeight: kMinTileHeight),
+          child: SizedBox(
             height: expanded.state ? kMinTileHeight * 2 : kMinTileHeight,
             child: Center(
                 child: queriesOverTime.when(
@@ -57,7 +57,7 @@ class QueriesBarChartTile extends HookWidget {
                       stepTitleBuilder: (index) {
                         final m = domainKeys.elementAt(index);
                         return DateFormat.Hm()
-                            .format(m.subtract(Duration(minutes: 5)));
+                            .format(m.subtract(const Duration(minutes: 5)));
                       },
                       legendChildrenBuilder: (index, touchedSpots) {
                         final m = domainKeys.elementAt(index);
@@ -73,9 +73,10 @@ class QueriesBarChartTile extends HookWidget {
                             children: [
                               TextSpan(
                                 text: m.beforeAfter(const Duration(minutes: 5)),
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
-                              TextSpan(text: '\nPermitted: '),
+                              const TextSpan(text: '\nPermitted: '),
                               TextSpan(
                                 text:
                                     (touchedSpots.first.y - touchedSpots.last.y)
@@ -86,7 +87,7 @@ class QueriesBarChartTile extends HookWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              TextSpan(text: '\nBlocked: '),
+                              const TextSpan(text: '\nBlocked: '),
                               TextSpan(
                                 text: touchedSpots.last.y.toInt().toString(),
                                 style: TextStyle(
@@ -101,7 +102,7 @@ class QueriesBarChartTile extends HookWidget {
                           ),
                           LineTooltipItem(
                             '',
-                            TextStyle(fontSize: 0),
+                            const TextStyle(fontSize: 0),
                             textAlign: TextAlign.start,
                           ),
                         ];
@@ -110,7 +111,7 @@ class QueriesBarChartTile extends HookWidget {
                   ),
                 );
               },
-              loading: () => CircularProgressIndicator(),
+              loading: () => const CircularProgressIndicator(),
               error: (e, s) => Text(e.toString()),
             )),
           ),
@@ -208,7 +209,8 @@ class ClientActivityBarChartTile extends HookWidget {
                 .toList(),
             stepTitleBuilder: (index) {
               final m = activity.activity.keys.elementAt(index);
-              return DateFormat.Hm().format(m.subtract(Duration(minutes: 5)));
+              return DateFormat.Hm()
+                  .format(m.subtract(const Duration(minutes: 5)));
             },
             legendChildrenBuilder: (spotIndex, touchedSpots) {
               final textStyle = TextStyle(
@@ -233,7 +235,7 @@ class ClientActivityBarChartTile extends HookWidget {
                     ),
                     TextSpan(
                       text: hits.toString(),
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     )
                   ];
 
@@ -245,7 +247,7 @@ class ClientActivityBarChartTile extends HookWidget {
                                   .elementAt(spotIndex)
                                   .beforeAfter(const Duration(minutes: 5)) +
                               '\n',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ));
                   }
 
@@ -263,17 +265,17 @@ class ClientActivityBarChartTile extends HookWidget {
           ),
         );
       },
-      loading: () => CircularProgressIndicator(),
+      loading: () => const CircularProgressIndicator(),
       error: (e, s) => Text(e.toString()),
     );
     return Card(
       child: ExpandableDashboardTile(
         title,
-        leading: GridIcon(KIcons.clientActivity),
-        title: TileTitle(title),
+        leading: const GridIcon(KIcons.clientActivity),
+        title: const TileTitle(title),
         child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: kMinTileHeight),
-          child: Container(
+          constraints: const BoxConstraints(minHeight: kMinTileHeight),
+          child: SizedBox(
             height: expanded.state ? kMinTileHeight * 2 : kMinTileHeight,
             child: Center(child: when),
           ),

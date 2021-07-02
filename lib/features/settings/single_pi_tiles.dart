@@ -55,7 +55,7 @@ class TileTextField extends HookWidget {
       hintText: hintText,
       // labelText: node.hasFocus ? hintText : null,
       // focusColor: Colors.orangeAccent,
-      border: OutlineInputBorder(
+      border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(kGridSpacing))),
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
@@ -200,7 +200,6 @@ class ColorGrid extends HookWidget {
             onTap: () {
               if (selected.value.value == color.value) {
                 Navigator.of(context).pop();
-                print('pop');
                 return onSelected(color);
               }
               selected.value = color;
@@ -238,13 +237,9 @@ class ColorGrid extends HookWidget {
       staggeredTileBuilder: (index) {
         final color = colors.elementAt(index);
         if (color.value == initial.value) {
-          return const StaggeredTile.count(2, 2);
+          return StaggeredTile.count(2, 2); // ignore: prefer_const_constructors
         }
-        // final mod = index % widthFreq;
-        // final check = widthFreq - 1;
-        // final wide = mod == check;
-        // print("$mod == $check = $wide");
-        // return StaggeredTile.count(wide ? 2 : 1, 1);
+        // ignore: prefer_const_constructors
         return StaggeredTile.count(1, 1);
       },
     );
@@ -266,7 +261,7 @@ class UseSslCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DoublePiGridCard(
-      left: Center(child: TileTitle('Use SSL')),
+      left: const Center(child: TileTitle('Use SSL')),
       right: Center(
         child: Checkbox(
           // activeColor: pi.primaryColor,
@@ -302,10 +297,10 @@ class SummaryTestTile extends HookWidget {
       adminHome: pi.adminHome,
     )));
 
-    final VoidCallback onTap = () {
+    onTap() {
       final dialog = summaryValue.maybeWhen(
         data: (summary) => DialogListBase(
-          header: DialogHeader(title: 'Success'),
+          header: const DialogHeader(title: 'Success'),
           body: SliverToBoxAdapter(
             child: ExpandableCode(
               code: summary.toString(),
@@ -326,11 +321,11 @@ class SummaryTestTile extends HookWidget {
           },
         );
       }
-    };
+    }
 
     return DoublePiGridCard(
       onTap: onTap,
-      left: Center(child: Text('Summary')),
+      left: const Center(child: Text('Summary')),
       right: IconButton(
         icon: PiColorsBuilder(
           builder: (context, piColors, _) => Icon(
@@ -372,10 +367,10 @@ class TopItemsTestTile extends HookWidget {
       adminHome: pi.adminHome,
     )));
 
-    final VoidCallback onTap = () {
+    onTap() {
       final dialog = topItemsValue.maybeWhen(
         data: (topItems) => DialogListBase(
-          header: DialogHeader(title: 'Success'),
+          header: const DialogHeader(title: 'Success'),
           body: SliverToBoxAdapter(
             child: ExpandableCode(
               code: topItems.toString(),
@@ -396,11 +391,11 @@ class TopItemsTestTile extends HookWidget {
           },
         );
       }
-    };
+    }
 
     return DoublePiGridCard(
       onTap: onTap,
-      left: Center(child: Text('Top items')),
+      left: const Center(child: Text('Top items')),
       right: IconButton(
         icon: PiColorsBuilder(
           builder: (context, piColors, _) => Icon(

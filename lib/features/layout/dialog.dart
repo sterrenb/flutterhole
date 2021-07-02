@@ -15,7 +15,7 @@ class OptionDialogItem<T> extends StatelessWidget {
     return ListTile(
       dense: true,
       onTap: () => Navigator.of(context).pop(option),
-      title: Text('$title'),
+      title: Text(title),
     );
   }
 }

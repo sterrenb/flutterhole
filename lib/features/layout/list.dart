@@ -60,7 +60,7 @@ class OverScrollMessage extends HookWidget {
         child: Row(
           children: [
             Expanded(
-              child: Container(
+              child: SizedBox(
                 height: height,
                 // color: Colors.blueGrey,
                 child: Column(

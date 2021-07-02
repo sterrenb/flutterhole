@@ -16,22 +16,22 @@ part 'settings_entities.freezed.dart';
 /// 6. run the build_runner to update the [DashboardID] json serialization:
 ///   `$ flutter pub run build_runner build`
 enum DashboardID {
-  SelectTiles,
-  TotalQueries,
-  QueriesBlocked,
-  PercentBlocked,
-  DomainsOnBlocklist,
-  QueriesBarChart,
-  ClientActivityBarChart,
-  Temperature,
-  Memory,
-  QueryTypes,
-  ForwardDestinations,
-  TopPermittedDomains,
-  TopBlockedDomains,
-  Versions,
-  Logs,
-  TempTile,
+  selectTiles,
+  totalQueries,
+  queriesBlocked,
+  percentBlocked,
+  domainsOnBlocklist,
+  queriesBarChart,
+  clientActivityBarChart,
+  temperature,
+  memory,
+  queryTypes,
+  forwardDestinations,
+  topPermittedDomains,
+  topBlockedDomains,
+  versions,
+  logs,
+  tempTile,
 }
 
 @freezed
@@ -47,9 +47,9 @@ class DashboardEntry with _$DashboardEntry {
 
 extension DevDashboardID on DashboardID {
   bool get devOnly => [
-        DashboardID.Logs,
-        DashboardID.Versions,
-        DashboardID.TempTile,
+        DashboardID.logs,
+        DashboardID.versions,
+        DashboardID.tempTile,
       ].contains(this);
 }
 
@@ -129,10 +129,10 @@ class DashboardSettings with _$DashboardSettings {
                 constraints: DashboardTileConstraints.defaults[e]!))
             .toList(),
         DashboardEntry(
-            id: DashboardID.SelectTiles,
+            id: DashboardID.selectTiles,
             enabled: true,
             constraints:
-                DashboardTileConstraints.defaults[DashboardID.SelectTiles]!),
+                DashboardTileConstraints.defaults[DashboardID.selectTiles]!),
       ]);
 
   late final List<DashboardID> keys = entries.map((e) => e.id).toList();
@@ -208,16 +208,16 @@ class PiColorTheme with _$PiColorTheme {
       );
 
   factory PiColorTheme.dark() => PiColorTheme.light().copyWith(
-        warning: Color(0xFFB1720C),
-        error: Color(0xFF913225),
-        totalQueries: Color(0xFF1B5E20),
+        warning: const Color(0xFFB1720C),
+        error: const Color(0xFF913225),
+        totalQueries: const Color(0xFF1B5E20),
         // totalQueries: Color(0xFF005C32),
-        queriesBlocked: Color(0xFF007997),
-        percentBlocked: Color(0xFFB1720C),
-        domainsOnBlocklist: Color(0xFF913225),
-        temperatureLow: Color(0xFF1B5E20),
-        temperatureMed: Color(0xFFB1720C),
-        temperatureHigh: Color(0xFF913225),
+        queriesBlocked: const Color(0xFF007997),
+        percentBlocked: const Color(0xFFB1720C),
+        domainsOnBlocklist: const Color(0xFF913225),
+        temperatureLow: const Color(0xFF1B5E20),
+        temperatureMed: const Color(0xFFB1720C),
+        temperatureHigh: const Color(0xFF913225),
       );
 
   static PiColorTheme of(BuildContext context) {

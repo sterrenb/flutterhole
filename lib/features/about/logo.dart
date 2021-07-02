@@ -10,7 +10,7 @@ class LogoIcon extends StatelessWidget {
     return SizedBox(
       width: 56.0,
       child: Ink.image(
-        image: AssetImage('assets/icons/icon.png'),
+        image: const AssetImage('assets/icons/icon.png'),
         child: InkWell(
           onTap: () {
             showModalBottomSheet(

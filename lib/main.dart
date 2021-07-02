@@ -26,20 +26,21 @@ Future<void> main() async {
       settingsRepositoryProvider
           .overrideWithValue(SettingsRepository(preferences))
     ],
-    child: MyApp(),
+    child: const MyApp(),
   ));
 
   runApp(ProviderScope(
     child: DevicePreview(
       enabled: false,
       // enabled: !kReleaseMode,
-      builder: (context) => MyApp(),
+      builder: (context) => const MyApp(),
     ),
   ));
 }
 
-class MyApp extends HookWidget {
-  // This widget is the root of your application.
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final themeMode = useProvider(themeModeProvider);
@@ -54,7 +55,7 @@ class MyApp extends HookWidget {
           primarySwatch: Colors.orange,
           accentColor: Colors.orangeAccent,
           // scaffoldBackgroundColor: Color(0xFFFAFBFC),
-          scaffoldBackgroundColor: Color(0xFFECF0F5),
+          scaffoldBackgroundColor: const Color(0xFFECF0F5),
         ),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
@@ -64,15 +65,15 @@ class MyApp extends HookWidget {
           // colorScheme: ColorScheme.dark(
           //   secondary: Colors.orangeAccent,
           // ),
-          scaffoldBackgroundColor: Color(0xFF121212),
+          scaffoldBackgroundColor: const Color(0xFF121212),
           // canvasColor: Color(0xFF121212),
-          cardColor: Color(0xFF1E1E1E),
-          dialogBackgroundColor: Color(0xFF1E1E1E),
+          cardColor: const Color(0xFF1E1E1E),
+          dialogBackgroundColor: const Color(0xFF1E1E1E),
         ),
         themeMode: themeMode,
         routerDelegate: router.delegate(),
         routeInformationParser: router.defaultRouteParser(),
-        locale: Locale('en', 'us'),
+        locale: const Locale('en', 'us'),
         builder: DevicePreview.appBuilder,
         // locale: Localizations.localeOf(context),
       ),

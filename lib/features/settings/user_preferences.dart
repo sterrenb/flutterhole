@@ -17,10 +17,10 @@ class UserPreferencesListView extends StatelessWidget {
     return ListView(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        children: [
-          const _ThemeModeTile(),
-          const _TemperatureReadingTile(),
-          const _UpdateFrequencyTile(),
+        children: const [
+          _ThemeModeTile(),
+          _TemperatureReadingTile(),
+          _UpdateFrequencyTile(),
         ]);
   }
 }
@@ -45,19 +45,17 @@ class _ThemeModeTile extends HookWidget {
     final themeMode = useProvider(themeModeProvider);
     return Center(
       child: ListTile(
-        leading: Icon(KIcons.theme),
-        title: Text('Theme mode'),
+        leading: const Icon(KIcons.theme),
+        title: const Text('Theme mode'),
         trailing: IconDropDownButtonBuilder<ThemeMode>(
           value: themeMode,
           onChanged: (update) {
-            if (update != null) {
-              context
-                  .read(settingsNotifierProvider.notifier)
-                  .saveThemeMode(update);
-            }
+            context
+                .read(settingsNotifierProvider.notifier)
+                .saveThemeMode(update);
           },
           values: ThemeMode.values,
-          icons: [
+          icons: const [
             KIcons.systemTheme,
             KIcons.lightTheme,
             KIcons.darkTheme,
@@ -78,8 +76,8 @@ class _UpdateFrequencyTile extends HookWidget {
   Widget build(BuildContext context) {
     final duration = useProvider(updateFrequencyProvider);
     return ListTile(
-      title: Text('Update frequency'),
-      leading: Icon(KIcons.updateFrequency),
+      title: const Text('Update frequency'),
+      leading: const Icon(KIcons.updateFrequency),
       trailing: TextButton(
         child: Text(duration.inSeconds.secondsOrElse('Disabled')),
         onPressed: () async {
@@ -116,8 +114,8 @@ class _TemperatureReadingTile extends HookWidget {
   Widget build(BuildContext context) {
     final settings = useProvider(settingsNotifierProvider);
     return ListTile(
-      title: Text('Temperature'),
-      leading: Icon(KIcons.temperatureReading),
+      title: const Text('Temperature'),
+      leading: const Icon(KIcons.temperatureReading),
       trailing: DropdownButton<TemperatureReading>(
           value: settings.userPreferences.temperatureReading,
           onChanged: (update) {

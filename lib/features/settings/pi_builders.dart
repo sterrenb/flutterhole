@@ -72,7 +72,7 @@ class PiListBuilder extends HookWidget {
           trailing: AnimatedOpacity(
               opacity: pi.id == active.id ? 1 : 0,
               duration: kThemeChangeDuration,
-              child: Icon(KIcons.selected)),
+              child: const Icon(KIcons.selected)),
           // onLongPress: () {
           //   context.read(settingsNotifierProvider.notifier).activate(pi.id);
           // },
@@ -92,8 +92,8 @@ class AddPiTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(KIcons.add),
-      title: Text('Add a new Pi-hole'),
+      leading: const Icon(KIcons.add),
+      title: const Text('Add a new Pi-hole'),
       onTap: () {
         context.read(settingsNotifierProvider.notifier).savePi(PiModel(
               id: DateTime.now().millisecondsSinceEpoch,
@@ -102,24 +102,21 @@ class AddPiTile extends StatelessWidget {
                   .primaries[Random().nextInt(Colors.primaries.length)].value,
             ).entity);
       },
-      trailing: Icon(KIcons.push),
+      trailing: const Icon(KIcons.push),
     );
   }
 }
 
 Future<void> showActivePiDialog(BuildContext context, Reader read) async {
-  final pi = read(activePiProvider);
-  final allPis = read(allPisProvider);
-
   final selectedPi = await showModal(
       context: context,
       builder: (context) => DialogListBase(
-          header: DialogHeader(
+          header: const DialogHeader(
             title: 'Select a Pi-hole',
           ),
           body: SliverList(
             delegate: SliverChildListDelegate([
-              AddPiTile(),
+              const AddPiTile(),
               PiListBuilder(
                 onTap: (pi) {
                   read(settingsNotifierProvider.notifier).activate(pi.id);

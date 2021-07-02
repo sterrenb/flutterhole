@@ -29,7 +29,7 @@ class TextTileBottomText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 32.0,
         fontWeight: FontWeight.bold,
         color: Colors.white,
@@ -142,7 +142,7 @@ class _QueryItemTile extends StatelessWidget {
             '${entry.key}: ${entry.value} requests',
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
         ));
       },
     );
@@ -169,10 +169,10 @@ class TopPermittedDomainsTile extends HookWidget {
           children: [
             ListTile(
               // tileColor: Colors.green.withOpacity(0.1),
-              title: TileTitle(
+              title: const TileTitle(
                 'Permitted Domains',
               ),
-              leading: GridIcon(
+              leading: const GridIcon(
                 KIcons.domainsPermittedTile,
                 subIcon: Icons.check_box,
                 subIconColor: Colors.green,
@@ -200,7 +200,7 @@ class TopPermittedDomainsTile extends HookWidget {
                   },
                 );
               },
-              loading: () => Container(
+              loading: () => const SizedBox(
                   height: kMinTileHeight,
                   child: Center(child: CircularProgressIndicator())),
               error: (error, stacktrace) => Column(
@@ -253,15 +253,13 @@ class TopBlockedDomainsTile extends HookWidget {
           physics: const NeverScrollableScrollPhysics(),
           padding: EdgeInsets.zero,
           children: [
-            Container(
+            SizedBox(
               // color: Colors.orange,
               height: 80,
               child: ListTile(
                 // tileColor: Colors.red.withOpacity(0.1),
-                title: TileTitle(
-                  'Blocked Domains',
-                ),
-                leading: GridIcon(
+                title: const TileTitle('Blocked Domains'),
+                leading: const GridIcon(
                   KIcons.domainsPermittedTile,
                   subIcon: Icons.remove_circle,
                   subIconColor: Colors.red,
@@ -289,7 +287,7 @@ class TopBlockedDomainsTile extends HookWidget {
                   },
                 );
               },
-              loading: () => Container(
+              loading: () => const SizedBox(
                   height: kToolbarHeight * 5,
                   child: Center(child: CircularProgressIndicator())),
               error: (error, stacktrace) =>
@@ -315,10 +313,8 @@ class LogsTile extends HookWidget {
     return GridCard(
       child: Column(
         children: [
-          ListTile(
-            title: TileTitle('Logs'),
-          ),
-          Expanded(
+          const ListTile(title: TileTitle('Logs')),
+          const Expanded(
             child: AnimatedLogsList(
               maxLength: kLogsDashboardCacheLength,
               shrinkWrap: true,
@@ -326,7 +322,7 @@ class LogsTile extends HookWidget {
             ),
           ),
           ListTile(
-            leading: AddLogTextButton(),
+            leading: const AddLogTextButton(),
             trailing: TextButton(
               child: HookBuilder(
                 builder: (context) {
@@ -337,7 +333,7 @@ class LogsTile extends HookWidget {
               ),
               // child: Text('View ${numberFormat.format(records.length)} logs'),
               onPressed: () {
-                context.router.push(LogsRoute());
+                context.router.push(const LogsRoute());
               },
             ),
           ),

@@ -109,7 +109,7 @@ class PiStatusIndicator extends HookWidget {
       alignment: Alignment.center,
       children: [
         IconButton(
-          icon: PiStatusIcon(size: 8.0),
+          icon: const PiStatusIcon(size: 8.0),
           tooltip: piStatus.when(
             enabled: () => 'Enabled',
             disabled: () => 'Disabled',
@@ -124,7 +124,7 @@ class PiStatusIndicator extends HookWidget {
           child: AnimatedOpacity(
             duration: kThemeAnimationDuration,
             opacity: piStatus.maybeWhen(loading: () => 1.0, orElse: () => 0.0),
-            child: SizedBox(
+            child: const SizedBox(
               width: 14.0,
               height: 14.0,
               child: CircularProgressIndicator(strokeWidth: 2.0),
@@ -145,13 +145,14 @@ class PiStatusIndicator extends HookWidget {
                     width: 14.0,
                     height: 14.0,
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation(KColors.sleeping),
+                      valueColor:
+                          const AlwaysStoppedAnimation(KColors.sleeping),
                       value: progress,
                       strokeWidth: 2.0,
                     ),
                   ),
                 ),
-                duration: Duration(seconds: 1),
+                duration: const Duration(seconds: 1),
                 onTimer: (_) {
                   tick.value += 1;
                 });
@@ -193,13 +194,12 @@ class PiStatusMessenger extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final PiholeStatus piStatus = useProvider(piholeStatusNotifierProvider);
-    final debugMode = kDebugMode;
     final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     useAsyncEffect(() {
       final message = piStatus.when<String?>(
         loading: () => null,
-        enabled: () => debugMode ? 'Enabled' : null,
-        disabled: () => debugMode ? 'Disabled' : null,
+        enabled: () => kDebugMode ? 'Enabled' : null,
+        disabled: () => kDebugMode ? 'Disabled' : null,
         sleeping: (duration, start) => 'Sleeping',
         failure: (e) {
           return e.when(
@@ -226,7 +226,9 @@ class PiStatusMessenger extends HookWidget {
   }
 }
 
-class PiToggleFloatingActionButton extends HookWidget {
+class PiToggleFloatingActionButton extends StatelessWidget {
+  const PiToggleFloatingActionButton({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final piStatus = useProvider(piholeStatusNotifierProvider);
@@ -254,8 +256,8 @@ class PiToggleFloatingActionButton extends HookWidget {
     Future<Duration?> showSleepDialog() async {
       final result = await showOptionDialog<Duration>(
         context: context,
-        title: Text('Sleep for...'),
-        options: [
+        title: const Text('Sleep for...'),
+        options: const [
           OptionDialogItem(option: Duration(seconds: 1), title: '1 second'),
           OptionDialogItem(option: Duration(seconds: 10), title: '10 seconds'),
           OptionDialogItem(option: Duration(seconds: 30), title: '30 seconds'),
@@ -285,7 +287,7 @@ class PiToggleFloatingActionButton extends HookWidget {
         orElse: () => null,
       ),
       child: FloatingActionButton(
-        child: PiStatusToggleIcon(),
+        child: const PiStatusToggleIcon(),
         tooltip: piStatus.maybeWhen(
           sleeping: (duration, _) => 'Wake up',
           orElse: () => null,

@@ -20,7 +20,7 @@ class QueryTypesTileTwo extends HookWidget {
 
     final left = queryTypesValue.when(
       data: (queryTypes) => LegendList(
-        title: TileTitle(title),
+        title: const TileTitle(title),
         iconData: KIcons.about,
         builder: (context, index) {
           final queryTypeEntry = queryTypes.types.entries.elementAt(index);
@@ -38,7 +38,7 @@ class QueryTypesTileTwo extends HookWidget {
         },
         childCount: queryTypes.types.length,
       ),
-      loading: () => CenteredGridTileLoadingIndicator(),
+      loading: () => const CenteredGridTileLoadingIndicator(),
       error: (error, stacktrace) => CenteredGridTileErrorIndicator(error),
     );
 
@@ -50,7 +50,7 @@ class QueryTypesTileTwo extends HookWidget {
           padding: const EdgeInsets.all(8.0),
           child: PiQueriesDoughnutChart(title, queryTypes),
         ),
-        loading: () => CenteredGridTileLoadingIndicator(),
+        loading: () => const CenteredGridTileLoadingIndicator(),
         error: (error, stacktrace) => CenteredGridTileErrorIndicator(error),
       ),
     );
@@ -71,7 +71,7 @@ class ForwardDestinationsTileTwo extends HookWidget {
     return DoubleGridCard(
       left: forwardDestinationsValue.when(
         data: (forwardDestinations) => LegendList(
-          title: TileTitle(title),
+          title: const TileTitle(title),
           iconData: KIcons.about,
           builder: (context, index) {
             final destination =
@@ -90,7 +90,7 @@ class ForwardDestinationsTileTwo extends HookWidget {
           },
           childCount: forwardDestinations.destinations.length,
         ),
-        loading: () => CenteredGridTileLoadingIndicator(),
+        loading: () => const CenteredGridTileLoadingIndicator(),
         error: (error, stacktrace) => CenteredGridTileErrorIndicator(error),
       ),
       right: forwardDestinationsValue.when(
@@ -98,7 +98,7 @@ class ForwardDestinationsTileTwo extends HookWidget {
           padding: const EdgeInsets.all(8.0),
           child: ForwardDestinationsDoughnutChart(title, forwardDestinations),
         ),
-        loading: () => CenteredGridTileLoadingIndicator(),
+        loading: () => const CenteredGridTileLoadingIndicator(),
         error: (error, stacktrace) => CenteredGridTileErrorIndicator(error),
       ),
     );

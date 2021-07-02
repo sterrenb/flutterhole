@@ -30,61 +30,55 @@ class HomeAppBar extends HookWidget implements PreferredSizeWidget {
       elevation: 0.0,
       titleSpacing: 0.0,
       actions: [
-        ThemeModeToggle(),
+        const ThemeModeToggle(),
         IconButton(
             onPressed: () async {
-              await context.router.push(SettingsRoute());
+              await context.router.push(const SettingsRoute());
             },
-            icon: Icon(KIcons.settings)),
+            icon: const Icon(KIcons.settings)),
       ],
-      title: Container(
-        // color: Colors.red,
-        child: Row(
-          children: [
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                splashColor: Colors.greenAccent,
-                onTap: () {
-                  print('ink');
-                },
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    textButtonTheme: TextButtonThemeData(
-                        style: Theme.of(context)
-                            .textButtonTheme
-                            .style!
-                            .copyWith(
-                              textStyle: MaterialStateProperty.resolveWith(
-                                  (states) =>
-                                      Theme.of(context).textTheme.headline6),
-                              foregroundColor:
-                                  MaterialStateProperty.resolveWith((states) =>
-                                      Theme.of(context).colorScheme.onPrimary),
-                            )),
-                  ),
-                  child: TextButton(
-                    onLongPress: () {
-                      context.router.pushAndSaveSinglePiRoute(context, pi);
-                    },
-                    onPressed: () => showActivePiDialog(context, context.read),
-                    child: Text(
-                      pi.title,
-                      style: Theme.of(context).textTheme.headline6!.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                    ),
+      title: Row(
+        children: [
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              splashColor: Colors.greenAccent,
+              onTap: () {
+                debugPrint('ink');
+              },
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  textButtonTheme: TextButtonThemeData(
+                      style: Theme.of(context).textButtonTheme.style!.copyWith(
+                            textStyle: MaterialStateProperty.resolveWith(
+                                (states) =>
+                                    Theme.of(context).textTheme.headline6),
+                            foregroundColor: MaterialStateProperty.resolveWith(
+                                (states) =>
+                                    Theme.of(context).colorScheme.onPrimary),
+                          )),
+                ),
+                child: TextButton(
+                  onLongPress: () {
+                    context.router.pushAndSaveSinglePiRoute(context, pi);
+                  },
+                  onPressed: () => showActivePiDialog(context, context.read),
+                  child: Text(
+                    pi.title,
+                    style: Theme.of(context).textTheme.headline6!.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
                   ),
                 ),
               ),
             ),
-            PiStatusIndicator(
-              onTap: () {
-                context.read(piholeStatusNotifierProvider.notifier).ping();
-              },
-            ),
-          ],
-        ),
+          ),
+          PiStatusIndicator(
+            onTap: () {
+              context.read(piholeStatusNotifierProvider.notifier).ping();
+            },
+          ),
+        ],
       ),
     );
   }

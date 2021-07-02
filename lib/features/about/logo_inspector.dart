@@ -104,7 +104,7 @@ class _LogoInspectorState extends State<LogoInspector> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 1),
       decoration: BoxDecoration(
         color: _color,
       ),
@@ -113,15 +113,15 @@ class _LogoInspectorState extends State<LogoInspector> {
       child: ListView(
         scrollDirection: Axis.horizontal,
         controller: _scrollController,
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         children: <Widget>[
-          Container(
+          SizedBox(
             width: widget.screenWidth,
             child: Stack(
               children: <Widget>[
                 Center(
                   child: Image(
-                    image: AssetImage('assets/icons/old_icon.png'),
+                    image: const AssetImage('assets/icons/old_icon.png'),
                     width: widget.screenWidth / 2,
                   ),
                 ),
@@ -130,7 +130,7 @@ class _LogoInspectorState extends State<LogoInspector> {
                   child: ListTile(
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         Text('Original logo design'),
                       ],
                     ),
@@ -141,13 +141,13 @@ class _LogoInspectorState extends State<LogoInspector> {
           ),
           ..._buildSpacers(widget.screenWidth / 2),
           ..._buildSpacers(widget.screenWidth / 2).reversed.toList(),
-          Container(
+          SizedBox(
             width: widget.screenWidth,
             child: Stack(
               children: <Widget>[
                 Center(
                   child: Image(
-                    image: AssetImage('assets/icons/logo.png'),
+                    image: const AssetImage('assets/icons/logo.png'),
                     width: widget.screenWidth / 2,
                   ),
                 ),
@@ -160,7 +160,7 @@ class _LogoInspectorState extends State<LogoInspector> {
                     },
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         Text(
                           'Logo design by Mathijs Sterrenburg',
                           style: TextStyle(color: Colors.white),
@@ -174,8 +174,8 @@ class _LogoInspectorState extends State<LogoInspector> {
           ),
           ..._buildSpacers(widget.screenWidth),
           Container(
-            decoration: BoxDecoration(color: Colors.white),
-            child: Image(
+            decoration: const BoxDecoration(color: Colors.white),
+            child: const Image(
               image: AssetImage('assets/images/logos.jpg'),
             ),
           ),

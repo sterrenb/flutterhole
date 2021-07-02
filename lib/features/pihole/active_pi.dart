@@ -4,6 +4,8 @@ import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ActivePiTitle extends HookWidget {
+  const ActivePiTitle({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final pi = useProvider(activePiProvider);

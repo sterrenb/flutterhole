@@ -13,8 +13,8 @@ class TryAgainButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton.icon(
       onPressed: onTap,
-      icon: Icon(KIcons.refresh),
-      label: Text('Try again'),
+      icon: const Icon(KIcons.refresh),
+      label: const Text('Try again'),
     );
   }
 }

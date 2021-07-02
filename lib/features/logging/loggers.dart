@@ -10,21 +10,16 @@ const importLoggers = null;
 
 extension BuildContextX on BuildContext {
   /// Only works inside [HookWidget]s.
-  void log(LogCall call) => this.read(logNotifierProvider.notifier).log(call);
+  void log(LogCall call) => read(logNotifierProvider.notifier).log(call);
 }
 
 final loggerProvider = Provider.family<Logger, String>((ref, name) {
   return Logger(name);
 });
 
-final logNotifierProvider =
-    StateNotifierProvider<LogNotifier, List<LogRecord>>((ref) {
-  print('making logNotifierProvider');
-  final log = LogNotifier.fromStream(
-      ref.watch(rootLoggerProvider), ref.watch(logStreamProvider.stream));
-  // log.listenToStream(ref.watch(logStreamProvider.stream));
-  return log;
-});
+final logNotifierProvider = StateNotifierProvider<LogNotifier, List<LogRecord>>(
+    (ref) => LogNotifier.fromStream(
+        ref.watch(rootLoggerProvider), ref.watch(logStreamProvider.stream)));
 
 extension LogLevelX on LogLevel {
   Level get level {
@@ -45,7 +40,6 @@ class LogNotifier extends StateNotifier<List<LogRecord>> {
   LogNotifier._(this._root) : super([]);
 
   factory LogNotifier.fromStream(Logger root, Stream<LogRecord> stream) {
-    print('LogNotifier from $stream');
     final log = LogNotifier._(root);
     log.listenToStream(stream);
     return log;
@@ -56,33 +50,19 @@ class LogNotifier extends StateNotifier<List<LogRecord>> {
 
   @override
   void dispose() {
-    print('disposing of logNotifier');
     _subscription?.cancel();
     super.dispose();
   }
 
   void onData(LogRecord record) {
     if (state.isEmpty) {
-      print('adding first log record');
       state = [record, ...state];
       return;
     }
 
-    final x = state.first;
-    final y = record;
-
-    print('---');
-    print('x == y: ${x == y}');
-    print('x.props == y.props: ${x.message == y.message}');
-    print('diff: ${x.time.difference(y.time)}');
-    print(x);
-    print(y);
-    print('---');
-
-    if (state.first != record)
-
-      // if (state.isEmpty || state.isNotEmpty && state.first != record) {
+    if (state.first != record) {
       state = [record, ...state];
+    }
   }
 
   // TODO multiple?
@@ -99,9 +79,9 @@ class LogNotifier extends StateNotifier<List<LogRecord>> {
 final rootLoggerProvider = Provider<Logger>((ref) {
   final level = ref.watch(logLevelProvider);
   Logger.root.level = level.level;
-  print('making root logger @$level');
+
   Logger.root.onRecord.listen((record) {
-    print('${record.level.name}: ${record.time}: ${record.message}');
+    debugPrint('${record.level.name}: ${record.time}: ${record.message}');
   });
 
   return Logger.root;
@@ -114,7 +94,7 @@ final logStreamProvider = StreamProvider<LogRecord>((ref) async* {
 class ProviderLogger extends ProviderObserver {
   @override
   void didUpdateProvider(ProviderBase provider, Object? newValue) {
-    print('''
+    debugPrint('''
 
   "{ provider": "${provider.name ?? provider.runtimeType}",
   "  newValue": ${newValue.toString()} }

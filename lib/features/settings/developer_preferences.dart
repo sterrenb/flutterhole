@@ -20,12 +20,12 @@ class DeveloperPreferencesListView extends StatelessWidget {
     return ListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      children: [
+      children: const [
         _UseThemeToggleButtonTile(),
         _UseAggressiveFetchingButtonTile(),
         _LogLevelTile(),
         _PreferencesCodeCard(),
-      ].expand((element) => [element, SizedBox(height: 16.0)]).toList(),
+      ].expand((element) => [element, const SizedBox(height: 16.0)]).toList(),
     );
   }
 }
@@ -49,9 +49,9 @@ class _UseThemeToggleButtonTile extends HookWidget {
   Widget build(BuildContext context) {
     final x = useProvider(userPreferencesProvider);
     return CheckboxListTile(
-        title: Text('Use theme toggle'),
-        subtitle: Text('Shows a theme toggle on most pages.'),
-        secondary: Icon(KIcons.toggle),
+        title: const Text('Use theme toggle'),
+        subtitle: const Text('Shows a theme toggle on most pages.'),
+        secondary: const Icon(KIcons.toggle),
         value: x.useThemeToggle,
         onChanged: (value) => context
             .read(settingsNotifierProvider.notifier)
@@ -68,10 +68,10 @@ class _UseAggressiveFetchingButtonTile extends HookWidget {
     return Column(
       children: [
         CheckboxListTile(
-            title: Text('Use aggressive fetching'),
+            title: const Text('Use aggressive fetching'),
             subtitle: Text(
                 'Disables the ${kRefreshDuration.inMilliseconds}ms delay between API calls during the dashboard refresh.'),
-            secondary: Icon(KIcons.refresh),
+            secondary: const Icon(KIcons.refresh),
             value: x,
             onChanged: (value) => context
                 .read(settingsNotifierProvider.notifier)
@@ -89,8 +89,8 @@ class _LogLevelTile extends HookWidget {
     final themeMode = useProvider(logLevelProvider);
     return Center(
       child: ListTile(
-        leading: Icon(KIcons.debugLogs),
-        title: Text('Log level'),
+        leading: const Icon(KIcons.debugLogs),
+        title: const Text('Log level'),
         trailing: IconDropDownButtonBuilder<LogLevel>(
           value: themeMode,
           onChanged: (update) {
@@ -99,7 +99,7 @@ class _LogLevelTile extends HookWidget {
                 .saveLogLevel(update);
           },
           values: LogLevel.values,
-          icons: [
+          icons: const [
             KIcons.debugLogs,
             KIcons.info,
             KIcons.logWarning,

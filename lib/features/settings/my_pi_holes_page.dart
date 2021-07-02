@@ -13,12 +13,12 @@ class MyPiHolesPage extends HookWidget {
     final settings = useProvider(settingsNotifierProvider);
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Pi-holes'),
+        title: const Text('My Pi-holes'),
       ),
       body: Column(
         children: [
           HookBuilder(builder: (context) {
-            return PiListBuilder();
+            return const PiListBuilder();
           }),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -31,7 +31,7 @@ class MyPiHolesPage extends HookWidget {
                     );
                     context.read(settingsNotifierProvider.notifier).savePi(x);
                   },
-                  child: Text('add')),
+                  child: const Text('add')),
             ],
           ),
         ],

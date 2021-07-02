@@ -38,7 +38,7 @@ class ThemeModeToggle extends HookWidget {
   Widget build(BuildContext context) {
     final dev = useProvider(userPreferencesProvider);
 
-    return dev.useThemeToggle == false ? Container() : _ThemeModeToggle();
+    return dev.useThemeToggle == false ? Container() : const _ThemeModeToggle();
   }
 }
 
@@ -52,17 +52,17 @@ class _ThemeModeToggle extends HookWidget {
         (themeMode == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
 
-    final VoidCallback onChanged = () {
+    onChanged() {
       final update = isDark ? ThemeMode.light : ThemeMode.dark;
       context.read(settingsNotifierProvider.notifier).saveThemeMode(update);
-    };
+    }
 
     return Tooltip(
       message: 'Toggle theme mode',
       child: Row(
         children: [
           IconButton(
-            icon: Icon(KIcons.theme),
+            icon: const Icon(KIcons.theme),
             onPressed: onChanged,
             visualDensity: VisualDensity.compact,
           ),
@@ -83,8 +83,9 @@ LogCall fakeLogCall() => LogCall(
       source: 'dev',
       level: (double v) {
         for (int index = 0; index < LogLevel.values.length; index++) {
-          if (v <= index / LogLevel.values.length)
+          if (v <= index / LogLevel.values.length) {
             return LogLevel.values.elementAt(index);
+          }
         }
         return LogLevel.debug;
       }(
@@ -101,12 +102,10 @@ class AddLogTextButton extends HookWidget {
     return DevOnlyBuilder(
         child: TextButton(
             onPressed: () {
-              print('logging to logNotifierProvider');
-
               context.read(logNotifierProvider.notifier).log(fakeLogCall());
               // context.log(call);
               // context.read(logNotifierProvider.notifier).log(call);
             },
-            child: Text('Add log')));
+            child: const Text('Add log')));
   }
 }

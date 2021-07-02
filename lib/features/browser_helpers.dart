@@ -6,7 +6,7 @@ import 'package:flutterhole_web/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final _dio = Dio(BaseOptions(headers: {
-  HttpHeaders.userAgentHeader: "flutterhole",
+  HttpHeaders.userAgentHeader: 'flutterhole',
 }));
 
 Future<String> fetchPrivacyMarkdown() async {

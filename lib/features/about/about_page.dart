@@ -24,8 +24,8 @@ class AboutPage extends StatelessWidget {
     return ActivePiTheme(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('About'),
-          actions: [
+          title: const Text('About'),
+          actions: const [
             ThemeModeToggle(),
           ],
         ),
@@ -33,93 +33,93 @@ class AboutPage extends StatelessWidget {
           padding: context.clampedBodyPadding,
           physics: const BouncingScrollPhysics(),
           children: [
-            SizedBox(height: 10),
-            ListTile(
+            const SizedBox(height: 10),
+            const ListTile(
               title: Text(
                 'FlutterHole for Pi-Hole®',
               ),
               subtitle: Text('Made by Thomas Sterrenburg'),
-              trailing: Container(
+              trailing: SizedBox(
                 // roughly center the logo with the `licences button`
                 width: 80.0,
                 child: Center(child: LogoIcon()),
               ),
             ),
-            Divider(),
-            AppVersionListTile(),
-            Divider(),
-            ListTitle('Help'),
+            const Divider(),
+            const AppVersionListTile(),
+            const Divider(),
+            const ListTitle('Help'),
             ListTile(
-              leading: Icon(KIcons.privacy),
-              title: Text('Privacy'),
-              trailing: Icon(KIcons.push),
+              leading: const Icon(KIcons.privacy),
+              title: const Text('Privacy'),
+              trailing: const Icon(KIcons.push),
               onTap: () {
-                context.router.push(PrivacyRoute());
+                context.router.push(const PrivacyRoute());
               },
             ),
             ListTile(
               leading: Opacity(
                 opacity: context.isLight ? 0.5 : 1.0,
-                child: ThemedLogoImage(
+                child: const ThemedLogoImage(
                   width: 24.0,
                   height: 24.0,
                 ),
               ),
-              title: Text('View the introduction'),
-              trailing: Icon(KIcons.push),
+              title: const Text('View the introduction'),
+              trailing: const Icon(KIcons.push),
               onTap: () {
                 context.router.push(OnboardingRoute(isInitialPage: false));
               },
             ),
             ListTile(
-              leading: Icon(KIcons.bugReport),
-              title: Text('Submit a bug report'),
-              trailing: Icon(KIcons.push),
+              leading: const Icon(KIcons.bugReport),
+              title: const Text('Submit a bug report'),
+              trailing: const Icon(KIcons.push),
               onTap: () {
                 launchUrl(KUrls.githubIssuesUrl);
               },
             ),
-            Divider(),
-            ListTitle('Support the developer'),
+            const Divider(),
+            const ListTitle('Support the developer'),
             ListTile(
-              leading: Icon(KIcons.review),
-              title: Text('Write a review'),
-              trailing: Icon(KIcons.push),
+              leading: const Icon(KIcons.review),
+              title: const Text('Write a review'),
+              trailing: const Icon(KIcons.push),
               onTap: () {
                 final InAppReview inAppReview = InAppReview.instance;
                 inAppReview.openStoreListing();
               },
             ),
-            _StarOnGitHubTile(),
-            _DonateTile(),
-            Divider(),
-            ListTitle('Other'),
+            const _StarOnGitHubTile(),
+            const _DonateTile(),
+            const Divider(),
+            const ListTitle('Other'),
             ListTile(
-              leading: Icon(KIcons.share),
-              title: Text('Share this app'),
-              trailing: Icon(KIcons.push),
+              leading: const Icon(KIcons.share),
+              title: const Text('Share this app'),
+              trailing: const Icon(KIcons.push),
               onTap: () {
-                Share.share('${KUrls.playStoreUrl}',
+                Share.share(KUrls.playStoreUrl,
                     subject: 'FlutterHole for Pi-Hole®');
               },
             ),
             ListTile(
-              leading: Icon(KIcons.playStore),
-              title: Text('Visit the Google Play page'),
-              trailing: Icon(KIcons.push),
+              leading: const Icon(KIcons.playStore),
+              title: const Text('Visit the Google Play page'),
+              trailing: const Icon(KIcons.push),
               onTap: () {
                 launchUrl(KUrls.playStoreUrl);
               },
             ),
             ListTile(
-              leading: Icon(KIcons.pihole),
-              title: Text('Visit the Pi-hole website'),
-              trailing: Icon(KIcons.push),
+              leading: const Icon(KIcons.pihole),
+              title: const Text('Visit the Pi-hole website'),
+              trailing: const Icon(KIcons.push),
               onTap: () {
                 launchUrl(KUrls.piHomeUrl);
               },
             ),
-            ListTile(),
+            const ListTile(),
           ],
         ),
       ),
@@ -135,8 +135,8 @@ class _DonateTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(KIcons.donate),
-      title: Text('Donate'),
+      leading: const Icon(KIcons.donate),
+      title: const Text('Donate'),
       onTap: () {
         showModal(
             context: context,
@@ -148,28 +148,28 @@ class _DonateTile extends StatelessWidget {
                 body: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
+                    const Text(
                         'Your donation supports the development of this free app.'),
                     const SizedBox(height: 8.0),
-                    Text('Thank you in advance! 💰'),
+                    const Text('Thank you in advance! 💰'),
                     const SizedBox(height: 8.0),
                     ListTile(
-                      title: Text('Paypal'),
-                      trailing: Icon(KIcons.push),
+                      title: const Text('Paypal'),
+                      trailing: const Icon(KIcons.push),
                       onTap: () {
                         launchUrl(KUrls.payPalUrl);
                       },
                     ),
                     ListTile(
-                      title: Text('Ko-fi'),
-                      trailing: Icon(KIcons.push),
+                      title: const Text('Ko-fi'),
+                      trailing: const Icon(KIcons.push),
                       onTap: () {
                         launchUrl(KUrls.koFiUrl);
                       },
                     ),
                     ListTile(
-                      title: Text('GitHub'),
-                      trailing: Icon(KIcons.push),
+                      title: const Text('GitHub'),
+                      trailing: const Icon(KIcons.push),
                       onTap: () {
                         launchUrl(KUrls.githubSponsor);
                       },
@@ -193,10 +193,10 @@ class _StarOnGitHubTile extends HookWidget {
     return ListTile(
       leading: Opacity(
         opacity: context.isLight ? 0.5 : 1.0,
-        child: GithubImage(width: 24.0),
+        child: const GithubImage(width: 24.0),
       ),
-      title: Text('Star on GitHub'),
-      trailing: Icon(KIcons.push),
+      title: const Text('Star on GitHub'),
+      trailing: const Icon(KIcons.push),
       onTap: () => launchUrl(KUrls.githubHomeUrl),
     );
   }

@@ -3,7 +3,7 @@ import 'package:flutterhole_web/features/about/about_page.dart';
 import 'package:flutterhole_web/features/about/privacy_page.dart';
 import 'package:flutterhole_web/features/logging/logs_page.dart';
 import 'package:flutterhole_web/features/onboarding/onboarding_page.dart';
-import 'package:flutterhole_web/features/query_log/better_query_log_page.dart';
+import 'package:flutterhole_web/features/query_log/query_log_page.dart';
 import 'package:flutterhole_web/features/settings/dashboard_settings_page.dart';
 import 'package:flutterhole_web/features/settings/my_pi_holes_page.dart';
 import 'package:flutterhole_web/features/settings/settings_page.dart';
@@ -15,7 +15,7 @@ import 'package:flutterhole_web/home_page.dart';
   routes: <AutoRoute>[
     AutoRoute(page: OnboardingPage),
     AutoRoute(page: HomePage, initial: true),
-    AutoRoute(page: BetterQueryLogPage),
+    AutoRoute(page: QueryLogPage),
     AutoRoute(page: SettingsPage),
     AutoRoute(page: LogsPage, fullscreenDialog: true),
     AutoRoute(page: DashboardSettingsPage),

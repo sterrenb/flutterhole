@@ -17,7 +17,7 @@ extension BuildContextX on BuildContext {
   EdgeInsets get clampedListPadding => EdgeInsets.symmetric(
       vertical: isLandscape ? 0.0 : _data.size.width / ((3 / 2) * 2));
 
-  EdgeInsets get dialogPadding => EdgeInsets.all(24.0)
-    ..add(this.clampedBodyPadding)
-    ..add(this.clampedListPadding);
+  EdgeInsets get dialogPadding => const EdgeInsets.all(24.0)
+    ..add(clampedBodyPadding)
+    ..add(clampedListPadding);
 }

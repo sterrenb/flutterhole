@@ -27,37 +27,37 @@ import 'package:refreshables/refreshables.dart';
 extension DashboardIDX on DashboardID {
   Widget get widget {
     switch (this) {
-      case DashboardID.Versions:
+      case DashboardID.versions:
         return const VersionsTile();
-      case DashboardID.TotalQueries:
+      case DashboardID.totalQueries:
         return const TotalQueriesTile();
-      case DashboardID.QueriesBlocked:
+      case DashboardID.queriesBlocked:
         return const QueriesBlockedTile();
-      case DashboardID.PercentBlocked:
+      case DashboardID.percentBlocked:
         return const PercentBlockedTile();
-      case DashboardID.DomainsOnBlocklist:
+      case DashboardID.domainsOnBlocklist:
         return const DomainsOnBlocklistTile();
-      case DashboardID.QueriesBarChart:
+      case DashboardID.queriesBarChart:
         return const QueriesBarChartTile();
-      case DashboardID.ClientActivityBarChart:
+      case DashboardID.clientActivityBarChart:
         return const ClientActivityBarChartTile();
-      case DashboardID.Temperature:
+      case DashboardID.temperature:
         return const TemperatureTile();
-      case DashboardID.Memory:
+      case DashboardID.memory:
         return const MemoryTile();
-      case DashboardID.QueryTypes:
+      case DashboardID.queryTypes:
         return const QueryTypesTileTwo();
-      case DashboardID.ForwardDestinations:
+      case DashboardID.forwardDestinations:
         return const ForwardDestinationsTileTwo();
-      case DashboardID.TopPermittedDomains:
+      case DashboardID.topPermittedDomains:
         return const TopPermittedDomainsTile();
-      case DashboardID.TopBlockedDomains:
+      case DashboardID.topBlockedDomains:
         return const TopBlockedDomainsTile();
-      case DashboardID.SelectTiles:
+      case DashboardID.selectTiles:
         return const SelectTilesTile();
-      case DashboardID.Logs:
+      case DashboardID.logs:
         return const LogsTile();
-      case DashboardID.TempTile:
+      case DashboardID.tempTile:
         return const TempTile();
     }
   }
@@ -118,9 +118,6 @@ class SelectTilesTile extends HookWidget {
         color: Theme.of(context).accentColor,
       ),
       onPressed: () {
-        // context.read(loggerProvider('tile')).log(Level.INFO, 'Hi there');
-        // context.read(logNotifierProvider.notifier).log(Level.INFO, 'Byeee');
-        // return;
         context.router.push(
           DashboardSettingsRoute(
               initial: context.read(activePiProvider).dashboardSettings,
@@ -143,7 +140,7 @@ class SelectTilesTile extends HookWidget {
   }
 }
 
-typedef Future<dynamic> DashRefreshCallback(BuildContext context);
+typedef DashRefreshCallback = Future<dynamic> Function(BuildContext context);
 
 class DashboardGrid extends HookWidget {
   const DashboardGrid({Key? key}) : super(key: key);
@@ -154,87 +151,17 @@ class DashboardGrid extends HookWidget {
         useProvider(settingsNotifierProvider).active.dashboardSettings;
     final tiles = dashboardSettings.entries;
     final activeParams = useProvider(activePiParamsProvider);
-    final useAggressiveFetching = useProvider(useAggressiveFetchingProvider);
 
     Future<void> onRefresh(PiholeRepositoryParams pi) async {
       final homeIsActive = context.router.isRouteActive(HomeRoute.name);
-      // print('refreshing from DashboardGrid: $homeIsActive');
       if (homeIsActive) {
-        // Future.microtask(
-        //     () => context.read(piholeStatusNotifierProvider.notifier).ping());
-        // final x = Future.microtask(
-        //     () => context.refresh(clientActivityOverTimeProvider(pi)));
-
         context.refresh(clientActivityOverTimeProvider(pi));
         context.read(piholeStatusNotifierProvider.notifier).ping();
         context.read(logNotifierProvider.notifier).log(fakeLogCall());
-        if (5 < 6) return;
-
-        // context.refresh(clientActivityOverTimeProvider(activePi))
-        // List futures = [
-
-        // List<DashRefreshCallback> futures = [
-        //       () async {
-        //     print('done bois');
-        //
-        //     context.log(LogCall(
-        //       source: 'dash',
-        //       level: LogLevel.error,
-        //       message: 'Testing done',
-        //     ));
-        //   }
-        // ];
-        // if (false)
-        // List<DashRefreshCallback> futures = [
-        //   (context) =>
-        //       context.read(piholeStatusNotifierProvider.notifier).ping(),
-        //   // () => context.refresh(piSummaryProvider(activePi)),
-        //   (context) =>
-        //       context.refresh(clientActivityOverTimeProvider(pi)),
-        //   (context) => context.refresh(queryTypesProvider(pi)),
-        //   // () => c.refresh(piDetailsProvider(activePi)),
-        // ];
-        //
-        // if (useAggressiveFetching) {
-        //   final real = futures.map((e) => e(context)).toList();
-        //   print('directly awaiting ${real.length} futures');
-        //   try {
-        //     await Future.wait(real, eagerError: true);
-        //   } catch (e) {
-        //     if (e == PiholeApiFailure.cancelled()) {
-        //       return;
-        //     } else {
-        //       context.log(LogCall(
-        //           source: 'dashboard',
-        //           level: LogLevel.warning,
-        //           message: 'refresh failed',
-        //           error: e));
-        //     }
-        //   }
-        // } else {
-        //   for (final f in futures) {
-        //     await Future.delayed(kRefreshDuration);
-        //     await f(c);
-        //   }
-        //
-        //   // context.log(LogCall(
-        //   //     source: 'dashboard',
-        //   //     level: LogLevel.debug,
-        //   //     message: 'Done refreshing',
-        //   //     error: {'licc': 'meee'}));
-        // }
       }
     }
 
-    ;
-
-    // useAsyncEffect(() {
-    //   print('triggering refresh for new pi ${activePi.baseApiUrl}');
-    //   onRefresh(activePi);
-    // }, keys: [activePi.baseApiUrl]);
-
     useAsyncEffect(() {
-      print('triggering initial ping');
       context.read(piholeStatusNotifierProvider.notifier).ping();
     }, keys: []);
 
@@ -265,13 +192,14 @@ class DashboardGrid extends HookWidget {
                     fit: (c) => StaggeredTile.fit(c),
                   );
                 }
-                return const StaggeredTile.count(4, 1);
+                // ignore: prefer_const_constructors
+                return StaggeredTile.count(4, 1);
               }).toList(),
               children: tiles.where((element) => element.enabled).map((e) {
                 return e.id.widget;
               }).toList(),
             )
-          : Center(child: SelectTilesTile()),
+          : const Center(child: SelectTilesTile()),
     );
   }
 }

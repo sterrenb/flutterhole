@@ -184,17 +184,16 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
   final PiholeRepository _repository;
   final CancelToken _cancelToken = CancelToken();
 
-  PiholeStatusNotifier(this._repository) : super(PiholeStatus.loading());
+  PiholeStatusNotifier(this._repository) : super(const PiholeStatus.loading());
 
   @override
   void dispose() {
-    print('disposing PiholeStatusNotifier');
     _cancelToken.cancel();
     super.dispose();
   }
 
   Future<void> _perform(Future<PiholeStatus> action) async {
-    state = PiholeStatus.loading();
+    state = const PiholeStatus.loading();
     try {
       final result = await action;
       if (mounted) {
@@ -222,12 +221,10 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
   Future<void> sleep(Duration duration) async {
     await _perform(_repository.sleep(duration, _cancelToken));
     Future.delayed(duration).then((_) {
-      print('waking up');
       if (mounted) {
         ping();
       }
     });
-    print('scheduled');
   }
 }
 

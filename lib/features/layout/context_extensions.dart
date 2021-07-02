@@ -9,8 +9,7 @@ final x = importSnackBarExtensions;
 extension BuildContextX on BuildContext {
   Future<void> openUrl(String url) async {
     if (!await launchUrl(url)) {
-      // showErrorDialog(this, 'nooo $url');
-      ScaffoldMessenger.of(this).showMessageNow(message: 'Cannot open ${url}');
+      ScaffoldMessenger.of(this).showMessageNow(message: 'Cannot open $url');
     }
   }
 

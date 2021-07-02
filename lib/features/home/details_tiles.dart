@@ -37,7 +37,7 @@ class TempTile extends HookWidget {
     final reading = useProvider(temperatureReadingProvider);
 
     useEffect(() {
-      final timer = Timer.periodic(Duration(seconds: 10), (timer) {
+      final timer = Timer.periodic(const Duration(seconds: 10), (timer) {
         color.value =
             Colors.accents.elementAt(Random().nextInt(Colors.accents.length));
       });
@@ -68,7 +68,7 @@ class TempTile extends HookWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TileTitle('Temp tile', color: kDashTileColor),
+                        const TileTitle('Temp tile', color: kDashTileColor),
                         ActivePiDetailsCacheBuilder(
                             builder: (context, option, _) => Text(
                                   option.message(reading),

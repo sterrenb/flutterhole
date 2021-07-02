@@ -72,7 +72,7 @@ class TemperatureRangeDialog extends HookWidget {
       onSelect: () => pop(currentRange.value),
       onCancel: () => pop(null),
       theme: theme,
-      header: DialogHeader(
+      header: const DialogHeader(
         title: 'Temperature',
         message: 'Displays the Pi-hole CPU temperature',
       ),
@@ -84,7 +84,7 @@ class TemperatureRangeDialog extends HookWidget {
               (a) => Text(
                   '${(a.temperature ?? 0).temperatureInReading(settings.userPreferences.temperatureReading)}'),
             ),
-            trailing: TemperatureScaleDropdownButton(),
+            trailing: const TemperatureScaleDropdownButton(),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -128,8 +128,8 @@ Future<RangeValues?> showTemperatureRangeDialog(
         BuildContext context, Reader read) =>
     showModal<RangeValues>(
       context: context,
-      configuration: FadeScaleTransitionConfiguration(),
-      builder: (context) => TemperatureRangeDialog(),
+      configuration: const FadeScaleTransitionConfiguration(),
+      builder: (context) => const TemperatureRangeDialog(),
     );
 
 class TemperatureTile extends HookWidget {
@@ -140,10 +140,12 @@ class TemperatureTile extends HookWidget {
   Color preferencesToTemperatureColor(
       UserPreferences preferences, PiColorTheme piColors, double? temperature) {
     if (temperature == null) return KColors.unknown;
-    if (temperature < preferences.temperatureMin)
+    if (temperature < preferences.temperatureMin) {
       return piColors.temperatureLow;
-    if (temperature < preferences.temperatureMax)
+    }
+    if (temperature < preferences.temperatureMax) {
       return piColors.temperatureMed;
+    }
     return piColors.temperatureHigh;
   }
 
@@ -177,7 +179,7 @@ class TemperatureTile extends HookWidget {
                         details.temperatureInFahrenheit,
                         details.temperatureInKelvin
                       ].join(' | ')}',
-                      leading: Icon(KIcons.temperatureReading));
+                      leading: const Icon(KIcons.temperatureReading));
                 },
                 error: (e, s) => null,
               ),
@@ -198,8 +200,7 @@ class TemperatureTile extends HookWidget {
                 children: [
                   Positioned(
                     bottom: 10,
-                    child: Container(
-                        // color: Colors.red,
+                    child: SizedBox(
                         height: 10,
                         child: SliderTheme(
                             data: SliderThemeData(
@@ -229,7 +230,7 @@ class TemperatureTile extends HookWidget {
                                     )))),
                   ),
                   TextTileContent(
-                    top: TileTitle(
+                    top: const TileTitle(
                       'Temperature',
                       color: Colors.white,
                     ),

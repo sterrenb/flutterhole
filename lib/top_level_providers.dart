@@ -34,7 +34,7 @@ final oldDioProvider = Provider.family<Dio, Pi>((ref, pi) {
   final dio = Dio(BaseOptions(
     baseUrl: pi.dioBase,
     headers: {
-      HttpHeaders.userAgentHeader: "flutterhole",
+      HttpHeaders.userAgentHeader: 'flutterhole',
     },
     connectTimeout: 2000,
     sendTimeout: 2000,
@@ -58,7 +58,7 @@ final oldDioProvider = Provider.family<Dio, Pi>((ref, pi) {
           options.queryParameters.entries
               .map((mapEntry) =>
                   '${mapEntry.key}=${mapEntry.key == 'auth' ? '<auth>' : mapEntry.value}')
-              .join("&");
+              .join('&');
     }
     ref.read(logNotifierProvider.notifier).log(LogCall(
           source: 'dio',

@@ -15,7 +15,7 @@ class HomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ActivePiTheme(
+    return const ActivePiTheme(
       child: Scaffold(
         appBar: HomeAppBar(),
         drawer: AppDrawer(),

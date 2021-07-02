@@ -35,7 +35,7 @@ extension ScaffoldMessengerStateX on ScaffoldMessengerState {
           ),
         ],
       ),
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     ));
   }
 
@@ -60,7 +60,7 @@ extension ScaffoldMessengerStateX on ScaffoldMessengerState {
           ),
         ],
       ),
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     ));
   }
 }

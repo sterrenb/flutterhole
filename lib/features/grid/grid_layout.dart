@@ -266,7 +266,7 @@ class DoubleGridCard extends StatelessWidget {
             child: left,
           ),
         ),
-        GridSpacer(),
+        const GridSpacer(),
         Expanded(
           child: Card(
             child: right,
@@ -282,7 +282,7 @@ class CenteredGridTileLoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: CircularProgressIndicator());
+    return const Center(child: CircularProgressIndicator());
   }
 }
 

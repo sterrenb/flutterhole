@@ -21,7 +21,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 extension LogRecordX on LogRecord {
   IconData get iconData {
-    switch (this.level.name) {
+    switch (level.name) {
       case 'INFO':
       case 'ALL':
         return KIcons.info;
@@ -43,7 +43,7 @@ extension LogRecordX on LogRecord {
 
 extension LevelX on Level {
   IconData get iconData {
-    switch (this.name) {
+    switch (name) {
       case 'ALL':
       case 'FINEST':
       case 'FINER':
@@ -63,7 +63,7 @@ extension LevelX on Level {
   }
 
   String get readable {
-    switch (this.name) {
+    switch (name) {
       case 'ALL':
       case 'FINEST':
       case 'FINER':
@@ -83,7 +83,7 @@ extension LevelX on Level {
   }
 
   Color getColor(PiColorTheme piColors) {
-    switch (this.name) {
+    switch (name) {
       case 'ALL':
       case 'FINEST':
       case 'FINER':
@@ -119,13 +119,13 @@ class _LogRecordModal extends StatelessWidget {
             children: [
               ListTile(
                 leading: _RecordIconBuilder(record: record),
-                title: Text('${record.level.readable}'),
+                title: Text(record.level.readable),
                 trailing: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '${record.time.hms}',
+                      record.time.hms,
                       style: Theme.of(context).textTheme.caption,
                     ),
                     DifferenceText(record.time),

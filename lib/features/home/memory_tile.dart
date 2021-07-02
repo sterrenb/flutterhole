@@ -40,13 +40,13 @@ class MemoryTile extends HookWidget {
                 ScaffoldMessenger.of(context).showThemedMessageNow(context,
                     message:
                         'CPU load: ${detailsCache.value!.cpuLoads.map((e) => '${(e * 100).toStringAsFixed(0)}%').join(' | ')}',
-                    leading: Icon(KIcons.memoryUsage));
+                    leading: const Icon(KIcons.memoryUsage));
               },
         child: Stack(
           alignment: Alignment.center,
           children: [
             TextTileContent(
-              top: TileTitle(
+              top: const TileTitle(
                 'Memory Usage',
                 color: Colors.white,
               ),
@@ -66,7 +66,7 @@ class MemoryTile extends HookWidget {
             ),
             Positioned(
               bottom: 10,
-              child: Container(
+              child: SizedBox(
                 height: loadHeight,
                 // color: Colors.orangeAccent,
                 child: Row(
@@ -95,7 +95,7 @@ class MemoryTile extends HookWidget {
                                         width: loadWidth,
                                         height: (loadHeight * 2 * cpuLoad)
                                             .clamp(0, loadWidth),
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           color: Colors.white,
                                           borderRadius: BorderRadius.only(
                                             bottomLeft: Radius.circular(2.0),

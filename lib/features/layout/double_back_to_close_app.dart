@@ -5,7 +5,7 @@ import 'package:flutterhole_web/features/layout/snackbar.dart';
 const Duration kDoubleBackToCloseDuration = Duration(seconds: 2);
 
 class DoubleBackToCloseApp extends StatefulWidget {
-  DoubleBackToCloseApp({
+  const DoubleBackToCloseApp({
     Key? key,
     required this.child,
     this.enabled = true,

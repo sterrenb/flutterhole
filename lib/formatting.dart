@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 final numberFormat = NumberFormat();
 
-extension doubleX on double {
+extension DoubleX on double {
   double _celciusToKelvin(double temp) => temp + 273.15;
 
   double _celciusToFahrenheit(double temp) => (temp * (9 / 5)) + 32;
@@ -30,12 +30,10 @@ extension doubleX on double {
   }
 }
 
-extension intX on int {
+extension IntX on int {
   String secondsOrElse(String orElse) => Intl.plural(this,
       zero: orElse, one: '$this second', other: '$this seconds');
 }
-
-final importFormatting = 123;
 
 final _hm = DateFormat.Hm();
 final _hms = DateFormat.Hms();

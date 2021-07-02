@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-typedef void PeriodicCallback(Timer timer);
+typedef PeriodicCallback = void Function(Timer timer);
 
 class PeriodicWidget extends StatefulWidget {
   final Widget? child;
@@ -61,8 +61,8 @@ class PerHookWidget extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final prefs = useProvider(userPreferencesProvider);
-    final timer =
-        useState(Timer.periodic(Duration(seconds: 2), (timer) {})..cancel());
+    final timer = useState(
+        Timer.periodic(const Duration(seconds: 2), (timer) {})..cancel());
 
     useEffect(() {
       if (prefs.updateFrequency > Duration.zero) {

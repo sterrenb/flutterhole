@@ -33,7 +33,7 @@ class _ListTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(title),
-          Text('Branch'),
+          const Text('Branch'),
         ],
       ),
       subtitle: Row(
@@ -70,15 +70,16 @@ class InvertColors extends StatelessWidget {
   final bool invert;
 
   const InvertColors({
+    Key? key,
+    required this.invert,
     required this.child,
-    this.invert = true,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return invert
         ? ColorFiltered(
-            colorFilter: ColorFilter.matrix([
+            colorFilter: const ColorFilter.matrix([
               -1,
               0,
               0,
@@ -100,7 +101,7 @@ class InvertColors extends StatelessWidget {
               1,
               0,
             ]),
-            child: this.child,
+            child: child,
           )
         : child;
   }
@@ -123,30 +124,30 @@ class VersionsTile extends HookWidget {
               context.refresh(
                   piVersionsProvider(context.read(activePiParamsProvider)));
             },
-            title: TileTitle('Versions'),
+            title: const TileTitle('Versions'),
             // leading: DashboardTileIcon(KIcons.appVersion),
             leading: Opacity(
               opacity: 0.5,
               child: InvertColors(
                 invert: Theme.of(context).brightness == Brightness.dark,
-                child: Image(
+                child: const Image(
                     width: 32.0,
                     image: AssetImage('assets/icons/pihole_dark.png')),
               ),
             ),
             // trailing: Opacity(
             //     opacity: 0, child: DashboardTileIcon(KIcons.appVersion)),
-            trailing: Icon(Icons.refresh),
+            trailing: const Icon(Icons.refresh),
           ),
           ...versionsValue.when<List<Widget>>(
             loading: () => [
-              Container(
+              const SizedBox(
                 height: _tileHeight * 3,
                 child: Center(child: CircularProgressIndicator()),
               )
             ],
             error: (error, stacktrace) => [
-              Container(
+              SizedBox(
                   height: _tileHeight * 3,
                   child: Center(child: Text(error.toString()))),
             ],

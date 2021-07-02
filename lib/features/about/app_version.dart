@@ -12,16 +12,16 @@ final packageInfoProvider =
 void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
   return showAboutDialog(
     context: context,
-    applicationName: '${packageInfo.appName}',
-    applicationVersion: '${packageInfo.version}',
+    applicationName: packageInfo.appName,
+    applicationVersion: packageInfo.version,
     applicationLegalese: 'Made by Thomas Sterrenburg',
     children: <Widget>[
-      SizedBox(height: 24),
+      const SizedBox(height: 24),
       RichText(
         text: TextSpan(
           style: Theme.of(context).textTheme.bodyText2,
           children: <TextSpan>[
-            TextSpan(
+            const TextSpan(
                 text: 'FlutterHole is a free third party application '
                     'for interacting with your Pi-Hole® server. '
                     '\n\n'
@@ -37,7 +37,7 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
               recognizer: TapGestureRecognizer()
                 ..onTap = () => launchUrl(KUrls.githubHomeUrl),
             ),
-            TextSpan(
+            const TextSpan(
                 text: '.'
                     '\n\n'
                     'Logo design by '),
@@ -50,7 +50,7 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
               recognizer: TapGestureRecognizer()
                 ..onTap = () => launchUrl(KUrls.logoDesignerUrl),
             ),
-            TextSpan(text: '.'),
+            const TextSpan(text: '.'),
           ],
         ),
       ),
@@ -103,10 +103,10 @@ class AppVersionListTile extends HookWidget {
   Widget build(BuildContext context) {
     final packageInfo = useProvider(packageInfoProvider);
     return ListTile(
-      leading: Icon(KIcons.appVersion),
+      leading: const Icon(KIcons.appVersion),
       title: Text(title),
       // subtitle: Text('${packageInfo.toString()}'),
-      subtitle: PackageVersionText(),
+      subtitle: const PackageVersionText(),
       trailing: showLicences
           ? TextButton(
               onPressed: packageInfo.maybeWhen(

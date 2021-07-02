@@ -135,7 +135,7 @@ class ExpandableCode extends HookWidget {
             ? () {
                 expand.value = !expand.value;
               }
-            : (onTap != null ? onTap : null),
+            : (onTap),
         child: SingleChildScrollView(
           scrollDirection: expand.value ? Axis.horizontal : Axis.vertical,
           // physics: const BouncingScrollPhysics(),

@@ -227,7 +227,7 @@ Future<Duration?> showUpdateFrequencyDialog(
 
   return showModal<Duration>(
     context: context,
-    configuration: FadeScaleTransitionConfiguration(),
+    configuration: const FadeScaleTransitionConfiguration(),
     builder: (context) => DurationDialog(
       title: 'Update frequency',
       message:
@@ -272,10 +272,10 @@ class DialogListBase extends StatelessWidget {
           // physics: BouncingScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(child: header),
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: const Divider(height: 1),
+                padding: EdgeInsets.only(bottom: 16.0),
+                child: Divider(height: 1),
               ),
             ),
             body,
@@ -367,17 +367,14 @@ class ErrorDialog extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return DialogListBase(
-        header: DialogHeader(
-          title: 'Error',
-          // title: _errorToTitle(e),
-        ),
+        header: const DialogHeader(title: 'Error'),
         // onConfirm: () {},
         body: SliverList(
           // shrinkWrap: true,
           delegate: SliverChildListDelegate([
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0)
-                  .add(EdgeInsets.only(bottom: 16.0)),
+                  .add(const EdgeInsets.only(bottom: 16.0)),
               child: Text(_errorToDescription(e)),
             ),
             HookBuilder(

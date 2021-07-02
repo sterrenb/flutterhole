@@ -20,11 +20,11 @@ class PrivacyPage extends HookWidget {
     return ActivePiTheme(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Privacy'),
+          title: const Text('Privacy'),
           actions: [
             IconButton(
               tooltip: 'Open in browser',
-              icon: Icon(KIcons.openUrl),
+              icon: const Icon(KIcons.openUrl),
               onPressed: () {
                 launchUrl(KUrls.privacyUrl);
               },
@@ -39,7 +39,7 @@ class PrivacyPage extends HookWidget {
               data: markdown,
               selectable: true,
             ),
-            loading: () => Center(
+            loading: () => const Center(
               child: CircularProgressIndicator(),
             ),
             error: (e, s) => CenteredErrorMessage(e, s),

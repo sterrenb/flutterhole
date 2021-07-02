@@ -7,12 +7,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 final newDioProvider = Provider.family<Dio, Pi>((ref, pi) {
-  // final logger = ref.watch(logNotifierProvider.notifier);
-
   final dio = Dio(BaseOptions(
     baseUrl: pi.dioBase,
     headers: {
-      "referer": "flutterhole",
+      'referer': 'flutterhole',
     },
     connectTimeout: 2000,
     sendTimeout: 2000,

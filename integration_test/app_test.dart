@@ -27,7 +27,7 @@ void _testMain() {
     await tester.tap(find.byIcon(Icons.add));
     await tester.pump();
 
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     // Verify that our counter has incremented.
     expect(find.text('0'), findsNothing);

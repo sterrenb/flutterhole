@@ -77,7 +77,7 @@ class TotalQueriesTile extends HookWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TileTitle('Total queries', color: kDashTileColor),
+                    const TileTitle('Total queries', color: kDashTileColor),
                     ActiveSummaryCacheBuilder(
                         builder: (context, option, _) => Text(
                               option.totalQueries,
@@ -113,7 +113,7 @@ class QueriesBlockedTile extends HookWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TileTitle('Queries blocked', color: kDashTileColor),
+                    const TileTitle('Queries blocked', color: kDashTileColor),
                     ActiveSummaryCacheBuilder(
                         builder: (context, option, _) => Text(
                               option.queriesBlocked,
@@ -149,7 +149,7 @@ class PercentBlockedTile extends HookWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TileTitle('Queries blocked', color: kDashTileColor),
+                    const TileTitle('Queries blocked', color: kDashTileColor),
                     ActiveSummaryCacheBuilder(
                         builder: (context, option, _) => Text(
                               option.percentBlocked,
@@ -185,7 +185,7 @@ class DomainsOnBlocklistTile extends HookWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TileTitle('Queries blocked', color: kDashTileColor),
+                    const TileTitle('Queries blocked', color: kDashTileColor),
                     ActiveSummaryCacheBuilder(
                         builder: (context, option, _) => Text(
                               option.domainsOnBlocklist,

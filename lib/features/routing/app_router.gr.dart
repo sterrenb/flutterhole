@@ -13,7 +13,7 @@ import '../about/privacy_page.dart' as _i12;
 import '../entities/settings_entities.dart' as _i13;
 import '../logging/logs_page.dart' as _i7;
 import '../onboarding/onboarding_page.dart' as _i3;
-import '../query_log/better_query_log_page.dart' as _i5;
+import '../query_log/query_log_page.dart' as _i5;
 import '../settings/dashboard_settings_page.dart' as _i8;
 import '../settings/my_pi_holes_page.dart' as _i9;
 import '../settings/settings_page.dart' as _i6;
@@ -41,7 +41,7 @@ class AppRouter extends _i1.RootStackRouter {
     BetterQueryLogRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
-          return const _i5.BetterQueryLogPage();
+          return const _i5.QueryLogPage();
         }),
     SettingsRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
