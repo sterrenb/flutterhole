@@ -23,7 +23,7 @@ void main() async {
       dio: dio,
       baseUrl: "pi.hole",
       useSsl: false,
-      apiPath: "/admin/api.php",
+      apiPath: "admin/api.php",
       apiPort: 80,
       apiTokenRequired: true,
       apiToken: "token",

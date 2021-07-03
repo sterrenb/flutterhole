@@ -25,7 +25,7 @@ class PiholeRepository {
     // log(LogCall(title, LogLevel.info, 'GET /${queryParameters.keys.first}'));
 
     final response = await params.dio.get(
-      params.apiPath,
+      '/' + params.apiPath,
       queryParameters: queryParameters,
       cancelToken: cancelToken,
     );

@@ -226,7 +226,7 @@ class PiStatusMessenger extends HookWidget {
   }
 }
 
-class PiToggleFloatingActionButton extends StatelessWidget {
+class PiToggleFloatingActionButton extends HookWidget {
   const PiToggleFloatingActionButton({Key? key}) : super(key: key);
 
   @override

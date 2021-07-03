@@ -558,6 +558,9 @@ class ApiPathCard extends StatelessWidget {
           FilteringTextInputFormatter.singleLineFormatter,
           _whitespaceFormatter,
         ],
+        decoration: const InputDecoration(
+          prefixText: '/',
+        ),
         hintText: 'API path',
 
         // keyboardType: TextInputType.text,

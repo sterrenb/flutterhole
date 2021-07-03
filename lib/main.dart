@@ -38,15 +38,13 @@ Future<void> main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends HookWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final themeMode = useProvider(themeModeProvider);
     final router = useState(AppRouter()).value;
-    // trigger root logger
-    // useProvider(rootLoggerProvider);
     return RefreshableWaterDropConfiguration(
       child: MaterialApp.router(
         title: 'Flutter Demo',

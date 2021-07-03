@@ -193,7 +193,7 @@ class AppDrawer extends HookWidget {
               _DrawerTile(
                 'Query Log',
                 KIcons.queryLog,
-                BetterQueryLogRoute(),
+                QueryLogRoute(),
               ),
               Divider(),
               _DrawerTile(

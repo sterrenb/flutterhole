@@ -38,7 +38,7 @@ class AppRouter extends _i1.RootStackRouter {
         builder: (_) {
           return const _i4.HomePage();
         }),
-    BetterQueryLogRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
+    QueryLogRoute.name: (routeData) => _i1.MaterialPageX<dynamic>(
         routeData: routeData,
         builder: (_) {
           return const _i5.QueryLogPage();
@@ -93,8 +93,7 @@ class AppRouter extends _i1.RootStackRouter {
   List<_i1.RouteConfig> get routes => [
         _i1.RouteConfig(OnboardingRoute.name, path: '/onboarding-page'),
         _i1.RouteConfig(HomeRoute.name, path: '/'),
-        _i1.RouteConfig(BetterQueryLogRoute.name,
-            path: '/better-query-log-page'),
+        _i1.RouteConfig(QueryLogRoute.name, path: '/query-log-page'),
         _i1.RouteConfig(SettingsRoute.name, path: '/settings-page'),
         _i1.RouteConfig(LogsRoute.name, path: '/logs-page'),
         _i1.RouteConfig(DashboardSettingsRoute.name,
@@ -129,10 +128,10 @@ class HomeRoute extends _i1.PageRouteInfo {
   static const String name = 'HomeRoute';
 }
 
-class BetterQueryLogRoute extends _i1.PageRouteInfo {
-  const BetterQueryLogRoute() : super(name, path: '/better-query-log-page');
+class QueryLogRoute extends _i1.PageRouteInfo {
+  const QueryLogRoute() : super(name, path: '/query-log-page');
 
-  static const String name = 'BetterQueryLogRoute';
+  static const String name = 'QueryLogRoute';
 }
 
 class SettingsRoute extends _i1.PageRouteInfo {
