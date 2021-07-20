@@ -437,6 +437,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.13.3"
+  http_mock_adapter:
+    dependency: transitive
+    description:
+      name: http_mock_adapter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.1"
   http_multi_server:
     dependency: transitive
     description:

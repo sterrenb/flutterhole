@@ -240,7 +240,7 @@ packages:
     source: hosted
     version: "0.15.0"
   http_mock_adapter:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: http_mock_adapter
       url: "https://pub.dartlang.org"

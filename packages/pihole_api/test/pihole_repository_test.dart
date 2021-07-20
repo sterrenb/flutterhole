@@ -3,9 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:pihole_api/pihole_api.dart';
 import 'package:pihole_api/src/formatting.dart';
+import 'package:pihole_api/src/mock_dio_adapter.dart';
 import 'package:test/test.dart';
 
-import 'fixtures.dart';
+import '../lib/src/fixtures.dart';
 
 void main() async {
   late PiholeRepositoryParams params;
@@ -16,7 +17,8 @@ void main() async {
 
   setUp(() {
     dio = Dio();
-    dioAdapter = DioAdapter();
+    dioAdapter = mockDioAdapter();
+    // dioAdapter = DioAdapter();
     dio.httpClientAdapter = dioAdapter;
     cancelToken = CancelToken();
     params = PiholeRepositoryParams(
@@ -35,32 +37,6 @@ void main() async {
 
   group('fetchSummary', () {
     test('fetchSummary returns PiSummary', () async {
-      dioAdapter.onGet(
-          "/admin/api.php",
-          (request) => request.reply(200, {
-                "domains_being_blocked": 80473,
-                "dns_queries_today": 19000,
-                "ads_blocked_today": 3,
-                "ads_percentage_today": 30.572075,
-                "unique_domains": 5,
-                "queries_forwarded": 6,
-                "queries_cached": 7,
-                "clients_ever_seen": 8,
-                "unique_clients": 9,
-                "dns_queries_all_types": 1,
-                "reply_NODATA": 2,
-                "reply_NXDOMAIN": 3,
-                "reply_CNAME": 4,
-                "reply_IP": 5,
-                "privacy_level": 6,
-                "status": "enabled",
-                "gravity_last_updated": {
-                  "file_exists": true,
-                  "absolute": 1624765511,
-                  "relative": {"days": 2, "hours": 5, "minutes": 49}
-                }
-              }),
-          queryParameters: {'summaryRaw': ''});
       final res = await repository.fetchSummary(cancelToken);
       expect(
           res,
