@@ -15,7 +15,7 @@ import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-const double kMinTileHeight = 150.0;
+const double kMinTileHeight = 200.0;
 
 class TextTileBottomText extends StatelessWidget {
   const TextTileBottomText(
@@ -44,6 +44,7 @@ class TextTileContent extends StatelessWidget {
   final IconData iconData;
   final double iconLeft;
   final double? iconTop;
+  final Color? foregroundColor;
 
   const TextTileContent({
     Key? key,
@@ -52,6 +53,7 @@ class TextTileContent extends StatelessWidget {
     required this.iconData,
     this.iconLeft = 16.0,
     this.iconTop,
+    this.foregroundColor,
   }) : super(key: key);
 
   @override

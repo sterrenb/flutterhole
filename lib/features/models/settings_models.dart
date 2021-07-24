@@ -80,6 +80,45 @@ class PiModel with _$PiModel {
   );
 }
 
+DashboardTileConstraints idToConstraints(DashboardID id) {
+  switch (id) {
+    case DashboardID.selectTiles:
+      return const DashboardTileConstraints.count(4, 1);
+    case DashboardID.totalQueries:
+      return const DashboardTileConstraints.count(4, 1);
+    case DashboardID.queriesBlocked:
+      return const DashboardTileConstraints.count(4, 1);
+    case DashboardID.percentBlocked:
+      return const DashboardTileConstraints.count(4, 1);
+    case DashboardID.domainsOnBlocklist:
+      return const DashboardTileConstraints.count(4, 1);
+    case DashboardID.queriesOverTime:
+      return const DashboardTileConstraints.fit(8);
+    case DashboardID.clientActivity:
+      return const DashboardTileConstraints.fit(8);
+    case DashboardID.memory:
+      return const DashboardTileConstraints.count(2, 2);
+    case DashboardID.queryTypes:
+      return const DashboardTileConstraints.count(4, 2);
+    case DashboardID.forwardDestinations:
+      return const DashboardTileConstraints.count(4, 2);
+    case DashboardID.topPermittedDomains:
+      return const DashboardTileConstraints.fit(4);
+    case DashboardID.topBlockedDomains:
+      return const DashboardTileConstraints.fit(4);
+    case DashboardID.versions:
+      return const DashboardTileConstraints.fit(4);
+    case DashboardID.logs:
+      return const DashboardTileConstraints.extent(
+          4, (kLogsDashboardCacheLength + 2) * kToolbarHeight);
+    case DashboardID.temperature:
+      return const DashboardTileConstraints.count(2, 2);
+
+    // default:
+    //   throw StateError('unsupported DashboardID $id');
+  }
+}
+
 @freezed
 class DashboardTileConstraints with _$DashboardTileConstraints {
   const factory DashboardTileConstraints.count(
@@ -99,49 +138,10 @@ class DashboardTileConstraints with _$DashboardTileConstraints {
   factory DashboardTileConstraints.fromJson(Map<String, dynamic> json) =>
       _$DashboardTileConstraintsFromJson(json);
 
-  static final Map<DashboardID, DashboardTileConstraints> defaults =
-      DashboardID.values.asMap().map((index, id) => MapEntry(
-          id,
-          (id) {
-            switch (id) {
-              case DashboardID.selectTiles:
-                return const DashboardTileConstraints.count(4, 1);
-              case DashboardID.totalQueries:
-                return const DashboardTileConstraints.count(4, 1);
-              case DashboardID.queriesBlocked:
-                return const DashboardTileConstraints.count(4, 1);
-              case DashboardID.percentBlocked:
-                return const DashboardTileConstraints.count(4, 1);
-              case DashboardID.domainsOnBlocklist:
-                return const DashboardTileConstraints.count(4, 1);
-              case DashboardID.queriesBarChart:
-                return const DashboardTileConstraints.fit(4);
-              case DashboardID.clientActivityBarChart:
-                return const DashboardTileConstraints.fit(4);
-              case DashboardID.temperature:
-                return const DashboardTileConstraints.count(2, 2);
-              case DashboardID.memory:
-                return const DashboardTileConstraints.count(2, 2);
-              case DashboardID.queryTypes:
-                return const DashboardTileConstraints.count(4, 2);
-              case DashboardID.forwardDestinations:
-                return const DashboardTileConstraints.count(4, 2);
-              case DashboardID.topPermittedDomains:
-                return const DashboardTileConstraints.fit(4);
-              case DashboardID.topBlockedDomains:
-                return const DashboardTileConstraints.fit(4);
-              case DashboardID.versions:
-                return const DashboardTileConstraints.fit(4);
-              case DashboardID.logs:
-                return const DashboardTileConstraints.extent(
-                    4, (kLogsDashboardCacheLength + 2) * kToolbarHeight);
-              case DashboardID.tempTile:
-                return const DashboardTileConstraints.count(2, 3);
-
-              default:
-                throw StateError('unsupported DashboardID $id');
-            }
-          }(id)));
+  static final Map<DashboardID, DashboardTileConstraints> defaults = DashboardID
+      .values
+      .asMap()
+      .map((index, id) => MapEntry(id, idToConstraints(id)));
 }
 
 @freezed
@@ -149,7 +149,7 @@ class DashboardEntryModel with _$DashboardEntryModel {
   DashboardEntryModel._();
 
   factory DashboardEntryModel({
-    required DashboardID id,
+    required String id,
     required bool enabled,
     required DashboardTileConstraints constraints,
   }) = _DashboardEntryModel;
@@ -159,16 +159,16 @@ class DashboardEntryModel with _$DashboardEntryModel {
 
   factory DashboardEntryModel.fromEntity(DashboardEntry entry) =>
       DashboardEntryModel(
-        id: entry.id,
+        id: entry.id.toString(),
         enabled: entry.enabled,
         constraints: entry.constraints,
       );
 
-  late final DashboardEntry entity = DashboardEntry(
-    id: id,
-    enabled: enabled,
-    constraints: constraints,
-  );
+// late final DashboardEntry entity = DashboardEntry(
+//   id: id,
+//   enabled: enabled,
+//   constraints: constraints,
+// );
 }
 
 @freezed
@@ -191,14 +191,22 @@ class DashboardSettingsModel with _$DashboardSettingsModel {
   factory DashboardSettingsModel.initial() => DashboardSettingsModel(entries: [
         ...DashboardID.values.sublist(0, 4).map(
               (e) => DashboardEntryModel(
-                  id: e,
+                  id: e.toString(),
                   enabled: true,
                   constraints: DashboardTileConstraints.defaults[e]!),
             )
       ]);
 
-  late final DashboardSettings entity =
-      DashboardSettings(entries: entries.map((e) => e.entity).toList());
+  late final DashboardSettings entity = DashboardSettings(
+      entries: entries
+          .where((model) => dashboardIDStrings.contains(model.id))
+          .map((model) => DashboardEntry(
+                id: DashboardID.values
+                    .elementAt(dashboardIDStrings.indexOf(model.id)),
+                enabled: model.enabled,
+                constraints: model.constraints,
+              ))
+          .toList());
 }
 
 @freezed

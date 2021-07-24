@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
-import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
-import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
+
+import 'dash_tiles.dart';
+import 'details_tiles.dart';
+
+extension PiDetailsX on PiDetails {
+  String memoryUsagePercentageString() =>
+      '${(memoryUsage ?? 0.0).toStringAsFixed(1)}%';
+}
 
 class MemoryTile extends HookWidget {
   const MemoryTile({Key? key}) : super(key: key);
@@ -24,95 +30,101 @@ class MemoryTile extends HookWidget {
     final pi = useProvider(activePiParamsProvider);
     final detailsValue = useProvider(piDetailsProvider(pi));
 
-    final detailsCache = useState<PiDetails?>(null);
-    useEffect(() {
-      detailsValue.whenData((value) {
-        detailsCache.value = value;
-      });
-    }, [detailsValue, detailsCache]);
+    // final detailsCache = useState<PiDetails?>(null);
+    // useEffect(() {
+    //   detailsValue.whenData((value) {
+    //     detailsCache.value = value;
+    //   });
+    // }, [detailsValue, detailsCache]);
 
-    return Card(
+    return GridCard(
       color: KColors.memoryUsage,
-      child: InkWell(
-        onTap: detailsCache.value == null
-            ? null
-            : () {
-                ScaffoldMessenger.of(context).showThemedMessageNow(context,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          const Positioned(
+            left: 16.0,
+            top: 16.0,
+            child: GridIcon(
+              KIcons.memoryUsage,
+              iconColor: kDashTileColor,
+            ),
+          ),
+          GridInkWell(
+            onTap: detailsValue.maybeWhen(
+              data: (details) => () {
+                ScaffoldMessenger.of(context).showMessageNow(
                     message:
-                        'CPU load: ${detailsCache.value!.cpuLoads.map((e) => '${(e * 100).toStringAsFixed(0)}%').join(' | ')}',
+                        'Memory usage: ${details.memoryUsagePercentageString()}',
+                    // 'CPU load: ${detailsCache.value!.cpuLoads.map((e) => '${(e * 100).toStringAsFixed(0)}%').join(' | ')}',
                     leading: const Icon(KIcons.memoryUsage));
               },
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            TextTileContent(
-              top: const TileTitle(
-                'Memory Usage',
-                color: Colors.white,
-              ),
-              bottom: detailsValue.when(
-                data: (details) => TextTileBottomText(
-                    memoryUsageToString(details.memoryUsage)),
-                loading: () => TextTileBottomText(detailsCache.value != null
-                    ? memoryUsageToString(detailsCache.value!.memoryUsage)
-                    : '-'),
-                error: (error, stacktrace) => ExpandableCode(
-                  code: error.toString(),
-                  singleLine: false,
-                ),
-              ),
-              iconData: KIcons.memoryUsage,
-              iconTop: 16.0,
+              orElse: () => null,
             ),
-            Positioned(
-              bottom: 10,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const TileTitle('Memory Usage', color: kDashTileColor),
+                AnimatedSwitcher(
+                  duration: kThemeAnimationDuration,
+                  child: detailsValue.when(
+                    data: (details) => Text(
+                      details.memoryUsagePercentageString(),
+                      style: Theme.of(context).summaryStyle,
+                    ),
+                    loading: () => const SquareCardLoadingIndicator(),
+                    error: (e, s) => Text(
+                      '---',
+                      style: Theme.of(context).summaryStyle,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 10,
+            child: IgnorePointer(
+              ignoring: true,
               child: SizedBox(
-                height: loadHeight,
-                // color: Colors.orangeAccent,
-                child: Row(
-                  children: detailsCache.value == null
-                      ? <Widget>[]
-                      // : [0.1, 0.0, 0.5, 0.8, 2.2, -0.5]
-                      : detailsCache.value!.cpuLoads
-                          .map<Widget>((cpuLoad) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 4.0),
-                                child: Opacity(
+                  height: 10,
+                  child: SliderTheme(
+                      data: SliderThemeData(
+                        disabledActiveTrackColor: kDashTileColor,
+                        disabledInactiveTrackColor: kDashTileColor,
+                        disabledThumbColor: kDashTileColor,
+                        trackHeight: 1.0,
+                        thumbShape: SliderComponentShape.noOverlay,
+                      ),
+                      child: AnimatedOpacity(
+                        duration: kThemeChangeDuration,
+                        curve: Curves.ease,
+                        opacity: detailsValue.maybeWhen(
+                          loading: () => 0.0,
+                          orElse: () => 1.0,
+                        ),
+                        child: detailsValue.when(
+                            loading: () => Container(),
+                            error: (e, s) => Container(),
+                            data: (details) {
+                              if (details.memoryUsage == null) {
+                                return Container();
+                              } else {
+                                return Opacity(
                                   opacity: 0.5,
-                                  child: Stack(
-                                    alignment: Alignment.bottomCenter,
-                                    children: [
-                                      Container(
-                                        width: loadWidth,
-                                        height: loadHeight,
-                                        decoration: BoxDecoration(
-                                            border:
-                                                Border.all(color: Colors.white),
-                                            borderRadius:
-                                                BorderRadius.circular(2.0)),
-                                      ),
-                                      Container(
-                                        width: loadWidth,
-                                        height: (loadHeight * 2 * cpuLoad)
-                                            .clamp(0, loadWidth),
-                                        decoration: const BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(2.0),
-                                            bottomRight: Radius.circular(2.0),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                  child: Slider(
+                                    onChanged: null,
+                                    min: 0,
+                                    max: 100,
+                                    value: details.memoryUsage!,
                                   ),
-                                ),
-                              ))
-                          .toList(),
-                ),
-              ),
-            )
-          ],
-        ),
+                                );
+                              }
+                            }),
+                      ))),
+            ),
+          )
+        ],
       ),
     );
   }

@@ -147,6 +147,7 @@ final piDetailsProvider = FutureProvider.autoDispose
   final cancelToken = CancelToken();
   ref.onDispose(() => cancelToken.cancel());
 
+  await Future.delayed(const Duration(seconds: 1));
   final api = ref.read(piholeRepositoryProviderFamily(params));
   final piDetails = await api.fetchPiDetails(cancelToken);
   return piDetails;
@@ -160,7 +161,7 @@ final activePiDetailsProvider =
 
 // TODO move somewhere else
 final queryLogMaxProvider = StateProvider<int>((ref) {
-  return 10;
+  return 100;
 });
 
 final queryLogProvider = FutureProvider.autoDispose

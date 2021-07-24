@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutterhole_web/chart_tiles.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
@@ -10,19 +9,18 @@ import 'package:flutterhole_web/features/home/details_tiles.dart';
 import 'package:flutterhole_web/features/home/memory_tile.dart';
 import 'package:flutterhole_web/features/home/query_types_tile.dart';
 import 'package:flutterhole_web/features/home/summary_tiles.dart';
-import 'package:flutterhole_web/features/home/temperature_tile.dart';
 import 'package:flutterhole_web/features/home/versions_tile.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
-import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/models/settings_models.dart';
 import 'package:flutterhole_web/features/pihole/pi_status.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
-import 'package:flutterhole_web/features/settings/developer_widgets.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
 import 'package:refreshables/refreshables.dart';
+
+import 'chart_tiles.dart';
 
 extension DashboardIDX on DashboardID {
   Widget get widget {
@@ -37,12 +35,10 @@ extension DashboardIDX on DashboardID {
         return const PercentBlockedTile();
       case DashboardID.domainsOnBlocklist:
         return const DomainsOnBlocklistTile();
-      case DashboardID.queriesBarChart:
-        return const QueriesBarChartTile();
-      case DashboardID.clientActivityBarChart:
-        return const ClientActivityBarChartTile();
-      case DashboardID.temperature:
-        return const TemperatureTile();
+      case DashboardID.queriesOverTime:
+        return const QueriesOverTimeTile();
+      case DashboardID.clientActivity:
+        return const ClientActivityTile();
       case DashboardID.memory:
         return const MemoryTile();
       case DashboardID.queryTypes:
@@ -57,55 +53,11 @@ extension DashboardIDX on DashboardID {
         return const SelectTilesTile();
       case DashboardID.logs:
         return const LogsTile();
-      case DashboardID.tempTile:
+      case DashboardID.temperature:
         return const TempTile();
     }
   }
 }
-
-// final Map<DashboardID, StaggeredTile> staggeredTile =
-//     DashboardID.values.asMap().map((index, id) => MapEntry(
-//         id,
-//         (id) {
-//           switch (id) {
-//             case DashboardID.SelectTiles:
-//               return const StaggeredTile.count(4, 1);
-//             case DashboardID.TotalQueries:
-//               return const StaggeredTile.count(4, 1);
-//             case DashboardID.QueriesBlocked:
-//               return const StaggeredTile.count(4, 1);
-//             case DashboardID.PercentBlocked:
-//               return const StaggeredTile.count(4, 1);
-//             case DashboardID.DomainsOnBlocklist:
-//               return const StaggeredTile.count(4, 1);
-//             case DashboardID.QueriesBarChart:
-//               return const StaggeredTile.fit(4);
-//             case DashboardID.ClientActivityBarChart:
-//               return const StaggeredTile.fit(4);
-//             case DashboardID.Temperature:
-//               return const StaggeredTile.count(2, 2);
-//             case DashboardID.Memory:
-//               return const StaggeredTile.count(2, 2);
-//             case DashboardID.QueryTypes:
-//               return const StaggeredTile.count(4, 2);
-//             case DashboardID.ForwardDestinations:
-//               return const StaggeredTile.count(4, 2);
-//             case DashboardID.TopPermittedDomains:
-//               return const StaggeredTile.fit(4);
-//             case DashboardID.TopBlockedDomains:
-//               return const StaggeredTile.fit(4);
-//             case DashboardID.Versions:
-//               return const StaggeredTile.fit(4);
-//             case DashboardID.Versions:
-//               return const StaggeredTile.fit(4);
-//             case DashboardID.Logs:
-//               return StaggeredTile.extent(
-//                   4, (kLogsDashboardCacheLength + 2) * kToolbarHeight);
-//             // return const StaggeredTile.fit(4);
-//             default:
-//               return const StaggeredTile.count(4, 1);
-//           }
-//         }(id)));
 
 class SelectTilesTile extends HookWidget {
   const SelectTilesTile({Key? key}) : super(key: key);
@@ -152,12 +104,22 @@ class DashboardGrid extends HookWidget {
     final tiles = dashboardSettings.entries;
     final activeParams = useProvider(activePiParamsProvider);
 
-    Future<void> onRefresh(PiholeRepositoryParams pi) async {
+    // TODO deprecate [params]
+    // TODO only refresh tiles that are active
+    Future<void> onDashboardRefresh(PiholeRepositoryParams params) async {
       final homeIsActive = context.router.isRouteActive(HomeRoute.name);
       if (homeIsActive) {
-        context.refresh(clientActivityOverTimeProvider(pi));
-        context.read(piholeStatusNotifierProvider.notifier).ping();
-        context.read(logNotifierProvider.notifier).log(fakeLogCall());
+        // context.refresh(clientActivityOverTimeProvider(pi));
+        // context.read(piholeStatusNotifierProvider.notifier).ping();
+        // context.read(logNotifierProvider.notifier).log(fakeLogCall());
+        context
+            .refresh(piDetailsProvider(context.read(activePiParamsProvider)));
+        context
+            .refresh(piSummaryProvider(context.read(activePiParamsProvider)));
+        context.refresh(
+            queriesOverTimeProvider(context.read(activePiParamsProvider)));
+        context.refresh(clientActivityOverTimeProvider(
+            context.read(activePiParamsProvider)));
       }
     }
 
@@ -167,7 +129,7 @@ class DashboardGrid extends HookWidget {
 
     return PerHookWidget(
       onTimer: (timer) {
-        onRefresh(activeParams);
+        onDashboardRefresh(activeParams);
       },
       child: tiles.any((element) => element.enabled)
           ? RefreshableGridBuilder(
@@ -176,7 +138,7 @@ class DashboardGrid extends HookWidget {
                       ? 8
                       : 4,
               spacing: kGridSpacing,
-              onRefresh: () => onRefresh(activeParams),
+              onRefresh: () => onDashboardRefresh(activeParams),
               tiles: dashboardSettings.entries
                   .where((element) => element.enabled)
                   .map<StaggeredTile>((entry) {
@@ -192,6 +154,7 @@ class DashboardGrid extends HookWidget {
                     fit: (c) => StaggeredTile.fit(c),
                   );
                 }
+                debugPrint('rendering default tile with count(4, 1)');
                 // ignore: prefer_const_constructors
                 return StaggeredTile.count(4, 1);
               }).toList(),

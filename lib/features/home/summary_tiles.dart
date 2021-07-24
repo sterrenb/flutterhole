@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
+import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dash_tiles.dart';
 import 'package:flutterhole_web/features/pihole/pihole_builders.dart';
@@ -42,16 +43,16 @@ class TextProgressIndicator extends StatelessWidget {
 
 extension OptionX on Option<PiSummary> {
   String get totalQueries => fold(
-      () => '-', (summary) => numberFormat.format(summary.dnsQueriesToday));
+      () => '---', (summary) => numberFormat.format(summary.dnsQueriesToday));
 
   String get queriesBlocked => fold(
-      () => '-', (summary) => numberFormat.format(summary.adsBlockedToday));
+      () => '---', (summary) => numberFormat.format(summary.adsBlockedToday));
 
-  String get percentBlocked => fold(() => '-',
+  String get percentBlocked => fold(() => '---',
       (summary) => summary.adsPercentageToday.toStringAsFixed(2) + '%');
 
-  String get domainsOnBlocklist => fold(
-      () => '-', (summary) => numberFormat.format(summary.domainsBeingBlocked));
+  String get domainsOnBlocklist => fold(() => '---',
+      (summary) => numberFormat.format(summary.domainsBeingBlocked));
 }
 
 class TotalQueriesTile extends HookWidget {
@@ -71,18 +72,28 @@ class TotalQueriesTile extends HookWidget {
                 loading: () => true,
                 orElse: () => false,
               ),
-              onTap: () => context.refresh(
-                  piSummaryProvider(context.read(activePiParamsProvider))),
+              onTap: () => summaryValue.when(
+                data: (summary) => context.refresh(
+                    piSummaryProvider(context.read(activePiParamsProvider))),
+                loading: () => null,
+                error: (e, s) => showErrorDialog(context, e),
+              ),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const TileTitle('Total queries', color: kDashTileColor),
-                    ActiveSummaryCacheBuilder(
-                        builder: (context, option, _) => Text(
-                              option.totalQueries,
-                              style: Theme.of(context).summaryStyle,
-                            )),
+                    summaryValue.maybeWhen(
+                      error: (e, s) => Text(
+                        '---',
+                        style: Theme.of(context).summaryStyle,
+                      ),
+                      orElse: () => ActiveSummaryCacheBuilder(
+                          builder: (context, option, _) => Text(
+                                option.totalQueries,
+                                style: Theme.of(context).summaryStyle,
+                              )),
+                    ),
                   ],
                 ),
               ),
@@ -107,18 +118,28 @@ class QueriesBlockedTile extends HookWidget {
                 loading: () => true,
                 orElse: () => false,
               ),
-              onTap: () => context.refresh(
-                  piSummaryProvider(context.read(activePiParamsProvider))),
+              onTap: () => summaryValue.when(
+                data: (summary) => context.refresh(
+                    piSummaryProvider(context.read(activePiParamsProvider))),
+                loading: () => null,
+                error: (e, s) => showErrorDialog(context, e),
+              ),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const TileTitle('Queries blocked', color: kDashTileColor),
-                    ActiveSummaryCacheBuilder(
-                        builder: (context, option, _) => Text(
-                              option.queriesBlocked,
-                              style: Theme.of(context).summaryStyle,
-                            )),
+                    summaryValue.maybeWhen(
+                      error: (e, s) => Text(
+                        '---',
+                        style: Theme.of(context).summaryStyle,
+                      ),
+                      orElse: () => ActiveSummaryCacheBuilder(
+                          builder: (context, option, _) => Text(
+                                option.queriesBlocked,
+                                style: Theme.of(context).summaryStyle,
+                              )),
+                    ),
                   ],
                 ),
               ),
@@ -143,18 +164,28 @@ class PercentBlockedTile extends HookWidget {
                 loading: () => true,
                 orElse: () => false,
               ),
-              onTap: () => context.refresh(
-                  piSummaryProvider(context.read(activePiParamsProvider))),
+              onTap: () => summaryValue.when(
+                data: (summary) => context.refresh(
+                    piSummaryProvider(context.read(activePiParamsProvider))),
+                loading: () => null,
+                error: (e, s) => showErrorDialog(context, e),
+              ),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const TileTitle('Queries blocked', color: kDashTileColor),
-                    ActiveSummaryCacheBuilder(
-                        builder: (context, option, _) => Text(
-                              option.percentBlocked,
-                              style: Theme.of(context).summaryStyle,
-                            )),
+                    summaryValue.maybeWhen(
+                      error: (e, s) => Text(
+                        '---',
+                        style: Theme.of(context).summaryStyle,
+                      ),
+                      orElse: () => ActiveSummaryCacheBuilder(
+                          builder: (context, option, _) => Text(
+                                option.percentBlocked,
+                                style: Theme.of(context).summaryStyle,
+                              )),
+                    ),
                   ],
                 ),
               ),
@@ -179,18 +210,29 @@ class DomainsOnBlocklistTile extends HookWidget {
                 loading: () => true,
                 orElse: () => false,
               ),
-              onTap: () => context.refresh(
-                  piSummaryProvider(context.read(activePiParamsProvider))),
+              onTap: () => summaryValue.when(
+                data: (summary) => context.refresh(
+                    piSummaryProvider(context.read(activePiParamsProvider))),
+                loading: () => null,
+                error: (e, s) => showErrorDialog(context, e),
+              ),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const TileTitle('Queries blocked', color: kDashTileColor),
-                    ActiveSummaryCacheBuilder(
-                        builder: (context, option, _) => Text(
-                              option.domainsOnBlocklist,
-                              style: Theme.of(context).summaryStyle,
-                            )),
+                    const TileTitle('Domains on blocklist',
+                        color: kDashTileColor),
+                    summaryValue.maybeWhen(
+                      error: (e, s) => Text(
+                        '---',
+                        style: Theme.of(context).summaryStyle,
+                      ),
+                      orElse: () => ActiveSummaryCacheBuilder(
+                          builder: (context, option, _) => Text(
+                                option.domainsOnBlocklist,
+                                style: Theme.of(context).summaryStyle,
+                              )),
+                    ),
                   ],
                 ),
               ),

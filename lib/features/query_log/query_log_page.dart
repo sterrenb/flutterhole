@@ -184,7 +184,7 @@ class QueryLogPage extends HookWidget {
               ),
               actions: [
                 AnimatedSwitcher(
-                  duration: kThemeAnimationDuration * 2,
+                  duration: kThemeAnimationDuration,
                   child: isSearching.value
                       ? IconButton(
                           key: const ValueKey('cancel'),

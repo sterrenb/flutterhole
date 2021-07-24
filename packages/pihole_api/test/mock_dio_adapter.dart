@@ -1,6 +1,6 @@
 import 'package:http_mock_adapter/http_mock_adapter.dart';
 
-import 'fixtures.dart';
+import '../lib/src/fixtures.dart';
 
 const _apiPath = '/admin/api.php';
 const _adminPath = '/admin';
@@ -139,7 +139,9 @@ const _versions = {
   "web_branch": "master",
   "FTL_branch": "master"
 };
-DioAdapter mockDioAdapter() {
+
+/// Creates a [DioAdapter] that mocks all HTTP responses.
+DioAdapter createMockDioAdapter() {
   final dio = DioAdapter();
 
   dio.onGet(

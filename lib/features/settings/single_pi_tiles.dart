@@ -286,7 +286,7 @@ class SummaryTestTile extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final summaryValue = useProvider(piSummaryProvider(PiholeRepositoryParams(
-      dio: useProvider(newDioProvider(pi)),
+      dio: useProvider(dioProvider(pi)),
       baseUrl: pi.baseUrl,
       useSsl: pi.useSsl,
       apiPath: pi.apiPath,
@@ -356,7 +356,7 @@ class TopItemsTestTile extends HookWidget {
   Widget build(BuildContext context) {
     // TODO add params
     final topItemsValue = useProvider(topItemsProvider(PiholeRepositoryParams(
-      dio: useProvider(newDioProvider(pi)),
+      dio: useProvider(dioProvider(pi)),
       baseUrl: pi.baseUrl,
       useSsl: pi.useSsl,
       apiPath: pi.apiPath,

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
+import 'package:flutterhole_web/features/formatting/date_formatting.dart';
 import 'package:flutterhole_web/features/models/settings_models.dart';
-import 'package:flutterhole_web/formatting.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 const importEntityFormatting = null;
@@ -46,6 +46,7 @@ extension QueryItemX on QueryItem {
     );
 
     final input = model.toJson();
+
     input.update('timestamp', (value) => timestamp.full);
 
     return input.toJsonString();
@@ -83,14 +84,16 @@ extension PiholeApiFailureX on PiholeApiFailure {
       notAuthenticated: () =>
           'Authentication failed.\n\nMake sure you have entered the correct API token.',
       invalidResponse: (statusCode) => 'Invalid response $statusCode.',
-      emptyString: () => 'Empty response.\n\n$hostHelp',
-      emptyList: () => 'Empty list response.\n\n$hostHelp',
+      emptyString: () =>
+          'Empty response. This typically happens when the API token is missing/invalid.\n\n$hostHelp',
+      emptyList: () =>
+          'Empty list response. This typically happens when the API token is missing/invalid.\n\n$hostHelp',
       cancelled: () => 'Cancelled by application.',
       timeout: () =>
           'A timeout occurred.\n\n$hostHelp\n\nConsider lowering the update frequency.',
       hostname: () =>
-          'Hostname not found.\n\nIf your domain is pi.hole, try using the IP address of your Pi-hole instead.',
-      general: (message) => message,
+          'Hostname not found.\n\nIf your domain is "pi.hole", try using the IP address of your Pi-hole instead (e.g. "192.168.1.5").',
+      general: (message) => 'Something went wrong: $message',
       unknown: (e) => 'Unknown: ${e.toString()}',
     );
   }

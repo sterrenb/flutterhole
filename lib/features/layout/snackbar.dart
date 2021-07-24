@@ -50,7 +50,11 @@ extension ScaffoldMessengerStateX on ScaffoldMessengerState {
           leading != null
               ? Padding(
                   padding: const EdgeInsets.only(right: 16.0),
-                  child: leading,
+                  child: IconTheme(
+                    data: Theme.of(context).iconTheme.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface),
+                    child: leading,
+                  ),
                 )
               : Container(
                   height: 0,

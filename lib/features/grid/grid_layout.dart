@@ -98,6 +98,7 @@ class GridIcon extends StatelessWidget {
     this.primaryIcon, {
     Key? key,
     this.subIcon,
+    this.iconColor,
     this.subIconColor,
     this.isDark = false,
     this.size = 32.0,
@@ -105,6 +106,7 @@ class GridIcon extends StatelessWidget {
 
   final IconData primaryIcon;
   final IconData? subIcon;
+  final Color? iconColor;
   final Color? subIconColor;
   final bool isDark;
   final double size;
@@ -114,11 +116,8 @@ class GridIcon extends StatelessWidget {
     final primary = Icon(
       primaryIcon,
       size: size,
-      // color: Theme.of(context).brightness == Brightness.dark
-      //     ? Colors.white.withOpacity(0.5)
-      //     : Colors.black.withOpacity(0.5),
-      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-      // color: Colors.white.withOpacity(0.5),
+      color: iconColor?.withOpacity(0.5) ??
+          Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
     );
 
     if (subIcon != null) {

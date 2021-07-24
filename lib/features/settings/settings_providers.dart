@@ -136,7 +136,7 @@ final activePiProvider = Provider<Pi>((ref) {
 
 final activePiParamsProvider = Provider<PiholeRepositoryParams>((ref) {
   final pi = ref.watch(activePiProvider);
-  final dio = ref.watch(newDioProvider(pi));
+  final dio = ref.watch(dioProvider(pi));
 
   return PiholeRepositoryParams(
     dio: dio,

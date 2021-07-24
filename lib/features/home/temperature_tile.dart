@@ -132,6 +132,7 @@ Future<RangeValues?> showTemperatureRangeDialog(
       builder: (context) => const TemperatureRangeDialog(),
     );
 
+@Deprecated('use TempTile')
 class TemperatureTile extends HookWidget {
   const TemperatureTile({
     Key? key,
@@ -208,10 +209,6 @@ class TemperatureTile extends HookWidget {
                               disabledInactiveTrackColor: Colors.white,
                               disabledThumbColor: Colors.white,
                               trackHeight: 1.0,
-                              // thumbShape: RoundSliderThumbShape(
-                              //   disabledThumbRadius: 5.0,
-                              //   elevation: 0,
-                              // ),
                               thumbShape: SliderComponentShape.noOverlay,
                             ),
                             child: detailsValue.when(
@@ -224,8 +221,6 @@ class TemperatureTile extends HookWidget {
                                         min: 0,
                                         max: 100,
                                         value: details.temperature ?? 0,
-                                        activeColor: Colors.blue,
-                                        inactiveColor: Colors.blue,
                                       ),
                                     )))),
                   ),

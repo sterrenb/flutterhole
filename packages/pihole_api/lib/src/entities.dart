@@ -99,13 +99,13 @@ class PiDetails with _$PiDetails {
   }) = _PiDetails;
 
   late final String temperatureInCelcius =
-      '${(temperature ?? 0).toStringAsFixed(1)} °C';
+      '${(temperature ?? -1).toStringAsFixed(1)} °C';
 
   late final String temperatureInFahrenheit =
-      '${celciusToFahrenheit((temperature ?? 0)).toStringAsFixed(1)} °F';
+      '${celciusToFahrenheit((temperature ?? -1)).toStringAsFixed(1)} °F';
 
   late final String temperatureInKelvin =
-      '${celciusToKelvin((temperature ?? 0)).toStringAsFixed(1)} °K';
+      '${celciusToKelvin((temperature ?? -1)).toStringAsFixed(1)} °K';
 }
 
 @freezed

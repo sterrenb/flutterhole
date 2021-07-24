@@ -6,14 +6,14 @@ import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dashboard_tiles.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
-import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:pihole_api/pihole_api.dart';
 
-final format = DateFormat.Hm();
+import 'features/formatting/date_formatting.dart';
 
+@Deprecated('unused')
 class QueriesBarChartTile extends HookWidget {
   const QueriesBarChartTile({Key? key}) : super(key: key);
 
@@ -168,118 +168,6 @@ class ExpandableDashboardTile extends HookWidget {
           ),
           child,
         ],
-      ),
-    );
-  }
-}
-
-class ClientActivityBarChartTile extends HookWidget {
-  const ClientActivityBarChartTile({Key? key}) : super(key: key);
-
-  static const title = 'Client activity';
-
-  static const List<Color> _chartColors = [
-    Colors.amber,
-    Colors.cyan,
-    Colors.blueGrey,
-    Colors.yellow,
-    Colors.purple,
-    Colors.blue,
-    Colors.orange,
-    Colors.green,
-    Colors.red,
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    // final pi = useProvider(activePiProvider);
-    final clientActivity = useProvider(activeClientActivityProvider);
-    final expanded = useProvider(expandableDashboardTileProvider(title));
-
-    final when = clientActivity.when(
-      data: (PiClientActivityOverTime activity) {
-        return Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 24.0),
-          child: StepLineChart(
-            entries: activity.byClient.entries
-                .map((entry) => StepLineChartData(
-                    entry.value.map((e) => e.toDouble()).toList(),
-                    _chartColors.elementAt(activity.clients.indexOf(entry.key) %
-                        _chartColors.length)))
-                .toList(),
-            stepTitleBuilder: (index) {
-              final m = activity.activity.keys.elementAt(index);
-              return DateFormat.Hm()
-                  .format(m.subtract(const Duration(minutes: 5)));
-            },
-            legendChildrenBuilder: (spotIndex, touchedSpots) {
-              final textStyle = TextStyle(
-                fontSize: 12.0,
-                color: Theme.of(context).colorScheme.background,
-              );
-              if (true) {
-                var items = List<LineTooltipItem>.generate(
-                    activity.clients.length, (index) {
-                  final client = activity.clients.elementAt(index);
-                  final hits = activity.byClient[client]!
-                      .elementAt(touchedSpots.first.x.toInt());
-                  var localSpans = [
-                    TextSpan(
-                        text: '\u25A0 ',
-                        style: TextStyle(
-                            color: _chartColors
-                                .elementAt(index % _chartColors.length))),
-                    TextSpan(
-                      text: (client.name.isNotEmpty ? client.name : client.ip) +
-                          ': ',
-                    ),
-                    TextSpan(
-                      text: hits.toString(),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    )
-                  ];
-
-                  if (index == 0) {
-                    localSpans.insert(
-                        0,
-                        TextSpan(
-                          text: activity.activity.keys
-                                  .elementAt(spotIndex)
-                                  .beforeAfter(const Duration(minutes: 5)) +
-                              '\n',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ));
-                  }
-
-                  return LineTooltipItem(
-                    // 'Pls here ${client.ip}',
-                    '', textStyle,
-                    // textAlign: TextAlign.end,
-                    children: localSpans,
-                  );
-                });
-
-                return items;
-              }
-            },
-          ),
-        );
-      },
-      loading: () => const CircularProgressIndicator(),
-      error: (e, s) => Text(e.toString()),
-    );
-    return Card(
-      child: ExpandableDashboardTile(
-        title,
-        leading: const GridIcon(KIcons.clientActivity),
-        title: const TileTitle(title),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: kMinTileHeight),
-          child: SizedBox(
-            height: expanded.state ? kMinTileHeight * 2 : kMinTileHeight,
-            child: Center(child: when),
-          ),
-        ),
       ),
     );
   }

@@ -35,23 +35,6 @@ extension IntX on int {
       zero: orElse, one: '$this second', other: '$this seconds');
 }
 
-final _hm = DateFormat.Hm();
-final _hms = DateFormat.Hms();
-final _jms = DateFormat('H:m:s.S');
-final _full = DateFormat.yMd().addPattern(_hms.pattern);
-
-extension DateTimeX on DateTime {
-  String beforeAfter(Duration duration) {
-    final before = _hm.format(subtract(duration));
-    final after = _hm.format(add(duration));
-    return '$before - $after';
-  }
-
-  String get hms => _hms.format(this);
-  String get jms => _jms.format(this);
-  String get full => _full.format(this);
-}
-
 extension LogLevelX on LogLevel {
   String get readable {
     switch (this) {

@@ -2,10 +2,10 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/dialogs.dart';
+import 'package:flutterhole_web/features/formatting/date_formatting.dart';
 import 'package:flutterhole_web/features/formatting/entity_formatting.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/logging/log_widgets.dart';
-import 'package:flutterhole_web/formatting.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 extension QueryStatusWithStyle on QueryStatus {

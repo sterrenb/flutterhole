@@ -79,7 +79,6 @@ class WideNumberTile extends StatelessWidget {
                 opacity: isLoading ? 0.5 : 0.0,
                 child: CircularProgressIndicator(
                   color: foregroundColor,
-                  // strokeWidth: 10.0,
                 ),
               ),
             ))),

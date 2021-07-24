@@ -21,9 +21,8 @@ enum DashboardID {
   queriesBlocked,
   percentBlocked,
   domainsOnBlocklist,
-  queriesBarChart,
-  clientActivityBarChart,
-  temperature,
+  queriesOverTime,
+  clientActivity,
   memory,
   queryTypes,
   forwardDestinations,
@@ -31,8 +30,11 @@ enum DashboardID {
   topBlockedDomains,
   versions,
   logs,
-  tempTile,
+  temperature,
 }
+
+final List<String> dashboardIDStrings =
+    DashboardID.values.map((e) => e.toString()).toList();
 
 @freezed
 class DashboardEntry with _$DashboardEntry {
@@ -45,13 +47,13 @@ class DashboardEntry with _$DashboardEntry {
   }) = _DashboardEntry;
 }
 
-extension DevDashboardID on DashboardID {
-  bool get devOnly => [
-        DashboardID.logs,
-        DashboardID.versions,
-        DashboardID.tempTile,
-      ].contains(this);
-}
+// extension DevDashboardID on DashboardID {
+//   bool get devOnly => [
+//         DashboardID.logs,
+//         DashboardID.versions,
+//         DashboardID.tempTile,
+//       ].contains(this);
+// }
 
 @freezed
 class Pi with _$Pi {
@@ -170,6 +172,7 @@ class PiColorTheme with _$PiColorTheme {
   PiColorTheme._();
 
   factory PiColorTheme({
+    required Color loading,
     required Color success,
     required Color info,
     required Color onInfo,
@@ -189,6 +192,7 @@ class PiColorTheme with _$PiColorTheme {
   }) = _PiColorTheme;
 
   factory PiColorTheme.light() => PiColorTheme(
+        loading: Colors.blue,
         success: Colors.green,
         info: Colors.blue,
         onInfo: Colors.white,
@@ -208,6 +212,7 @@ class PiColorTheme with _$PiColorTheme {
       );
 
   factory PiColorTheme.dark() => PiColorTheme.light().copyWith(
+        loading: const Color(0xFF007997),
         warning: const Color(0xFFB1720C),
         error: const Color(0xFF913225),
         totalQueries: const Color(0xFF1B5E20),

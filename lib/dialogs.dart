@@ -346,6 +346,19 @@ String _errorToTitle(Object e) {
 
 String _errorToDescription(Object e) {
   if (e is PiholeApiFailure) {
+    // return e.when(
+    //   notFound: () => 'Resource not found.',
+    //   notAuthenticated: () => 'Authentication failed.',
+    //   invalidResponse: (status) => 'Invalid response: $status.',
+    //   emptyString: () => 'Empty string response.',
+    //   emptyList: () => 'Empty list response.',
+    //   cancelled: () => 'Cancelled.',
+    //   timeout: () => 'A timeout occurred.',
+    //   hostname: () => 'Hostname lookup failed.',
+    //   general: (message) => 'Something went wrong.',
+    //   unknown: (error) => 'An unknown error occurred.',
+    // );
+
     return e.description;
   }
   return e.toString();
@@ -381,7 +394,7 @@ class ErrorDialog extends HookWidget {
               builder: (context) {
                 final devMode = useProvider(devModeProvider);
                 return Tooltip(
-                  message: 'Expand stacktrace',
+                  message: 'View stacktrace',
                   child: ExpansionTile(
                     initiallyExpanded: devMode,
                     title: Row(
@@ -389,11 +402,12 @@ class ErrorDialog extends HookWidget {
                         Expanded(
                             child: CodeCard(
                           code: _errorToTitle(e),
-                          singleLine: false,
+                          // singleLine: false,
                         )),
                       ],
                     ),
                     children: [
+                      const ListTile(title: Text('Stacktrace')),
                       SelectableCodeCard(
                         ((s?.toString() ?? 'No stacktrace found.')),
                       ),

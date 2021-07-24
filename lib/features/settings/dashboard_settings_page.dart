@@ -105,9 +105,9 @@ extension DashboardIDI on DashboardID {
         return KIcons.percentBlocked;
       case DashboardID.domainsOnBlocklist:
         return KIcons.domainsOnBlocklist;
-      case DashboardID.queriesBarChart:
+      case DashboardID.queriesOverTime:
         return KIcons.queriesOverTime;
-      case DashboardID.clientActivityBarChart:
+      case DashboardID.clientActivity:
         return KIcons.clientActivity;
       case DashboardID.temperature:
         return KIcons.temperatureReading;
@@ -125,8 +125,6 @@ extension DashboardIDI on DashboardID {
         return KIcons.selectDashboardTiles;
       case DashboardID.logs:
         return KIcons.debugLogs;
-      case DashboardID.tempTile:
-        return KIcons.add; // TODO
     }
   }
 }
