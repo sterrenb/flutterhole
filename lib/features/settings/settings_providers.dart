@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole_web/features/entities/logging_entities.dart';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/settings/settings_repository.dart';
-import 'package:flutterhole_web/package_providers.dart';
-import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:pihole_api/pihole_api.dart';
 
 final settingsNotifierProvider =
     StateNotifierProvider<SettingsNotifier, SettingsState>(
@@ -134,19 +131,12 @@ final activePiProvider = Provider<Pi>((ref) {
   return settings.active;
 });
 
-final activePiParamsProvider = Provider<PiholeRepositoryParams>((ref) {
-  final pi = ref.watch(activePiProvider);
-  final dio = ref.watch(dioProvider(pi));
+final allPisProvider = Provider<List<Pi>>((ref) {
+  final settings = ref.watch(settingsNotifierProvider);
+  return settings.allPis;
+});
 
-  return PiholeRepositoryParams(
-    dio: dio,
-    baseUrl: pi.baseUrl,
-    useSsl: pi.useSsl,
-    apiPath: pi.apiPath,
-    apiPort: pi.apiPort,
-    apiTokenRequired: pi.apiTokenRequired,
-    apiToken: pi.apiToken,
-    allowSelfSignedCertificates: pi.allowSelfSignedCertificates,
-    adminHome: pi.adminHome,
-  );
+final userPreferencesProvider = Provider<UserPreferences>((ref) {
+  final settings = ref.watch(settingsNotifierProvider);
+  return settings.userPreferences;
 });

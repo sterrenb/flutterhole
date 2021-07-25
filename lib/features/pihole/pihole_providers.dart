@@ -1,8 +1,20 @@
 import 'package:dio/dio.dart';
-import 'package:flutterhole_web/features/settings/settings_providers.dart';
-import 'package:flutterhole_web/package_providers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
+
+import 'pihole_repository_demo.dart';
+
+final piholeRepositoryProviderFamily =
+    Provider.family<PiholeRepository, PiholeRepositoryParams>((ref, params) {
+  // TODO use sensible conditional
+  if (kDebugMode && true) {
+    debugPrint('using demo repository');
+    return PiholeRepositoryDemo();
+  }
+
+  return PiholeRepositoryDio(params);
+});
 
 final piSummaryProvider = FutureProvider.autoDispose
     .family<PiSummary, PiholeRepositoryParams>((ref, pi) async {
@@ -13,12 +25,6 @@ final piSummaryProvider = FutureProvider.autoDispose
   final piSummary = await api.fetchSummary(cancelToken);
   ref.maintainState = true;
   return piSummary;
-});
-
-final activeSummaryProvider =
-    Provider.autoDispose<AsyncValue<PiSummary>>((ref) {
-  final pi = ref.watch(activePiParamsProvider);
-  return ref.watch(piSummaryProvider(pi));
 });
 
 final enablePiProvider = FutureProvider.autoDispose
@@ -60,12 +66,6 @@ final queryTypesProvider = FutureProvider.autoDispose
   return api.fetchQueryTypes(cancelToken);
 });
 
-final activeQueryTypesProvider =
-    Provider.autoDispose<AsyncValue<PiQueryTypes>>((ref) {
-  final pi = ref.watch(activePiParamsProvider);
-  return ref.watch(queryTypesProvider(pi));
-});
-
 final topItemsProvider = FutureProvider.autoDispose
     .family<TopItems, PiholeRepositoryParams>((ref, params) async {
   final cancelToken = CancelToken();
@@ -73,12 +73,6 @@ final topItemsProvider = FutureProvider.autoDispose
 
   final api = ref.read(piholeRepositoryProviderFamily(params));
   return api.fetchTopItems(cancelToken);
-});
-
-final activeTopItemsProvider =
-    Provider.autoDispose<AsyncValue<TopItems>>((ref) {
-  final pi = ref.watch(activePiParamsProvider);
-  return ref.watch(topItemsProvider(pi));
 });
 
 final forwardDestinationsProvider = FutureProvider.autoDispose
@@ -90,12 +84,6 @@ final forwardDestinationsProvider = FutureProvider.autoDispose
   return api.fetchForwardDestinations(cancelToken);
 });
 
-final activeForwardDestinationsProvider =
-    Provider.autoDispose<AsyncValue<PiForwardDestinations>>((ref) {
-  final pi = ref.watch(activePiParamsProvider);
-  return ref.watch(forwardDestinationsProvider(pi));
-});
-
 final queriesOverTimeProvider = FutureProvider.autoDispose
     .family<PiQueriesOverTime, PiholeRepositoryParams>((ref, params) async {
   final cancelToken = CancelToken();
@@ -103,12 +91,6 @@ final queriesOverTimeProvider = FutureProvider.autoDispose
 
   final api = ref.read(piholeRepositoryProviderFamily(params));
   return api.fetchQueriesOverTime(cancelToken);
-});
-
-final activeQueriesOverTimeProvider =
-    Provider.autoDispose<AsyncValue<PiQueriesOverTime>>((ref) {
-  final pi = ref.watch(activePiParamsProvider);
-  return ref.watch(queriesOverTimeProvider(pi));
 });
 
 final clientActivityOverTimeProvider = FutureProvider.autoDispose
@@ -121,12 +103,6 @@ final clientActivityOverTimeProvider = FutureProvider.autoDispose
   return api.fetchClientActivityOverTime(cancelToken);
 });
 
-final activeClientActivityProvider =
-    Provider.autoDispose<AsyncValue<PiClientActivityOverTime>>((ref) {
-  final pi = ref.watch(activePiParamsProvider);
-  return ref.watch(clientActivityOverTimeProvider(pi));
-});
-
 final piVersionsProvider = FutureProvider.autoDispose
     .family<PiVersions, PiholeRepositoryParams>((ref, params) async {
   final cancelToken = CancelToken();
@@ -134,12 +110,6 @@ final piVersionsProvider = FutureProvider.autoDispose
 
   final api = ref.read(piholeRepositoryProviderFamily(params));
   return api.fetchVersions(cancelToken);
-});
-
-final activeVersionsProvider =
-    Provider.autoDispose<AsyncValue<PiVersions>>((ref) {
-  final pi = ref.watch(activePiParamsProvider);
-  return ref.watch(piVersionsProvider(pi));
 });
 
 final piDetailsProvider = FutureProvider.autoDispose
@@ -151,12 +121,6 @@ final piDetailsProvider = FutureProvider.autoDispose
   final api = ref.read(piholeRepositoryProviderFamily(params));
   final piDetails = await api.fetchPiDetails(cancelToken);
   return piDetails;
-});
-
-final activePiDetailsProvider =
-    Provider.autoDispose<AsyncValue<PiDetails>>((ref) {
-  final pi = ref.watch(activePiParamsProvider);
-  return ref.watch(piDetailsProvider(pi));
 });
 
 // TODO move somewhere else
@@ -173,12 +137,6 @@ final queryLogProvider = FutureProvider.autoDispose
   final api = ref.read(piholeRepositoryProviderFamily(params));
   final queryItems = await api.fetchQueryItems(cancelToken, maxResults);
   return queryItems;
-});
-
-final activeQueryLogProvider =
-    Provider.autoDispose<AsyncValue<List<QueryItem>>>((ref) {
-  final pi = ref.watch(activePiParamsProvider);
-  return ref.watch(queryLogProvider(pi));
 });
 
 class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
@@ -228,9 +186,3 @@ class PiholeStatusNotifier extends StateNotifier<PiholeStatus> {
     });
   }
 }
-
-final piholeStatusNotifierProvider =
-    StateNotifierProvider<PiholeStatusNotifier, PiholeStatus>((ref) {
-  return PiholeStatusNotifier(ref.watch(
-      piholeRepositoryProviderFamily(ref.watch(activePiParamsProvider))));
-});

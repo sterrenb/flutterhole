@@ -10,7 +10,7 @@ import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/layout/dialog.dart';
 import 'package:flutterhole_web/features/layout/periodic_widget.dart';
 import 'package:flutterhole_web/features/layout/snackbar.dart';
-import 'package:flutterhole_web/pihole_endpoint_providers.dart';
+import 'package:flutterhole_web/features/settings/active_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
 

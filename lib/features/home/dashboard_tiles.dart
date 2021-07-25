@@ -11,8 +11,8 @@ import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/logging/log_widgets.dart';
 import 'package:flutterhole_web/features/logging/loggers.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
+import 'package:flutterhole_web/features/settings/active_providers.dart';
 import 'package:flutterhole_web/features/settings/developer_widgets.dart';
-import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 const double kMinTileHeight = 200.0;

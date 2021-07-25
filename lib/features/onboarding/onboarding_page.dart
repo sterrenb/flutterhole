@@ -16,7 +16,7 @@ import 'package:flutterhole_web/features/layout/double_back_to_close_app.dart';
 import 'package:flutterhole_web/features/layout/list.dart';
 import 'package:flutterhole_web/features/routing/app_router.gr.dart';
 import 'package:flutterhole_web/features/settings/developer_widgets.dart';
-import 'package:flutterhole_web/top_level_providers.dart';
+import 'package:flutterhole_web/features/settings/settings_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

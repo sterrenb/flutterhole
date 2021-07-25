@@ -8,9 +8,9 @@ import 'package:flutterhole_web/features/formatting/entity_formatting.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/dash_tiles.dart';
 import 'package:flutterhole_web/features/pihole/pihole_builders.dart';
-import 'package:flutterhole_web/features/settings/settings_providers.dart';
+import 'package:flutterhole_web/features/pihole/pihole_providers.dart';
+import 'package:flutterhole_web/features/settings/active_providers.dart';
 import 'package:flutterhole_web/features/themes/theme_builders.dart';
-import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
 

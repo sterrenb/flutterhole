@@ -7,10 +7,10 @@
 import 'package:auto_route/auto_route.dart' as _i1;
 import 'package:flutter/material.dart' as _i2;
 
-import '../../home_page.dart' as _i4;
 import '../about/about_page.dart' as _i11;
 import '../about/privacy_page.dart' as _i12;
 import '../entities/settings_entities.dart' as _i13;
+import '../home/home_page.dart' as _i4;
 import '../logging/logs_page.dart' as _i7;
 import '../onboarding/onboarding_page.dart' as _i3;
 import '../query_log/query_log_page.dart' as _i5;

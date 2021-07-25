@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole_web/constants.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
 import 'package:flutterhole_web/features/home/doughnut_charts.dart';
-import 'package:flutterhole_web/pihole_endpoint_providers.dart';
+import 'package:flutterhole_web/features/settings/active_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class QueryTypesTileTwo extends HookWidget {
