@@ -2,7 +2,7 @@
 name: flutterhole_web
 description: FlutterHole with preliminary web support.
 publish_to: none
-version: 6.0.0+3
+version: 6.0.0-beta.1
 environment:
   sdk: '>=2.12.0 <3.0.0'
 dependencies:
@@ -14,7 +14,7 @@ dependencies:
   hooks_riverpod: ^0.14.0+4
   intl: ^0.17.0
   package_info_plus: ^1.0.4
-  url_launcher: ^6.0.3
+  url_launcher: ^6.0.9
   freezed_annotation: ^0.14.2
   dartz: ^0.10.0-nullsafety.2
   flutter_staggered_grid_view: ^0.4.0
