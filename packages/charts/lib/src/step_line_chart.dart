@@ -16,6 +16,7 @@ class StepLineChartData {
   final Color color;
 }
 
+// TODO remove hooks dependency from package
 class StepLineChart extends HookWidget {
   static const double kInterval = 20.0;
   static const double kIntervalVertical = 10.0;

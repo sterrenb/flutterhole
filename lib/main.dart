@@ -1,4 +1,3 @@
-import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,14 +26,6 @@ Future<void> main() async {
           .overrideWithValue(SettingsRepository(preferences))
     ],
     child: const MyApp(),
-  ));
-
-  runApp(ProviderScope(
-    child: DevicePreview(
-      enabled: false,
-      // enabled: !kReleaseMode,
-      builder: (context) => const MyApp(),
-    ),
   ));
 }
 
@@ -72,7 +63,6 @@ class MyApp extends HookWidget {
         routerDelegate: router.delegate(),
         routeInformationParser: router.defaultRouteParser(),
         locale: const Locale('en', 'us'),
-        builder: DevicePreview.appBuilder,
         // locale: Localizations.localeOf(context),
       ),
     );
