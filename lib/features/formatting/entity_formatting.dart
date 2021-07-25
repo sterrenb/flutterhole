@@ -3,9 +3,17 @@ import 'dart:convert';
 import 'package:flutterhole_web/features/entities/settings_entities.dart';
 import 'package:flutterhole_web/features/formatting/date_formatting.dart';
 import 'package:flutterhole_web/features/models/settings_models.dart';
+import 'package:intl/intl.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 const importEntityFormatting = null;
+
+final numberFormat = NumberFormat();
+
+extension IntX on int {
+  String secondsOrElse(String orElse) => Intl.plural(this,
+      zero: orElse, one: '$this second', other: '$this seconds');
+}
 
 const JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
 

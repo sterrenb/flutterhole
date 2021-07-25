@@ -5,6 +5,7 @@ import 'package:flutterhole_web/dialogs.dart';
 import 'package:flutterhole_web/features/charts/client_activity_bar_chart.dart';
 import 'package:flutterhole_web/features/charts/queries_over_time_bar_chart.dart';
 import 'package:flutterhole_web/features/grid/grid_layout.dart';
+import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/pihole_endpoint_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
@@ -92,8 +93,7 @@ class QueriesOverTimeTile extends HookWidget {
                   onTap: () {
                     showErrorDialog(context, e, s);
                   },
-                  child:
-                      const Center(child: Text('Queries over time failed.'))),
+                  child: Center(child: CodeCard(code: e.toString()))),
             ),
           ),
         ),

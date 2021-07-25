@@ -8,7 +8,6 @@ import 'package:flutterhole_web/features/formatting/entity_formatting.dart';
 import 'package:flutterhole_web/features/layout/buttons.dart';
 import 'package:flutterhole_web/features/layout/code_card.dart';
 import 'package:flutterhole_web/features/settings/settings_providers.dart';
-import 'package:flutterhole_web/formatting.dart';
 import 'package:flutterhole_web/top_level_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -111,5 +110,20 @@ class _LogLevelTile extends HookWidget {
         ),
       ),
     );
+  }
+}
+
+extension LogLevelX on LogLevel {
+  String get readable {
+    switch (this) {
+      case LogLevel.debug:
+        return 'Debug';
+      case LogLevel.info:
+        return 'Info';
+      case LogLevel.warning:
+        return 'Warning';
+      case LogLevel.error:
+        return 'Error';
+    }
   }
 }

@@ -498,7 +498,7 @@ class PiholeRepositoryDemo implements PiholeRepository {
 
     count++;
 
-    if (count % 2 == 0) throw 'nopeee';
+    if (count % 2 == 0) throw PiholeApiFailure.emptyString();
 
     return PiQueriesOverTimeModel.fromJson(j).entity;
   }
