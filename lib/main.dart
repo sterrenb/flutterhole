@@ -47,7 +47,7 @@ class MyApp extends HookWidget {
     final router = useState(AppRouter()).value;
     return RefreshableWaterDropConfiguration(
       child: MaterialApp.router(
-        title: 'Flutter Demo',
+        title: 'FlutterHole',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.orange,
