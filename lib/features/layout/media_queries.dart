@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 const importMediaQueries = null;
 
-extension PortraitWidget on StatelessWidget {}
-
 extension BuildContextX on BuildContext {
   MediaQueryData get _data => MediaQuery.of(this);
 

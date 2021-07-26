@@ -35,9 +35,7 @@ class AboutPage extends StatelessWidget {
           children: [
             const SizedBox(height: 10),
             const ListTile(
-              title: Text(
-                'FlutterHole for Pi-Hole®',
-              ),
+              title: Text('FlutterHole for Pi-Hole®'),
               subtitle: Text('Made by Thomas Sterrenburg'),
               trailing: SizedBox(
                 // roughly center the logo with the `licences button`
