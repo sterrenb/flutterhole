@@ -1,6 +1,5 @@
 import 'package:charts/charts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole_web/features/formatting/date_formatting.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 import 'chart_helpers.dart';
@@ -32,7 +31,7 @@ class QueriesOverTimeBarChart extends StatelessWidget {
         textAlign: TextAlign.start,
         children: [
           TextSpan(
-            text: '${date.beforeAfter(const Duration(minutes: 5))}\n',
+            text: '${getDateRangeStringFromDate(date)}\n',
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),

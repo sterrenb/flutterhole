@@ -12,7 +12,6 @@ import 'package:pihole_api/pihole_api.dart';
 
 import 'dashboard_tiles.dart';
 
-// TODO rename and remove old widgets
 class ClientActivityTile extends HookWidget {
   const ClientActivityTile({Key? key}) : super(key: key);
 

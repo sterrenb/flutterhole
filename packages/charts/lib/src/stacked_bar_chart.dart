@@ -37,6 +37,7 @@ class StackedBarChart extends StatelessWidget {
         enabled: true,
         touchTooltipData: BarTouchTooltipData(
           fitInsideHorizontally: true,
+          fitInsideVertically: true,
           tooltipBgColor: Theme.of(context).cardColor,
           getTooltipItem: (
             BarChartGroupData data,

@@ -11,3 +11,6 @@ String getBottomTitleFromDate(DateTime date) {
     return '';
   }
 }
+
+String getDateRangeStringFromDate(DateTime date) =>
+    date.beforeAfter(const Duration(minutes: 5));
