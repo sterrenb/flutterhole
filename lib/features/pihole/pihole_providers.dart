@@ -8,7 +8,7 @@ import 'pihole_repository_demo.dart';
 final piholeRepositoryProviderFamily =
     Provider.family<PiholeRepository, PiholeRepositoryParams>((ref, params) {
   // TODO use sensible conditional
-  if (kDebugMode && true) {
+  if (kDebugMode && false) {
     debugPrint('using demo repository');
     return PiholeRepositoryDemo();
   }

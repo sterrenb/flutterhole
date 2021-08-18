@@ -42,15 +42,15 @@ class MyApp extends HookWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.orange,
-          accentColor: Colors.orangeAccent,
+          accentColor: Colors.green,
           // scaffoldBackgroundColor: Color(0xFFFAFBFC),
           scaffoldBackgroundColor: const Color(0xFFECF0F5),
         ),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           primarySwatch: Colors.orange,
-          accentColor: Colors.orangeAccent,
-          toggleableActiveColor: Colors.orangeAccent,
+          accentColor: Colors.green,
+          toggleableActiveColor: Colors.green,
           // colorScheme: ColorScheme.dark(
           //   secondary: Colors.orangeAccent,
           // ),

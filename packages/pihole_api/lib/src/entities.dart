@@ -193,6 +193,8 @@ class PiClientName with _$PiClientName {
     required String ip,
     required String name,
   }) = _PiClientName;
+
+  late final String nameOrIp = name.isNotEmpty ? name : ip;
 }
 
 @freezed
