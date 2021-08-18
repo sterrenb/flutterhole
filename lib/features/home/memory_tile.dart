@@ -50,37 +50,43 @@ class MemoryTile extends HookWidget {
               iconColor: kDashTileColor,
             ),
           ),
-          GridInkWell(
-            onTap: detailsValue.maybeWhen(
-              data: (details) => () {
-                ScaffoldMessenger.of(context).showMessageNow(
-                    message:
-                        'Memory usage: ${details.memoryUsagePercentageString()}',
-                    // 'CPU load: ${detailsCache.value!.cpuLoads.map((e) => '${(e * 100).toStringAsFixed(0)}%').join(' | ')}',
-                    leading: const Icon(KIcons.memoryUsage));
-              },
-              orElse: () => null,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const TileTitle('Memory Usage', color: kDashTileColor),
-                AnimatedSwitcher(
-                  duration: kThemeAnimationDuration,
-                  child: detailsValue.when(
-                    data: (details) => Text(
-                      details.memoryUsagePercentageString(),
-                      style: Theme.of(context).summaryStyle,
-                    ),
-                    loading: () => const SquareCardLoadingIndicator(),
-                    error: (e, s) => Text(
-                      '---',
-                      style: Theme.of(context).summaryStyle,
-                    ),
+          Row(
+            children: [
+              Expanded(
+                child: GridInkWell(
+                  onTap: detailsValue.maybeWhen(
+                    data: (details) => () {
+                      ScaffoldMessenger.of(context).showMessageNow(
+                          message:
+                              'Memory usage: ${details.memoryUsagePercentageString()}',
+                          // 'CPU load: ${detailsCache.value!.cpuLoads.map((e) => '${(e * 100).toStringAsFixed(0)}%').join(' | ')}',
+                          leading: const Icon(KIcons.memoryUsage));
+                    },
+                    orElse: () => null,
                   ),
-                )
-              ],
-            ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const TileTitle('Memory Usage', color: kDashTileColor),
+                      AnimatedSwitcher(
+                        duration: kThemeAnimationDuration,
+                        child: detailsValue.when(
+                          data: (details) => Text(
+                            details.memoryUsagePercentageString(),
+                            style: Theme.of(context).summaryStyle,
+                          ),
+                          loading: () => const SquareCardLoadingIndicator(),
+                          error: (e, s) => Text(
+                            '---',
+                            style: Theme.of(context).summaryStyle,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
           Positioned(
             bottom: 10,
