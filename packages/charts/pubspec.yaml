@@ -10,7 +10,6 @@ dependencies:
     sdk: flutter
   fl_chart: ^0.36.3
   hooks_riverpod: ^0.14.0+4
-  flutter_hooks: ^0.17.0
 
 dev_dependencies:
   test: ^1.17.9
