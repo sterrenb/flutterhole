@@ -59,12 +59,14 @@ extension ScaffoldMessengerStateX on ScaffoldMessengerState {
               : Container(
                   height: 0,
                 ),
-          Text(
-            message,
+          Flexible(
+            child: Text(
+              message,
+            ),
           ),
         ],
       ),
-      duration: const Duration(seconds: 3),
+      // duration: const Duration(seconds: 3),
     ));
   }
 }

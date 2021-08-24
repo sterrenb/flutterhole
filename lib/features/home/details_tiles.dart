@@ -52,7 +52,7 @@ class TempTile extends HookWidget {
           duration: kThemeChangeDuration,
           curve: Curves.ease,
           color: detailsValue.when(
-            loading: () => piColors.loading,
+            loading: () => piColors.temperatureMed,
             data: (details) => _preferencesToTemperatureColor(
               preferences,
               piColors,

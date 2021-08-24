@@ -56,9 +56,14 @@ class MemoryTile extends HookWidget {
                 child: GridInkWell(
                   onTap: detailsValue.maybeWhen(
                     data: (details) => () {
+                      final memoryUsageString =
+                          'Memory usage: ${details.memoryUsagePercentageString()}';
+                      final loadsString = details.cpuLoads.isEmpty
+                          ? ''
+                          : '\nLoads: ${details.cpuLoads.join(" | ")}';
+
                       ScaffoldMessenger.of(context).showMessageNow(
-                          message:
-                              'Memory usage: ${details.memoryUsagePercentageString()}',
+                          message: memoryUsageString + loadsString,
                           // 'CPU load: ${detailsCache.value!.cpuLoads.map((e) => '${(e * 100).toStringAsFixed(0)}%').join(' | ')}',
                           leading: const Icon(KIcons.memoryUsage));
                     },
