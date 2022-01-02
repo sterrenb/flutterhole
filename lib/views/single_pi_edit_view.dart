@@ -102,13 +102,14 @@ class SinglePiEditView extends HookConsumerWidget {
               _PiTitleField(titleController),
               const SizedBox(height: 20.0),
               const Divider(),
-              const GridSectionHeader('Host details', KIcons.host),
+              const GridSectionHeader("Host", KIcons.host),
               const SizedBox(height: 20.0),
               _BaseUrlField(baseUrlController),
               const SizedBox(height: 20.0),
               _ApiPathField(apiPathController),
               const SizedBox(height: 20.0),
               Wrap(
+                // alignment: WrapAlignment.center,
                 spacing: 8.0,
                 runSpacing: 8.0,
                 children: [
@@ -130,6 +131,7 @@ class SinglePiEditView extends HookConsumerWidget {
               _ApiTokenField(apiTokenController),
               const SizedBox(height: 20.0),
               Wrap(
+                // alignment: WrapAlignment.spaceEvenly,
                 spacing: 8.0,
                 runSpacing: 8.0,
                 children: [
@@ -141,8 +143,6 @@ class SinglePiEditView extends HookConsumerWidget {
                           return const QrScanDialog();
                         },
                       );
-
-                      debugPrint("Barcode: $barcode");
 
                       if (barcode != null) {
                         pi.value = pi.value.copyWith(apiToken: barcode);
@@ -208,7 +208,31 @@ class SinglePiEditView extends HookConsumerWidget {
                         Text("Share token"),
                       ],
                     ),
-                  )
+                  ),
+                  CheckboxListTile(
+                    title: const Text("Allow self-signed certificates"),
+                    subtitle: const Text(
+                        "Trust all certificates, even when the TLS handshake fails."),
+                    value: pi.value.allowSelfSignedCertificates,
+                    onChanged: (value) {
+                      pi.value = pi.value.copyWith(
+                          allowSelfSignedCertificates: value ?? false);
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: const Text("Skip authentication"),
+                    subtitle: const Text(
+                        "Use the default token. Only useful if your Pi-hole does not have an API token."),
+                    value: !pi.value.apiTokenRequired,
+                    onChanged: (value) {
+                      if (value != null) {
+                        value = !value;
+                      }
+                      pi.value =
+                          pi.value.copyWith(apiTokenRequired: value ?? true);
+                    },
+                  ),
+                  CodeCard(pi.value.toJson().toString()),
                 ],
               ),
               // Row(
