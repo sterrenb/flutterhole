@@ -19,7 +19,6 @@
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:exported="true"
-            <!-- Allow http traffic for local Pi-holes -->
             android:usesCleartextTraffic="true"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
