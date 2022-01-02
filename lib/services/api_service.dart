@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
@@ -16,7 +15,6 @@ final piholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
     dio: Dio(BaseOptions(baseUrl: pi.baseUrl)),
     baseUrl: pi.baseUrl,
     apiPath: pi.apiPath,
-    apiPort: pi.apiPort,
     apiTokenRequired: pi.apiTokenRequired,
     apiToken: pi.apiToken,
     allowSelfSignedCertificates: pi.allowSelfSignedCertificates,

@@ -11,10 +11,11 @@ dependencies:
   flutter:
     sdk: flutter
   hooks_riverpod: ^1.0.3
+  json_annotation: ^4.4.0
   freezed_annotation: ^1.1.0
   intl: ^0.17.0
   shared_preferences: ^2.0.11
-  pihole_api: ^0.1.4
+  pihole_api: ^0.1.5
   dio: ^4.0.4
   google_fonts: ^2.2.0
   animations: ^2.0.2

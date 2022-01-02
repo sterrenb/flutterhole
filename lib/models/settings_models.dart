@@ -42,9 +42,7 @@ class Pi with _$Pi {
   const factory Pi({
     @Default("My Pi-hole") String title,
     @Default("http://10.0.1.5") String baseUrl,
-    @Default(false) bool useSsl,
-    @Default("admin/api.php") String apiPath,
-    @Default(80) int apiPort,
+    @Default("/admin/api.php") String apiPath,
     @Default(true) bool apiTokenRequired,
     @Default("token") String apiToken,
     @Default(false) bool allowSelfSignedCertificates,

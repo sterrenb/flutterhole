@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutterhole/models/settings_models.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart';
 import 'package:pihole_api/pihole_api.dart';
 
@@ -55,11 +54,9 @@ class Formatting {
   static String piToAdminUrl(Pi pi) => pi.baseUrl + pi.adminHome;
 
   static String piholeStatusToString(PiholeStatus status) => status.when(
-        loading: () => "Loading",
         enabled: () => "Enabled",
         disabled: () => "Disabled",
         sleeping: (duration, startTime) => "Sleeping",
-        failure: (f) => "Failure",
       );
 
   static final whitespaceFormatter =

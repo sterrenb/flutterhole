@@ -26,7 +26,6 @@ final _paramsProvider = Provider.family<PiholeRepositoryParams, Pi>((ref, pi) {
     dio: Dio(BaseOptions(baseUrl: pi.baseUrl)),
     baseUrl: pi.baseUrl,
     apiPath: pi.apiPath,
-    apiPort: pi.apiPort,
     apiTokenRequired: pi.apiTokenRequired,
     apiToken: pi.apiToken,
     allowSelfSignedCertificates: pi.allowSelfSignedCertificates,
@@ -119,7 +118,7 @@ class SinglePiEditView extends HookConsumerWidget {
                     text: "Admin page",
                   ),
                   UrlOutlinedButton(
-                    url: Formatting.piToApiUrl(pi.value),
+                    url: params.apiUrl,
                     text: "API base",
                   ),
                 ],
@@ -270,7 +269,6 @@ class _ApiStatusButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final status = ref.watch(pingProvider(params));
-    final count = useState(0);
     final leadingSize = Theme.of(context).textTheme.bodyText2!.fontSize!;
 
     return OutlinedButton(
@@ -308,7 +306,7 @@ class _ApiStatusButton extends HookConsumerWidget {
                 loading: () => SizedBox(
                       width: leadingSize,
                       height: leadingSize,
-                      child: CircularProgressIndicator(
+                      child: const CircularProgressIndicator(
                         strokeWidth: 2.0,
                       ),
                     )),
@@ -488,7 +486,6 @@ class _ApiPathField extends StatelessWidget {
       hintText: const Pi().apiPath,
       labelText: 'API path',
       iconData: KIcons.apiPath,
-      prefixText: '/',
       inputFormatters: [Formatting.whitespaceFormatter],
     );
   }
