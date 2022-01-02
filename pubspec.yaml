@@ -10,11 +10,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  hooks_riverpod: ^1.0.3
+  freezed_annotation: ^1.1.0
+  pihole_api: ^0.1.4
+  dio: ^4.0.4
+  flex_color_scheme: ^4.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.4
+  build_runner: ^2.1.7
+  freezed: ^1.1.1
+  json_serializable: ^6.1.3
 
 flutter:
   uses-material-design: true
