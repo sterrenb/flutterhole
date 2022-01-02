@@ -134,6 +134,7 @@ class SinglePiEditView extends HookConsumerWidget {
                 spacing: 8.0,
                 runSpacing: 8.0,
                 children: [
+                  _AuthenticationStatusButton(params: params),
                   OutlinedButton(
                     onPressed: () async {
                       final barcode = await showModal<String>(
@@ -313,6 +314,67 @@ class _ApiStatusButton extends HookConsumerWidget {
           ),
           const SizedBox(width: 8.0),
           const Text("API status"),
+        ],
+      ),
+    );
+  }
+}
+
+class _AuthenticationStatusButton extends HookConsumerWidget {
+  const _AuthenticationStatusButton({
+    Key? key,
+    required this.params,
+  }) : super(key: key);
+
+  final PiholeRepositoryParams params;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final status = ref.watch(forwardDestinationsProvider(params));
+    final leadingSize = Theme.of(context).textTheme.bodyText2!.fontSize!;
+
+    return OutlinedButton(
+      onPressed: status.maybeWhen(
+          error: (e, s) => () {
+                showModal(
+                    context: context,
+                    builder: (context) => ErrorDialog(
+                          title: "Authentication",
+                          error: e,
+                          stackTrace: s,
+                        ));
+              },
+          orElse: () => () {
+                ref.refresh(forwardDestinationsProvider(params));
+              }),
+      onLongPress: () {
+        ref.refresh(forwardDestinationsProvider(params));
+      },
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedFader(
+            child: status.when(
+                data: (st) => Icon(
+                      KIcons.success,
+                      size: leadingSize,
+                      color: Colors.green,
+                    ),
+                error: (e, s) => Icon(
+                      KIcons.error,
+                      size: leadingSize,
+                      color: Colors.red,
+                    ),
+                loading: () => SizedBox(
+                      width: leadingSize,
+                      height: leadingSize,
+                      child: const CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                      ),
+                    )),
+          ),
+          const SizedBox(width: 8.0),
+          const Text("Auth status"),
         ],
       ),
     );
