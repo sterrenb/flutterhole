@@ -74,6 +74,7 @@ class KIcons {
   static const IconData authentication = Icons.lock;
   static const IconData apiToken = Icons.vpn_key;
   static const IconData qrCode = Icons.qr_code_scanner;
+  static const IconData qrShare = Icons.share;
   static const IconData customization = Icons.format_paint;
   static const IconData privacy = Icons.security;
   static const IconData bugReport = Icons.bug_report;

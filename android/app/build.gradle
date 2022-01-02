@@ -43,8 +43,8 @@ android {
 
     defaultConfig {
         applicationId "sterrenburg.github.flutterhole"
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 21
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

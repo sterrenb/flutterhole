@@ -10,7 +10,8 @@ class ApiService {
 
 final piholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
   // TODO provide pi
-  final pi = const Pi();
+  const pi = Pi(
+      apiToken: String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""));
   return PiholeRepositoryParams(
     dio: Dio(BaseOptions(baseUrl: pi.baseUrl)),
     baseUrl: pi.baseUrl,

@@ -10,13 +10,16 @@ import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
+import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
+import 'package:flutterhole/widgets/settings/qr_scan.dart';
 import 'package:flutterhole/widgets/settings/single_pi_form.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pihole_api/pihole_api.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 final _paramsProvider = Provider.family<PiholeRepositoryParams, Pi>((ref, pi) {
   return PiholeRepositoryParams(
@@ -88,78 +91,144 @@ class SinglePiEditView extends HookConsumerWidget {
               icon: const Icon(KIcons.save)),
         ],
       ),
-      body: MobileMaxWidth(
-        child: ListView(
-          padding: const EdgeInsets.all(24.0),
-          children: [
-            _PiTitleField(titleController),
-            const SizedBox(height: 50.0),
-            const Divider(),
-            const GridSectionHeader('Host details', KIcons.host),
-            const SizedBox(height: 20.0),
-            _BaseUrlField(baseUrlController),
-            const SizedBox(height: 20.0),
-            _ApiPathField(apiPathController),
-            const SizedBox(height: 20.0),
-            Wrap(
-              spacing: 8.0,
-              runSpacing: 8.0,
-              children: [
-                _ApiStatusButton(params: params),
-                UrlOutlinedButton(
-                  url: Formatting.piToAdminUrl(pi.value),
-                  text: "Admin page",
-                ),
-                UrlOutlinedButton(
-                  url: Formatting.piToApiUrl(pi.value),
-                  text: "API base",
-                ),
-              ],
-            ),
-            const SizedBox(height: 50.0),
-            const Divider(),
-            const GridSectionHeader('Authentication', KIcons.authentication),
-            const SizedBox(height: 20.0),
-            _ApiTokenField(apiTokenController),
-            const SizedBox(height: 20.0),
-            Wrap(
-              spacing: 8.0,
-              runSpacing: 8.0,
-              children: [
-                OutlinedButton(
-                  onPressed: () {},
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(KIcons.qrCode),
-                      SizedBox(width: 8.0),
-                      Text("Scan QR code"),
-                    ],
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: MobileMaxWidth(
+          child: ListView(
+            padding: const EdgeInsets.all(24.0),
+            children: [
+              _PiTitleField(titleController),
+              const SizedBox(height: 20.0),
+              const Divider(),
+              const GridSectionHeader('Host details', KIcons.host),
+              const SizedBox(height: 20.0),
+              _BaseUrlField(baseUrlController),
+              const SizedBox(height: 20.0),
+              _ApiPathField(apiPathController),
+              const SizedBox(height: 20.0),
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                children: [
+                  _ApiStatusButton(params: params),
+                  UrlOutlinedButton(
+                    url: Formatting.piToAdminUrl(pi.value),
+                    text: "Admin page",
                   ),
-                ),
-                UrlOutlinedButton(
-                  url: params.adminUrl + "/scripts/pi-hole/php/api_token.php",
-                  text: "Token page",
-                ),
-              ],
-            ),
-            // Row(
-            //   children: [
-            //     Expanded(child: _ApiTokenField(apiTokenController)),
-            //     const SizedBox(width: 8.0),
-            //     OutlinedButton(
-            //       onPressed: () {},
-            //       child: Row(
-            //         children: const [
-            //           Icon(KIcons.qrCode),
-            //           SizedBox(width: 8.0),
-            //           Text("Scan QR code"),
-            //         ],
-            //       ),
-            //     ),
-            //   ],
-            // ),
-          ],
+                  UrlOutlinedButton(
+                    url: Formatting.piToApiUrl(pi.value),
+                    text: "API base",
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              const Divider(),
+              const GridSectionHeader('Authentication', KIcons.authentication),
+              const SizedBox(height: 20.0),
+              _ApiTokenField(apiTokenController),
+              const SizedBox(height: 20.0),
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                children: [
+                  OutlinedButton(
+                    onPressed: () async {
+                      final barcode = await showModal<String>(
+                        context: context,
+                        builder: (context) {
+                          return const QrScanDialog();
+                        },
+                      );
+
+                      debugPrint("Barcode: $barcode");
+
+                      if (barcode != null) {
+                        pi.value = pi.value.copyWith(apiToken: barcode);
+                        apiTokenController.text = barcode;
+                      }
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(KIcons.qrCode),
+                        SizedBox(width: 8.0),
+                        Text("Scan QR code"),
+                      ],
+                    ),
+                  ),
+                  UrlOutlinedButton(
+                    url: params.adminUrl + "/scripts/pi-hole/php/api_token.php",
+                    text: "Token page",
+                  ),
+                  OutlinedButton(
+                    onPressed: pi.value.apiToken.isEmpty
+                        ? null
+                        : () async {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                final size =
+                                    ((MediaQuery.of(context).size.width / 5) *
+                                            3)
+                                        .clamp(200.0, 500.0);
+                                return AlertDialog(
+                                  // backgroundColor: Colors.white,
+                                  // title: Center(child: Text("API token")),
+                                  // titlePadding: EdgeInsets.all(16.0),
+                                  titleTextStyle:
+                                      Theme.of(context).textTheme.headline4,
+                                  contentPadding: EdgeInsets.zero,
+                                  content: Container(
+                                    width: size,
+                                    color: Colors.white,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        QrImage(
+                                          // backgroundColor: Colors.white,
+                                          data: pi.value.apiToken,
+                                          version: QrVersions.auto,
+                                          size: size,
+                                        ),
+                                        CodeCard(pi.value.apiToken),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(KIcons.qrShare),
+                        SizedBox(width: 8.0),
+                        Text("Share token"),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              // Row(
+              //   children: [
+              //     Expanded(child: _ApiTokenField(apiTokenController)),
+              //     const SizedBox(width: 8.0),
+              //     OutlinedButton(
+              //       onPressed: () {},
+              //       child: Row(
+              //         children: const [
+              //           Icon(KIcons.qrCode),
+              //           SizedBox(width: 8.0),
+              //           Text("Scan QR code"),
+              //         ],
+              //       ),
+              //     ),
+              //   ],
+              // ),
+            ],
+          ),
         ),
       ),
     );
@@ -420,7 +489,7 @@ class _ApiTokenField extends HookConsumerWidget {
         labelStyle: Theme.of(context).textTheme.headline6,
         keyboardType: TextInputType.visiblePassword,
         textCapitalization: TextCapitalization.none,
-        hintText: const Pi().apiPath,
+        hintText: "8f336d...",
         labelText: 'API token',
         iconData: KIcons.apiToken,
         obscureText: !show.value,
