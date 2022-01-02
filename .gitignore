@@ -56,3 +56,4 @@ android/app/upload_certificate.pem
 android/key.properties
 /ozzie/
 /gradle.properties
+/lib_old/
