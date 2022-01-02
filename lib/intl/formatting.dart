@@ -35,7 +35,7 @@ class Formatting {
       final message = e.when(
         notFound: () => "Not found.",
         notAuthenticated: () => "Not authenticated.",
-        invalidResponse: (response) => "Got $response.",
+        invalidResponse: (response) => "The server responded with $response.",
         emptyString: () => "Empty string response.",
         emptyList: () => "Empty list response.",
         cancelled: () => "Request cancelled.",
@@ -50,6 +50,9 @@ class Formatting {
 
     return e.toString();
   }
+
+  static String piToApiUrl(Pi pi) => pi.baseUrl + "/" + pi.apiPath;
+  static String piToAdminUrl(Pi pi) => pi.baseUrl + pi.adminHome;
 
   static String piholeStatusToString(PiholeStatus status) => status.when(
         loading: () => "Loading",

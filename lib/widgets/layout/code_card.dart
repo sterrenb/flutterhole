@@ -10,9 +10,10 @@ final mono = GoogleFonts.firaMono(
     );
 
 class CodeCard extends HookConsumerWidget {
-  const CodeCard(this.text, {Key? key}) : super(key: key);
+  const CodeCard(this.text, {Key? key, this.maxLines}) : super(key: key);
 
   final String text;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,6 +26,7 @@ class CodeCard extends HookConsumerWidget {
           child: SelectableText(
             text,
             style: mono,
+            maxLines: maxLines,
           ),
         ),
       ),

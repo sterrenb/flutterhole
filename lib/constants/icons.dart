@@ -70,6 +70,7 @@ class KIcons {
   static const IconData delete = Icons.delete;
   static const IconData selected = Icons.check;
   static const IconData host = Icons.dns;
+  static const IconData apiPath = Icons.folder_open;
   static const IconData authentication = Icons.vpn_key;
   static const IconData qrCode = Icons.qr_code_scanner;
   static const IconData customization = Icons.format_paint;
@@ -88,5 +89,5 @@ class KIcons {
   static const IconData blocked = Icons.cancel;
 
   static const IconData success = Icons.check;
-  static const IconData error = Icons.error;
+  static const IconData error = Icons.warning;
 }

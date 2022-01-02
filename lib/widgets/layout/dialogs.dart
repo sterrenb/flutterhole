@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
+import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 Future<bool?> showConfirmationDialog(
@@ -54,29 +55,35 @@ class ErrorDialog extends StatelessWidget {
     required this.title,
     required this.error,
     this.stackTrace,
+    this.maxLines = 5,
   }) : super(key: key);
 
   final String title;
   final Object error;
   final StackTrace? stackTrace;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(title),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(Formatting.errorToDescription(error)),
-            // SizedBox(height: 20.0),
-            stackTrace != null
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: CodeCard(stackTrace.toString()),
-                  )
-                : Container(),
-          ],
+      content: MobileMaxWidth(
+        center: false,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(Formatting.errorToDescription(error)),
+              // SizedBox(height: 20.0),
+              stackTrace != null
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child:
+                          CodeCard(stackTrace.toString(), maxLines: maxLines),
+                    )
+                  : Container(),
+            ],
+          ),
         ),
       ),
     );

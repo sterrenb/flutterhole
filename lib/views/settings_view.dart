@@ -25,14 +25,14 @@ class SettingsView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
+        title: const Text("Settings"),
         centerTitle: kIsWeb,
       ),
       body: MobileMaxWidth(
         child: ListView(
           children: [
-            PingApiButton(),
-            _SettingsSection(
+            const PingApiButton(),
+            const _SettingsSection(
               title: "Customization",
               children: [
                 ThemePopupMenu(),
@@ -44,14 +44,14 @@ class SettingsView extends HookConsumerWidget {
                 UpdateFrequencyButton(),
               ],
             ),
-            Divider(),
+            const Divider(),
             _SettingsSection(title: "Danger zone", children: [
-              DevModeButton(),
+              const DevModeButton(),
               DevWidget(
                   child: Column(
                 children: [
-                  LogLevelButton(),
-                  ThemeToggleButton(),
+                  const LogLevelButton(),
+                  const ThemeToggleButton(),
                   Row(
                     children: [
                       Expanded(
@@ -64,7 +64,7 @@ class SettingsView extends HookConsumerWidget {
                   const ThemeShowcaseButton(),
                 ],
               )),
-              PreferenceButtonTile(),
+              const PreferenceButtonTile(),
             ]),
           ],
         ),

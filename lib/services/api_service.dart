@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
@@ -9,7 +10,7 @@ class ApiService {
 
 final piholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
   // TODO provide pi
-  final pi = Pi();
+  final pi = const Pi();
   return PiholeRepositoryParams(
     dio: Dio(BaseOptions(baseUrl: pi.baseUrl)),
     baseUrl: pi.baseUrl,
@@ -22,22 +23,27 @@ final piholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
   );
 });
 
-final piholeProvider = Provider<PiholeRepository>((ref) {
-  return PiholeRepositoryDio(ref.watch(piholeParamsProvider));
+// final piholeProvider = Provider<PiholeRepository>((ref) {
+//   return PiholeRepositoryDio(ref.watch(piholeParamsProvider));
+// });
+
+final piholeProvider = Provider.autoDispose
+    .family<PiholeRepository, PiholeRepositoryParams>((ref, params) {
+  return PiholeRepositoryDio(params);
 });
 
 int i = 0;
 
 final pingProvider = FutureProvider.autoDispose
     .family<PiholeStatus, PiholeRepositoryParams>((ref, params) async {
-  print("pingProvider " + params.baseUrl);
-  i++;
-  if (i % 2 == 0) {
-    await Future.delayed(Duration(seconds: 1));
-    throw PiholeApiFailure.cancelled();
+  debugPrint("pingProvider " + params.baseUrl + "/" + params.apiPath);
+  // i++;
+  if (i % 2 == 1) {
+    await Future.delayed(const Duration(seconds: 1));
+    throw const PiholeApiFailure.notAuthenticated();
   }
 
-  final pihole = ref.watch(piholeProvider);
+  final pihole = ref.watch(piholeProvider(params));
   final cancelToken = CancelToken();
   ref.onDispose(() => cancelToken.cancel());
   return pihole.ping(cancelToken);
@@ -46,4 +52,12 @@ final pingProvider = FutureProvider.autoDispose
 final activePingProvider =
     Provider.autoDispose<AsyncValue<PiholeStatus>>((ref) {
   return ref.watch(pingProvider(ref.watch(piholeParamsProvider)));
+});
+
+final summaryProvider = FutureProvider.autoDispose
+    .family<PiSummary, PiholeRepositoryParams>((ref, params) async {
+  final pihole = ref.watch(piholeProvider(params));
+  final cancelToken = CancelToken();
+  ref.onDispose(() => cancelToken.cancel());
+  return pihole.fetchSummary(cancelToken);
 });

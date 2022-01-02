@@ -28,8 +28,6 @@ class ThemePopupMenu extends HookConsumerWidget {
         child: ListTile(
           leading: Icon(KIcons.theme),
           title: Text("Theme"),
-          // title: Text(usedSchemeData.name),
-          // subtitle: Text(usedSchemeData.description),
           subtitle: Text(usedSchemeData.name),
           trailing: PrimaryColorIcon(flexSchemeData: usedSchemeData),
         ),
