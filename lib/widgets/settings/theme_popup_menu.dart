@@ -1,4 +1,5 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/services/settings_service.dart';
@@ -22,7 +23,7 @@ class ThemePopupMenu extends HookConsumerWidget {
             .setFlexScheme(value);
       },
       child: Tooltip(
-        message: usedSchemeData.description,
+        message: kIsWeb ? "" : usedSchemeData.description,
         showDuration: Duration(seconds: 3),
         child: ListTile(
           leading: Icon(KIcons.theme),

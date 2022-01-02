@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
+import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ThemeShowcaseButton extends HookConsumerWidget {
@@ -22,10 +23,12 @@ class ThemeShowcaseButton extends HookConsumerWidget {
                   appBar: AppBar(
                     title: Text("Showcase"),
                   ),
-                  body: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SingleChildScrollView(
-                      child: ThemeShowcase(),
+                  body: MobileMaxWidth(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SingleChildScrollView(
+                        child: ThemeShowcase(),
+                      ),
                     ),
                   ),
                 ),

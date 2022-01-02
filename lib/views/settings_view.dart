@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/services/settings_service.dart';
@@ -5,6 +6,7 @@ import 'package:flutterhole/widgets/api/ping_api_button.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
+import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/settings/preference_button_tile.dart';
 import 'package:flutterhole/widgets/settings/theme_popup_menu.dart';
 import 'package:flutterhole/widgets/settings/update_frequency_button.dart';
@@ -24,39 +26,48 @@ class SettingsView extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Settings"),
-        actions: [],
+        centerTitle: kIsWeb,
       ),
-      body: ListView(
-        children: [
-          PingApiButton(),
-          _SettingsSection(
-            title: "Customization",
-            children: [
-              ThemePopupMenu(),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 8.0),
-                child: ListTile(title: ThemeModeButton()),
-              ),
-              TemperatureButton(),
-              UpdateFrequencyButton(),
-            ],
-          ),
-          Divider(),
-          _SettingsSection(title: "Danger zone", children: [
-            DevModeButton(),
-            DevWidget(
-                child: Column(
+      body: MobileMaxWidth(
+        child: ListView(
+          children: [
+            PingApiButton(),
+            _SettingsSection(
+              title: "Customization",
               children: [
-                LogLevelButton(),
-                ThemeToggleButton(),
-                CodeCard(Formatting.jsonToCode(
-                    ref.watch(UserPreferencesNotifier.provider).toJson())),
-                const ThemeShowcaseButton(),
+                ThemePopupMenu(),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: ListTile(title: ThemeModeButton()),
+                ),
+                TemperatureButton(),
+                UpdateFrequencyButton(),
               ],
-            )),
-            PreferenceButtonTile(),
-          ]),
-        ],
+            ),
+            Divider(),
+            _SettingsSection(title: "Danger zone", children: [
+              DevModeButton(),
+              DevWidget(
+                  child: Column(
+                children: [
+                  LogLevelButton(),
+                  ThemeToggleButton(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CodeCard(Formatting.jsonToCode(ref
+                            .watch(UserPreferencesNotifier.provider)
+                            .toJson())),
+                      ),
+                    ],
+                  ),
+                  const ThemeShowcaseButton(),
+                ],
+              )),
+              PreferenceButtonTile(),
+            ]),
+          ],
+        ),
       ),
     );
   }
