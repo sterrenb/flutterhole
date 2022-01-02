@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
@@ -9,7 +10,6 @@ import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
-import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/settings/single_pi_form.dart';
@@ -19,8 +19,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 final _paramsProvider = Provider.family<PiholeRepositoryParams, Pi>((ref, pi) {
-  print("Returning params for ${pi.baseUrl + "/" + pi.apiPath}");
-
   return PiholeRepositoryParams(
     dio: Dio(BaseOptions(baseUrl: pi.baseUrl)),
     baseUrl: pi.baseUrl,
@@ -63,6 +61,14 @@ class SinglePiEditView extends HookConsumerWidget {
       });
     }, [apiPathController]);
 
+    final apiTokenController =
+        useTextEditingController(text: initialValue.apiToken);
+    useEffect(() {
+      apiTokenController.addListener(() {
+        pi.value = pi.value.copyWith(apiToken: apiTokenController.text);
+      });
+    }, [apiTokenController]);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Editing ${initialValue.title}"),
@@ -87,7 +93,8 @@ class SinglePiEditView extends HookConsumerWidget {
           padding: const EdgeInsets.all(24.0),
           children: [
             _PiTitleField(titleController),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 50.0),
+            const Divider(),
             const GridSectionHeader('Host details', KIcons.host),
             const SizedBox(height: 20.0),
             _BaseUrlField(baseUrlController),
@@ -109,7 +116,49 @@ class SinglePiEditView extends HookConsumerWidget {
                 ),
               ],
             ),
-            // CodeCard(pi.value.toString()),
+            const SizedBox(height: 50.0),
+            const Divider(),
+            const GridSectionHeader('Authentication', KIcons.authentication),
+            const SizedBox(height: 20.0),
+            _ApiTokenField(apiTokenController),
+            const SizedBox(height: 20.0),
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 8.0,
+              children: [
+                OutlinedButton(
+                  onPressed: () {},
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(KIcons.qrCode),
+                      SizedBox(width: 8.0),
+                      Text("Scan QR code"),
+                    ],
+                  ),
+                ),
+                UrlOutlinedButton(
+                  url: params.adminUrl + "/scripts/pi-hole/php/api_token.php",
+                  text: "Token page",
+                ),
+              ],
+            ),
+            // Row(
+            //   children: [
+            //     Expanded(child: _ApiTokenField(apiTokenController)),
+            //     const SizedBox(width: 8.0),
+            //     OutlinedButton(
+            //       onPressed: () {},
+            //       child: Row(
+            //         children: const [
+            //           Icon(KIcons.qrCode),
+            //           SizedBox(width: 8.0),
+            //           Text("Scan QR code"),
+            //         ],
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),
@@ -166,7 +215,7 @@ class _ApiStatusButton extends HookConsumerWidget {
                 loading: () => SizedBox(
                       width: leadingSize,
                       height: leadingSize,
-                      child: const CircularProgressIndicator(
+                      child: CircularProgressIndicator(
                         strokeWidth: 2.0,
                       ),
                     )),
@@ -191,7 +240,17 @@ class UrlOutlinedButton extends StatelessWidget {
     return Tooltip(
       message: url,
       child: OutlinedButton(
-        child: Text(text ?? url),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              KIcons.openUrl,
+              size: Theme.of(context).textTheme.bodyText2!.fontSize!,
+            ),
+            const SizedBox(width: 8.0),
+            Text(text ?? url),
+          ],
+        ),
         onPressed: () {
           WebService.launchUrlInBrowser(url);
         },
@@ -212,6 +271,11 @@ class PiTextField extends StatelessWidget {
     required this.hintText,
     this.keyboardType,
     this.prefixText,
+    this.inputFormatters,
+    this.obscureText = false,
+    this.expands = false,
+    this.maxLines,
+    this.suffixIcon,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -223,6 +287,11 @@ class PiTextField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final TextInputType? keyboardType;
   final String? prefixText;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool obscureText;
+  final bool expands;
+  final int? maxLines;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -230,10 +299,20 @@ class PiTextField extends StatelessWidget {
       controller: controller,
       style: style,
       textCapitalization: textCapitalization,
+      textAlignVertical: TextAlignVertical.center,
+      expands: expands,
+      maxLines: maxLines,
       keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      obscureText: obscureText,
       decoration: InputDecoration(
         prefixIcon: Padding(
-          padding: EdgeInsets.all(style.fontSize ?? 8.0),
+          padding: EdgeInsets.only(
+            top: style.fontSize ?? 8.0,
+            left: style.fontSize ?? 8.0 + 8.0,
+            right: style.fontSize ?? 8.0,
+            bottom: style.fontSize ?? 8.0,
+          ),
           child: Icon(iconData),
         ),
         labelText: labelText,
@@ -241,6 +320,7 @@ class PiTextField extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         hintText: hintText,
         prefixText: prefixText,
+        suffixIcon: suffixIcon,
       ),
     );
   }
@@ -289,6 +369,7 @@ class _BaseUrlField extends StatelessWidget {
       textCapitalization: TextCapitalization.none,
       labelText: "Base URL",
       hintText: const Pi().baseUrl,
+      inputFormatters: [Formatting.whitespaceFormatter],
     );
   }
 }
@@ -315,6 +396,50 @@ class _ApiPathField extends StatelessWidget {
       labelText: 'API path',
       iconData: KIcons.apiPath,
       prefixText: '/',
+      inputFormatters: [Formatting.whitespaceFormatter],
     );
+  }
+}
+
+class _ApiTokenField extends HookConsumerWidget {
+  const _ApiTokenField(
+    this.controller, {
+    Key? key,
+  }) : super(key: key);
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final show = useState(false);
+    return PiTextField(
+        controller: controller,
+        style:
+            // Theme.of(context).textTheme.headline6!.merge(GoogleFonts.firaMono()),
+            GoogleFonts.firaMono(),
+        labelStyle: Theme.of(context).textTheme.headline6,
+        keyboardType: TextInputType.visiblePassword,
+        textCapitalization: TextCapitalization.none,
+        hintText: const Pi().apiPath,
+        labelText: 'API token',
+        iconData: KIcons.apiToken,
+        obscureText: !show.value,
+        maxLines: 1,
+        // expands: show.value,
+        // obscureText: false,
+        // expands: true,
+        // maxLines: 2,
+        inputFormatters: [Formatting.whitespaceFormatter],
+        suffixIcon: Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: IconButton(
+            tooltip: (!show.value ? 'Enable' : 'Disable') + ' visibility',
+            onPressed: () {
+              show.value = !show.value;
+            },
+            icon: Icon(
+                show.value ? KIcons.toggleVisible : KIcons.toggleInvisible),
+          ),
+        ));
   }
 }

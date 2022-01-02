@@ -60,7 +60,7 @@ class KIcons {
   static const IconData expand = Icons.keyboard_arrow_down;
   static const IconData shrink = Icons.keyboard_arrow_up;
   static const IconData openDialog = Icons.keyboard_arrow_right;
-  static const IconData openUrl = Icons.open_in_browser;
+  static const IconData openUrl = Icons.open_in_new;
   static const IconData share = Icons.share;
   static const IconData donate = Icons.monetization_on;
 
@@ -71,7 +71,8 @@ class KIcons {
   static const IconData selected = Icons.check;
   static const IconData host = Icons.dns;
   static const IconData apiPath = Icons.folder_open;
-  static const IconData authentication = Icons.vpn_key;
+  static const IconData authentication = Icons.lock;
+  static const IconData apiToken = Icons.vpn_key;
   static const IconData qrCode = Icons.qr_code_scanner;
   static const IconData customization = Icons.format_paint;
   static const IconData privacy = Icons.security;

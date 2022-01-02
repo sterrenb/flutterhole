@@ -36,7 +36,6 @@ int i = 0;
 
 final pingProvider = FutureProvider.autoDispose
     .family<PiholeStatus, PiholeRepositoryParams>((ref, params) async {
-  debugPrint("pingProvider " + params.baseUrl + "/" + params.apiPath);
   // i++;
   if (i % 2 == 1) {
     await Future.delayed(const Duration(seconds: 1));
