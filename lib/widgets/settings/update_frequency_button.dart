@@ -11,24 +11,27 @@ class UpdateFrequencyButton extends HookConsumerWidget {
     Key? key,
   }) : super(key: key);
 
+  Future<void> _showDialog(BuildContext context, WidgetRef ref) async {
+    final selected = await showDialog<int>(
+        context: context,
+        builder: (context) => const UpdateFrequencyDialog(0, 100));
+    if (selected != null) {
+      ref
+          .read(UserPreferencesNotifier.provider.notifier)
+          .setUpdateFrequency(selected);
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final updateFrequency = ref.watch(updateFrequencyProvider);
     return ListTile(
       title: const Text('Update frequency'),
       leading: const Icon(KIcons.updateFrequency),
+      onTap: () => _showDialog(context, ref),
       trailing: TextButton(
         child: Text(Formatting.secondsOrElse(updateFrequency, 'Disabled')),
-        onPressed: () async {
-          final selected = await showDialog<int>(
-              context: context,
-              builder: (context) => UpdateFrequencyDialog(0, 100));
-          if (selected != null) {
-            ref
-                .read(UserPreferencesNotifier.provider.notifier)
-                .setUpdateFrequency(selected);
-          }
-        },
+        onPressed: () => _showDialog(context, ref),
       ),
     );
   }
