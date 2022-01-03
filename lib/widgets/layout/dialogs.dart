@@ -25,11 +25,13 @@ class ModalAlertDialog<T> extends StatelessWidget {
     required this.title,
     required this.body,
     this.popValue,
+    this.canCancel = true,
   }) : super(key: key);
 
   final String title;
   final Widget body;
   final T? popValue;
+  final bool canCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +39,12 @@ class ModalAlertDialog<T> extends StatelessWidget {
       title: Text(title),
       content: body,
       actions: <Widget>[
-        TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(MaterialLocalizations.of(context).cancelButtonLabel)),
+        canCancel
+            ? TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child:
+                    Text(MaterialLocalizations.of(context).cancelButtonLabel))
+            : Container(),
         TextButton(
             onPressed: () => Navigator.of(context).pop(popValue),
             child: Text(MaterialLocalizations.of(context).okButtonLabel)),

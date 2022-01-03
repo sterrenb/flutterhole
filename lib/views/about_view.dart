@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
@@ -7,6 +8,7 @@ import 'package:flutterhole/views/privacy_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/about/app_version.dart';
 import 'package:flutterhole/widgets/about/logo.dart';
+import 'package:flutterhole/widgets/layout/dialogs.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -125,16 +127,6 @@ class AboutView extends HookConsumerWidget {
               },
             ),
             ListTile(
-              leading: const Icon(KIcons.share),
-              title: const Text('Share the app'),
-              trailing: const Icon(KIcons.push),
-              onTap: () {
-                Share.share(KUrls.githubHomeUrl,
-                    subject: 'FlutterHole for Pi-Hole®');
-              },
-            ),
-            // const _StarOnGitHubTile(),
-            ListTile(
               leading: Opacity(
                 opacity: context.isLight ? 0.5 : 1.0,
                 child: const _GithubImage(width: 24.0),
@@ -143,10 +135,65 @@ class AboutView extends HookConsumerWidget {
               trailing: const Icon(KIcons.push),
               onTap: () => WebService.launchUrlInBrowser(KUrls.githubHomeUrl),
             ),
-            // const _DonateTile(),
+            ListTile(
+              leading: const Icon(KIcons.donate),
+              title: const Text('Donate'),
+              trailing: const Icon(KIcons.push),
+              onTap: () {
+                showModal(
+                    context: context,
+                    builder: (context) {
+                      return ModalAlertDialog(
+                        title: 'Donate',
+                        canCancel: false,
+                        body: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Text(
+                                'Your donation supports the development of this free app.'),
+                            const SizedBox(height: 8.0),
+                            const Text('Thank you in advance! 💰'),
+                            const SizedBox(height: 8.0),
+                            ListTile(
+                              title: const Text('Paypal'),
+                              trailing: const Icon(KIcons.push),
+                              onTap: () {
+                                WebService.launchUrlInBrowser(KUrls.payPalUrl);
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('Ko-fi'),
+                              trailing: const Icon(KIcons.push),
+                              onTap: () {
+                                WebService.launchUrlInBrowser(KUrls.koFiUrl);
+                              },
+                            ),
+                            ListTile(
+                              title: const Text('GitHub'),
+                              trailing: const Icon(KIcons.push),
+                              onTap: () {
+                                WebService.launchUrlInBrowser(
+                                    KUrls.githubSponsor);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+              },
+            ),
             const Divider(),
             const ListTitle('Other'),
-
+            ListTile(
+              leading: const Icon(KIcons.share),
+              title: const Text('Share the app'),
+              trailing: const Icon(KIcons.push),
+              onTap: () {
+                Share.share(KUrls.githubHomeUrl,
+                    subject: 'FlutterHole for Pi-Hole®');
+              },
+            ),
             ListTile(
               leading: const Icon(KIcons.playStore),
               title: const Text('Visit the Google Play page'),

@@ -38,7 +38,7 @@ class _Content extends StatelessWidget {
       constraints: const BoxConstraints(
         maxWidth: 800.0,
       ),
-      child: child,
+      child: Material(child: child),
     );
   }
 }

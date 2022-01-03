@@ -35,6 +35,7 @@ class PiSelectList extends HookConsumerWidget {
         final pi = pis.elementAt(index);
         return ListTile(
           title: Text(pi.title),
+          minVerticalPadding: 16.0,
           trailing: UrlOutlinedButton(
             url: pi.baseUrl + pi.adminHome,
             text: pi.baseUrl
@@ -51,6 +52,7 @@ class PiSelectList extends HookConsumerWidget {
         );
       },
       separatorBuilder: (context, index) => const Divider(
+        height: 0.0,
         indent: 16.0,
         endIndent: 16.0,
       ),
