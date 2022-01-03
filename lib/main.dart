@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/onboarding_view.dart';
 import 'package:flutterhole/views/settings_view.dart';

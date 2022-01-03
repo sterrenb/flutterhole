@@ -37,6 +37,50 @@ class UserPreferences with _$UserPreferences {
 }
 
 @freezed
+class DashboardTileConstraints with _$DashboardTileConstraints {
+  const factory DashboardTileConstraints.count(
+    int crossAxisCount,
+    int mainAxisCount,
+  ) = _Count;
+
+  const factory DashboardTileConstraints.extent(
+    int crossAxisCount,
+    double mainAxisExtent,
+  ) = _Extent;
+
+  const factory DashboardTileConstraints.fit(
+    int crossAxisCount,
+  ) = _Fit;
+
+  factory DashboardTileConstraints.fromJson(Map<String, dynamic> json) =>
+      _$DashboardTileConstraintsFromJson(json);
+}
+
+@freezed
+class DashboardEntry with _$DashboardEntry {
+  @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+  const factory DashboardEntry({
+    required String id,
+    required bool enabled,
+    required DashboardTileConstraints constraints,
+  }) = _DashboardEntry;
+
+  factory DashboardEntry.fromJson(Map<String, dynamic> json) =>
+      _$DashboardEntryFromJson(json);
+
+  static const all = [
+    DashboardEntry(
+        id: 'versions',
+        enabled: true,
+        constraints: DashboardTileConstraints.count(2, 4)),
+    DashboardEntry(
+        id: 'totalqueries',
+        enabled: true,
+        constraints: DashboardTileConstraints.count(1, 4)),
+  ];
+}
+
+@freezed
 class Pi with _$Pi {
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Pi({
@@ -47,6 +91,7 @@ class Pi with _$Pi {
     @Default("token") String apiToken,
     @Default(false) bool allowSelfSignedCertificates,
     @Default("/admin") String adminHome,
+    @Default(DashboardEntry.all) List<DashboardEntry> dashboard,
   }) = _Pi;
 
   factory Pi.fromJson(Map<String, dynamic> json) => _$PiFromJson(json);
