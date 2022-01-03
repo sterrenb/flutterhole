@@ -57,3 +57,4 @@ android/key.properties
 /ozzie/
 /gradle.properties
 /lib_old/
+.gradle/

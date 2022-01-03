@@ -11,6 +11,7 @@ import 'package:flutterhole/widgets/about/logo.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
+import 'package:flutterhole/widgets/ui/images.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
@@ -129,7 +130,7 @@ class AboutView extends HookConsumerWidget {
             ListTile(
               leading: Opacity(
                 opacity: context.isLight ? 0.5 : 1.0,
-                child: const _GithubImage(width: 24.0),
+                child: const GithubImage(width: 24.0),
               ),
               title: const Text('Star on GitHub'),
               trailing: const Icon(KIcons.push),
@@ -214,26 +215,6 @@ class AboutView extends HookConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _GithubImage extends StatelessWidget {
-  const _GithubImage({Key? key, this.width}) : super(key: key);
-
-  final double? width;
-
-  @override
-  Widget build(BuildContext context) {
-    return Opacity(
-      opacity: context.isLight ? 1.0 : 0.8,
-      child: Image(
-          width: width,
-          image: AssetImage(
-            context.isLight
-                ? 'assets/icon/github_dark.png'
-                : 'assets/icon/github_light.png',
-          )),
     );
   }
 }

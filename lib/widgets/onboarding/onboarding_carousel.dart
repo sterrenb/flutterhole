@@ -1,8 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutterhole/constants/urls.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
+import 'package:flutterhole/widgets/onboarding/demo_dashboard.dart';
 import 'package:flutterhole/widgets/onboarding/demo_log_list.dart';
+import 'package:flutterhole/widgets/ui/buttons.dart';
+import 'package:flutterhole/widgets/ui/images.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -119,13 +124,10 @@ class OnboardingCarousel extends HookConsumerWidget {
             ),
             _Page(
               leading: const SizedBox(
-                  width: 300.0,
-                  // color: Colors.purple.withOpacity(.2),
-                  child: Card(
-                      elevation: 0.0,
-                      child: Opacity(
-                          opacity: .8,
-                          child: Center(child: AnimatedDemoLogList())))),
+                  width: 500.0,
+                  child: Opacity(
+                      opacity: .8,
+                      child: Center(child: AnimatedDemoLogList()))),
               title: Text.rich(
                 TextSpan(
                   text: '',
@@ -151,8 +153,79 @@ class OnboardingCarousel extends HookConsumerWidget {
                 ],
               ),
             ),
-            Container(color: Colors.blueGrey),
-            Container(color: Colors.purple),
+            _Page(
+              leading: const SizedBox(
+                width: 300.0,
+                child: Center(
+                  child: Opacity(opacity: .8, child: DemoDashboard()),
+                ),
+              ),
+              title: Text.rich(
+                TextSpan(
+                  text: '',
+                  style: Theme.of(context).textTheme.headline4,
+                  children: <TextSpan>[
+                    TextSpan(text: 'Customize', style: titleStyle),
+                    const TextSpan(text: ' your dashboard.'),
+                    // can add more TextSpans here...
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              description: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                alignment: WrapAlignment.center,
+                children: [
+                  Text(
+                    'Select which information you want, in which order.',
+                    style: descriptionStyle,
+                  ),
+                ],
+              ),
+            ),
+            _Page(
+              leading: const Card(
+                  color: Color(0xfffefffe),
+                  // color: Colors.green,
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: GithubOctoImage(),
+                  )),
+              title: Text.rich(
+                TextSpan(
+                  text: '',
+                  style: Theme.of(context).textTheme.headline4,
+                  children: [
+                    TextSpan(text: 'Free', style: titleStyle),
+                    const TextSpan(text: ' and '),
+                    const TextSpan(text: 'open source.'),
+                    // can add more TextSpans here...
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              description: Column(
+                children: [
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    alignment: WrapAlignment.center,
+                    children: [
+                      Text('Want to support this app? ',
+                          style: descriptionStyle),
+                      Text('Check out the homepage on ',
+                          style: descriptionStyle),
+                      Text('GitHub', style: codeStyle),
+                      Text('.', style: descriptionStyle),
+                    ],
+                  ),
+                  const SizedBox(height: 20.0),
+                  const UrlOutlinedButton(
+                    url: KUrls.githubHomeUrl,
+                    text: 'FlutterHole on GitHub',
+                  ),
+                ],
+              ),
+            ),
             // _ControlPage(
             //     titleStyle: titleStyle, descriptionStyle: descriptionStyle),
             // _MonitorPage(titleStyle: titleStyle),
@@ -305,8 +378,8 @@ class _Page extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             const Spacer(),
-            Expanded(child: leading),
-            const SizedBox(height: 60),
+            Expanded(child: AspectRatio(aspectRatio: 1.5, child: leading)),
+            const SizedBox(height: 50),
             title,
             const SizedBox(height: 20),
             description,
