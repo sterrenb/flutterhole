@@ -42,3 +42,7 @@ class _Content extends StatelessWidget {
     );
   }
 }
+
+extension BuildContextX on BuildContext {
+  bool get isLight => Theme.of(this).brightness == Brightness.light;
+}

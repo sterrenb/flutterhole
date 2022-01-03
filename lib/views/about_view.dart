@@ -134,6 +134,15 @@ class AboutView extends HookConsumerWidget {
               },
             ),
             // const _StarOnGitHubTile(),
+            ListTile(
+              leading: Opacity(
+                opacity: context.isLight ? 0.5 : 1.0,
+                child: const _GithubImage(width: 24.0),
+              ),
+              title: const Text('Star on GitHub'),
+              trailing: const Icon(KIcons.push),
+              onTap: () => WebService.launchUrlInBrowser(KUrls.githubHomeUrl),
+            ),
             // const _DonateTile(),
             const Divider(),
             const ListTitle('Other'),
@@ -158,6 +167,26 @@ class AboutView extends HookConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _GithubImage extends StatelessWidget {
+  const _GithubImage({Key? key, this.width}) : super(key: key);
+
+  final double? width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: context.isLight ? 1.0 : 0.8,
+      child: Image(
+          width: width,
+          image: AssetImage(
+            context.isLight
+                ? 'assets/icon/github_dark.png'
+                : 'assets/icon/github_light.png',
+          )),
     );
   }
 }

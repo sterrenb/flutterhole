@@ -59,7 +59,11 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
                     'can view the code that runs your app. '
                     'You can find the repository on '),
             TextSpan(
-              style: Theme.of(context).textTheme.bodyText2!,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2!
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
+
               // .apply(color: KColors.link),
               text: 'GitHub',
               recognizer: TapGestureRecognizer()
@@ -71,7 +75,10 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
                     '\n\n'
                     'Logo design by '),
             TextSpan(
-              style: Theme.of(context).textTheme.bodyText2!,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2!
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
               // .apply(color: KColors.link),
               text: 'Mathijs Sterrenburg',
               recognizer: TapGestureRecognizer()
