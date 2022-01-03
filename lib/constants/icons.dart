@@ -25,6 +25,7 @@ class KIcons {
   static const IconData playStore = Icons.storefront;
 
   static const IconData dashboard = Icons.dashboard;
+  static const IconData tileList = Icons.view_list;
   static const IconData queryLog = Icons.list;
   static const IconData settings = Icons.settings;
   static const IconData about = Icons.favorite;

@@ -16,7 +16,7 @@ class PingApiButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final params = ref.watch(piholeParamsProvider);
+    final params = ref.watch(activePiholeParamsProvider);
     // final ping = ref.watch(pingProvider(params));
     final ping = ref.watch(activePingProvider);
 

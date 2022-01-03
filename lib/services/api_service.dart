@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutterhole/models/settings_models.dart';
+import 'package:flutterhole/services/settings_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
 
@@ -8,10 +9,8 @@ class ApiService {
   ApiService._();
 }
 
-final piholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
-  // TODO provide pi
-  const pi = Pi(
-      apiToken: String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""));
+final activePiholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
+  final pi = ref.watch(activePiProvider);
   return PiholeRepositoryParams(
     dio: Dio(BaseOptions(baseUrl: pi.baseUrl)),
     baseUrl: pi.baseUrl,
@@ -50,7 +49,7 @@ final pingProvider = FutureProvider.autoDispose
 
 final activePingProvider =
     Provider.autoDispose<AsyncValue<PiholeStatus>>((ref) {
-  return ref.watch(pingProvider(ref.watch(piholeParamsProvider)));
+  return ref.watch(pingProvider(ref.watch(activePiholeParamsProvider)));
 });
 
 final summaryProvider = FutureProvider.autoDispose

@@ -62,3 +62,24 @@ class Formatting {
   static final whitespaceFormatter =
       FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'));
 }
+
+extension DashboardIDX on DashboardID {
+  String toReadable() {
+    switch (this) {
+      case DashboardID.versions:
+        return 'Versions';
+      case DashboardID.totalQueries:
+        return 'Total queries';
+      case DashboardID.queriesBlocked:
+        return 'Queries blocked';
+      case DashboardID.percentBlocked:
+        return 'Percent blocked';
+      case DashboardID.domainsOnBlocklist:
+        return 'Domains on blocklist';
+      case DashboardID.forwardDestinations:
+        return 'Forward destinations';
+      case DashboardID.topPermittedDomains:
+        return 'Top permitted domains';
+    }
+  }
+}

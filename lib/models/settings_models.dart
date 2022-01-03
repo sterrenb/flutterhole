@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'settings_models.freezed.dart';
+
 part 'settings_models.g.dart';
 
 enum TemperatureReading {
@@ -56,11 +57,21 @@ class DashboardTileConstraints with _$DashboardTileConstraints {
       _$DashboardTileConstraintsFromJson(json);
 }
 
+enum DashboardID {
+  versions,
+  totalQueries,
+  queriesBlocked,
+  percentBlocked,
+  domainsOnBlocklist,
+  forwardDestinations,
+  topPermittedDomains,
+}
+
 @freezed
 class DashboardEntry with _$DashboardEntry {
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory DashboardEntry({
-    required String id,
+    required DashboardID id,
     required bool enabled,
     required DashboardTileConstraints constraints,
   }) = _DashboardEntry;
@@ -70,13 +81,33 @@ class DashboardEntry with _$DashboardEntry {
 
   static const all = [
     DashboardEntry(
-        id: 'versions',
+        id: DashboardID.versions,
         enabled: true,
-        constraints: DashboardTileConstraints.count(2, 4)),
+        constraints: DashboardTileConstraints.count(4, 2)),
     DashboardEntry(
-        id: 'totalqueries',
+        id: DashboardID.totalQueries,
         enabled: true,
-        constraints: DashboardTileConstraints.count(1, 4)),
+        constraints: DashboardTileConstraints.count(4, 1)),
+    DashboardEntry(
+        id: DashboardID.queriesBlocked,
+        enabled: false,
+        constraints: DashboardTileConstraints.count(4, 1)),
+    DashboardEntry(
+        id: DashboardID.percentBlocked,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(2, 1)),
+    DashboardEntry(
+        id: DashboardID.domainsOnBlocklist,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(2, 1)),
+    DashboardEntry(
+        id: DashboardID.forwardDestinations,
+        enabled: true,
+        constraints: DashboardTileConstraints.extent(2, 500)),
+    DashboardEntry(
+        id: DashboardID.topPermittedDomains,
+        enabled: true,
+        constraints: DashboardTileConstraints.fit(2)),
   ];
 }
 

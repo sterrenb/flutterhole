@@ -36,7 +36,9 @@ class SettingsService {
 }
 
 final activePiProvider = Provider<Pi>((ref) {
-  return const Pi();
+  return const Pi(
+      title: 'Home',
+      apiToken: String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""));
 });
 
 final sharedPreferencesProvider = FutureProvider<SharedPreferences>(
