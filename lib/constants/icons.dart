@@ -80,6 +80,7 @@ class KIcons {
   static const IconData customization = Icons.format_paint;
   static const IconData privacy = Icons.security;
   static const IconData bugReport = Icons.bug_report;
+  static const IconData community = Icons.comment;
 
   static const IconData logDebug = Icons.bug_report;
   static const IconData logInfo = Icons.info;

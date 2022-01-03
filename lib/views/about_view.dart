@@ -7,6 +7,7 @@ import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/about/app_version.dart';
 import 'package:flutterhole/widgets/about/logo.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:share_plus/share_plus.dart';
@@ -76,6 +77,23 @@ class AboutView extends HookConsumerWidget {
             trailing: const Icon(KIcons.push),
             onTap: () {
               WebService.launchUrlInBrowser(KUrls.githubIssuesUrl);
+            },
+          ),
+          ListTile(
+            leading: const Icon(KIcons.community),
+            title: Row(
+              children: [
+                const Text('Ask '),
+                Text(
+                  '/r/pihole',
+                  style: GoogleFonts.firaMono(),
+                ),
+                const Text(' on Reddit'),
+              ],
+            ),
+            trailing: const Icon(KIcons.push),
+            onTap: () {
+              WebService.launchUrlInBrowser(KUrls.piholeCommunity);
             },
           ),
           const Divider(),

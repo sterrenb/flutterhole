@@ -29,19 +29,15 @@ class PrivacyView extends HookConsumerWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: markdownValue.when(
-          data: (markdown) => Markdown(
-            physics: const BouncingScrollPhysics(),
-            data: markdown,
-            selectable: true,
-          ),
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
-          ),
-          error: (e, s) => CenteredErrorMessage(e, s),
+      body: markdownValue.when(
+        data: (markdown) => Markdown(
+          data: markdown,
+          selectable: true,
         ),
+        loading: () => const Center(
+          child: CircularProgressIndicator(),
+        ),
+        error: (e, s) => CenteredErrorMessage(e, s),
       ),
     );
   }
