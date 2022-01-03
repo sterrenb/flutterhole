@@ -26,6 +26,27 @@ class DashboardEditView extends HookConsumerWidget {
         overflow: TextOverflow.fade,
       ),
       actions: [
+        PopupMenuButton<String>(
+          onSelected: (selected) {
+            if (selected == 'Enable all') {
+              entries.value =
+                  entries.value.map((e) => e.copyWith(enabled: true)).toList();
+            } else if (selected == 'Disable all') {
+              entries.value =
+                  entries.value.map((e) => e.copyWith(enabled: false)).toList();
+            } else if (selected == 'Use defaults') {
+              entries.value = DashboardEntry.all;
+            }
+          },
+          itemBuilder: (context) => [
+            'Enable all',
+            'Disable all',
+            'Use defaults',
+          ]
+              .map((choice) =>
+                  PopupMenuItem<String>(value: choice, child: Text(choice)))
+              .toList(),
+        ),
         IconButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -41,7 +62,18 @@ class DashboardEditView extends HookConsumerWidget {
         itemCount: entries.value.length,
         itemBuilder: (context, index) {
           final entry = entries.value.elementAt(index);
-          return _Tile(key: Key(entry.id.name), index: index, entry: entry);
+          return _Tile(
+            key: Key(entry.id.name),
+            index: index,
+            entry: entry,
+            onToggle: () {
+              final list = List<DashboardEntry>.from(entries.value);
+              list[index] = list
+                  .elementAt(index)
+                  .copyWith(enabled: !list.elementAt(index).enabled);
+              entries.value = list;
+            },
+          );
         },
         onReorder: (from, to) {
           if (from < to) {
@@ -67,10 +99,12 @@ class _Tile extends StatelessWidget {
     Key? key,
     required this.index,
     required this.entry,
+    required this.onToggle,
   }) : super(key: key);
 
   final int index;
   final DashboardEntry entry;
+  final VoidCallback onToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +112,7 @@ class _Tile extends StatelessWidget {
       index: index,
       child: ListTile(
         title: Text(entry.id.toReadable()),
-        onTap: () {},
+        onTap: onToggle,
         trailing: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
@@ -95,10 +129,12 @@ class _Tile extends StatelessWidget {
                   ?.merge(GoogleFonts.firaMono()),
             ),
             Tooltip(
-              message: 'Toggle visibility',
+              message: (entry.enabled ? 'Disable' : 'Enable') + ' visibility',
               child: Checkbox(
                 value: entry.enabled,
-                onChanged: (_) {},
+                onChanged: (_) {
+                  onToggle();
+                },
               ),
             ),
             ReorderableDragStartListener(

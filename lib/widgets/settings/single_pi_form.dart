@@ -94,7 +94,7 @@ class GridSectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: Theme.of(context).textTheme.headline4,
+      style: Theme.of(context).textTheme.headline6,
       textAlign: TextAlign.left,
     );
   }

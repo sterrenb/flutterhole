@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
-import 'package:flutterhole/services/settings_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 class DashboardGrid extends HookConsumerWidget {
   const DashboardGrid({
@@ -15,9 +15,25 @@ class DashboardGrid extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final enabledEntries = useMemoized(
+      () {
+        return entries.where((entry) => entry.enabled);
+      },
+      [entries],
+    );
+
+    if (enabledEntries.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24.0),
+          child: Text('Select some tiles!'),
+        ),
+      );
+    }
+
     return StaggeredGrid.count(
       crossAxisCount: 4,
-      children: entries
+      children: enabledEntries
           .map((entry) => entry.constraints.when(
                 count: (cross, main) => StaggeredGridTile.count(
                     crossAxisCellCount: cross,
