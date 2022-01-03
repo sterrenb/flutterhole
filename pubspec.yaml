@@ -28,6 +28,7 @@ dependencies:
   in_app_review: ^2.0.3
   share_plus: ^3.0.4
   flutter_markdown: ^0.6.9
+  smooth_page_indicator: ^1.0.0+2
 
 dev_dependencies:
   flutter_test:

@@ -42,9 +42,9 @@ class ThemeModeButton extends HookConsumerWidget {
             width: 16.0,
             height: 16.0,
             themeMode: themeMode,
-            labelLight: "",
-            labelDark: "",
-            labelSystem: "",
+            labelLight: '',
+            labelDark: '',
+            labelSystem: '',
             onThemeModeChanged: (value) {
               ref
                   .read(UserPreferencesNotifier.provider.notifier)

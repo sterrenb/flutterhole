@@ -48,7 +48,6 @@ class PiSelectList extends HookConsumerWidget {
               fullscreenDialog: true,
             ));
           },
-          onLongPress: () {},
         );
       },
       separatorBuilder: (context, index) => const Divider(
