@@ -60,6 +60,7 @@ class KIcons {
   static const IconData expand = Icons.keyboard_arrow_down;
   static const IconData shrink = Icons.keyboard_arrow_up;
   static const IconData openDialog = Icons.keyboard_arrow_right;
+  static const IconData push = Icons.keyboard_arrow_right;
   static const IconData openUrl = Icons.open_in_new;
   static const IconData share = Icons.share;
   static const IconData donate = Icons.monetization_on;

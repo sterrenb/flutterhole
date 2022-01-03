@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/services/settings_service.dart';
+import 'package:flutterhole/views/about_view.dart';
 import 'package:flutterhole/widgets/api/ping_api_button.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
@@ -34,6 +35,13 @@ class SettingsView extends HookConsumerWidget {
       body: MobileMaxWidth(
         child: ListView(
           children: [
+            ListTile(
+              title: Text("About"),
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const AboutView()));
+              },
+            ),
             const PingApiButton(),
             const AppSection(
               title: "Customization",
