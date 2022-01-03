@@ -53,6 +53,14 @@ class OnboardingCarousel extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pageController = usePageController();
 
+    final descriptionStyle = Theme.of(context).textTheme.headline5;
+    final codeStyle = descriptionStyle?.merge(
+        GoogleFonts.firaMono(color: Theme.of(context).colorScheme.primary));
+    final titleStyle = Theme.of(context).textTheme.headline4?.copyWith(
+          decoration: TextDecoration.underline,
+          color: Theme.of(context).colorScheme.secondary,
+        );
+
     void animateToPage(int index) {
       pageController.animateToPage(
         index,
@@ -69,8 +77,100 @@ class OnboardingCarousel extends HookConsumerWidget {
           controller: pageController,
           physics: const BouncingScrollPhysics(),
           children: [
-            _ControlPage(),
-            Container(color: Colors.green),
+            _Page(
+              leading: Opacity(
+                opacity: .8,
+                child: Image(
+                  image: AssetImage(context.isLight
+                      ? 'assets/logo/logo_dark.png'
+                      : 'assets/logo/logo.png'),
+                  width: 200.0,
+                ),
+              ),
+              title: Text.rich(
+                TextSpan(
+                  text: '',
+                  style: Theme.of(context).textTheme.headline4,
+                  children: <TextSpan>[
+                    TextSpan(text: 'Control', style: titleStyle),
+                    const TextSpan(text: ' your Pi-hole.'),
+                    // can add more TextSpans here...
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              description: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    alignment: WrapAlignment.center,
+                    children: [
+                      Text('Use commands like ', style: descriptionStyle),
+                      Text('enable', style: codeStyle),
+                      Text(', ', style: descriptionStyle),
+                      Text('disable', style: codeStyle),
+                      Text(' and ', style: descriptionStyle),
+                      Text('sleep', style: codeStyle),
+                      Tooltip(
+                        triggerMode: TooltipTriggerMode.tap,
+                        message:
+                            '🔐 API token required for full functionality!',
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(' with ease', style: descriptionStyle),
+                            Text('*',
+                                style: descriptionStyle?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                )),
+                            Text('.', style: descriptionStyle),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            _Page(
+              leading: SizedBox(
+                  width: 300.0,
+                  // color: Colors.purple.withOpacity(.2),
+                  child: Card(
+                      elevation: 0.0,
+                      child: Opacity(
+                          opacity: .8,
+                          child: Center(
+                              child: Container(
+                            color: Colors.purple,
+                          ))))),
+              title: Text.rich(
+                TextSpan(
+                  text: '',
+                  style: Theme.of(context).textTheme.headline4,
+                  children: <TextSpan>[
+                    const TextSpan(text: ''),
+                    TextSpan(text: 'Monitor', style: titleStyle),
+                    const TextSpan(text: ' your network.'),
+                    // can add more TextSpans here...
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              description: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                alignment: WrapAlignment.center,
+                children: [
+                  Text('Inspect and triage all ', style: descriptionStyle),
+                  Tooltip(
+                      message: 'Domain Name System',
+                      child: Text('DNS', style: codeStyle)),
+                  Text(' requests.', style: descriptionStyle),
+                ],
+              ),
+            ),
             Container(color: Colors.blueGrey),
             Container(color: Colors.purple),
             // _ControlPage(
@@ -236,62 +336,20 @@ class _Page extends StatelessWidget {
   }
 }
 
-class _ControlPage extends StatelessWidget {
-  const _ControlPage({Key? key}) : super(key: key);
+class _PageDescription extends StatelessWidget {
+  const _PageDescription(
+    this.description, {
+    Key? key,
+  }) : super(key: key);
 
-  // final TextStyle titleStyle;
-  // final TextStyle? descriptionStyle;
+  final String description;
 
   @override
   Widget build(BuildContext context) {
-    final descriptionStyle = Theme.of(context).textTheme.headline5;
-    final codeStyle = descriptionStyle?.merge(
-        GoogleFonts.firaMono(color: Theme.of(context).colorScheme.primary));
-    final titleStyle = Theme.of(context).textTheme.headline4?.copyWith(
-          decoration: TextDecoration.underline,
-          color: Theme.of(context).colorScheme.secondary,
-        );
-    return _Page(
-      leading: Opacity(
-        opacity: .8,
-        child: Image(
-          image: AssetImage(context.isLight
-              ? 'assets/logo/logo_dark.png'
-              : 'assets/logo/logo.png'),
-          width: 200.0,
-        ),
-      ),
-      title: Text.rich(
-        TextSpan(
-          text: '',
-          style: Theme.of(context).textTheme.headline4,
-          children: <TextSpan>[
-            TextSpan(text: 'Control', style: titleStyle),
-            const TextSpan(text: ' your Pi-hole.'),
-            // can add more TextSpans here...
-          ],
-        ),
-        textAlign: TextAlign.center,
-      ),
-      description: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Text("Perform all the commands:"),
-          Wrap(
-            // mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text('Use commands like ', style: descriptionStyle),
-              Text('enable', style: codeStyle),
-              Text(', ', style: descriptionStyle),
-              Text('disable', style: codeStyle),
-              Text(' and ', style: descriptionStyle),
-              Text('sleep', style: codeStyle),
-              Text(' with ease.', style: descriptionStyle),
-            ],
-          ),
-        ],
-      ),
+    return Text(
+      description,
+      style: Theme.of(context).textTheme.headline5,
+      textAlign: TextAlign.center,
     );
   }
 }

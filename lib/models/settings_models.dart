@@ -26,8 +26,8 @@ class UserPreferences with _$UserPreferences {
     @Default(LogLevel.info) LogLevel logLevel,
     @Default(30) int updateFrequency,
     @Default(false) bool showThemeToggle,
-    @Default(ThemeMode.dark) ThemeMode themeMode,
-    @Default(FlexScheme.damask) FlexScheme flexScheme,
+    @Default(ThemeMode.system) ThemeMode themeMode,
+    @Default(FlexScheme.mallardGreen) FlexScheme flexScheme,
     @Default(TemperatureReading.fahrenheit)
         TemperatureReading temperatureReading,
   }) = _UserPreferences;
