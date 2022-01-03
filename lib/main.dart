@@ -37,13 +37,7 @@ class MyApp extends HookConsumerWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
-      home: kDebugMode
-          ? const OnboardingView()
-          : const SinglePiEditView(
-              initialValue: Pi(
-                  apiToken: String.fromEnvironment("PIHOLE_API_TOKEN",
-                      defaultValue: "")),
-            ),
+      home: const OnboardingView(),
     );
   }
 }

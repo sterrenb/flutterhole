@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/onboarding/demo_log_list.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -262,7 +263,11 @@ class OnboardingCarousel extends HookConsumerWidget {
                       visible: isInitialPage,
                       child: OutlinedButton(
                         child: const Text('Get started'),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => const SettingsView()));
+                        },
                         // onPressed: () => ExtendedNavigator.of(context)
                         //     .pushSignInPage(
                         //         startingIndex: SignInStartingIndex.signIn),

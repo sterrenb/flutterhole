@@ -14,6 +14,7 @@ import 'package:flutterhole/widgets/settings/preference_button_tile.dart';
 import 'package:flutterhole/widgets/settings/theme_popup_menu.dart';
 import 'package:flutterhole/widgets/settings/update_frequency_button.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
+import 'package:flutterhole/widgets/ui/double_back_to_close_app.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutterhole/widgets/developer/theme_showcase.dart';
 import 'package:flutterhole/widgets/developer/dev_mode_button.dart';
@@ -32,73 +33,75 @@ class SettingsView extends HookConsumerWidget {
         title: const Text("Settings"),
         centerTitle: kIsWeb,
       ),
-      body: MobileMaxWidth(
-        child: ListView(
-          children: [
-            ListTile(
-              title: const Text("About"),
-              onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const AboutView()));
-              },
-            ),
-            const PingApiButton(),
-            const AppSection(
-              title: "Customization",
-              children: [
-                ThemePopupMenu(),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: ListTile(title: ThemeModeButton()),
-                ),
-                TemperatureButton(),
-                UpdateFrequencyButton(),
-              ],
-            ),
-            const Divider(),
-            AppSection(
-              title: "My Pi-holes",
-              children: [
-                const PiSelectList(
-                  shrinkWrap: true,
-                ),
-                const SizedBox(height: 20.0),
-                AppWrap(
-                  children: [
-                    OutlinedButton.icon(
-                      icon: const Icon(KIcons.add),
-                      onPressed: () {},
-                      label: const Text('New Pi-hole'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20.0),
-              ],
-            ),
-            const Divider(),
-            AppSection(title: "Danger zone", children: [
-              const DevModeButton(),
-              DevWidget(
-                  child: Column(
+      body: DoubleBackToCloseApp(
+        child: MobileMaxWidth(
+          child: ListView(
+            children: [
+              ListTile(
+                title: const Text("About"),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const AboutView()));
+                },
+              ),
+              const PingApiButton(),
+              const AppSection(
+                title: "Customization",
                 children: [
-                  const LogLevelButton(),
-                  const ThemeToggleButton(),
-                  Row(
+                  ThemePopupMenu(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: ListTile(title: ThemeModeButton()),
+                  ),
+                  TemperatureButton(),
+                  UpdateFrequencyButton(),
+                ],
+              ),
+              const Divider(),
+              AppSection(
+                title: "My Pi-holes",
+                children: [
+                  const PiSelectList(
+                    shrinkWrap: true,
+                  ),
+                  const SizedBox(height: 20.0),
+                  AppWrap(
                     children: [
-                      Expanded(
-                        child: CodeCard(Formatting.jsonToCode(ref
-                            .watch(UserPreferencesNotifier.provider)
-                            .toJson())),
+                      OutlinedButton.icon(
+                        icon: const Icon(KIcons.add),
+                        onPressed: () {},
+                        label: const Text('New Pi-hole'),
                       ),
                     ],
                   ),
-                  const ThemeShowcaseButton(),
+                  const SizedBox(height: 20.0),
                 ],
-              )),
-              const PreferenceButtonTile(),
-              const SizedBox(height: 20.0),
-            ]),
-          ],
+              ),
+              const Divider(),
+              AppSection(title: "Danger zone", children: [
+                const DevModeButton(),
+                DevWidget(
+                    child: Column(
+                  children: [
+                    const LogLevelButton(),
+                    const ThemeToggleButton(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CodeCard(Formatting.jsonToCode(ref
+                              .watch(UserPreferencesNotifier.provider)
+                              .toJson())),
+                        ),
+                      ],
+                    ),
+                    const ThemeShowcaseButton(),
+                  ],
+                )),
+                const PreferenceButtonTile(),
+                const SizedBox(height: 20.0),
+              ]),
+            ],
+          ),
         ),
       ),
     );
