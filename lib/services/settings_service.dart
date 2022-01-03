@@ -51,8 +51,8 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
 
   static const storageKey = "preferences";
   static const initialState = UserPreferences(
-    devMode: kDebugMode,
-  );
+      // devMode: kDebugMode,
+      );
 
   final SettingsService storage;
 

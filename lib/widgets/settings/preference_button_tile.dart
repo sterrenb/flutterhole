@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PreferenceButtonTile extends HookConsumerWidget {
@@ -24,20 +25,25 @@ class PreferenceButtonTile extends HookConsumerWidget {
               onPressed: () async {
                 ref.read(UserPreferencesNotifier.provider.notifier).reload();
               },
-              child: Text("Reload"),
+              child: const Text("Reload"),
             ),
-            ElevatedButton.icon(
-              label: Text("Reset preferences"),
-              icon: Icon(KIcons.refresh),
-              style: ElevatedButton.styleFrom(
-                primary: Theme.of(context).colorScheme.error,
-                onPrimary: Theme.of(context).colorScheme.onError,
-              ),
+            IconOutlinedButton(
+              iconData: KIcons.refresh,
+              text: "Clear preferences",
               onPressed: () async {
                 if (await showConfirmationDialog(context,
-                        title: "Reset preferences?",
-                        body: Text(
-                          "All preferences will be reset to the default value.",
+                        title: "Clear preferences?",
+                        body: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              "All preferences will be reset to the default value.",
+                            ),
+                            SizedBox(height: 8.0),
+                            Text("Pi-hole configurations are unaffected."),
+                          ],
                         )) ==
                     true) {
                   ref.read(UserPreferencesNotifier.provider.notifier).clear();

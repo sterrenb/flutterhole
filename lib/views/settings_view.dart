@@ -90,6 +90,7 @@ class SettingsView extends HookConsumerWidget {
                 ],
               )),
               const PreferenceButtonTile(),
+              const SizedBox(height: 20.0),
             ]),
           ],
         ),
