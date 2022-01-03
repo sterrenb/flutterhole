@@ -347,7 +347,7 @@ class _AuthenticationStatusButton extends HookConsumerWidget {
                       color: Colors.green,
                     ),
                 error: (e, s) => Icon(
-                      KIcons.error,
+                      KIcons.failure,
                       size: leadingSize,
                       color: Colors.red,
                     ),
