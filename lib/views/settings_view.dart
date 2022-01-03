@@ -36,7 +36,7 @@ class SettingsView extends HookConsumerWidget {
         child: ListView(
           children: [
             ListTile(
-              title: Text("About"),
+              title: const Text("About"),
               onTap: () {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => const AboutView()));
@@ -57,7 +57,7 @@ class SettingsView extends HookConsumerWidget {
             ),
             const Divider(),
             AppSection(
-              title: "Pi-holes",
+              title: "My Pi-holes",
               children: [
                 const PiSelectList(
                   shrinkWrap: true,
@@ -65,10 +65,10 @@ class SettingsView extends HookConsumerWidget {
                 const SizedBox(height: 20.0),
                 AppWrap(
                   children: [
-                    IconOutlinedButton(
-                      iconData: KIcons.add,
+                    OutlinedButton.icon(
+                      icon: const Icon(KIcons.add),
                       onPressed: () {},
-                      text: "New Pi-hole",
+                      label: const Text('New Pi-hole'),
                     ),
                   ],
                 ),

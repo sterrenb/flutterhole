@@ -37,11 +37,22 @@ class AboutView extends HookConsumerWidget {
         child: ListView(
           children: [
             const SizedBox(height: 10),
-            const ListTile(
-              title: Text('FlutterHole for Pi-Hole®'),
-              subtitle: Text('Made by tster.nl'),
-              trailing: SizedBox(
-                // roughly center the logo with the `licences button`
+            ListTile(
+              title: const Text('FlutterHole for Pi-Hole®'),
+              subtitle: Row(
+                children: [
+                  const Text('Made by '),
+                  Text(
+                    'tster.nl',
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.primary),
+                  ),
+                ],
+              ),
+              onTap: () {
+                WebService.launchUrlInBrowser(KUrls.developerHomeUrl);
+              },
+              trailing: const SizedBox(
                 width: 56.0,
                 child: Center(child: LogoIcon()),
               ),

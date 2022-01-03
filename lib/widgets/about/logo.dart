@@ -11,37 +11,33 @@ class LogoIcon extends HookConsumerWidget {
     final count = useState(0);
     final devMode = ref.watch(devModeProvider);
     const max = 10;
-    return SizedBox(
-      width: 56.0,
-      child: Ink.image(
-        image: const AssetImage('assets/icon/icon.png'),
-        child: InkWell(
-          onTap: () {
-            ScaffoldMessenger.of(context).clearSnackBars();
 
-            if (devMode) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('You are already a developer.'),
-              ));
-              return;
-            }
-
-            count.value = count.value + 1;
-            if (count.value >= max) {
-              ref
-                  .read(UserPreferencesNotifier.provider.notifier)
-                  .toggleDevMode();
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('You are now a developer!'),
-              ));
-            } else if (count.value >= max ~/ 2) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("Tap ${max - count.value} more times..."),
-              ));
-            }
-          },
-        ),
+    return InkWell(
+      child: const Image(
+        image: AssetImage('assets/logo/icon.png'),
       ),
+      onTap: () {
+        ScaffoldMessenger.of(context).clearSnackBars();
+
+        if (devMode) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('You are already a developer.'),
+          ));
+          return;
+        }
+
+        count.value = count.value + 1;
+        if (count.value >= max) {
+          ref.read(UserPreferencesNotifier.provider.notifier).toggleDevMode();
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('You are now a developer!'),
+          ));
+        } else if (count.value >= max ~/ 2) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Tap ${max - count.value} more times..."),
+          ));
+        }
+      },
     );
   }
 }

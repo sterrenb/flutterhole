@@ -29,10 +29,10 @@ class PreferenceButtonTile extends HookConsumerWidget {
             ),
             IconOutlinedButton(
               iconData: KIcons.refresh,
-              text: "Clear preferences",
+              text: "Reset preferences",
               onPressed: () async {
                 if (await showConfirmationDialog(context,
-                        title: "Clear preferences?",
+                        title: "Reset preferences?",
                         body: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,

@@ -182,17 +182,17 @@ class ButtonIconShowcase extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: enabled ? () {} : null,
           icon: const Icon(Icons.add),
-          label: const Text('Elevated icon'),
+          label: const Text('Elevated logo'),
         ),
         OutlinedButton.icon(
           onPressed: enabled ? () {} : null,
           icon: const Icon(Icons.add),
-          label: const Text('Outlined icon'),
+          label: const Text('Outlined logo'),
         ),
         TextButton.icon(
           onPressed: enabled ? () {} : null,
           icon: const Icon(Icons.add),
-          label: const Text('Text icon'),
+          label: const Text('Text logo'),
         ),
       ],
     );
@@ -242,17 +242,17 @@ class LegacyButtonIconShowcase extends StatelessWidget {
         RaisedButton.icon(
           onPressed: enabled ? () {} : null,
           icon: const Icon(Icons.add),
-          label: const Text('Raised icon'),
+          label: const Text('Raised logo'),
         ),
         OutlineButton.icon(
           onPressed: enabled ? () {} : null,
           icon: const Icon(Icons.add),
-          label: const Text('Outline icon'),
+          label: const Text('Outline logo'),
         ),
         FlatButton.icon(
           onPressed: enabled ? () {} : null,
           icon: const Icon(Icons.add),
-          label: const Text('Flat icon'),
+          label: const Text('Flat logo'),
         ),
       ],
     );

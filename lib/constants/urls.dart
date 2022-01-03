@@ -10,6 +10,7 @@ class KUrls {
   static const String piholeCommunity = 'https://www.reddit.com/r/pihole/';
   static const String githubHomeUrl =
       'https://github.com/sterrenburg/flutterhole/';
+  static const String developerHomeUrl = 'https://tster.nl';
   static const String githubIssuesUrl =
       'https://github.com/sterrenburg/flutterhole/issues/new/choose';
   static const String logoDesignerUrl = 'https://mathijssterrenburg.com/';
