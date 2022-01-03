@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class DemoDashboard extends HookWidget {
@@ -54,12 +53,6 @@ class _ColorThemeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final t = Theme.of(context);
-    final colors = [
-      t.colorScheme.primary,
-      t.colorScheme.secondary,
-      t.cardColor,
-    ];
     return _ColorCard(
       duration: duration,
       colors: [

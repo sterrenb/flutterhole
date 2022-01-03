@@ -12,8 +12,8 @@ class ThemeShowcaseButton extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
-      title: Text("Theme Showcase"),
-      trailing: Icon(KIcons.openDialog),
+      title: const Text("Theme Showcase"),
+      trailing: const Icon(KIcons.openDialog),
       onTap: () {
         showModal(
             context: context,
@@ -21,11 +21,11 @@ class ThemeShowcaseButton extends HookConsumerWidget {
               return Material(
                 child: Scaffold(
                   appBar: AppBar(
-                    title: Text("Showcase"),
+                    title: const Text("Showcase"),
                   ),
-                  body: MobileMaxWidth(
+                  body: const MobileMaxWidth(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(8.0),
                       child: SingleChildScrollView(
                         child: ThemeShowcase(),
                       ),
@@ -210,15 +210,15 @@ class LegacyButtonShowcase extends StatelessWidget {
       spacing: 8,
       runSpacing: 4,
       children: <Widget>[
-        RaisedButton(
+        ElevatedButton(
           onPressed: enabled ? () {} : null,
           child: const Text('Raised button'),
         ),
-        OutlineButton(
+        OutlinedButton(
           onPressed: enabled ? () {} : null,
           child: const Text('Outline button'),
         ),
-        FlatButton(
+        TextButton(
           onPressed: enabled ? () {} : null,
           child: const Text('Flat button'),
         ),
@@ -239,17 +239,17 @@ class LegacyButtonIconShowcase extends StatelessWidget {
       spacing: 8,
       runSpacing: 4,
       children: <Widget>[
-        RaisedButton.icon(
+        ElevatedButton.icon(
           onPressed: enabled ? () {} : null,
           icon: const Icon(Icons.add),
           label: const Text('Raised logo'),
         ),
-        OutlineButton.icon(
+        OutlinedButton.icon(
           onPressed: enabled ? () {} : null,
           icon: const Icon(Icons.add),
           label: const Text('Outline logo'),
         ),
-        FlatButton.icon(
+        TextButton.icon(
           onPressed: enabled ? () {} : null,
           icon: const Icon(Icons.add),
           label: const Text('Flat logo'),

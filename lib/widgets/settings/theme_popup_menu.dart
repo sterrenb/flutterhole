@@ -12,22 +12,20 @@ class ThemePopupMenu extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bool isLight = Theme.of(context).brightness == Brightness.light;
     final usedSchemeData = ref.watch(flexSchemeDataProvider);
     return PopupMenuButton<FlexScheme>(
       tooltip: "Select theme",
       onSelected: (value) {
-        print(value);
         ref
             .read(UserPreferencesNotifier.provider.notifier)
             .setFlexScheme(value);
       },
       child: Tooltip(
         message: kIsWeb ? "" : usedSchemeData.description,
-        showDuration: Duration(seconds: 3),
+        showDuration: const Duration(seconds: 3),
         child: ListTile(
-          leading: Icon(KIcons.theme),
-          title: Text("Theme"),
+          leading: const Icon(KIcons.theme),
+          title: const Text("Theme"),
           subtitle: Text(usedSchemeData.name),
           trailing: PrimaryColorIcon(flexSchemeData: usedSchemeData),
         ),
@@ -39,7 +37,7 @@ class ThemePopupMenu extends HookConsumerWidget {
                   child: ListTile(
                     leading: PrimaryColorIcon(flexSchemeData: e.value),
                     trailing: (usedSchemeData.name == e.value.name)
-                        ? Icon(KIcons.selected)
+                        ? const Icon(KIcons.selected)
                         : null,
                     title: Text(e.value.name),
                   ),

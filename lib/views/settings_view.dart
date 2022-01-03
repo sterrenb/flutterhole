@@ -13,7 +13,6 @@ import 'package:flutterhole/widgets/settings/pi_select_list.dart';
 import 'package:flutterhole/widgets/settings/preference_button_tile.dart';
 import 'package:flutterhole/widgets/settings/theme_popup_menu.dart';
 import 'package:flutterhole/widgets/settings/update_frequency_button.dart';
-import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/double_back_to_close_app.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutterhole/widgets/developer/theme_showcase.dart';

@@ -1,14 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/services/settings_service.dart';
-import 'package:flutterhole/views/about_view.dart';
 import 'package:flutterhole/views/onboarding_view.dart';
-import 'package:flutterhole/views/settings_view.dart';
-import 'package:flutterhole/views/single_pi_edit_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'models/settings_models.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

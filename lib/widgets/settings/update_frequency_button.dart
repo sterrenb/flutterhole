@@ -57,8 +57,8 @@ class UpdateFrequencyDialog extends HookConsumerWidget {
         body: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("The time between automatic updates on the dashboard."),
-            SizedBox(height: 16.0),
+            const Text("The time between automatic updates on the dashboard."),
+            const SizedBox(height: 16.0),
             Slider(
               value: state.value,
               min: min.toDouble(),

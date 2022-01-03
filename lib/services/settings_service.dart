@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -37,7 +36,7 @@ class SettingsService {
 }
 
 final activePiProvider = Provider<Pi>((ref) {
-  return Pi();
+  return const Pi();
 });
 
 final sharedPreferencesProvider = FutureProvider<SharedPreferences>(
@@ -141,7 +140,6 @@ final updateFrequencyProvider = Provider<int>((ref) {
 
 final flexSchemeDataProvider = Provider<FlexSchemeData>((ref) {
   final flexScheme = ref.watch(flexSchemeProvider);
-  print("active scheme: " + FlexColor.schemes[flexScheme]!.name);
   return FlexColor.schemes[flexScheme]!;
 });
 
@@ -158,6 +156,6 @@ final darkThemeProvider = Provider<ThemeData>((ref) {
   return FlexThemeData.dark(
     scheme: flexScheme,
     useSubThemes: true,
-    subThemesData: FlexSubThemesData(),
+    subThemesData: const FlexSubThemesData(),
   );
 });

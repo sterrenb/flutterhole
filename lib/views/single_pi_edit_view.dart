@@ -7,7 +7,6 @@ import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/services/settings_service.dart';
-import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
@@ -467,9 +466,7 @@ class _BaseUrlField extends StatelessWidget {
     return PiTextField(
       controller: controller,
       iconData: KIcons.totalQueries,
-      style:
-          // Theme.of(context).textTheme.headline6!.merge(GoogleFonts.firaMono()),
-          GoogleFonts.firaMono(),
+      style: GoogleFonts.firaMono(),
       labelStyle: Theme.of(context).textTheme.headline6,
       keyboardType: TextInputType.url,
       textCapitalization: TextCapitalization.none,
@@ -492,9 +489,7 @@ class _ApiPathField extends StatelessWidget {
   Widget build(BuildContext context) {
     return PiTextField(
       controller: controller,
-      style:
-          // Theme.of(context).textTheme.headline6!.merge(GoogleFonts.firaMono()),
-          GoogleFonts.firaMono(),
+      style: GoogleFonts.firaMono(),
       labelStyle: Theme.of(context).textTheme.headline6,
       keyboardType: TextInputType.url,
       textCapitalization: TextCapitalization.none,
@@ -519,9 +514,7 @@ class _ApiTokenField extends HookConsumerWidget {
     final show = useState(false);
     return PiTextField(
         controller: controller,
-        style:
-            // Theme.of(context).textTheme.headline6!.merge(GoogleFonts.firaMono()),
-            GoogleFonts.firaMono(),
+        style: GoogleFonts.firaMono(),
         labelStyle: Theme.of(context).textTheme.headline6,
         keyboardType: TextInputType.visiblePassword,
         textCapitalization: TextCapitalization.none,
@@ -530,10 +523,6 @@ class _ApiTokenField extends HookConsumerWidget {
         iconData: KIcons.apiToken,
         obscureText: !show.value,
         maxLines: 1,
-        // expands: show.value,
-        // obscureText: false,
-        // expands: true,
-        // maxLines: 2,
         inputFormatters: [Formatting.whitespaceFormatter],
         suffixIcon: Padding(
           padding: const EdgeInsets.only(right: 8.0),

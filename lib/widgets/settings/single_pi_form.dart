@@ -272,24 +272,13 @@ class UseSslCard extends StatelessWidget {
     return Card(
       child: Row(
         children: [
-          Text('Use SSL'),
+          const Text('Use SSL'),
           Checkbox(
             value: useSsl,
             onChanged: onChanged,
           ),
         ],
       ),
-    );
-
-    return DoublePiGridCard(
-      left: const Center(child: Text('Use SSL')),
-      right: Center(
-        child: Checkbox(
-          value: useSsl,
-          onChanged: onChanged,
-        ),
-      ),
-      onTap: onTap,
     );
   }
 }

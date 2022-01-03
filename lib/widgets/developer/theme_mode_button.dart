@@ -33,7 +33,7 @@ class ThemeModeButton extends HookConsumerWidget {
             leading: CenteredLeading(
               child: Icon(themeModeIcons[themeMode]),
             ),
-            title: Text("Theme Mode"),
+            title: const Text("Theme Mode"),
             subtitle: Text(themeModeMessage[themeMode]!),
           ),
         ),

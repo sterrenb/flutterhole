@@ -66,7 +66,7 @@ final forwardDestinationsProvider = FutureProvider.autoDispose
   final pihole = ref.watch(piholeProvider(params));
   final cancelToken = CancelToken();
   if (kDebugMode) {
-    await Future.delayed(Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 200));
   }
   ref.onDispose(() => cancelToken.cancel());
   return pihole.fetchForwardDestinations(cancelToken);

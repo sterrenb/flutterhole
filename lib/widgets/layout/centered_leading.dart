@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'animations.dart';
-
 class CenteredLeading extends StatelessWidget {
   const CenteredLeading({Key? key, required this.child}) : super(key: key);
 

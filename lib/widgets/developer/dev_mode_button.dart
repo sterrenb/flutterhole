@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

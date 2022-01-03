@@ -14,7 +14,7 @@ class ThemeToggleButton extends HookConsumerWidget {
     return CheckboxListTile(
         title: const Text('Show theme toggle'),
         subtitle: const Text('Enables the theme toggle on most pages.'),
-        secondary: CenteredLeading(child: const Icon(KIcons.toggle)),
+        secondary: const CenteredLeading(child: Icon(KIcons.toggle)),
         value: showThemeToggle,
         onChanged: (value) => ref
             .read(UserPreferencesNotifier.provider.notifier)

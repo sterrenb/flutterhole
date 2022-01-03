@@ -33,7 +33,7 @@ class AppVersionListTile extends HookConsumerWidget {
                 data: (info) => () => showAppDetailsDialog(context, info),
                 orElse: () => null,
               ),
-              child: Text('Licences'))
+              child: const Text('Licences'))
           : null,
     );
   }

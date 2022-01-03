@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
-import 'package:pihole_api/pihole_api.dart';
 
 Future<bool?> showConfirmationDialog(
   BuildContext context, {

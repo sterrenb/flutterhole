@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole/constants/urls.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';

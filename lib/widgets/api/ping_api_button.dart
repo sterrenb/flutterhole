@@ -21,7 +21,7 @@ class PingApiButton extends HookConsumerWidget {
     final ping = ref.watch(activePingProvider);
 
     return ListTile(
-      title: Text("Pi-hole status"),
+      title: const Text("Pi-hole status"),
       onTap: ping.maybeWhen(
           error: (e, s) => () {
                 showModal(
@@ -58,7 +58,7 @@ class PingApiButton extends HookConsumerWidget {
               KIcons.error,
               color: Theme.of(context).colorScheme.error,
             ),
-            loading: () => LoadingIndicator(),
+            loading: () => const LoadingIndicator(),
           ),
         ),
       ),
@@ -66,11 +66,10 @@ class PingApiButton extends HookConsumerWidget {
         onPressed: ping.maybeWhen(
           loading: () => null,
           orElse: () => () {
-            print('pinging');
             ref.refresh(pingProvider(params));
           },
         ),
-        child: Text("Refresh"),
+        child: const Text("Refresh"),
       ),
     );
   }
