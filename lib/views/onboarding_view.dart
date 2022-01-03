@@ -52,6 +52,12 @@ class OnboardingCarousel extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pageController = usePageController();
+    final pagePosition = useState(0.0);
+    useEffect(() {
+      pageController.addListener(() {
+        pagePosition.value = pageController.page ?? 0.0;
+      });
+    }, [pageController]);
 
     final descriptionStyle = Theme.of(context).textTheme.headline5;
     final codeStyle = descriptionStyle?.merge(
@@ -69,9 +75,24 @@ class OnboardingCarousel extends HookConsumerWidget {
       );
     }
 
+    void animateToNextPage() {
+      print(pageController.page);
+      if ((pageController.page ?? 4) < 3) {}
+
+      pageController.nextPage(
+        curve: Curves.easeOutCubic,
+        duration: kThemeAnimationDuration * 2,
+      );
+    }
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
+        Center(
+          child: Text(pagePosition.value < 2
+              ? 'Go the other way!'
+              : 'Time to get Started!'),
+        ),
         PageView(
           scrollBehavior: _WebScrollBehavior(),
           controller: pageController,
@@ -112,8 +133,7 @@ class OnboardingCarousel extends HookConsumerWidget {
                       Text('disable', style: codeStyle),
                       Text(' and ', style: descriptionStyle),
                       Text('sleep', style: codeStyle),
-                      Tooltip(
-                        triggerMode: TooltipTriggerMode.tap,
+                      _TooltipDirect(
                         message:
                             '🔐 API token required for full functionality!',
                         child: Row(
@@ -164,8 +184,8 @@ class OnboardingCarousel extends HookConsumerWidget {
                 alignment: WrapAlignment.center,
                 children: [
                   Text('Inspect and triage all ', style: descriptionStyle),
-                  Tooltip(
-                      message: 'Domain Name System',
+                  _TooltipDirect(
+                      message: '🗄️ Domain Name System',
                       child: Text('DNS', style: codeStyle)),
                   Text(' requests.', style: descriptionStyle),
                 ],
@@ -243,19 +263,14 @@ class OnboardingCarousel extends HookConsumerWidget {
                     child: Visibility(
                       visible: isInitialPage,
                       child: OutlinedButton(
-                        child: const Text('Skip '),
-                        onPressed: () async {
-                          if (kDebugMode) {
-                            // context.router.replace(const HomeRoute());
-                            // return;
+                          child: const Text('Next'),
+                          onPressed: () {
+                            animateToNextPage();
                           }
-                          // Navigator.of(context).push(MaterialPageRoute(
-                          //     builder: (context) => SignInPage()));
-                        },
-                        // onPressed: () => ExtendedNavigator.of(context)
-                        //     .pushSignInPage(
-                        //         startingIndex: SignInStartingIndex.signUp),
-                      ),
+                          // onPressed: () => ExtendedNavigator.of(context)
+                          //     .pushSignInPage(
+                          //         startingIndex: SignInStartingIndex.signUp),
+                          ),
                     ),
                   ),
                   Expanded(
@@ -318,19 +333,22 @@ class _Page extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      minimum: const EdgeInsets.all(20.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          const Spacer(),
-          Expanded(child: leading),
-          const SizedBox(height: 60),
-          title,
-          const SizedBox(height: 20),
-          description,
-          const Spacer(),
-        ],
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: SafeArea(
+        minimum: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            const Spacer(),
+            Expanded(child: leading),
+            const SizedBox(height: 60),
+            title,
+            const SizedBox(height: 20),
+            description,
+            const Spacer(),
+          ],
+        ),
       ),
     );
   }
@@ -350,6 +368,26 @@ class _PageDescription extends StatelessWidget {
       description,
       style: Theme.of(context).textTheme.headline5,
       textAlign: TextAlign.center,
+    );
+  }
+}
+
+class _TooltipDirect extends StatelessWidget {
+  const _TooltipDirect({
+    Key? key,
+    required this.message,
+    required this.child,
+  }) : super(key: key);
+
+  final Widget child;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      triggerMode: TooltipTriggerMode.tap,
+      message: message,
+      child: child,
     );
   }
 }
