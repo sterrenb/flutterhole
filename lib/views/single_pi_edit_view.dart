@@ -109,7 +109,7 @@ class SinglePiEditView extends HookConsumerWidget {
               const SizedBox(height: 20.0),
               _ApiPathField(apiPathController),
               const SizedBox(height: 20.0),
-              PageWrap(
+              AppWrap(
                 children: [
                   _ApiStatusButton(params: params),
                   UrlOutlinedButton(
@@ -128,7 +128,7 @@ class SinglePiEditView extends HookConsumerWidget {
               const SizedBox(height: 20.0),
               _ApiTokenField(apiTokenController),
               const SizedBox(height: 20.0),
-              PageWrap(
+              AppWrap(
                 children: [
                   _AuthenticationStatusButton(params: params),
                   IconOutlinedButton(

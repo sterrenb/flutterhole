@@ -2,13 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
-import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/widgets/api/ping_api_button.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
-import 'package:flutterhole/widgets/layout/list_title.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/settings/pi_select_list.dart';
 import 'package:flutterhole/widgets/settings/preference_button_tile.dart';
@@ -37,7 +35,7 @@ class SettingsView extends HookConsumerWidget {
         child: ListView(
           children: [
             const PingApiButton(),
-            const _SettingsSection(
+            const AppSection(
               title: "Customization",
               children: [
                 ThemePopupMenu(),
@@ -50,14 +48,14 @@ class SettingsView extends HookConsumerWidget {
               ],
             ),
             const Divider(),
-            _SettingsSection(
+            AppSection(
               title: "Pi-holes",
               children: [
-                PiSelectList(
+                const PiSelectList(
                   shrinkWrap: true,
                 ),
-                SizedBox(height: 20.0),
-                PageWrap(
+                const SizedBox(height: 20.0),
+                AppWrap(
                   children: [
                     IconOutlinedButton(
                       iconData: KIcons.add,
@@ -66,11 +64,11 @@ class SettingsView extends HookConsumerWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
               ],
             ),
             const Divider(),
-            _SettingsSection(title: "Danger zone", children: [
+            AppSection(title: "Danger zone", children: [
               const DevModeButton(),
               DevWidget(
                   child: Column(
@@ -95,27 +93,6 @@ class SettingsView extends HookConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _SettingsSection extends StatelessWidget {
-  const _SettingsSection({
-    Key? key,
-    required this.title,
-    required this.children,
-  }) : super(key: key);
-
-  final String title;
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTitle(title),
-        ...children,
-      ],
     );
   }
 }

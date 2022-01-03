@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+import 'list_title.dart';
+
 const double kGridSpacing = 4.0;
 
 class PageGrid extends StatelessWidget {
@@ -184,8 +186,8 @@ class DoublePiGridCard extends StatelessWidget {
   }
 }
 
-class PageWrap extends StatelessWidget {
-  const PageWrap({
+class AppWrap extends StatelessWidget {
+  const AppWrap({
     Key? key,
     required this.children,
   }) : super(key: key);
@@ -198,6 +200,27 @@ class PageWrap extends StatelessWidget {
       spacing: 8.0,
       runSpacing: 8.0,
       children: children,
+    );
+  }
+}
+
+class AppSection extends StatelessWidget {
+  const AppSection({
+    Key? key,
+    required this.title,
+    required this.children,
+  }) : super(key: key);
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTitle(title),
+        ...children,
+      ],
     );
   }
 }
