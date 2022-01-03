@@ -1,15 +1,20 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
+import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/widgets/api/ping_api_button.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
+import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
+import 'package:flutterhole/widgets/settings/pi_select_list.dart';
 import 'package:flutterhole/widgets/settings/preference_button_tile.dart';
 import 'package:flutterhole/widgets/settings/theme_popup_menu.dart';
 import 'package:flutterhole/widgets/settings/update_frequency_button.dart';
+import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutterhole/widgets/developer/theme_showcase.dart';
 import 'package:flutterhole/widgets/developer/dev_mode_button.dart';
@@ -42,6 +47,26 @@ class SettingsView extends HookConsumerWidget {
                 ),
                 TemperatureButton(),
                 UpdateFrequencyButton(),
+              ],
+            ),
+            const Divider(),
+            _SettingsSection(
+              title: "Pi-holes",
+              children: [
+                PiSelectList(
+                  shrinkWrap: true,
+                ),
+                SizedBox(height: 20.0),
+                PageWrap(
+                  children: [
+                    IconOutlinedButton(
+                      iconData: KIcons.add,
+                      onPressed: () {},
+                      text: "New Pi-hole",
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20.0),
               ],
             ),
             const Divider(),

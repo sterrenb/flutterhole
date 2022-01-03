@@ -12,9 +12,11 @@ import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/settings/qr_scan.dart';
 import 'package:flutterhole/widgets/settings/single_pi_form.dart';
+import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -107,10 +109,7 @@ class SinglePiEditView extends HookConsumerWidget {
               const SizedBox(height: 20.0),
               _ApiPathField(apiPathController),
               const SizedBox(height: 20.0),
-              Wrap(
-                // alignment: WrapAlignment.center,
-                spacing: 8.0,
-                runSpacing: 8.0,
+              PageWrap(
                 children: [
                   _ApiStatusButton(params: params),
                   UrlOutlinedButton(
@@ -129,13 +128,12 @@ class SinglePiEditView extends HookConsumerWidget {
               const SizedBox(height: 20.0),
               _ApiTokenField(apiTokenController),
               const SizedBox(height: 20.0),
-              Wrap(
-                // alignment: WrapAlignment.spaceEvenly,
-                spacing: 8.0,
-                runSpacing: 8.0,
+              PageWrap(
                 children: [
                   _AuthenticationStatusButton(params: params),
-                  OutlinedButton(
+                  IconOutlinedButton(
+                    iconData: KIcons.qrCode,
+                    text: "Scan QR code",
                     onPressed: () async {
                       final barcode = await showModal<String>(
                         context: context,
@@ -149,20 +147,14 @@ class SinglePiEditView extends HookConsumerWidget {
                         apiTokenController.text = barcode;
                       }
                     },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(KIcons.qrCode),
-                        SizedBox(width: 8.0),
-                        Text("Scan QR code"),
-                      ],
-                    ),
                   ),
                   UrlOutlinedButton(
                     url: params.adminUrl + "/scripts/pi-hole/php/api_token.php",
                     text: "Token page",
                   ),
-                  OutlinedButton(
+                  IconOutlinedButton(
+                    text: "Share token",
+                    iconData: KIcons.qrShare,
                     onPressed: pi.value.apiToken.isEmpty
                         ? null
                         : () async {
@@ -200,14 +192,6 @@ class SinglePiEditView extends HookConsumerWidget {
                               },
                             );
                           },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(KIcons.qrShare),
-                        SizedBox(width: 8.0),
-                        Text("Share token"),
-                      ],
-                    ),
                   ),
                   CheckboxListTile(
                     title: const Text("Allow self-signed certificates"),
@@ -292,6 +276,8 @@ class _ApiStatusButton extends HookConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const Text("API status"),
+          const SizedBox(width: 8.0),
           AnimatedFader(
             child: status.when(
                 data: (st) => Icon(
@@ -312,8 +298,6 @@ class _ApiStatusButton extends HookConsumerWidget {
                       ),
                     )),
           ),
-          const SizedBox(width: 8.0),
-          const Text("API status"),
         ],
       ),
     );
@@ -353,6 +337,8 @@ class _AuthenticationStatusButton extends HookConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const Text("Auth status"),
+          const SizedBox(width: 8.0),
           AnimatedFader(
             child: status.when(
                 data: (st) => Icon(
@@ -373,40 +359,7 @@ class _AuthenticationStatusButton extends HookConsumerWidget {
                       ),
                     )),
           ),
-          const SizedBox(width: 8.0),
-          const Text("Auth status"),
         ],
-      ),
-    );
-  }
-}
-
-class UrlOutlinedButton extends StatelessWidget {
-  const UrlOutlinedButton({Key? key, required this.url, this.text})
-      : super(key: key);
-
-  final String url;
-  final String? text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: url,
-      child: OutlinedButton(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              KIcons.openUrl,
-              size: Theme.of(context).textTheme.bodyText2!.fontSize!,
-            ),
-            const SizedBox(width: 8.0),
-            Text(text ?? url),
-          ],
-        ),
-        onPressed: () {
-          WebService.launchUrlInBrowser(url);
-        },
       ),
     );
   }

@@ -183,3 +183,21 @@ class DoublePiGridCard extends StatelessWidget {
     );
   }
 }
+
+class PageWrap extends StatelessWidget {
+  const PageWrap({
+    Key? key,
+    required this.children,
+  }) : super(key: key);
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8.0,
+      runSpacing: 8.0,
+      children: children,
+    );
+  }
+}

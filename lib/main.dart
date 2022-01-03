@@ -35,11 +35,13 @@ class MyApp extends HookConsumerWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
-      home: const SinglePiEditView(
-        initialValue: Pi(
-            apiToken:
-                String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: "")),
-      ),
+      home: kDebugMode
+          ? const SettingsView()
+          : const SinglePiEditView(
+              initialValue: Pi(
+                  apiToken: String.fromEnvironment("PIHOLE_API_TOKEN",
+                      defaultValue: "")),
+            ),
     );
   }
 }
