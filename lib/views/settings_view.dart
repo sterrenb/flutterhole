@@ -32,75 +32,73 @@ class SettingsView extends HookConsumerWidget {
         title: const Text("Settings"),
         centerTitle: kIsWeb,
       ),
-      body: DoubleBackToCloseApp(
-        child: MobileMaxWidth(
-          child: ListView(
-            children: [
-              ListTile(
-                title: const Text("About"),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const AboutView()));
-                },
-              ),
-              const PingApiButton(),
-              const AppSection(
-                title: "Customization",
+      body: MobileMaxWidth(
+        child: ListView(
+          children: [
+            ListTile(
+              title: const Text("About"),
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const AboutView()));
+              },
+            ),
+            const PingApiButton(),
+            const AppSection(
+              title: "Customization",
+              children: [
+                ThemePopupMenu(),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: ListTile(title: ThemeModeButton()),
+                ),
+                TemperatureButton(),
+                UpdateFrequencyButton(),
+              ],
+            ),
+            const Divider(),
+            AppSection(
+              title: "My Pi-holes",
+              children: [
+                const PiSelectList(
+                  shrinkWrap: true,
+                ),
+                const SizedBox(height: 20.0),
+                AppWrap(
+                  children: [
+                    OutlinedButton.icon(
+                      icon: const Icon(KIcons.add),
+                      onPressed: () {},
+                      label: const Text('New Pi-hole'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20.0),
+              ],
+            ),
+            const Divider(),
+            AppSection(title: "Danger zone", children: [
+              const DevModeButton(),
+              DevWidget(
+                  child: Column(
                 children: [
-                  ThemePopupMenu(),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: ListTile(title: ThemeModeButton()),
-                  ),
-                  TemperatureButton(),
-                  UpdateFrequencyButton(),
-                ],
-              ),
-              const Divider(),
-              AppSection(
-                title: "My Pi-holes",
-                children: [
-                  const PiSelectList(
-                    shrinkWrap: true,
-                  ),
-                  const SizedBox(height: 20.0),
-                  AppWrap(
+                  const LogLevelButton(),
+                  const ThemeToggleButton(),
+                  Row(
                     children: [
-                      OutlinedButton.icon(
-                        icon: const Icon(KIcons.add),
-                        onPressed: () {},
-                        label: const Text('New Pi-hole'),
+                      Expanded(
+                        child: CodeCard(Formatting.jsonToCode(ref
+                            .watch(UserPreferencesNotifier.provider)
+                            .toJson())),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20.0),
+                  const ThemeShowcaseButton(),
                 ],
-              ),
-              const Divider(),
-              AppSection(title: "Danger zone", children: [
-                const DevModeButton(),
-                DevWidget(
-                    child: Column(
-                  children: [
-                    const LogLevelButton(),
-                    const ThemeToggleButton(),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CodeCard(Formatting.jsonToCode(ref
-                              .watch(UserPreferencesNotifier.provider)
-                              .toJson())),
-                        ),
-                      ],
-                    ),
-                    const ThemeShowcaseButton(),
-                  ],
-                )),
-                const PreferenceButtonTile(),
-                const SizedBox(height: 20.0),
-              ]),
-            ],
-          ),
+              )),
+              const PreferenceButtonTile(),
+              const SizedBox(height: 20.0),
+            ]),
+          ],
         ),
       ),
     );
