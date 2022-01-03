@@ -4,6 +4,7 @@ import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/constants/urls.dart';
 import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final _markdownProvider = FutureProvider<String>((ref) async {
@@ -29,15 +30,17 @@ class PrivacyView extends HookConsumerWidget {
           ),
         ],
       ),
-      body: markdownValue.when(
-        data: (markdown) => Markdown(
-          data: markdown,
-          selectable: true,
+      body: MobileMaxWidth(
+        child: markdownValue.when(
+          data: (markdown) => Markdown(
+            data: markdown,
+            selectable: true,
+          ),
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          ),
+          error: (e, s) => CenteredErrorMessage(e, s),
         ),
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
-        error: (e, s) => CenteredErrorMessage(e, s),
       ),
     );
   }
