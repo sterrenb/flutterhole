@@ -14,7 +14,7 @@ class LogoIcon extends HookConsumerWidget {
 
     return InkWell(
       child: const Image(
-        image: AssetImage('assets/logo/images.png'),
+        image: AssetImage('assets/logo/logo.png'),
       ),
       onTap: () {
         ScaffoldMessenger.of(context).clearSnackBars();
