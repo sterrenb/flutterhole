@@ -126,7 +126,8 @@ class PercentBlockedTile extends HookConsumerWidget {
       callback: (summary) => summary.adsPercentageToday,
       builder: (context, value) {
         return DashboardFittedTile(
-          cardColor: Colors.red.shade300,
+          // cardColor: Colors.red.shade300,
+          // cardColor: Theme.of(context).colorScheme.primary,
           title: DashboardID.percentBlocked.toReadable(),
           text: value != null ? value.toStringAsFixed(2) + '%' : null,
           showLoadingIndicator: sum.isLoading(),
@@ -183,7 +184,7 @@ class DashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        elevation: 5.0,
+        // elevation: 5.0,
         color: cardColor,
         child: InkWell(
           onTap: onTap,

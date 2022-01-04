@@ -114,6 +114,7 @@ class LeftRightScaffold extends StatelessWidget {
               child: isBig
                   ? Row(
                       mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(child: left),

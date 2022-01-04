@@ -86,10 +86,13 @@ class DashboardEditView extends HookConsumerWidget {
           entries.value = list;
         },
       ),
-      right: SingleChildScrollView(
-          child: DashboardGrid(
-        entries: entries.value,
-      )),
+      right: Container(
+        color: Theme.of(context).colorScheme.secondary.withOpacity(.1),
+        child: SingleChildScrollView(
+            child: DashboardGrid(
+          entries: entries.value,
+        )),
+      ),
     );
   }
 }
