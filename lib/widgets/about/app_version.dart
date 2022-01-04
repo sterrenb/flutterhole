@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/constants/urls.dart';
 import 'package:flutterhole/services/web_service.dart';
+import 'package:flutterhole/widgets/layout/grids.dart';
+import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -13,11 +15,9 @@ class AppVersionListTile extends HookConsumerWidget {
   const AppVersionListTile({
     Key? key,
     this.title = 'App version',
-    this.showLicences = true,
   }) : super(key: key);
 
   final String title;
-  final bool showLicences;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,14 +27,20 @@ class AppVersionListTile extends HookConsumerWidget {
       title: Text(title),
       // subtitle: Text('${packageInfo.toString()}'),
       subtitle: const PackageVersionText(),
-      trailing: showLicences
-          ? OutlinedButton(
+      trailing: AppWrap(
+        children: [
+          const UrlOutlinedButton(
+            url: KUrls.githubHomeUrl,
+            text: 'GitHub',
+          ),
+          OutlinedButton(
               onPressed: packageInfo.maybeWhen(
                 data: (info) => () => showAppDetailsDialog(context, info),
                 orElse: () => null,
               ),
-              child: const Text('Licences'))
-          : null,
+              child: const Text('Licences')),
+        ],
+      ),
     );
   }
 }

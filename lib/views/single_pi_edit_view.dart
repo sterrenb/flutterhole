@@ -24,6 +24,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pihole_api/pihole_api.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import 'dashboard_edit_view.dart';
+
 final _paramsProvider = Provider.family<PiholeRepositoryParams, Pi>((ref, pi) {
   return PiholeRepositoryParams(
     dio: Dio(BaseOptions(baseUrl: pi.baseUrl)),
@@ -105,6 +107,18 @@ class SinglePiEditView extends HookConsumerWidget {
               padding: const EdgeInsets.all(24.0),
               children: [
                 _PiTitleField(titleController),
+                AppWrap(children: [
+                  IconOutlinedButton(
+                    iconData: KIcons.dashboard,
+                    text: "Manage dashboard",
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const DashboardEditView(),
+                        fullscreenDialog: true,
+                      ));
+                    },
+                  ),
+                ]),
                 const SizedBox(height: 20.0),
                 const Divider(),
                 const GridSectionHeader("Host", KIcons.host),

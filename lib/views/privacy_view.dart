@@ -35,6 +35,11 @@ class PrivacyView extends HookConsumerWidget {
           data: (markdown) => Markdown(
             data: markdown,
             selectable: true,
+            onTapLink: (text, href, title) {
+              if (href != null && href.isNotEmpty) {
+                WebService.launchUrlInBrowser(href);
+              }
+            },
           ),
           loading: () => const Center(
             child: CircularProgressIndicator(),

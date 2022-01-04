@@ -7,10 +7,11 @@ import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/privacy_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/about/app_version.dart';
-import 'package:flutterhole/widgets/about/logo.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
+import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/images.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -46,18 +47,18 @@ class AboutView extends HookConsumerWidget {
                 children: [
                   const Text('Made by '),
                   Text(
-                    'tster.nl',
+                    'TSter',
                     style:
                         TextStyle(color: Theme.of(context).colorScheme.primary),
                   ),
                 ],
               ),
-              onTap: () {
-                WebService.launchUrlInBrowser(KUrls.developerHomeUrl);
-              },
+              // onTap: () {
+              //   WebService.launchUrlInBrowser(KUrls.developerHomeUrl);
+              // },
               trailing: const SizedBox(
-                width: 56.0,
-                child: Center(child: LogoIcon()),
+                width: 56,
+                child: Center(child: LogoImage()),
               ),
             ),
             // const Divider(),
@@ -91,7 +92,7 @@ class AboutView extends HookConsumerWidget {
             ListTile(
               leading: const Icon(KIcons.bugReport),
               title: const Text('Submit a bug report'),
-              trailing: const Icon(KIcons.push),
+              trailing: const Icon(KIcons.openUrl),
               onTap: () {
                 WebService.launchUrlInBrowser(KUrls.githubIssuesUrl);
               },
@@ -100,15 +101,15 @@ class AboutView extends HookConsumerWidget {
               leading: const Icon(KIcons.community),
               title: Row(
                 children: [
-                  const Text('Ask '),
+                  const Text('Support from '),
                   Text(
-                    '/r/pihole',
+                    '/r/pihole/',
                     style: GoogleFonts.firaMono(),
                   ),
-                  const Text(' on Reddit'),
+                  // const Text(' on Reddit'),
                 ],
               ),
-              trailing: const Icon(KIcons.push),
+              trailing: const Icon(KIcons.openUrl),
               onTap: () {
                 WebService.launchUrlInBrowser(KUrls.piholeCommunity);
               },
@@ -127,15 +128,7 @@ class AboutView extends HookConsumerWidget {
                 }
               },
             ),
-            ListTile(
-              leading: Opacity(
-                opacity: context.isLight ? 0.5 : 1.0,
-                child: const GithubImage(width: 24.0),
-              ),
-              title: const Text('Star on GitHub'),
-              trailing: const Icon(KIcons.push),
-              onTap: () => WebService.launchUrlInBrowser(KUrls.githubHomeUrl),
-            ),
+
             ListTile(
               leading: const Icon(KIcons.donate),
               title: const Text('Donate'),
@@ -150,39 +143,41 @@ class AboutView extends HookConsumerWidget {
                         body: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const Text(
+                          children: const [
+                            Text(
                                 'Your donation supports the development of this free app.'),
-                            const SizedBox(height: 8.0),
-                            const Text('Thank you in advance! 💰'),
-                            const SizedBox(height: 8.0),
-                            ListTile(
-                              title: const Text('Paypal'),
-                              trailing: const Icon(KIcons.push),
-                              onTap: () {
-                                WebService.launchUrlInBrowser(KUrls.payPalUrl);
-                              },
-                            ),
-                            ListTile(
-                              title: const Text('Ko-fi'),
-                              trailing: const Icon(KIcons.push),
-                              onTap: () {
-                                WebService.launchUrlInBrowser(KUrls.koFiUrl);
-                              },
-                            ),
-                            ListTile(
-                              title: const Text('GitHub'),
-                              trailing: const Icon(KIcons.push),
-                              onTap: () {
-                                WebService.launchUrlInBrowser(
-                                    KUrls.githubSponsor);
-                              },
-                            ),
+                            SizedBox(height: 8.0),
+                            Text('Thank you in advance!'),
+                            SizedBox(height: 24.0),
+                            AppWrap(children: [
+                              UrlOutlinedButton(
+                                url: KUrls.payPalUrl,
+                                text: 'Paypal',
+                              ),
+                              UrlOutlinedButton(
+                                url: KUrls.githubHomeUrl,
+                                text: 'GitHub',
+                              ),
+                              UrlOutlinedButton(
+                                url: KUrls.koFiUrl,
+                                text: 'Ko-fi',
+                              ),
+                            ]),
+                            SizedBox(height: 24.0),
                           ],
                         ),
                       );
                     });
               },
+            ),
+            ListTile(
+              leading: Opacity(
+                opacity: context.isLight ? 0.5 : 1.0,
+                child: const GithubImage(width: 24.0),
+              ),
+              title: const Text('Star on GitHub'),
+              trailing: const Icon(KIcons.openUrl),
+              onTap: () => WebService.launchUrlInBrowser(KUrls.githubHomeUrl),
             ),
             const Divider(),
             const ListTitle('Other'),
@@ -198,7 +193,7 @@ class AboutView extends HookConsumerWidget {
             ListTile(
               leading: const Icon(KIcons.playStore),
               title: const Text('Visit the Google Play page'),
-              trailing: const Icon(KIcons.push),
+              trailing: const Icon(KIcons.openUrl),
               onTap: () {
                 WebService.launchUrlInBrowser(KUrls.playStoreUrl);
               },
@@ -206,7 +201,7 @@ class AboutView extends HookConsumerWidget {
             ListTile(
               leading: const Icon(KIcons.pihole),
               title: const Text('Visit the Pi-hole website'),
-              trailing: const Icon(KIcons.push),
+              trailing: const Icon(KIcons.openUrl),
               onTap: () {
                 WebService.launchUrlInBrowser(KUrls.piHomeUrl);
               },

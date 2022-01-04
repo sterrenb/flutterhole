@@ -41,14 +41,14 @@ class DashboardGrid extends HookConsumerWidget {
                   count: (cross, main) => StaggeredGridTile.count(
                       crossAxisCellCount: cross,
                       mainAxisCellCount: main,
-                      child: EntryTileBuilder(entry: entry)),
+                      child: DashboardEntryTileBuilder(entry: entry)),
                   extent: (cross, extent) => StaggeredGridTile.extent(
                       crossAxisCellCount: cross,
                       mainAxisExtent: extent,
-                      child: EntryTileBuilder(entry: entry)),
+                      child: DashboardEntryTileBuilder(entry: entry)),
                   fit: (cross) => StaggeredGridTile.fit(
                       crossAxisCellCount: cross,
-                      child: EntryTileBuilder(entry: entry)),
+                      child: DashboardEntryTileBuilder(entry: entry)),
                 ))
             .toList(),
       );

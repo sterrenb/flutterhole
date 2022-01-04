@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/services/settings_service.dart';
+import 'package:flutterhole/views/about_view.dart';
 import 'package:flutterhole/views/dashboard_edit_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +33,7 @@ class MyApp extends HookConsumerWidget {
       darkTheme: darkTheme,
       themeMode: themeMode,
       showSemanticsDebugger: false,
-      home: const DashboardEditView(),
+      home: const AboutView(),
     );
   }
 }

@@ -8,8 +8,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pihole_api/pihole_api.dart';
 
-class EntryTileBuilder extends StatelessWidget {
-  const EntryTileBuilder({
+class DashboardEntryTileBuilder extends StatelessWidget {
+  const DashboardEntryTileBuilder({
     Key? key,
     required this.entry,
   }) : super(key: key);

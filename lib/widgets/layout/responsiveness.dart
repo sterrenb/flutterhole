@@ -51,12 +51,15 @@ class _Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: foregroundColor ?? Theme.of(context).scaffoldBackgroundColor,
-      constraints: const BoxConstraints(
-        maxWidth: 800.0,
-      ),
-      child: child,
+    return Material(
+      color: foregroundColor,
+      // color: foregroundColor ?? Theme.of(context).scaffoldBackgroundColor,
+
+      child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 800.0,
+          ),
+          child: child),
     );
   }
 }
