@@ -171,6 +171,7 @@ class DashboardCard extends StatelessWidget {
     this.showTitle = true,
     this.showLoadingIndicator = false,
     this.onTap,
+    this.textColor,
     this.cardColor,
   }) : super(key: key);
 
@@ -179,6 +180,7 @@ class DashboardCard extends StatelessWidget {
   final bool showTitle;
   final bool showLoadingIndicator;
   final VoidCallback? onTap;
+  final Color? textColor;
   final Color? cardColor;
 
   @override
@@ -200,7 +202,10 @@ class DashboardCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           title,
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              ?.copyWith(color: textColor),
                           maxLines: 3,
                         ),
                       ),
@@ -234,6 +239,7 @@ class DashboardFittedTile extends StatelessWidget {
     this.text,
     this.showLoadingIndicator = false,
     this.onTap,
+    this.textColor,
     this.cardColor,
   }) : super(key: key);
 
@@ -241,6 +247,7 @@ class DashboardFittedTile extends StatelessWidget {
   final String? text;
   final bool showLoadingIndicator;
   final VoidCallback? onTap;
+  final Color? textColor;
   final Color? cardColor;
 
   @override
@@ -248,6 +255,7 @@ class DashboardFittedTile extends StatelessWidget {
     return DashboardCard(
       title: title,
       onTap: onTap,
+      textColor: textColor ?? Theme.of(context).colorScheme.primary,
       cardColor: cardColor,
       showLoadingIndicator: showLoadingIndicator,
       content: FittedText(text: text ?? '-'),
@@ -270,7 +278,9 @@ class FittedText extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Text(
           text,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

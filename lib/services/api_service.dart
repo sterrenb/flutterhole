@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutterhole/services/api_repository_demo.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
@@ -21,25 +22,16 @@ final activePiholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
   );
 });
 
-// final piholeProvider = Provider<PiholeRepository>((ref) {
-//   return PiholeRepositoryDio(ref.watch(piholeParamsProvider));
-// });
-
-final piholeProvider = Provider.autoDispose
-    .family<PiholeRepository, PiholeRepositoryParams>((ref, params) {
+final piholeProvider =
+    Provider.family<PiholeRepository, PiholeRepositoryParams>((ref, params) {
+  if (params.baseUrl.contains('example.com')) {
+    return PiholeRepositoryDemo(params);
+  }
   return PiholeRepositoryDio(params);
 });
 
-int i = 0;
-
 final pingProvider = FutureProvider.autoDispose
     .family<PiholeStatus, PiholeRepositoryParams>((ref, params) async {
-  // i++;
-  if (i % 2 == 1) {
-    await Future.delayed(const Duration(seconds: 1));
-    throw const PiholeApiFailure.notAuthenticated();
-  }
-
   final pihole = ref.watch(piholeProvider(params));
   final cancelToken = CancelToken();
   ref.onDispose(() => cancelToken.cancel());

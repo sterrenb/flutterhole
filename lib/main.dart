@@ -31,6 +31,7 @@ class MyApp extends HookConsumerWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
+      showSemanticsDebugger: false,
       home: const DashboardEditView(),
     );
   }

@@ -7,7 +7,9 @@ import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/services/settings_service.dart';
+import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
+import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
@@ -72,169 +74,175 @@ class SinglePiEditView extends HookConsumerWidget {
       });
     }, [apiTokenController]);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Editing ${initialValue.title}"),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const SettingsView()));
-              },
-              icon: const Icon(KIcons.settings)),
-          IconButton(
-              tooltip: "Save",
-              onPressed: () {
-                final pi = ref.read(activePiProvider);
-                debugPrint(pi.toJson().toString());
-              },
-              icon: const Icon(KIcons.save)),
-        ],
-      ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: MobileMaxWidth(
-          child: ListView(
-            padding: const EdgeInsets.all(24.0),
-            children: [
-              _PiTitleField(titleController),
-              const SizedBox(height: 20.0),
-              const Divider(),
-              const GridSectionHeader("Host", KIcons.host),
-              const SizedBox(height: 20.0),
-              _BaseUrlField(baseUrlController),
-              const SizedBox(height: 20.0),
-              _ApiPathField(apiPathController),
-              const SizedBox(height: 20.0),
-              AppWrap(
-                children: [
-                  _ApiStatusButton(params: params),
-                  UrlOutlinedButton(
-                    url: Formatting.piToAdminUrl(pi.value),
-                    text: "Admin page",
-                  ),
-                  UrlOutlinedButton(
-                    url: params.apiUrl,
-                    text: "API base",
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20.0),
-              const Divider(),
-              const GridSectionHeader('Authentication', KIcons.authentication),
-              const SizedBox(height: 20.0),
-              _ApiTokenField(apiTokenController),
-              const SizedBox(height: 20.0),
-              AppWrap(
-                children: [
-                  _AuthenticationStatusButton(params: params),
-                  IconOutlinedButton(
-                    iconData: KIcons.qrCode,
-                    text: "Scan QR code",
-                    onPressed: () async {
-                      final barcode = await showModal<String>(
-                        context: context,
-                        builder: (context) {
-                          return const QrScanDialog();
-                        },
-                      );
-
-                      if (barcode != null) {
-                        pi.value = pi.value.copyWith(apiToken: barcode);
-                        apiTokenController.text = barcode;
-                      }
-                    },
-                  ),
-                  UrlOutlinedButton(
-                    url: params.adminUrl + "/scripts/pi-hole/php/api_token.php",
-                    text: "Token page",
-                  ),
-                  IconOutlinedButton(
-                    text: "Share token",
-                    iconData: KIcons.qrShare,
-                    onPressed: pi.value.apiToken.isEmpty
-                        ? null
-                        : () async {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                final size =
-                                    ((MediaQuery.of(context).size.width / 5) *
-                                            3)
-                                        .clamp(200.0, 500.0);
-                                return AlertDialog(
-                                  // backgroundColor: Colors.white,
-                                  // title: Center(child: Text("API token")),
-                                  // titlePadding: EdgeInsets.all(16.0),
-                                  titleTextStyle:
-                                      Theme.of(context).textTheme.headline4,
-                                  contentPadding: EdgeInsets.zero,
-                                  content: Container(
-                                    width: size,
-                                    color: Colors.white,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        QrImage(
-                                          // backgroundColor: Colors.white,
-                                          data: pi.value.apiToken,
-                                          version: QrVersions.auto,
-                                          size: size,
-                                        ),
-                                        CodeCard(pi.value.apiToken),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
+    return BaseView(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Editing ${initialValue.title}"),
+          actions: [
+            DevWidget(
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const SettingsView()));
+                  },
+                  icon: const Icon(KIcons.settings)),
+            ),
+            IconButton(
+                tooltip: "Save",
+                onPressed: () {
+                  final pi = ref.read(activePiProvider);
+                  debugPrint(pi.toJson().toString());
+                },
+                icon: const Icon(KIcons.save)),
+          ],
+        ),
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: MobileMaxWidth(
+            child: ListView(
+              padding: const EdgeInsets.all(24.0),
+              children: [
+                _PiTitleField(titleController),
+                const SizedBox(height: 20.0),
+                const Divider(),
+                const GridSectionHeader("Host", KIcons.host),
+                const SizedBox(height: 20.0),
+                _BaseUrlField(baseUrlController),
+                const SizedBox(height: 20.0),
+                _ApiPathField(apiPathController),
+                const SizedBox(height: 20.0),
+                AppWrap(
+                  children: [
+                    _ApiStatusButton(params: params),
+                    UrlOutlinedButton(
+                      url: Formatting.piToAdminUrl(pi.value),
+                      text: "Admin page",
+                    ),
+                    UrlOutlinedButton(
+                      url: params.apiUrl,
+                      text: "API base",
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20.0),
+                const Divider(),
+                const GridSectionHeader(
+                    'Authentication', KIcons.authentication),
+                const SizedBox(height: 20.0),
+                _ApiTokenField(apiTokenController),
+                const SizedBox(height: 20.0),
+                AppWrap(
+                  children: [
+                    _AuthenticationStatusButton(params: params),
+                    IconOutlinedButton(
+                      iconData: KIcons.qrCode,
+                      text: "Scan QR code",
+                      onPressed: () async {
+                        final barcode = await showModal<String>(
+                          context: context,
+                          builder: (context) {
+                            return const QrScanDialog();
                           },
-                  ),
-                  CheckboxListTile(
-                    title: const Text("Allow self-signed certificates"),
-                    subtitle: const Text(
-                        "Trust all certificates, even when the TLS handshake fails."),
-                    value: pi.value.allowSelfSignedCertificates,
-                    onChanged: (value) {
-                      pi.value = pi.value.copyWith(
-                          allowSelfSignedCertificates: value ?? false);
-                    },
-                  ),
-                  CheckboxListTile(
-                    title: const Text("Skip authentication"),
-                    subtitle: const Text(
-                        "Use the default token. Only useful if your Pi-hole does not have an API token."),
-                    value: !pi.value.apiTokenRequired,
-                    onChanged: (value) {
-                      if (value != null) {
-                        value = !value;
-                      }
-                      pi.value =
-                          pi.value.copyWith(apiTokenRequired: value ?? true);
-                    },
-                  ),
-                  CodeCard(pi.value.toJson().toString()),
-                ],
-              ),
-              // Row(
-              //   children: [
-              //     Expanded(child: _ApiTokenField(apiTokenController)),
-              //     const SizedBox(width: 8.0),
-              //     OutlinedButton(
-              //       onPressed: () {},
-              //       child: Row(
-              //         children: const [
-              //           Icon(KIcons.qrCode),
-              //           SizedBox(width: 8.0),
-              //           Text("Scan QR code"),
-              //         ],
-              //       ),
-              //     ),
-              //   ],
-              // ),
-            ],
+                        );
+
+                        if (barcode != null) {
+                          pi.value = pi.value.copyWith(apiToken: barcode);
+                          apiTokenController.text = barcode;
+                        }
+                      },
+                    ),
+                    UrlOutlinedButton(
+                      url: params.adminUrl +
+                          "/scripts/pi-hole/php/api_token.php",
+                      text: "Token page",
+                    ),
+                    IconOutlinedButton(
+                      text: "Share token",
+                      iconData: KIcons.qrShare,
+                      onPressed: pi.value.apiToken.isEmpty
+                          ? null
+                          : () async {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  final size =
+                                      ((MediaQuery.of(context).size.width / 5) *
+                                              3)
+                                          .clamp(200.0, 500.0);
+                                  return AlertDialog(
+                                    // backgroundColor: Colors.white,
+                                    // title: Center(child: Text("API token")),
+                                    // titlePadding: EdgeInsets.all(16.0),
+                                    titleTextStyle:
+                                        Theme.of(context).textTheme.headline4,
+                                    contentPadding: EdgeInsets.zero,
+                                    content: Container(
+                                      width: size,
+                                      color: Colors.white,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          QrImage(
+                                            // backgroundColor: Colors.white,
+                                            data: pi.value.apiToken,
+                                            version: QrVersions.auto,
+                                            size: size,
+                                          ),
+                                          CodeCard(pi.value.apiToken),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                    ),
+                    CheckboxListTile(
+                      title: const Text("Allow self-signed certificates"),
+                      subtitle: const Text(
+                          "Trust all certificates, even when the TLS handshake fails."),
+                      value: pi.value.allowSelfSignedCertificates,
+                      onChanged: (value) {
+                        pi.value = pi.value.copyWith(
+                            allowSelfSignedCertificates: value ?? false);
+                      },
+                    ),
+                    CheckboxListTile(
+                      title: const Text("Skip authentication"),
+                      subtitle: const Text(
+                          "Use the default token. Only useful if your Pi-hole does not have an API token."),
+                      value: !pi.value.apiTokenRequired,
+                      onChanged: (value) {
+                        if (value != null) {
+                          value = !value;
+                        }
+                        pi.value =
+                            pi.value.copyWith(apiTokenRequired: value ?? true);
+                      },
+                    ),
+                    // CodeCard(pi.value.toJson().toString()),
+                  ],
+                ),
+                // Row(
+                //   children: [
+                //     Expanded(child: _ApiTokenField(apiTokenController)),
+                //     const SizedBox(width: 8.0),
+                //     OutlinedButton(
+                //       onPressed: () {},
+                //       child: Row(
+                //         children: const [
+                //           Icon(KIcons.qrCode),
+                //           SizedBox(width: 8.0),
+                //           Text("Scan QR code"),
+                //         ],
+                //       ),
+                //     ),
+                //   ],
+                // ),
+              ],
+            ),
           ),
         ),
       ),
@@ -368,12 +376,12 @@ class PiTextField extends StatelessWidget {
   const PiTextField({
     Key? key,
     required this.controller,
-    required this.iconData,
     required this.style,
     required this.textCapitalization,
     required this.labelText,
-    this.labelStyle,
     required this.hintText,
+    this.labelStyle,
+    this.iconData,
     this.keyboardType,
     this.prefixText,
     this.inputFormatters,
@@ -384,7 +392,7 @@ class PiTextField extends StatelessWidget {
   }) : super(key: key);
 
   final TextEditingController controller;
-  final IconData iconData;
+  final IconData? iconData;
   final TextStyle style;
   final String labelText;
   final TextStyle? labelStyle;
@@ -411,15 +419,17 @@ class PiTextField extends StatelessWidget {
       inputFormatters: inputFormatters,
       obscureText: obscureText,
       decoration: InputDecoration(
-        prefixIcon: Padding(
-          padding: EdgeInsets.only(
-            top: style.fontSize ?? 8.0,
-            left: style.fontSize ?? 8.0 + 8.0,
-            right: style.fontSize ?? 8.0,
-            bottom: style.fontSize ?? 8.0,
-          ),
-          child: Icon(iconData),
-        ),
+        prefixIcon: iconData == null
+            ? null
+            : Padding(
+                padding: EdgeInsets.only(
+                  top: style.fontSize ?? 8.0,
+                  left: style.fontSize ?? 8.0 + 8.0,
+                  right: style.fontSize ?? 8.0,
+                  bottom: style.fontSize ?? 8.0,
+                ),
+                child: Icon(iconData),
+              ),
         labelText: labelText,
         labelStyle: labelStyle,
         floatingLabelBehavior: FloatingLabelBehavior.always,

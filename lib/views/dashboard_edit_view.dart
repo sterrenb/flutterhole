@@ -4,6 +4,7 @@ import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
+import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/dashboard/dashboard_grid.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
@@ -21,86 +22,91 @@ class DashboardEditView extends HookConsumerWidget {
     final pi = ref.watch(activePiProvider);
     final entries = useState(pi.dashboard);
 
-    return LeftRightScaffold(
-      title: Row(
-        mainAxisAlignment:
-            kIsWeb ? MainAxisAlignment.center : MainAxisAlignment.start,
-        children: [
-          Text(
-            pi.title,
-            overflow: TextOverflow.fade,
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-          ),
-          Text(' Dashboard'),
-        ],
-      ),
-      actions: [
-        PopupMenuButton<String>(
-          onSelected: (selected) {
-            if (selected == 'Enable all') {
-              entries.value =
-                  entries.value.map((e) => e.copyWith(enabled: true)).toList();
-            } else if (selected == 'Disable all') {
-              entries.value =
-                  entries.value.map((e) => e.copyWith(enabled: false)).toList();
-            } else if (selected == 'Use defaults') {
-              entries.value = DashboardEntry.all;
-            }
-          },
-          itemBuilder: (context) => [
-            'Enable all',
-            'Disable all',
-            'Use defaults',
-          ]
-              .map((choice) =>
-                  PopupMenuItem<String>(value: choice, child: Text(choice)))
-              .toList(),
+    return BaseView(
+      child: LeftRightScaffold(
+        title: Row(
+          mainAxisAlignment:
+              kIsWeb ? MainAxisAlignment.center : MainAxisAlignment.start,
+          children: [
+            Text(
+              pi.title,
+              overflow: TextOverflow.fade,
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            ),
+            Text(' Dashboard'),
+          ],
         ),
-        IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const SettingsView()));
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (selected) {
+              if (selected == 'Enable all') {
+                entries.value = entries.value
+                    .map((e) => e.copyWith(enabled: true))
+                    .toList();
+              } else if (selected == 'Disable all') {
+                entries.value = entries.value
+                    .map((e) => e.copyWith(enabled: false))
+                    .toList();
+              } else if (selected == 'Use defaults') {
+                entries.value = DashboardEntry.all;
+              }
             },
-            icon: const Icon(KIcons.settings)),
-      ],
-      tabs: const [
-        Tab(icon: Icon(KIcons.tileList)),
-        Tab(icon: Icon(KIcons.dashboard)),
-      ],
-      left: ReorderableListView.builder(
-        itemCount: entries.value.length,
-        itemBuilder: (context, index) {
-          final entry = entries.value.elementAt(index);
-          return _Tile(
-            key: Key(entry.id.name),
-            index: index,
-            entry: entry,
-            onToggle: () {
-              final list = List<DashboardEntry>.from(entries.value);
-              list[index] = list
-                  .elementAt(index)
-                  .copyWith(enabled: !list.elementAt(index).enabled);
-              entries.value = list;
-            },
-          );
-        },
-        onReorder: (from, to) {
-          if (from < to) {
-            to -= 1;
-          }
+            itemBuilder: (context) => [
+              'Enable all',
+              'Disable all',
+              'Use defaults',
+            ]
+                .map((choice) =>
+                    PopupMenuItem<String>(value: choice, child: Text(choice)))
+                .toList(),
+          ),
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const SettingsView()));
+              },
+              icon: const Icon(KIcons.settings)),
+        ],
+        tabs: const [
+          Tab(icon: Icon(KIcons.tileList)),
+          Tab(icon: Icon(KIcons.dashboard)),
+        ],
+        left: ReorderableListView.builder(
+          itemCount: entries.value.length,
+          itemBuilder: (context, index) {
+            final entry = entries.value.elementAt(index);
+            return _Tile(
+              key: Key(entry.id.name),
+              index: index,
+              entry: entry,
+              onToggle: () {
+                final list = List<DashboardEntry>.from(entries.value);
+                list[index] = list
+                    .elementAt(index)
+                    .copyWith(enabled: !list.elementAt(index).enabled);
+                entries.value = list;
+              },
+            );
+          },
+          onReorder: (from, to) {
+            if (from < to) {
+              to -= 1;
+            }
 
-          final list = List<DashboardEntry>.from(entries.value, growable: true);
-          final item = list.removeAt(from);
-          list.insert(to, item);
-          entries.value = list;
-        },
-      ),
-      right: Container(
-        color: Theme.of(context).colorScheme.secondary.withOpacity(.1),
-        child: SingleChildScrollView(
-            child: DashboardGrid(
-          entries: entries.value,
-        )),
+            final list =
+                List<DashboardEntry>.from(entries.value, growable: true);
+            final item = list.removeAt(from);
+            list.insert(to, item);
+            entries.value = list;
+          },
+        ),
+        right: Container(
+          color: Theme.of(context).colorScheme.secondary.withOpacity(.1),
+          child: SingleChildScrollView(
+              child: DashboardGrid(
+            entries: entries.value,
+          )),
+        ),
       ),
     );
   }
@@ -141,7 +147,7 @@ class _Tile extends StatelessWidget {
                   ?.merge(GoogleFonts.firaMono()),
             ),
             Tooltip(
-              message: (entry.enabled ? 'Disable' : 'Enable') + ' visibility',
+              message: entry.enabled ? 'Disable' : 'Enable',
               child: Checkbox(
                 value: entry.enabled,
                 onChanged: (_) {

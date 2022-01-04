@@ -37,7 +37,8 @@ class SettingsService {
 
 final activePiProvider = Provider<Pi>((ref) {
   return const Pi(
-      title: 'Home',
+      title: 'Demo',
+      baseUrl: 'http://example.com',
       apiToken: String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""));
 });
 

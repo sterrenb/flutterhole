@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/models/settings_models.dart';
+import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/single_pi_edit_view.dart';
+import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -14,16 +17,13 @@ class PiSelectList extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const pis = [
-      Pi(baseUrl: "http://pi.hole"),
-      Pi(
-        title: "Home",
-        baseUrl: "http://10.0.1.5",
-        apiToken: String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""),
-      ),
-      Pi(title: "Secure", baseUrl: "https://10.0.1.5"),
-      Pi(title: "Pub", baseUrl: "http://pub.dev", adminHome: ""),
-      Pi(
+    final activePi = ref.watch(activePiProvider);
+    final pis = [
+      activePi,
+      const Pi(baseUrl: "http://pi.hole"),
+      const Pi(title: "Secure", baseUrl: "https://10.0.1.5"),
+      const Pi(title: "Pub", baseUrl: "http://pub.dev", adminHome: ""),
+      const Pi(
           title: "Package",
           baseUrl: "https://pub.dev",
           adminHome: "/packages/pihole_api"),
@@ -34,8 +34,12 @@ class PiSelectList extends HookConsumerWidget {
       itemBuilder: (context, index) {
         final pi = pis.elementAt(index);
         return ListTile(
-          title: Text(pi.title),
           minVerticalPadding: 16.0,
+          title: Text(pi.title),
+          leading: AnimatedOpacity(
+              opacity: pi == activePi ? 1 : 0,
+              duration: kThemeChangeDuration,
+              child: const Icon(KIcons.selected)),
           trailing: UrlOutlinedButton(
             url: pi.baseUrl + pi.adminHome,
             text: pi.baseUrl
