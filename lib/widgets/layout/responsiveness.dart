@@ -101,16 +101,16 @@ class LeftRightScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: title,
-          bottom: TabBar(tabs: tabs),
-          actions: actions,
-        ),
-        body: BreakpointBuilder(builder: (context, isBig) {
-          return AnimatedFader(
+    return BreakpointBuilder(builder: (context, isBig) {
+      return DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            title: title,
+            bottom: isBig ? null : TabBar(tabs: tabs),
+            actions: actions,
+          ),
+          body: AnimatedFader(
               child: isBig
                   ? Row(
                       mainAxisSize: MainAxisSize.max,
@@ -130,9 +130,9 @@ class LeftRightScaffold extends StatelessWidget {
                         left,
                         right,
                       ],
-                    ));
-        }),
-      ),
-    );
+                    )),
+        ),
+      );
+    });
   }
 }

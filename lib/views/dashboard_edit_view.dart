@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
@@ -21,9 +22,17 @@ class DashboardEditView extends HookConsumerWidget {
     final entries = useState(pi.dashboard);
 
     return LeftRightScaffold(
-      title: Text(
-        'Select tiles for ${pi.title}',
-        overflow: TextOverflow.fade,
+      title: Row(
+        mainAxisAlignment:
+            kIsWeb ? MainAxisAlignment.center : MainAxisAlignment.start,
+        children: [
+          Text(
+            pi.title,
+            overflow: TextOverflow.fade,
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          ),
+          Text(' Dashboard'),
+        ],
       ),
       actions: [
         PopupMenuButton<String>(
