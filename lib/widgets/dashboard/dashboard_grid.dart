@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -20,7 +19,7 @@ class DashboardGrid extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final enabledEntries = useMemoized(
       () {
-        return entries.where((entry) => entry.enabled);
+        return entries.where((entry) => entry.enabled).toList();
       },
       [entries],
     );

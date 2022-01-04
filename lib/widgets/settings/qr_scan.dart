@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QrScanDialog extends StatefulWidget {

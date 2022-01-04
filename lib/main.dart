@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole/constants/icons.dart';
-import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/dashboard_edit_view.dart';
-import 'package:flutterhole/views/onboarding_view.dart';
-import 'package:flutterhole/views/settings_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

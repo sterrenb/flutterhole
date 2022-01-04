@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
@@ -57,7 +56,17 @@ final summaryProvider = FutureProvider.autoDispose
   final pihole = ref.watch(piholeProvider(params));
   final cancelToken = CancelToken();
   ref.onDispose(() => cancelToken.cancel());
+
+  if (kDebugMode) {
+    await Future.delayed(const Duration(milliseconds: 200));
+  }
+
   return pihole.fetchSummary(cancelToken);
+});
+
+final activeSummaryProvider =
+    Provider.autoDispose<AsyncValue<PiSummary>>((ref) {
+  return ref.watch(summaryProvider(ref.watch(activePiholeParamsProvider)));
 });
 
 final forwardDestinationsProvider = FutureProvider.autoDispose

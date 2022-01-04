@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutterhole/models/settings_models.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 const JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
+final _numberFormat = NumberFormat();
 
 class Formatting {
   static String logLevelToString(LogLevel l) => {
@@ -51,6 +53,7 @@ class Formatting {
   }
 
   static String piToApiUrl(Pi pi) => pi.baseUrl + "/" + pi.apiPath;
+
   static String piToAdminUrl(Pi pi) => pi.baseUrl + pi.adminHome;
 
   static String piholeStatusToString(PiholeStatus status) => status.when(
@@ -61,6 +64,17 @@ class Formatting {
 
   static final whitespaceFormatter =
       FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'));
+}
+
+extension Numx on num {
+  toFormatted() => _numberFormat.format(this);
+}
+
+extension AsyncValueX on AsyncValue {
+  bool isLoading() => maybeWhen(
+        loading: () => true,
+        orElse: () => false,
+      );
 }
 
 extension DashboardIDX on DashboardID {

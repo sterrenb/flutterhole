@@ -83,19 +83,19 @@ class DashboardEntry with _$DashboardEntry {
     DashboardEntry(
         id: DashboardID.totalQueries,
         enabled: true,
-        constraints: DashboardTileConstraints.count(2, 2)),
+        constraints: DashboardTileConstraints.count(2, 1)),
     DashboardEntry(
         id: DashboardID.queriesBlocked,
         enabled: true,
-        constraints: DashboardTileConstraints.count(2, 2)),
+        constraints: DashboardTileConstraints.count(2, 1)),
     DashboardEntry(
         id: DashboardID.percentBlocked,
         enabled: true,
-        constraints: DashboardTileConstraints.count(2, 2)),
+        constraints: DashboardTileConstraints.count(2, 1)),
     DashboardEntry(
         id: DashboardID.domainsOnBlocklist,
         enabled: true,
-        constraints: DashboardTileConstraints.count(2, 2)),
+        constraints: DashboardTileConstraints.count(2, 1)),
     DashboardEntry(
         id: DashboardID.versions,
         enabled: true,
