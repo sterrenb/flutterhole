@@ -19,27 +19,38 @@ enum LogLevel {
   error,
 }
 
-const defaultPiholes = [
-  Pi(
-    title: 'Demo',
-    baseUrl: 'http://example.com',
-    apiToken: String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""),
-  ),
-  Pi(
-    title: 'Home',
-    baseUrl: 'http://pi.hole',
-    apiToken: String.fromEnvironment('PIHOLE_API_TOKEN', defaultValue: ''),
-  ),
-  Pi(
-    title: 'Secure',
-    baseUrl: 'https://10.0.1.5',
-  ),
-  Pi(title: 'Pub', baseUrl: 'http://pub.dev', adminHome: ''),
-  Pi(
-      title: ('This one has very long name, but it should still work.'),
-      baseUrl: 'https://pub.dev',
-      adminHome: '/packages/pihole_api'),
-];
+const defaultPiholes = kDebugMode
+    ? [
+        Pi(
+          title: 'Demo',
+          baseUrl: 'http://example.com',
+          apiToken:
+              String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""),
+        ),
+        Pi(
+          title: 'Home',
+          baseUrl: 'http://pi.hole',
+          apiToken:
+              String.fromEnvironment('PIHOLE_API_TOKEN', defaultValue: ''),
+        ),
+        Pi(
+          title: 'Secure',
+          baseUrl: 'https://10.0.1.5',
+        ),
+        Pi(title: 'Pub', baseUrl: 'http://pub.dev', adminHome: ''),
+        Pi(
+            title: ('This one has very long name, but it should still work.'),
+            baseUrl: 'https://pub.dev',
+            adminHome: '/packages/pihole_api'),
+      ]
+    : [
+        Pi(
+          title: 'Demo',
+          baseUrl: 'http://example.com',
+          apiToken:
+              String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""),
+        )
+      ];
 
 @freezed
 class UserPreferences with _$UserPreferences {
@@ -129,7 +140,7 @@ class DashboardEntry with _$DashboardEntry {
         constraints: DashboardTileConstraints.count(1, 1)),
     DashboardEntry(
         id: DashboardID.topPermittedDomains,
-        enabled: false,
+        enabled: true,
         constraints: DashboardTileConstraints.count(3, 1)),
   ];
 }
@@ -144,7 +155,7 @@ class Pi with _$Pi {
     @Default("http://10.0.1.5") String baseUrl,
     @Default("/admin/api.php") String apiPath,
     @Default(true) bool apiTokenRequired,
-    @Default("token") String apiToken,
+    @Default("") String apiToken,
     @Default(false) bool allowSelfSignedCertificates,
     @Default("/admin") String adminHome,
     @Default(DashboardEntry.all) List<DashboardEntry> dashboard,
@@ -152,6 +163,6 @@ class Pi with _$Pi {
 
   factory Pi.fromJson(Map<String, dynamic> json) => _$PiFromJson(json);
 
-  // late final String apiUrl = '$baseUrl$apiPath';
-  // late final String adminUrl = '$baseUrl$adminHome';
+// late final String apiUrl = '$baseUrl$apiPath';
+// late final String adminUrl = '$baseUrl$adminHome';
 }

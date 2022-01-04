@@ -15,6 +15,7 @@ import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
+import 'package:flutterhole/widgets/settings/delete_pihole_button.dart';
 import 'package:flutterhole/widgets/settings/qr_scan.dart';
 import 'package:flutterhole/widgets/settings/single_pi_form.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
@@ -122,7 +123,7 @@ class SinglePiEditView extends HookConsumerWidget {
                     url: Formatting.piToAdminUrl(newPi.value),
                     text: 'Admin page',
                   ),
-                  DeletePiholeButton(pihole: oldPi),
+                  DeletePiholeButton(pi: oldPi),
                 ]),
                 const SizedBox(height: 20.0),
                 const Divider(),
@@ -260,47 +261,6 @@ class SinglePiEditView extends HookConsumerWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class DeletePiholeButton extends HookConsumerWidget {
-  const DeletePiholeButton({
-    Key? key,
-    required this.pihole,
-  }) : super(key: key);
-
-  final Pi pihole;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final piholes = ref.read(allPiholesProvider);
-    return Visibility(
-      visible: piholes.length > 1 && piholes.contains(pihole),
-      child: IconOutlinedButton(
-        iconData: KIcons.delete,
-        text: 'Delete',
-        color: Theme.of(context).colorScheme.error,
-        onPressed: () async {
-          if (kDebugMode ||
-              await showConfirmationDialog(context,
-                      title: "Delete Pi-hole configuration?",
-                      body: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text("This action cannot be undone."),
-                        ],
-                      )) ==
-                  true) {
-            ref
-                .read(UserPreferencesNotifier.provider.notifier)
-                .deletePihole(pihole);
-            Navigator.of(context).pop();
-          }
-        },
       ),
     );
   }

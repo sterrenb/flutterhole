@@ -38,6 +38,7 @@ class DashboardEditView extends HookConsumerWidget {
         ),
         actions: [
           PopupMenuButton<String>(
+            tooltip: '',
             onSelected: (selected) {
               if (selected == 'Enable all') {
                 entries.value = entries.value
