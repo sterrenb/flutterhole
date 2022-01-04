@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/models/settings_models.dart';
@@ -35,12 +36,13 @@ class SettingsService {
   }
 }
 
-final activePiProvider = Provider<Pi>((ref) {
-  return const Pi(
-      title: 'Demo',
-      baseUrl: 'http://example.com',
-      apiToken: String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""));
-});
+// final activePiProvider = Provider<Pi>((ref) {
+//   return const Pi(
+//     title: 'Demo',
+//     baseUrl: 'http://example.com',
+//     apiToken: String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""),
+//   );
+// });
 
 final sharedPreferencesProvider = FutureProvider<SharedPreferences>(
     (_) async => await SharedPreferences.getInstance());
@@ -62,55 +64,97 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     reload();
   }
 
-  Future<void> save() => storage.saveJson(storageKey, state.toJson());
+  Future<void> _save() {
+    return storage.saveJson(storageKey, state.toJson());
+  }
 
   void reload() {
-    final x = storage.loadJson(storageKey);
-    if (x.isNotEmpty) {
-      state = UserPreferences.fromJson(x);
+    final json = storage.loadJson(storageKey);
+    if (json.isNotEmpty) {
+      state = UserPreferences.fromJson(json);
     }
   }
 
-  void clear() {
-    storage.remove(storageKey);
-    state = initialState;
+  void clearPreferences() {
+    state = UserPreferences(piholes: state.piholes);
+    _save();
+  }
+
+  void deletePiholes() {
+    state = state.copyWith(piholes: defaultPiholes);
+    _save();
+  }
+
+  void savePiholes(List<Pi> value) {
+    state = state.copyWith(piholes: value);
+    _save();
+  }
+
+  void savePihole({Pi? oldValue, required Pi newValue}) {
+    if (oldValue != null && state.piholes.contains(oldValue)) {
+      print('updating ${oldValue.title} to ${newValue.title}');
+      final index = state.piholes.indexOf(oldValue);
+      final list = List<Pi>.from(state.piholes);
+      list[index] = newValue;
+      savePiholes(list);
+    } else {
+      print('adding ${newValue.title}');
+      savePiholes([...state.piholes, newValue]);
+    }
+  }
+
+  void deletePihole(Pi value) {
+    if (state.piholes.length > 1) {
+      final list = List<Pi>.from(state.piholes)
+        ..removeWhere((element) => element == value);
+      savePiholes(list);
+    }
   }
 
   void toggleDevMode() {
     state = state.copyWith(devMode: !state.devMode);
-    save();
+    _save();
   }
 
   void toggleShowThemeToggle() {
     state = state.copyWith(showThemeToggle: !state.showThemeToggle);
-    save();
+    _save();
   }
 
   void setThemeMode(ThemeMode value) {
     state = state.copyWith(themeMode: value);
-    save();
+    _save();
   }
 
   void setTemperatureReading(TemperatureReading value) {
     state = state.copyWith(temperatureReading: value);
-    save();
+    _save();
   }
 
   void setUpdateFrequency(int value) {
     state = state.copyWith(updateFrequency: value);
-    save();
+    _save();
   }
 
   void setFlexScheme(FlexScheme value) {
     state = state.copyWith(flexScheme: value);
-    save();
+    _save();
   }
 
   void setLogLevel(LogLevel value) {
     state = state.copyWith(logLevel: value);
-    save();
+    _save();
   }
 }
+
+final allPiholesProvider = Provider<List<Pi>>((ref) {
+  return ref.watch(UserPreferencesNotifier.provider).piholes;
+});
+
+final piProvider = Provider<Pi>((ref) {
+  final prefs = ref.watch(UserPreferencesNotifier.provider);
+  return prefs.piholes.elementAt(0);
+});
 
 final themeModeProvider = Provider<ThemeMode>((ref) {
   return ref.watch(UserPreferencesNotifier.provider).themeMode;

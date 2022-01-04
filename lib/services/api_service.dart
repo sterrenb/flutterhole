@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_repository_demo.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,8 +10,7 @@ class ApiService {
   ApiService._();
 }
 
-final activePiholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
-  final pi = ref.watch(activePiProvider);
+final paramsProvider = Provider.family<PiholeRepositoryParams, Pi>((ref, pi) {
   return PiholeRepositoryParams(
     dio: Dio(BaseOptions(baseUrl: pi.baseUrl)),
     baseUrl: pi.baseUrl,
@@ -20,6 +20,11 @@ final activePiholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
     allowSelfSignedCertificates: pi.allowSelfSignedCertificates,
     adminHome: pi.adminHome,
   );
+});
+
+final activePiholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
+  final pi = ref.watch(piProvider);
+  return ref.watch(paramsProvider(pi));
 });
 
 final piholeProvider =
@@ -43,23 +48,25 @@ final activePingProvider =
   return ref.watch(pingProvider(ref.watch(activePiholeParamsProvider)));
 });
 
-final summaryProvider = FutureProvider.autoDispose
-    .family<PiSummary, PiholeRepositoryParams>((ref, params) async {
-  final pihole = ref.watch(piholeProvider(params));
-  final cancelToken = CancelToken();
-  ref.onDispose(() => cancelToken.cancel());
+final summaryProvider =
+    FutureProvider.autoDispose.family<PiSummary, PiholeRepositoryParams>(
+  (ref, params) async {
+    final pihole = ref.watch(piholeProvider(params));
+    final cancelToken = CancelToken();
+    ref.onDispose(() => cancelToken.cancel());
 
-  if (kDebugMode) {
-    await Future.delayed(const Duration(milliseconds: 200));
-  }
+    if (kDebugMode) {
+      await Future.delayed(const Duration(milliseconds: 200));
+    }
 
-  return pihole.fetchSummary(cancelToken);
-});
+    return pihole.fetchSummary(cancelToken);
+  },
+);
 
 final activeSummaryProvider =
     Provider.autoDispose<AsyncValue<PiSummary>>((ref) {
   return ref.watch(summaryProvider(ref.watch(activePiholeParamsProvider)));
-});
+}, dependencies: [piProvider, summaryProvider, activePiholeParamsProvider]);
 
 final forwardDestinationsProvider = FutureProvider.autoDispose
     .family<PiForwardDestinations, PiholeRepositoryParams>((ref, params) async {

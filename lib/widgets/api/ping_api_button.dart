@@ -21,7 +21,7 @@ class PingApiButton extends HookConsumerWidget {
     final ping = ref.watch(activePingProvider);
 
     return ListTile(
-      title: const Text("Pi-hole status"),
+      title: Text("Pi-hole status ${params.apiUrl}"),
       onTap: ping.maybeWhen(
           error: (e, s) => () {
                 showModal(

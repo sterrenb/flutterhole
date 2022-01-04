@@ -1,5 +1,4 @@
 import 'package:animations/animations.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterhole/constants/icons.dart';
@@ -26,60 +25,49 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import 'dashboard_edit_view.dart';
 
-final _paramsProvider = Provider.family<PiholeRepositoryParams, Pi>((ref, pi) {
-  return PiholeRepositoryParams(
-    dio: Dio(BaseOptions(baseUrl: pi.baseUrl)),
-    baseUrl: pi.baseUrl,
-    apiPath: pi.apiPath,
-    apiTokenRequired: pi.apiTokenRequired,
-    apiToken: pi.apiToken,
-    allowSelfSignedCertificates: pi.allowSelfSignedCertificates,
-    adminHome: pi.adminHome,
-  );
-});
-
 class SinglePiEditView extends HookConsumerWidget {
   const SinglePiEditView({
-    required this.initialValue,
     Key? key,
   }) : super(key: key);
 
-  final Pi initialValue;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pi = useState(initialValue);
-    final params = ref.watch(_paramsProvider(pi.value));
+    final oldPi = ref.watch(piProvider);
+    final newPi = useState(oldPi);
+    final params = ref.watch(paramsProvider(newPi.value));
+    // final params = ref.watch(_paramsProvider(pi.value));
 
-    final titleController = useTextEditingController(text: initialValue.title);
-    final baseUrlController =
-        useTextEditingController(text: initialValue.baseUrl);
+    final titleController = useTextEditingController(text: oldPi.title);
+    useEffect(() {
+      titleController.addListener(() {
+        newPi.value = newPi.value.copyWith(title: titleController.text);
+      });
+    }, [titleController]);
+    final baseUrlController = useTextEditingController(text: oldPi.baseUrl);
     useEffect(() {
       baseUrlController.addListener(() {
-        pi.value = pi.value.copyWith(baseUrl: baseUrlController.text);
+        newPi.value = newPi.value.copyWith(baseUrl: baseUrlController.text);
       });
     }, [baseUrlController]);
 
-    final apiPathController =
-        useTextEditingController(text: initialValue.apiPath);
+    final apiPathController = useTextEditingController(text: oldPi.apiPath);
     useEffect(() {
       apiPathController.addListener(() {
-        pi.value = pi.value.copyWith(apiPath: apiPathController.text);
+        newPi.value = newPi.value.copyWith(apiPath: apiPathController.text);
       });
     }, [apiPathController]);
 
-    final apiTokenController =
-        useTextEditingController(text: initialValue.apiToken);
+    final apiTokenController = useTextEditingController(text: oldPi.apiToken);
     useEffect(() {
       apiTokenController.addListener(() {
-        pi.value = pi.value.copyWith(apiToken: apiTokenController.text);
+        newPi.value = newPi.value.copyWith(apiToken: apiTokenController.text);
       });
     }, [apiTokenController]);
 
     return BaseView(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Editing ${initialValue.title}"),
+          title: Text("Editing ${oldPi.title}"),
           actions: [
             DevWidget(
               child: IconButton(
@@ -92,8 +80,13 @@ class SinglePiEditView extends HookConsumerWidget {
             IconButton(
                 tooltip: "Save",
                 onPressed: () {
-                  final pi = ref.read(activePiProvider);
-                  debugPrint(pi.toJson().toString());
+                  // final pi = ref.read(piProvider);
+                  // debugPrint(pi.toJson().toString());
+
+                  ref
+                      .read(UserPreferencesNotifier.provider.notifier)
+                      .savePihole(oldValue: oldPi, newValue: newPi.value);
+                  Navigator.of(context).pop();
                 },
                 icon: const Icon(KIcons.save)),
           ],
@@ -107,16 +100,29 @@ class SinglePiEditView extends HookConsumerWidget {
               padding: const EdgeInsets.all(24.0),
               children: [
                 _PiTitleField(titleController),
+                const SizedBox(height: 20.0),
                 AppWrap(children: [
                   IconOutlinedButton(
                     iconData: KIcons.dashboard,
                     text: "Manage dashboard",
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const DashboardEditView(),
+                        builder: (context) => ProviderScope(overrides: [
+                          piProvider.overrideWithValue(oldPi),
+                        ], child: const DashboardEditView()),
                         fullscreenDialog: true,
                       ));
                     },
+                  ),
+                  UrlOutlinedButton(
+                    url: Formatting.piToAdminUrl(newPi.value),
+                    text: "Admin page",
+                  ),
+                  IconOutlinedButton(
+                    iconData: KIcons.delete,
+                    text: "Delete",
+                    color: Theme.of(context).colorScheme.error,
+                    onPressed: () {},
                   ),
                 ]),
                 const SizedBox(height: 20.0),
@@ -130,10 +136,6 @@ class SinglePiEditView extends HookConsumerWidget {
                 AppWrap(
                   children: [
                     _ApiStatusButton(params: params),
-                    UrlOutlinedButton(
-                      url: Formatting.piToAdminUrl(pi.value),
-                      text: "Admin page",
-                    ),
                     UrlOutlinedButton(
                       url: params.apiUrl,
                       text: "API base",
@@ -162,7 +164,7 @@ class SinglePiEditView extends HookConsumerWidget {
                         );
 
                         if (barcode != null) {
-                          pi.value = pi.value.copyWith(apiToken: barcode);
+                          newPi.value = newPi.value.copyWith(apiToken: barcode);
                           apiTokenController.text = barcode;
                         }
                       },
@@ -175,7 +177,7 @@ class SinglePiEditView extends HookConsumerWidget {
                     IconOutlinedButton(
                       text: "Share token",
                       iconData: KIcons.qrShare,
-                      onPressed: pi.value.apiToken.isEmpty
+                      onPressed: newPi.value.apiToken.isEmpty
                           ? null
                           : () async {
                               showDialog(
@@ -200,11 +202,11 @@ class SinglePiEditView extends HookConsumerWidget {
                                         children: [
                                           QrImage(
                                             // backgroundColor: Colors.white,
-                                            data: pi.value.apiToken,
+                                            data: newPi.value.apiToken,
                                             version: QrVersions.auto,
                                             size: size,
                                           ),
-                                          CodeCard(pi.value.apiToken),
+                                          CodeCard(newPi.value.apiToken),
                                         ],
                                       ),
                                     ),
@@ -217,9 +219,9 @@ class SinglePiEditView extends HookConsumerWidget {
                       title: const Text("Allow self-signed certificates"),
                       subtitle: const Text(
                           "Trust all certificates, even when the TLS handshake fails."),
-                      value: pi.value.allowSelfSignedCertificates,
+                      value: newPi.value.allowSelfSignedCertificates,
                       onChanged: (value) {
-                        pi.value = pi.value.copyWith(
+                        newPi.value = newPi.value.copyWith(
                             allowSelfSignedCertificates: value ?? false);
                       },
                     ),
@@ -227,13 +229,13 @@ class SinglePiEditView extends HookConsumerWidget {
                       title: const Text("Skip authentication"),
                       subtitle: const Text(
                           "Use the default token. Only useful if your Pi-hole does not have an API token."),
-                      value: !pi.value.apiTokenRequired,
+                      value: !newPi.value.apiTokenRequired,
                       onChanged: (value) {
                         if (value != null) {
                           value = !value;
                         }
-                        pi.value =
-                            pi.value.copyWith(apiTokenRequired: value ?? true);
+                        newPi.value = newPi.value
+                            .copyWith(apiTokenRequired: value ?? true);
                       },
                     ),
                     // CodeCard(pi.value.toJson().toString()),

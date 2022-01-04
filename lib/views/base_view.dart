@@ -13,9 +13,7 @@ class BaseView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pi = ref.watch(activePiProvider);
-
-    if (kIsWeb || pi.title == 'Demo') {
+    if (kIsWeb) {
       return Banner(
           message: 'Demo',
           textDirection: TextDirection.ltr,

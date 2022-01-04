@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
+import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/about_view.dart';
 import 'package:flutterhole/views/base_view.dart';
+import 'package:flutterhole/views/single_pi_edit_view.dart';
 import 'package:flutterhole/widgets/api/ping_api_button.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
@@ -68,7 +70,19 @@ class SettingsView extends HookConsumerWidget {
                     children: [
                       OutlinedButton.icon(
                         icon: const Icon(KIcons.add),
-                        onPressed: () {},
+                        onPressed: () {
+                          final pis = ref.read(allPiholesProvider);
+                          final pi = Pi(title: 'Pi-hole #${pis.length}');
+                          // ref
+                          //     .read(UserPreferencesNotifier.provider.notifier)
+                          //     .savePihole(newValue: pi);
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ProviderScope(overrides: [
+                              piProvider.overrideWithValue(pi),
+                            ], child: const SinglePiEditView()),
+                            fullscreenDialog: true,
+                          ));
+                        },
                         label: const Text('New Pi-hole'),
                       ),
                     ],
@@ -84,15 +98,15 @@ class SettingsView extends HookConsumerWidget {
                   children: [
                     const LogLevelButton(),
                     const ThemeToggleButton(),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CodeCard(Formatting.jsonToCode(ref
-                              .watch(UserPreferencesNotifier.provider)
-                              .toJson())),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: CodeCard(Formatting.jsonToCode(ref
+                    //           .watch(UserPreferencesNotifier.provider)
+                    //           .toJson())),
+                    //     ),
+                    //   ],
+                    // ),
                     const ThemeShowcaseButton(),
                   ],
                 )),

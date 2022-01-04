@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/single_pi_edit_view.dart';
-import 'package:flutterhole/widgets/layout/animations.dart';
-import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PiSelectList extends HookConsumerWidget {
@@ -17,49 +14,86 @@ class PiSelectList extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activePi = ref.watch(activePiProvider);
-    final pis = [
-      activePi,
-      const Pi(baseUrl: "http://pi.hole"),
-      const Pi(title: "Secure", baseUrl: "https://10.0.1.5"),
-      const Pi(title: "Pub", baseUrl: "http://pub.dev", adminHome: ""),
-      const Pi(
-          title: "Package",
-          baseUrl: "https://pub.dev",
-          adminHome: "/packages/pihole_api"),
-    ];
-    return ListView.separated(
+    final piholes = ref.watch(allPiholesProvider);
+    return ReorderableListView.builder(
       shrinkWrap: shrinkWrap,
       physics: const NeverScrollableScrollPhysics(),
+      itemCount: piholes.length,
+      onReorder: (from, to) {
+        if (from < to) {
+          to -= 1;
+        }
+
+        final list = List<Pi>.from(piholes, growable: true);
+        final item = list.removeAt(from);
+        list.insert(to, item);
+        ref.read(UserPreferencesNotifier.provider.notifier).savePiholes(list);
+      },
       itemBuilder: (context, index) {
-        final pi = pis.elementAt(index);
-        return ListTile(
-          minVerticalPadding: 16.0,
-          title: Text(pi.title),
-          leading: AnimatedOpacity(
-              opacity: pi == activePi ? 1 : 0,
-              duration: kThemeChangeDuration,
-              child: const Icon(KIcons.selected)),
-          trailing: UrlOutlinedButton(
-            url: pi.baseUrl + pi.adminHome,
-            text: pi.baseUrl
-                .replaceFirst("https://", "")
-                .replaceFirst("http://", ""),
-          ),
+        final pi = piholes.elementAt(index);
+        return _Tile(
+          key: Key(index.toString()),
+          pi: pi,
+          index: index,
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => SinglePiEditView(initialValue: pi),
-              fullscreenDialog: true,
-            ));
+            ref
+                .read(UserPreferencesNotifier.provider.notifier)
+                .deletePihole(pi);
           },
         );
       },
-      separatorBuilder: (context, index) => const Divider(
-        height: 0.0,
-        indent: 16.0,
-        endIndent: 16.0,
+    );
+  }
+}
+
+class _Tile extends StatelessWidget {
+  const _Tile({
+    Key? key,
+    required this.pi,
+    required this.index,
+    this.onTap,
+  }) : super(key: key);
+
+  final Pi pi;
+  final int index;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ReorderableDelayedDragStartListener(
+      index: index,
+      child: ListTile(
+        minVerticalPadding: 16.0,
+        title: Text(pi.title),
+        subtitle: Text(
+          pi.baseUrl,
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        ),
+        trailing: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // UrlOutlinedButton(
+            //   url: pi.baseUrl + pi.adminHome,
+            //   text: pi.baseUrl
+            //       .replaceFirst('https://', '')
+            //       .replaceFirst('http://', ''),
+            // ),
+            ReorderableDragStartListener(
+              index: index,
+              child: const Icon(Icons.drag_handle),
+            ),
+          ],
+        ),
+        onTap: onTap,
+        // Navigator.of(context).push(MaterialPageRoute(
+        //   builder: (context) => ProviderScope(overrides: [
+        //     piProvider.overrideWithValue(pi),
+        //   ], child: const SinglePiEditView()),
+        //   fullscreenDialog: true,
+        // ));
+        // },
       ),
-      itemCount: pis.length,
     );
   }
 }

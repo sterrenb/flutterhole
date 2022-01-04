@@ -8,15 +8,21 @@ class IconOutlinedButton extends StatelessWidget {
     required this.iconData,
     required this.text,
     this.onPressed,
+    this.color,
   }) : super(key: key);
 
   final IconData iconData;
   final String text;
   final VoidCallback? onPressed;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        primary: color,
+        side: color != null ? BorderSide(color: color!) : null,
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -19,6 +19,28 @@ enum LogLevel {
   error,
 }
 
+const defaultPiholes = [
+  Pi(
+    title: 'Demo',
+    baseUrl: 'http://example.com',
+    apiToken: String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""),
+  ),
+  Pi(
+    title: 'Home',
+    baseUrl: 'http://pi.hole',
+    apiToken: String.fromEnvironment('PIHOLE_API_TOKEN', defaultValue: ''),
+  ),
+  Pi(
+    title: 'Secure',
+    baseUrl: 'https://10.0.1.5',
+  ),
+  Pi(title: 'Pub', baseUrl: 'http://pub.dev', adminHome: ''),
+  Pi(
+      title: ('This one has very long name, but it should still work.'),
+      baseUrl: 'https://pub.dev',
+      adminHome: '/packages/pihole_api'),
+];
+
 @freezed
 class UserPreferences with _$UserPreferences {
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
@@ -31,6 +53,7 @@ class UserPreferences with _$UserPreferences {
     @Default(FlexScheme.mallardGreen) FlexScheme flexScheme,
     @Default(TemperatureReading.fahrenheit)
         TemperatureReading temperatureReading,
+    @Default(defaultPiholes) List<Pi> piholes,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>
@@ -113,6 +136,8 @@ class DashboardEntry with _$DashboardEntry {
 
 @freezed
 class Pi with _$Pi {
+  // Pi._();
+
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Pi({
     @Default("My Pi-hole") String title,
@@ -126,4 +151,7 @@ class Pi with _$Pi {
   }) = _Pi;
 
   factory Pi.fromJson(Map<String, dynamic> json) => _$PiFromJson(json);
+
+  // late final String apiUrl = '$baseUrl$apiPath';
+  // late final String adminUrl = '$baseUrl$adminHome';
 }

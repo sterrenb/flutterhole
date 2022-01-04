@@ -19,7 +19,7 @@ class DashboardEditView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pi = ref.watch(activePiProvider);
+    final pi = ref.watch(piProvider);
     final entries = useState(pi.dashboard);
 
     return BaseView(

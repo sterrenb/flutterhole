@@ -84,7 +84,7 @@ class TotalQueriesTile extends HookConsumerWidget {
           text: value?.toFormatted(),
           showLoadingIndicator: sum.isLoading(),
           onTap: () {
-            ref.refresh(summaryProvider(ref.read(activePiholeParamsProvider)));
+            ref.refresh(activeSummaryProvider);
           },
         );
       },
@@ -107,7 +107,7 @@ class QueriesBlockedTile extends HookConsumerWidget {
           text: value?.toFormatted(),
           showLoadingIndicator: sum.isLoading(),
           onTap: () {
-            ref.refresh(summaryProvider(ref.read(activePiholeParamsProvider)));
+            ref.refresh(activeSummaryProvider);
           },
         );
       },
@@ -132,7 +132,7 @@ class PercentBlockedTile extends HookConsumerWidget {
           text: value != null ? value.toStringAsFixed(2) + '%' : null,
           showLoadingIndicator: sum.isLoading(),
           onTap: () {
-            ref.refresh(summaryProvider(ref.read(activePiholeParamsProvider)));
+            ref.refresh(activeSummaryProvider);
           },
         );
       },
@@ -155,7 +155,7 @@ class DomainsBlockedTile extends HookConsumerWidget {
           text: value?.toFormatted(),
           showLoadingIndicator: sum.isLoading(),
           onTap: () {
-            ref.refresh(summaryProvider(ref.read(activePiholeParamsProvider)));
+            ref.refresh(activeSummaryProvider);
           },
         );
       },

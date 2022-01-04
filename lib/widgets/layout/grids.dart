@@ -190,15 +190,17 @@ class AppWrap extends StatelessWidget {
   const AppWrap({
     Key? key,
     required this.children,
+    this.alignment,
   }) : super(key: key);
 
   final List<Widget> children;
+  final WrapAlignment? alignment;
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
-      alignment: WrapAlignment.center,
+      alignment: alignment ?? WrapAlignment.start,
       spacing: 8.0,
       runSpacing: 8.0,
       children: children,
