@@ -81,33 +81,33 @@ class DashboardEntry with _$DashboardEntry {
 
   static const all = [
     DashboardEntry(
+        id: DashboardID.totalQueries,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(2, 2)),
+    DashboardEntry(
+        id: DashboardID.queriesBlocked,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(2, 2)),
+    DashboardEntry(
+        id: DashboardID.percentBlocked,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(2, 2)),
+    DashboardEntry(
+        id: DashboardID.domainsOnBlocklist,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(2, 2)),
+    DashboardEntry(
         id: DashboardID.versions,
         enabled: true,
         constraints: DashboardTileConstraints.count(4, 2)),
     DashboardEntry(
-        id: DashboardID.totalQueries,
-        enabled: true,
-        constraints: DashboardTileConstraints.count(4, 1)),
-    DashboardEntry(
-        id: DashboardID.queriesBlocked,
-        enabled: false,
-        constraints: DashboardTileConstraints.count(4, 1)),
-    DashboardEntry(
-        id: DashboardID.percentBlocked,
-        enabled: true,
-        constraints: DashboardTileConstraints.count(2, 1)),
-    DashboardEntry(
-        id: DashboardID.domainsOnBlocklist,
-        enabled: true,
-        constraints: DashboardTileConstraints.count(2, 1)),
-    DashboardEntry(
         id: DashboardID.forwardDestinations,
         enabled: true,
-        constraints: DashboardTileConstraints.extent(2, 500)),
+        constraints: DashboardTileConstraints.count(1, 1)),
     DashboardEntry(
         id: DashboardID.topPermittedDomains,
-        enabled: true,
-        constraints: DashboardTileConstraints.fit(2)),
+        enabled: false,
+        constraints: DashboardTileConstraints.count(3, 1)),
   ];
 }
 

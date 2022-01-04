@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
+import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+
+import 'dashboard_tiles.dart';
 
 class DashboardGrid extends HookConsumerWidget {
   const DashboardGrid({
@@ -31,41 +34,25 @@ class DashboardGrid extends HookConsumerWidget {
       );
     }
 
-    return StaggeredGrid.count(
-      crossAxisCount: 4,
-      children: enabledEntries
-          .map((entry) => entry.constraints.when(
-                count: (cross, main) => StaggeredGridTile.count(
-                    crossAxisCellCount: cross,
-                    mainAxisCellCount: main,
-                    child: EntryTileBuilder(entry: entry)),
-                extent: (cross, extent) => StaggeredGridTile.extent(
-                    crossAxisCellCount: cross,
-                    mainAxisExtent: extent,
-                    child: EntryTileBuilder(entry: entry)),
-                fit: (cross) => StaggeredGridTile.fit(
-                    crossAxisCellCount: cross,
-                    child: EntryTileBuilder(entry: entry)),
-              ))
-          .toList(),
-    );
-  }
-}
-
-class EntryTileBuilder extends StatelessWidget {
-  const EntryTileBuilder({
-    Key? key,
-    required this.entry,
-  }) : super(key: key);
-
-  final DashboardEntry entry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        color: Colors.primaries
-            .elementAt(DashboardID.values.indexOf(entry.id))
-            .shade300,
-        child: Center(child: Text(entry.id.toReadable())));
+    return BreakpointBuilder(builder: (context, isBig) {
+      return StaggeredGrid.count(
+        crossAxisCount: isBig ? 8 : 4,
+        children: enabledEntries
+            .map((entry) => entry.constraints.when(
+                  count: (cross, main) => StaggeredGridTile.count(
+                      crossAxisCellCount: cross,
+                      mainAxisCellCount: main,
+                      child: EntryTileBuilder(entry: entry)),
+                  extent: (cross, extent) => StaggeredGridTile.extent(
+                      crossAxisCellCount: cross,
+                      mainAxisExtent: extent,
+                      child: EntryTileBuilder(entry: entry)),
+                  fit: (cross) => StaggeredGridTile.fit(
+                      crossAxisCellCount: cross,
+                      child: EntryTileBuilder(entry: entry)),
+                ))
+            .toList(),
+      );
+    });
   }
 }

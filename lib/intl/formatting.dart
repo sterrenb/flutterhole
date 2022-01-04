@@ -75,7 +75,7 @@ extension DashboardIDX on DashboardID {
       case DashboardID.percentBlocked:
         return 'Percent blocked';
       case DashboardID.domainsOnBlocklist:
-        return 'Domains on blocklist';
+        return 'Domains blocked';
       case DashboardID.forwardDestinations:
         return 'Forward destinations';
       case DashboardID.topPermittedDomains:

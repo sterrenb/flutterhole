@@ -64,6 +64,27 @@ class _Content extends StatelessWidget {
   }
 }
 
+typedef BreakpointBuilderCallback = Widget Function(
+    BuildContext context, bool isBig);
+
+class BreakpointBuilder extends StatelessWidget {
+  const BreakpointBuilder({
+    Key? key,
+    required this.builder,
+    this.bigBreakpoint = 800,
+  }) : super(key: key);
+
+  final BreakpointBuilderCallback builder;
+  final double bigBreakpoint;
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      final isBig = constraints.maxWidth > bigBreakpoint;
+      return builder(context, isBig);
+    });
+  }
+}
+
 class LeftRightScaffold extends StatelessWidget {
   const LeftRightScaffold({
     Key? key,
@@ -91,8 +112,7 @@ class LeftRightScaffold extends StatelessWidget {
           bottom: TabBar(tabs: tabs),
           actions: actions,
         ),
-        body: LayoutBuilder(builder: (context, constraints) {
-          final isBig = constraints.maxWidth > 800;
+        body: BreakpointBuilder(builder: (context, isBig) {
           return AnimatedFader(
               child: isBig
                   ? Row(
