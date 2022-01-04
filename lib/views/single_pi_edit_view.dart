@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterhole/constants/icons.dart';
@@ -28,7 +29,10 @@ import 'dashboard_edit_view.dart';
 class SinglePiEditView extends HookConsumerWidget {
   const SinglePiEditView({
     Key? key,
+    this.title,
   }) : super(key: key);
+
+  final String? title;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,7 +71,7 @@ class SinglePiEditView extends HookConsumerWidget {
     return BaseView(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Editing ${oldPi.title}"),
+          title: Text(title ?? 'Editing ${oldPi.title}'),
           actions: [
             DevWidget(
               child: IconButton(
@@ -78,7 +82,7 @@ class SinglePiEditView extends HookConsumerWidget {
                   icon: const Icon(KIcons.settings)),
             ),
             IconButton(
-                tooltip: "Save",
+                tooltip: 'Save',
                 onPressed: () {
                   // final pi = ref.read(piProvider);
                   // debugPrint(pi.toJson().toString());
@@ -104,7 +108,7 @@ class SinglePiEditView extends HookConsumerWidget {
                 AppWrap(children: [
                   IconOutlinedButton(
                     iconData: KIcons.dashboard,
-                    text: "Manage dashboard",
+                    text: 'Manage dashboard',
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ProviderScope(overrides: [
@@ -116,18 +120,13 @@ class SinglePiEditView extends HookConsumerWidget {
                   ),
                   UrlOutlinedButton(
                     url: Formatting.piToAdminUrl(newPi.value),
-                    text: "Admin page",
+                    text: 'Admin page',
                   ),
-                  IconOutlinedButton(
-                    iconData: KIcons.delete,
-                    text: "Delete",
-                    color: Theme.of(context).colorScheme.error,
-                    onPressed: () {},
-                  ),
+                  DeletePiholeButton(pihole: oldPi),
                 ]),
                 const SizedBox(height: 20.0),
                 const Divider(),
-                const GridSectionHeader("Host", KIcons.host),
+                const GridSectionHeader('Host', KIcons.host),
                 const SizedBox(height: 20.0),
                 _BaseUrlField(baseUrlController),
                 const SizedBox(height: 20.0),
@@ -138,7 +137,7 @@ class SinglePiEditView extends HookConsumerWidget {
                     _ApiStatusButton(params: params),
                     UrlOutlinedButton(
                       url: params.apiUrl,
-                      text: "API base",
+                      text: 'API base',
                     ),
                   ],
                 ),
@@ -154,7 +153,7 @@ class SinglePiEditView extends HookConsumerWidget {
                     _AuthenticationStatusButton(params: params),
                     IconOutlinedButton(
                       iconData: KIcons.qrCode,
-                      text: "Scan QR code",
+                      text: 'Scan QR code',
                       onPressed: () async {
                         final barcode = await showModal<String>(
                           context: context,
@@ -171,11 +170,11 @@ class SinglePiEditView extends HookConsumerWidget {
                     ),
                     UrlOutlinedButton(
                       url: params.adminUrl +
-                          "/scripts/pi-hole/php/api_token.php",
-                      text: "Token page",
+                          '/scripts/pi-hole/php/api_token.php',
+                      text: 'Token page',
                     ),
                     IconOutlinedButton(
-                      text: "Share token",
+                      text: 'Share token',
                       iconData: KIcons.qrShare,
                       onPressed: newPi.value.apiToken.isEmpty
                           ? null
@@ -189,7 +188,7 @@ class SinglePiEditView extends HookConsumerWidget {
                                           .clamp(200.0, 500.0);
                                   return AlertDialog(
                                     // backgroundColor: Colors.white,
-                                    // title: Center(child: Text("API token")),
+                                    // title: Center(child: Text('API token')),
                                     // titlePadding: EdgeInsets.all(16.0),
                                     titleTextStyle:
                                         Theme.of(context).textTheme.headline4,
@@ -216,9 +215,9 @@ class SinglePiEditView extends HookConsumerWidget {
                             },
                     ),
                     CheckboxListTile(
-                      title: const Text("Allow self-signed certificates"),
+                      title: const Text('Allow self-signed certificates'),
                       subtitle: const Text(
-                          "Trust all certificates, even when the TLS handshake fails."),
+                          'Trust all certificates, even when the TLS handshake fails.'),
                       value: newPi.value.allowSelfSignedCertificates,
                       onChanged: (value) {
                         newPi.value = newPi.value.copyWith(
@@ -226,9 +225,9 @@ class SinglePiEditView extends HookConsumerWidget {
                       },
                     ),
                     CheckboxListTile(
-                      title: const Text("Skip authentication"),
+                      title: const Text('Skip authentication'),
                       subtitle: const Text(
-                          "Use the default token. Only useful if your Pi-hole does not have an API token."),
+                          'Use the default token. Only useful if your Pi-hole does not have an API token.'),
                       value: !newPi.value.apiTokenRequired,
                       onChanged: (value) {
                         if (value != null) {
@@ -251,7 +250,7 @@ class SinglePiEditView extends HookConsumerWidget {
                 //         children: const [
                 //           Icon(KIcons.qrCode),
                 //           SizedBox(width: 8.0),
-                //           Text("Scan QR code"),
+                //           Text('Scan QR code'),
                 //         ],
                 //       ),
                 //     ),
@@ -261,6 +260,47 @@ class SinglePiEditView extends HookConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class DeletePiholeButton extends HookConsumerWidget {
+  const DeletePiholeButton({
+    Key? key,
+    required this.pihole,
+  }) : super(key: key);
+
+  final Pi pihole;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final piholes = ref.read(allPiholesProvider);
+    return Visibility(
+      visible: piholes.length > 1 && piholes.contains(pihole),
+      child: IconOutlinedButton(
+        iconData: KIcons.delete,
+        text: 'Delete',
+        color: Theme.of(context).colorScheme.error,
+        onPressed: () async {
+          if (kDebugMode ||
+              await showConfirmationDialog(context,
+                      title: "Delete Pi-hole configuration?",
+                      body: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text("This action cannot be undone."),
+                        ],
+                      )) ==
+                  true) {
+            ref
+                .read(UserPreferencesNotifier.provider.notifier)
+                .deletePihole(pihole);
+            Navigator.of(context).pop();
+          }
+        },
       ),
     );
   }
@@ -285,7 +325,7 @@ class _ApiStatusButton extends HookConsumerWidget {
                 showModal(
                     context: context,
                     builder: (context) => ErrorDialog(
-                          title: "Pi-hole status",
+                          title: 'Pi-hole status',
                           error: e,
                           stackTrace: s,
                         ));
@@ -299,7 +339,7 @@ class _ApiStatusButton extends HookConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text("API status"),
+          const Text('API status'),
           const SizedBox(width: 8.0),
           AnimatedFader(
             child: status.when(
@@ -346,7 +386,7 @@ class _AuthenticationStatusButton extends HookConsumerWidget {
                 showModal(
                     context: context,
                     builder: (context) => ErrorDialog(
-                          title: "Authentication",
+                          title: 'Authentication',
                           error: e,
                           stackTrace: s,
                         ));
@@ -360,7 +400,7 @@ class _AuthenticationStatusButton extends HookConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text("Auth status"),
+          const Text('Auth status'),
           const SizedBox(width: 8.0),
           AnimatedFader(
             child: status.when(
@@ -473,7 +513,7 @@ class _PiTitleField extends StatelessWidget {
       style: Theme.of(context).textTheme.headline6!,
       labelStyle: Theme.of(context).textTheme.headline6,
       textCapitalization: TextCapitalization.sentences,
-      labelText: "Title",
+      labelText: 'Title',
       hintText: const Pi().title,
     );
   }
@@ -496,7 +536,7 @@ class _BaseUrlField extends StatelessWidget {
       labelStyle: Theme.of(context).textTheme.headline6,
       keyboardType: TextInputType.url,
       textCapitalization: TextCapitalization.none,
-      labelText: "Base URL",
+      labelText: 'Base URL',
       hintText: const Pi().baseUrl,
       inputFormatters: [Formatting.whitespaceFormatter],
     );
@@ -544,7 +584,7 @@ class _ApiTokenField extends HookConsumerWidget {
         labelStyle: Theme.of(context).textTheme.headline6,
         keyboardType: TextInputType.visiblePassword,
         textCapitalization: TextCapitalization.none,
-        hintText: "8f336d...",
+        hintText: '8f336d...',
         labelText: 'API token',
         iconData: KIcons.apiToken,
         obscureText: !show.value,

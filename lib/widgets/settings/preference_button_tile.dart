@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/services/settings_service.dart';
@@ -50,21 +51,22 @@ class PreferenceButtonTile extends HookConsumerWidget {
               color: Theme.of(context).colorScheme.error,
               text: "Delete Pi-holes",
               onPressed: () async {
-                if (await showConfirmationDialog(context,
-                        title: "Delete Pi-holes?",
-                        body: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          // mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              "All Pi-hole configurations will be deleted.",
-                            ),
-                            SizedBox(height: 8.0),
-                            Text("This action cannot be undone."),
-                          ],
-                        )) ==
-                    true) {
+                if (kDebugMode ||
+                    await showConfirmationDialog(context,
+                            title: "Delete Pi-holes?",
+                            body: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              // mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  "All Pi-hole configurations will be deleted.",
+                                ),
+                                SizedBox(height: 8.0),
+                                Text("This action cannot be undone."),
+                              ],
+                            )) ==
+                        true) {
                   ref
                       .read(UserPreferencesNotifier.provider.notifier)
                       .deletePiholes();

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
@@ -36,9 +37,12 @@ class PiSelectList extends HookConsumerWidget {
           pi: pi,
           index: index,
           onTap: () {
-            ref
-                .read(UserPreferencesNotifier.provider.notifier)
-                .deletePihole(pi);
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ProviderScope(overrides: [
+                piProvider.overrideWithValue(pi),
+              ], child: const SinglePiEditView()),
+              // fullscreenDialog: true,
+            ));
           },
         );
       },
@@ -86,13 +90,6 @@ class _Tile extends StatelessWidget {
           ],
         ),
         onTap: onTap,
-        // Navigator.of(context).push(MaterialPageRoute(
-        //   builder: (context) => ProviderScope(overrides: [
-        //     piProvider.overrideWithValue(pi),
-        //   ], child: const SinglePiEditView()),
-        //   fullscreenDialog: true,
-        // ));
-        // },
       ),
     );
   }

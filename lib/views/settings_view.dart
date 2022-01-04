@@ -72,14 +72,15 @@ class SettingsView extends HookConsumerWidget {
                         icon: const Icon(KIcons.add),
                         onPressed: () {
                           final pis = ref.read(allPiholesProvider);
-                          final pi = Pi(title: 'Pi-hole #${pis.length}');
-                          // ref
-                          //     .read(UserPreferencesNotifier.provider.notifier)
-                          //     .savePihole(newValue: pi);
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ProviderScope(overrides: [
-                              piProvider.overrideWithValue(pi),
-                            ], child: const SinglePiEditView()),
+                            builder: (context) => ProviderScope(
+                                overrides: [
+                                  piProvider.overrideWithValue(
+                                      Pi(title: 'Pi-hole #${pis.length}')),
+                                ],
+                                child: const SinglePiEditView(
+                                  title: 'New Pi-hole',
+                                )),
                             fullscreenDialog: true,
                           ));
                         },
