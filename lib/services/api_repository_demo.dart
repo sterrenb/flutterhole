@@ -120,8 +120,22 @@ class PiholeRepositoryDemo implements PiholeRepository {
 
   @override
   Future<PiVersions> fetchVersions(_) async {
-    // TODO: implement fetchVersions
-    throw UnimplementedError();
+    await _sleep();
+
+    return PiVersions(
+      hasCoreUpdate: false,
+      hasWebUpdate: false,
+      hasFtlUpdate: true,
+      currentCoreVersion: '1.2.3',
+      currentWebVersion: '1.2.3',
+      currentFtlVersion: '1.2.3',
+      latestCoreVersion: '1.2.3',
+      latestWebVersion: '1.2.3',
+      latestFtlVersion: '1.3.4',
+      coreBranch: 'master',
+      webBranch: 'develop',
+      ftlBranch: 'master',
+    );
   }
 
   @override

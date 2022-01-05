@@ -27,6 +27,11 @@ final activePiholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
   return ref.watch(paramsProvider(pi));
 });
 
+extension WidgetRefX on WidgetRef {
+  refreshSummary() =>
+      refresh(summaryProvider(read(activePiholeParamsProvider)));
+}
+
 final piholeProvider =
     Provider.family<PiholeRepository, PiholeRepositoryParams>((ref, params) {
   if (params.baseUrl.contains('example.com')) {

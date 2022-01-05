@@ -1,0 +1,39 @@
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+typedef CacheBuilderCallback<T> = Widget Function(
+    BuildContext context, T value, bool isLoading);
+
+/// Provides a cached version of the [provider]'s value.
+class CacheBuilder<T> extends HookConsumerWidget {
+  const CacheBuilder({
+    Key? key,
+    required this.provider,
+    required this.builder,
+  }) : super(key: key);
+
+  final AutoDisposeProvider<AsyncValue<T>> provider;
+  final CacheBuilderCallback<T?> builder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final data = ref.watch(provider);
+    final cache = useValueChanged<AsyncValue, T?>(
+      data,
+      (_, T? oldResult) {
+        final newResult = data.whenOrNull(data: (update) => update);
+        return newResult ?? oldResult;
+      },
+    );
+
+    return builder(
+      context,
+      cache,
+      data.maybeWhen(
+        loading: () => true,
+        orElse: () => false,
+      ),
+    );
+  }
+}

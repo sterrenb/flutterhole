@@ -70,6 +70,7 @@ extension Numx on num {
   toFormatted() => _numberFormat.format(this);
 }
 
+// TODO remove
 extension AsyncValueX on AsyncValue {
   bool isLoading() => maybeWhen(
         loading: () => true,

@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
-import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/loading_indicator.dart';
+import 'package:flutterhole/widgets/ui/cache.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 class DashboardEntryTileBuilder extends StatelessWidget {
@@ -42,50 +41,20 @@ class DashboardEntryTileBuilder extends StatelessWidget {
   }
 }
 
-typedef SummaryDataCallback<T> = T? Function(PiSummary summary);
-typedef SummaryBuilderCallback<T> = Widget Function(
-    BuildContext context, T value);
-
-class SummaryCacheBuilder<T> extends HookConsumerWidget {
-  const SummaryCacheBuilder({
-    Key? key,
-    required this.callback,
-    required this.builder,
-  }) : super(key: key);
-
-  final SummaryDataCallback<T> callback;
-  final SummaryBuilderCallback<T?> builder;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final sum = ref.watch(activeSummaryProvider);
-    final value = useValueChanged<AsyncValue, T?>(
-      sum,
-      (_, T? oldResult) {
-        final newResult = sum.whenOrNull(data: callback);
-        return newResult ?? oldResult;
-      },
-    );
-    return builder(context, value);
-  }
-}
-
 class TotalQueriesTile extends HookConsumerWidget {
   const TotalQueriesTile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sum = ref.watch(activeSummaryProvider);
-
-    return SummaryCacheBuilder<int>(
-      callback: (summary) => summary.dnsQueriesToday,
-      builder: (context, value) {
+    return CacheBuilder<PiSummary>(
+      provider: activeSummaryProvider,
+      builder: (context, summary, isLoading) {
         return DashboardFittedTile(
           title: DashboardID.totalQueries.toReadable(),
-          text: value?.toFormatted(),
-          showLoadingIndicator: sum.isLoading(),
+          text: summary?.dnsQueriesToday.toFormatted(),
+          showLoadingIndicator: isLoading,
           onTap: () {
-            ref.refresh(summaryProvider(ref.read(activePiholeParamsProvider)));
+            ref.refreshSummary();
           },
         );
       },
@@ -98,17 +67,15 @@ class QueriesBlockedTile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sum = ref.watch(activeSummaryProvider);
-
-    return SummaryCacheBuilder<int>(
-      callback: (summary) => summary.adsBlockedToday,
-      builder: (context, value) {
+    return CacheBuilder<PiSummary>(
+      provider: activeSummaryProvider,
+      builder: (context, summary, isLoading) {
         return DashboardFittedTile(
           title: DashboardID.queriesBlocked.toReadable(),
-          text: value?.toFormatted(),
-          showLoadingIndicator: sum.isLoading(),
+          text: summary?.adsBlockedToday.toFormatted(),
+          showLoadingIndicator: isLoading,
           onTap: () {
-            ref.refresh(summaryProvider(ref.read(activePiholeParamsProvider)));
+            ref.refreshSummary();
           },
         );
       },
@@ -121,19 +88,17 @@ class PercentBlockedTile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sum = ref.watch(activeSummaryProvider);
-
-    return SummaryCacheBuilder<double>(
-      callback: (summary) => summary.adsPercentageToday,
-      builder: (context, value) {
+    return CacheBuilder<PiSummary>(
+      provider: activeSummaryProvider,
+      builder: (context, summary, isLoading) {
         return DashboardFittedTile(
-          // cardColor: Colors.red.shade300,
-          // cardColor: Theme.of(context).colorScheme.primary,
           title: DashboardID.percentBlocked.toReadable(),
-          text: value != null ? value.toStringAsFixed(2) + '%' : null,
-          showLoadingIndicator: sum.isLoading(),
+          text: summary != null
+              ? summary.adsPercentageToday.toStringAsFixed(2) + '%'
+              : null,
+          showLoadingIndicator: isLoading,
           onTap: () {
-            ref.refresh(summaryProvider(ref.read(activePiholeParamsProvider)));
+            ref.refreshSummary();
           },
         );
       },
@@ -146,17 +111,15 @@ class DomainsBlockedTile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sum = ref.watch(activeSummaryProvider);
-
-    return SummaryCacheBuilder<int>(
-      callback: (summary) => summary.domainsBeingBlocked,
-      builder: (context, value) {
+    return CacheBuilder<PiSummary>(
+      provider: activeSummaryProvider,
+      builder: (context, summary, isLoading) {
         return DashboardFittedTile(
           title: DashboardID.domainsOnBlocklist.toReadable(),
-          text: value?.toFormatted(),
-          showLoadingIndicator: sum.isLoading(),
+          text: summary?.domainsBeingBlocked.toFormatted(),
+          showLoadingIndicator: isLoading,
           onTap: () {
-            ref.refresh(summaryProvider(ref.read(activePiholeParamsProvider)));
+            ref.refreshSummary();
           },
         );
       },
@@ -187,48 +150,46 @@ class DashboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        // elevation: 5.0,
-        // color: cardColor,
+        color: cardColor,
         child: InkWell(
-      onTap: onTap,
-      child: Column(
-        // alignment: Alignment.center,
-        // mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (showTitle) ...[
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                        color:
-                            textColor ?? Theme.of(context).colorScheme.primary),
-                    maxLines: 3,
-                  ),
-                ] else ...[
-                  Container(),
-                ],
-                AnimatedFader(
-                  child: showLoadingIndicator
-                      ? LoadingIndicator(
-                          size: Theme.of(context).textTheme.subtitle1?.fontSize,
-                        )
-                      : Container(),
+          onTap: onTap,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (showTitle) ...[
+                      Text(
+                        title,
+                        style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                            color: textColor ??
+                                Theme.of(context).colorScheme.primary),
+                        maxLines: 3,
+                      ),
+                    ] else ...[
+                      Container(),
+                    ],
+                    AnimatedFader(
+                      child: showLoadingIndicator
+                          ? LoadingIndicator(
+                              size: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  ?.fontSize,
+                            )
+                          : Container(),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              content,
+            ],
           ),
-          content,
-          // Expanded(child: Text('Pleasies')),
-          // Text('Okeys'),
-        ],
-      ),
-    ));
+        ));
   }
 }
 
@@ -252,16 +213,12 @@ class DashboardFittedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return DashboardCard(
-    //   title: title,
-    //   content: Expanded(child: Center(child: Text(text ?? '-'))),
-    // );
     return DashboardCard(
       title: title,
       onTap: onTap,
       textColor: textColor,
-      // cardColor: cardColor,
-      // showLoadingIndicator: showLoadingIndicator,
+      cardColor: cardColor,
+      showLoadingIndicator: showLoadingIndicator,
       content: Expanded(
           child: Padding(
         padding:
@@ -283,12 +240,7 @@ class FittedText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return Text(text,
-    //     style: Theme.of(context).textTheme.headline6?.copyWith(
-    //           fontWeight: FontWeight.bold,
-    //         ));
     return FittedBox(
-      // fit: BoxFit.fitHeight,
       alignment: Alignment.center,
       child: Text(
         text,
