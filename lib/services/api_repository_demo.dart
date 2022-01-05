@@ -62,8 +62,11 @@ class PiholeRepositoryDemo implements PiholeRepository {
 
   @override
   Future<PiDetails> fetchPiDetails(_) async {
-    // TODO: implement fetchPiDetails
-    throw UnimplementedError();
+    await _sleep(Duration(milliseconds: 500));
+    return PiDetails(
+        temperature: _random.nextDouble() * 5 + 45,
+        cpuLoads: [],
+        memoryUsage: _random.nextDouble() * 50 + 10);
   }
 
   @override
@@ -124,7 +127,8 @@ class PiholeRepositoryDemo implements PiholeRepository {
   Future<PiVersions> fetchVersions(_) async {
     await _sleep(Duration(seconds: 1));
     count++;
-    if (count % 2 == 0) throw PiholeApiFailure.general('Failure #${count}');
+    if (count % 2 == 0)
+      throw PiholeApiFailure.general('Failure demonstration #${count}');
 
     return PiVersions(
       hasCoreUpdate: false,

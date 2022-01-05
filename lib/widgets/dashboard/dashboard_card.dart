@@ -20,6 +20,7 @@ class DashboardCardHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      dense: true,
       mouseCursor: SystemMouseCursors.click,
       title: Row(
         children: [
@@ -76,14 +77,14 @@ class DashboardCardHeader extends StatelessWidget {
 class DashboardCard extends StatelessWidget {
   const DashboardCard({
     Key? key,
-    required this.header,
     required this.content,
+    this.header,
     this.onTap,
     this.cardColor,
   }) : super(key: key);
 
-  final Widget header;
   final Widget content;
+  final Widget? header;
   final VoidCallback? onTap;
   final Color? cardColor;
 
@@ -97,7 +98,7 @@ class DashboardCard extends StatelessWidget {
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              header,
+              if (header != null) ...[header!],
               content,
             ],
           ),

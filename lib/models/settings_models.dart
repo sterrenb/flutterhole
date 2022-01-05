@@ -93,6 +93,8 @@ class DashboardTileConstraints with _$DashboardTileConstraints {
 
 enum DashboardID {
   versions,
+  temperature,
+  memoryUsage,
   totalQueries,
   queriesBlocked,
   percentBlocked,
@@ -134,23 +136,14 @@ class DashboardEntry with _$DashboardEntry {
         id: DashboardID.versions,
         enabled: true,
         constraints: DashboardTileConstraints.fit(4)),
-    // constraints: DashboardTileConstraints.count(4, 3)),
     DashboardEntry(
-        id: DashboardID.topPermittedDomains,
+        id: DashboardID.temperature,
         enabled: true,
-        constraints: DashboardTileConstraints.count(1, 1)),
+        constraints: DashboardTileConstraints.count(2, 1)),
     DashboardEntry(
-        id: DashboardID.topPermittedDomains,
+        id: DashboardID.memoryUsage,
         enabled: true,
-        constraints: DashboardTileConstraints.count(3, 1)),
-    DashboardEntry(
-        id: DashboardID.totalQueries,
-        enabled: true,
-        constraints: DashboardTileConstraints.count(3, 3)),
-    DashboardEntry(
-        id: DashboardID.forwardDestinations,
-        enabled: true,
-        constraints: DashboardTileConstraints.count(1, 3)),
+        constraints: DashboardTileConstraints.count(2, 1)),
   ];
 }
 

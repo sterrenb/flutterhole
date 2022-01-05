@@ -36,13 +36,14 @@ class Formatting {
       final message = e.when(
         notFound: () => "Not found.",
         notAuthenticated: () => "Not authenticated.",
-        invalidResponse: (response) => "The server responded with $response.",
+        invalidResponse: (response) =>
+            "The server responded with status code $response.",
         emptyString: () => "Empty string response.",
         emptyList: () => "Empty list response.",
         cancelled: () => "Request cancelled.",
         timeout: () => "A timeout occurred.",
         hostname: () => "Host name failed.",
-        general: (m) => "Something went wrong. $m.",
+        general: (m) => m,
         unknown: (u) => u.toString(),
       );
 
@@ -83,14 +84,18 @@ extension DashboardIDX on DashboardID {
     switch (this) {
       case DashboardID.versions:
         return 'Versions';
+      case DashboardID.temperature:
+        return 'Temperature';
+      case DashboardID.memoryUsage:
+        return 'Memory';
       case DashboardID.totalQueries:
         return 'Total queries';
       case DashboardID.queriesBlocked:
         return 'Queries blocked';
       case DashboardID.percentBlocked:
-        return 'Percent blocked';
+        return 'Blocked';
       case DashboardID.domainsOnBlocklist:
-        return 'Domains blocked';
+        return 'Domains';
       case DashboardID.forwardDestinations:
         return 'Forward destinations';
       case DashboardID.topPermittedDomains:

@@ -80,6 +80,22 @@ final activeVersionsProvider =
   return ref.watch(versionsProvider(ref.watch(activePiholeParamsProvider)));
 }, dependencies: [piProvider, versionsProvider, activePiholeParamsProvider]);
 
+final detailsProvider =
+    FutureProvider.autoDispose.family<PiDetails, PiholeRepositoryParams>(
+  (ref, params) async {
+    final pihole = ref.watch(piholeProvider(params));
+    final cancelToken = CancelToken();
+    ref.onDispose(() => cancelToken.cancel());
+    return pihole.fetchPiDetails(cancelToken);
+  },
+  dependencies: [piholeProvider, paramsProvider],
+);
+
+final activeDetailsProvider =
+    Provider.autoDispose<AsyncValue<PiDetails>>((ref) {
+  return ref.watch(detailsProvider(ref.watch(activePiholeParamsProvider)));
+}, dependencies: [piProvider, detailsProvider, activePiholeParamsProvider]);
+
 final forwardDestinationsProvider = FutureProvider.autoDispose
     .family<PiForwardDestinations, PiholeRepositoryParams>((ref, params) async {
   final pihole = ref.watch(piholeProvider(params));
@@ -97,4 +113,7 @@ extension WidgetRefX on WidgetRef {
 
   refreshVersions() =>
       refresh(versionsProvider(read(activePiholeParamsProvider)));
+
+  refreshDetails() =>
+      refresh(detailsProvider(read(activePiholeParamsProvider)));
 }

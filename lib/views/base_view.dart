@@ -12,7 +12,7 @@ class BaseView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (kIsWeb) {
+    if (kIsWeb && false) {
       return Banner(
           message: 'Demo',
           textDirection: TextDirection.ltr,

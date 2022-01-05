@@ -32,6 +32,11 @@ class DashboardEntryTileBuilder extends StatelessWidget {
         return const DomainsBlockedTile();
       case DashboardID.versions:
         return const VersionsTile();
+      case DashboardID.temperature:
+        return const TemperatureTile();
+      case DashboardID.memoryUsage:
+        return const MemoryUsageTile();
+
       default:
         return DashboardCard(
           header: DashboardCardHeader(
@@ -131,6 +136,52 @@ class DomainsBlockedTile extends HookConsumerWidget {
           onTap: () {
             ref.refreshSummary();
           },
+        );
+      },
+    );
+  }
+}
+
+class TemperatureTile extends HookConsumerWidget {
+  const TemperatureTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CacheBuilder<PiDetails>(
+      provider: activeDetailsProvider,
+      builder: (context, details, isLoading, error) {
+        return DashboardFittedTile(
+          title: DashboardID.temperature.toReadable(),
+          text: details?.temperatureInCelcius,
+          isLoading: isLoading,
+          error: error,
+          onTap: () => ref.refreshDetails(),
+        );
+      },
+    );
+  }
+}
+
+class MemoryUsageTile extends HookConsumerWidget {
+  const MemoryUsageTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CacheBuilder<PiDetails>(
+      provider: activeDetailsProvider,
+      builder: (context, details, isLoading, error) {
+        return DashboardFittedTile(
+          title: DashboardID.memoryUsage.toReadable(),
+          text: details?.memoryUsage != null
+              ? details!.memoryUsage!.toStringAsFixed(2) + '%'
+              : null,
+          isLoading: isLoading,
+          error: error,
+          onTap: () => ref.refreshDetails(),
         );
       },
     );
