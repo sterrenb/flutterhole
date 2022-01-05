@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
@@ -7,6 +9,7 @@ import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/dashboard/dashboard_grid.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
+import 'package:flutterhole/widgets/ui/scaffold_messenger.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -22,6 +25,7 @@ class DashboardView extends HookConsumerWidget {
     final pi = ref.watch(piProvider);
     final selectedIndex = useState(0);
     final page = usePageController();
+
     useValueChanged<int, void>(selectedIndex.value, (oldValue, _) {
       page.animateToPage(
         selectedIndex.value,
@@ -41,7 +45,7 @@ class DashboardView extends HookConsumerWidget {
               tooltip: 'Settings',
               iconData: KIcons.settings,
               view: SettingsView(),
-            )
+            ),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -66,29 +70,31 @@ class DashboardView extends HookConsumerWidget {
           ],
         ),
         extendBody: true,
-        body: Stack(
-          children: [
-            Container(
-              color: Theme.of(context).colorScheme.secondary.withOpacity(.1),
-              // child: Center(
-              //   child: Text("Center"),
-              // ),
-            ),
-            PageView(
-              controller: page,
-              children: [
-                SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: kBottomNavigationBarHeight),
-                    child: DashboardGrid(entries: pi.dashboard),
+        body: UnreadNotificationsBanner(
+          child: Stack(
+            children: [
+              Container(
+                color: Theme.of(context).colorScheme.secondary.withOpacity(.1),
+                // child: Center(
+                //   child: Text("Center"),
+                // ),
+              ),
+              PageView(
+                controller: page,
+                children: [
+                  SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          bottom: kBottomNavigationBarHeight),
+                      child: DashboardGrid(entries: pi.dashboard),
+                    ),
                   ),
-                ),
-                const QueriesTab(),
-                const ClientsTab(),
-              ],
-            )
-          ],
+                  const QueriesTab(),
+                  const ClientsTab(),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -146,7 +152,7 @@ class _DashPopupMenuButton extends HookConsumerWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Manage dashboard'),
+              const Text('Manage dashboard'),
               Icon(
                 KIcons.selectDashboardTiles,
                 color: Theme.of(context).dividerColor,

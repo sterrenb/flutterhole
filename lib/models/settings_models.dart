@@ -19,6 +19,13 @@ enum LogLevel {
   error,
 }
 
+const defaultNotifications = [
+  if (kIsWeb) ...[
+    'This is a demo version. Only connections over HTTPS are allowed.'
+  ],
+  if (kDebugMode) ...['Running in debug mode.'],
+];
+
 const defaultPiholes = kDebugMode
     ? [
         Pi(
@@ -56,16 +63,17 @@ const defaultPiholes = kDebugMode
 class UserPreferences with _$UserPreferences {
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory UserPreferences({
-    @Default(false) bool devMode,
+    @Default(kDebugMode) bool devMode,
     @Default(LogLevel.info) LogLevel logLevel,
     @Default(30) int updateFrequency,
     @Default(false) bool showThemeToggle,
-    @Default(ThemeMode.system) ThemeMode themeMode,
+    @Default(ThemeMode.light) ThemeMode themeMode,
     @Default(FlexScheme.mallardGreen) FlexScheme flexScheme,
     @Default(TemperatureReading.fahrenheit)
         TemperatureReading temperatureReading,
     @Default(defaultPiholes) List<Pi> piholes,
     @Default(0) int activeIndex,
+    @Default([]) List<String> notificationsRead,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>

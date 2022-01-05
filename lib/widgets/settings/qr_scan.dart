@@ -33,7 +33,6 @@ class _QrScanDialogState extends State<QrScanDialog> {
     int i = 0;
     controller.scannedDataStream.listen((scanData) {
       if (mounted && i == 0) {
-        debugPrint("Popping x$i!");
         Navigator.of(context).pop(scanData.code);
         i++;
       }

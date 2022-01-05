@@ -4,9 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 class PiholeRepositoryDemo implements PiholeRepository {
-  PiholeRepositoryDemo(this.params) {
-    debugPrint('making demo repository');
-  }
+  PiholeRepositoryDemo(this.params);
 
   final PiholeRepositoryParams params;
   final _random = Random();

@@ -106,7 +106,6 @@ class _Tile extends HookConsumerWidget {
             PopupMenuButton<String>(
               tooltip: '',
               onSelected: (String value) {
-                print(value);
                 if (value == 'Delete') {
                   showDeletePiholeConfirmationDialog(context, pi)
                       .then((isDeleted) {

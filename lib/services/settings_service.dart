@@ -75,7 +75,8 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
   }
 
   void clearPreferences() {
-    state = UserPreferences(piholes: state.piholes);
+    state =
+        UserPreferences(piholes: state.piholes, activeIndex: state.activeIndex);
     _save();
   }
 
@@ -128,6 +129,12 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     }
   }
 
+  void markNotificationsAsRead(List<String> values) {
+    state = state.copyWith(
+        notificationsRead: {...state.notificationsRead, ...values}.toList());
+    _save();
+  }
+
   void toggleDevMode() {
     state = state.copyWith(devMode: !state.devMode);
     _save();
@@ -166,6 +173,16 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
 
 final activeIndexProvider = Provider<int>((ref) {
   return ref.watch(UserPreferencesNotifier.provider).activeIndex;
+});
+
+final notificationsReadProvider = Provider<List<String>>((ref) {
+  return ref.watch(UserPreferencesNotifier.provider).notificationsRead;
+});
+
+final notificationsUnReadProvider = Provider<List<String>>((ref) {
+  final read = ref.watch(UserPreferencesNotifier.provider).notificationsRead;
+  return [...defaultNotifications]
+    ..removeWhere((element) => read.contains(element));
 });
 
 final allPiholesProvider = Provider<List<Pi>>((ref) {
