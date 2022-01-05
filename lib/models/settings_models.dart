@@ -125,11 +125,11 @@ class DashboardEntry with _$DashboardEntry {
     DashboardEntry(
         id: DashboardID.percentBlocked,
         enabled: true,
-        constraints: DashboardTileConstraints.count(4, 1)),
+        constraints: DashboardTileConstraints.count(2, 1)),
     DashboardEntry(
         id: DashboardID.domainsOnBlocklist,
         enabled: true,
-        constraints: DashboardTileConstraints.count(4, 1)),
+        constraints: DashboardTileConstraints.count(2, 1)),
     DashboardEntry(
         id: DashboardID.versions,
         enabled: true,

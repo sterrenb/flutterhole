@@ -72,7 +72,11 @@ class DashboardView extends HookConsumerWidget {
               controller: page,
               children: [
                 SingleChildScrollView(
-                  child: DashboardGrid(entries: pi.dashboard),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: kBottomNavigationBarHeight),
+                    child: DashboardGrid(entries: pi.dashboard),
+                  ),
                 ),
                 const QueriesTab(),
                 const ClientsTab(),
