@@ -1,7 +1,13 @@
 import 'dart:async';
 
+import 'package:animations/animations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
+import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/onboarding/introduction_button.dart';
+import 'package:flutterhole/widgets/onboarding/onboarding_carousel.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -15,9 +21,7 @@ void useAsyncEffect(
   useEffect(() {
     Future.microtask(effect);
     return () {
-      if (cleanup != null) {
-        Future.microtask(cleanup);
-      }
+      Future.microtask(cleanup);
     };
   }, keys);
 }
@@ -32,29 +36,44 @@ class UnreadNotificationsBanner extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<String> notifications = ref.read(notificationsUnReadProvider);
+    final List<String> unread = ref.read(notificationsUnReadProvider);
+    // final List<String> notifications = ['Hello', 'World'];
+
     useAsyncEffect(() {
-      if (notifications.isEmpty) return;
-      ScaffoldMessenger.of(context).clearMaterialBanners();
+      if (kIsWeb && unread.contains(kWelcomeNotification)) {
+        showOnboardingDialog(context, barrierDismissible: false,
+            onGetStarted: () {
+          ref
+              .read(UserPreferencesNotifier.provider.notifier)
+              .markNotificationsAsRead([kWelcomeNotification]);
+        });
+      }
+    }, () {}, [unread]);
+
+    final openedBanner = useState(false);
+    useAsyncEffect(() {
+      if (openedBanner.value || unread.isEmpty) return;
+      openedBanner.value = true;
       ScaffoldMessenger.of(context).showMaterialBanner(MaterialBanner(
-        content: Text(notifications.join('\n')),
+        content: Text(unread.join('\n')),
         leading: const Icon(Icons.info),
         actions: [
-          const UrlOutlinedButton(
-            url: 'https://www.google.com/search?q=pihole+https',
-            text: 'Pi-hole https',
-          ),
+          TextButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+              },
+              child: const Text('Hide')),
           TextButton(
               onPressed: () {
                 ref
                     .read(UserPreferencesNotifier.provider.notifier)
-                    .markNotificationsAsRead(notifications);
+                    .markNotificationsAsRead(unread);
                 ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
               },
               child: const Text('Got it')),
         ],
       ));
-    }, () {}, [notifications]);
+    }, () {}, [unread]);
     return child;
   }
 }

@@ -130,6 +130,10 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
   }
 
   void markNotificationsAsRead(List<String> values) {
+    print('marking as read:');
+    values.forEach((element) {
+      print('- ' + element);
+    });
     state = state.copyWith(
         notificationsRead: {...state.notificationsRead, ...values}.toList());
     _save();

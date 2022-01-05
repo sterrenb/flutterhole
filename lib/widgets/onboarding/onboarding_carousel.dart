@@ -59,7 +59,7 @@ class OnboardingCarousel extends HookConsumerWidget {
         Center(
           child: Text(pagePosition.value < 2
               ? 'Go the other way!'
-              : 'Time to get Started!'),
+              : 'Time to get started!'),
         ),
         PageView(
           scrollBehavior: _WebScrollBehavior(),
@@ -103,7 +103,7 @@ class OnboardingCarousel extends HookConsumerWidget {
                       Text('sleep', style: codeStyle),
                       _TooltipDirect(
                         message:
-                            '🔐 API token required for full functionality!',
+                            'HTTPS & API token required for full functionality!',
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -147,7 +147,7 @@ class OnboardingCarousel extends HookConsumerWidget {
                 children: [
                   Text('Inspect and triage all ', style: descriptionStyle),
                   _TooltipDirect(
-                      message: '🗄️ Domain Name System',
+                      message: 'Domain Name System',
                       child: Text('DNS', style: codeStyle)),
                   Text(' requests.', style: descriptionStyle),
                 ],
@@ -177,7 +177,7 @@ class OnboardingCarousel extends HookConsumerWidget {
                 alignment: WrapAlignment.center,
                 children: [
                   Text(
-                    'Select which information you want, in which order.',
+                    'Build layouts for all your Pi-holes.',
                     style: descriptionStyle,
                   ),
                 ],
@@ -187,10 +187,7 @@ class OnboardingCarousel extends HookConsumerWidget {
               leading: const Card(
                   color: Color(0xfffefffe),
                   // color: Colors.green,
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: GithubOctoImage(),
-                  )),
+                  child: GithubOctoImage()),
               title: Text.rich(
                 TextSpan(
                   text: '',
@@ -335,7 +332,7 @@ class OnboardingCarousel extends HookConsumerWidget {
                     child: Visibility(
                       visible: isInitialPage,
                       child: OutlinedButton(
-                        child: const Text('Get started'),
+                        child: const Text('Start'),
                         onPressed: () => onGetStarted(context),
                         // onPressed: () => ExtendedNavigator.of(context)
                         //     .pushSignInPage(
@@ -374,7 +371,7 @@ class _Page extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             const Spacer(),
-            Expanded(child: AspectRatio(aspectRatio: 1.5, child: leading)),
+            Expanded(child: AspectRatio(aspectRatio: 2.0, child: leading)),
             const SizedBox(height: 50),
             title,
             const SizedBox(height: 20),

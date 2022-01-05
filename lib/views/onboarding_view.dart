@@ -14,6 +14,7 @@ class OnboardingView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print('onboarding can pop: ${Navigator.canPop(context)}');
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -33,16 +34,14 @@ class OnboardingView extends HookConsumerWidget {
         ],
       ),
       extendBodyBehindAppBar: true,
-      body: DoubleBackToCloseApp(
-        child: MobileMaxWidth(child: OnboardingCarousel(
-          onGetStarted: (BuildContext context) {
-            Navigator.canPop(context)
-                ? Navigator.of(context).pop()
-                : Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const SettingsView()));
-          },
-        )),
-      ),
+      body: MobileMaxWidth(child: OnboardingCarousel(
+        onGetStarted: (BuildContext context) {
+          Navigator.canPop(context)
+              ? Navigator.of(context).pop()
+              : Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => const SettingsView()));
+        },
+      )),
     );
   }
 }

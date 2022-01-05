@@ -29,7 +29,7 @@ final activePiholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
 
 final piholeProvider =
     Provider.family<PiholeRepository, PiholeRepositoryParams>((ref, params) {
-  if (params.baseUrl.contains('example.com')) {
+  if (params.baseUrl.contains('example')) {
     return PiholeRepositoryDemo(params);
   }
   return PiholeRepositoryDio(params);

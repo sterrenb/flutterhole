@@ -10,6 +10,7 @@ import 'package:flutterhole/views/single_pi_edit_view.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
+import 'package:flutterhole/widgets/onboarding/introduction_button.dart';
 import 'package:flutterhole/widgets/settings/pi_select_list.dart';
 import 'package:flutterhole/widgets/settings/preference_button_tile.dart';
 import 'package:flutterhole/widgets/settings/theme_popup_menu.dart';
@@ -81,11 +82,20 @@ class SettingsView extends HookConsumerWidget {
                 ],
               ),
               const Divider(),
-              AppSection(title: 'Danger zone', children: [
-                const DevModeButton(),
+              AppSection(title: 'Other', children: [
+                ShowIntroductionListTile(),
+                ListTile(
+                  title: const Text('About'),
+                  trailing: const Icon(KIcons.openDialog),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const AboutView()));
+                  },
+                ),
                 DevWidget(
                     child: Column(
                   children: [
+                    const DevModeButton(),
                     const LogLevelButton(),
                     const ThemeToggleButton(),
                     // Row(
@@ -98,22 +108,6 @@ class SettingsView extends HookConsumerWidget {
                     //   ],
                     // ),
                     if (kDebugMode) ...[const ThemeShowcaseButton()],
-                    ListTile(
-                      title: const Text('About'),
-                      trailing: const Icon(KIcons.openDialog),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const AboutView()));
-                      },
-                    ),
-                    ListTile(
-                      title: const Text('Introduction'),
-                      trailing: const Icon(KIcons.openDialog),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const OnboardingView()));
-                      },
-                    ),
                   ],
                 )),
                 const PreferenceButtonTile(),

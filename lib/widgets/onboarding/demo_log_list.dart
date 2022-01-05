@@ -42,6 +42,7 @@ class AnimatedDemoLogList extends HookWidget {
     return AnimatedList(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      primary: false,
       key: k,
       initialItemCount: list.value.length,
       itemBuilder: (context, index, animation) {

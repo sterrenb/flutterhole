@@ -8,6 +8,7 @@ import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/dashboard/dashboard_grid.dart';
+import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/scaffold_messenger.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -19,6 +20,8 @@ class DashboardView extends HookConsumerWidget {
   const DashboardView({
     Key? key,
   }) : super(key: key);
+
+  static const labels = ['Dashboard', 'Queries', 'Clients'];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,7 +41,25 @@ class DashboardView extends HookConsumerWidget {
     return BaseView(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(pi.title),
+          title: Row(
+            children: [
+              Text(pi.title + ' '),
+              Opacity(
+                opacity: .5,
+                child: Stack(
+                  children: [
+                    ...labels.map((e) => AnimatedOpacity(
+                          duration: kThemeAnimationDuration,
+                          opacity: labels.elementAt(selectedIndex.value) == e
+                              ? 1.0
+                              : 0.0,
+                          child: Text(e),
+                        ))
+                  ],
+                ),
+              ),
+            ],
+          ),
           actions: const [
             _DashPopupMenuButton(),
             PushViewIconButton(
@@ -193,9 +214,11 @@ class _DashPopupMenuButton extends HookConsumerWidget {
             .map((e) => PopupMenuItem<String>(
                   value: e.title,
                   onTap: () {
-                    ref
-                        .read(UserPreferencesNotifier.provider.notifier)
-                        .selectPihole(e);
+                    if (e != pi) {
+                      ref
+                          .read(UserPreferencesNotifier.provider.notifier)
+                          .selectPihole(e);
+                    }
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

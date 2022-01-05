@@ -19,9 +19,14 @@ enum LogLevel {
   error,
 }
 
+const kWelcomeNotification = '''Hello!
+''';
+
 const defaultNotifications = [
+  kWelcomeNotification,
   if (kIsWeb) ...[
-    'This is a demo version. Only connections over HTTPS are allowed.'
+    'This is a demo. Only connections over HTTPS are allowed.',
+    'The demo simulates a Pi-hole for "example.com".',
   ],
   if (kDebugMode) ...['Running in debug mode.'],
 ];
