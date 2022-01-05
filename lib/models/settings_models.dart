@@ -65,6 +65,7 @@ class UserPreferences with _$UserPreferences {
     @Default(TemperatureReading.fahrenheit)
         TemperatureReading temperatureReading,
     @Default(defaultPiholes) List<Pi> piholes,
+    @Default(0) int activeIndex,
   }) = _UserPreferences;
 
   factory UserPreferences.fromJson(Map<String, dynamic> json) =>

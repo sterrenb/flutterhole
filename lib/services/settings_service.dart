@@ -79,6 +79,12 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     _save();
   }
 
+  void selectPihole(Pi pi) {
+    final index = state.piholes.indexOf(pi);
+    state = state.copyWith(activeIndex: index);
+    _save();
+  }
+
   void deletePiholes() {
     state = state.copyWith(piholes: defaultPiholes);
     _save();
@@ -149,7 +155,8 @@ final allPiholesProvider = Provider<List<Pi>>((ref) {
 
 final piProvider = Provider<Pi>((ref) {
   final prefs = ref.watch(UserPreferencesNotifier.provider);
-  return prefs.piholes.elementAt(0);
+  return prefs.piholes
+      .elementAt(prefs.activeIndex.clamp(0, prefs.piholes.length - 1));
 });
 
 final themeModeProvider = Provider<ThemeMode>((ref) {

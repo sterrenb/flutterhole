@@ -187,7 +187,9 @@ class _DashPopupMenuButton extends HookConsumerWidget {
             .map((e) => PopupMenuItem<String>(
                   value: e.title,
                   onTap: () {
-                    print(e.title);
+                    ref
+                        .read(UserPreferencesNotifier.provider.notifier)
+                        .selectPihole(e);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

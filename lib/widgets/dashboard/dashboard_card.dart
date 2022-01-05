@@ -4,6 +4,7 @@ import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/dialogs.dart';
 import 'package:flutterhole/widgets/layout/loading_indicator.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DashboardCardHeader extends StatelessWidget {
   final String title;
@@ -156,9 +157,12 @@ class FittedText extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         text,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
         ),
+        // style: GoogleFonts.firaMono(
+        //     // fontWeight: FontWeight.bold,
+        //     ),
       ),
     );
   }

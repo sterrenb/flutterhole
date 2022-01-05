@@ -19,6 +19,7 @@ class PiSelectList extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final active = ref.watch(piProvider);
     final piholes = ref.watch(allPiholesProvider);
     return ReorderableListView.builder(
       shrinkWrap: shrinkWrap,
@@ -39,6 +40,7 @@ class PiSelectList extends HookConsumerWidget {
         return _Tile(
           key: Key(index.toString()),
           pi: pi,
+          selected: pi == active,
           index: index,
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
@@ -61,26 +63,34 @@ class PiSelectList extends HookConsumerWidget {
   }
 }
 
-class _Tile extends StatelessWidget {
+class _Tile extends HookConsumerWidget {
   const _Tile({
     Key? key,
     required this.pi,
     required this.index,
+    required this.selected,
     this.onTap,
     this.onDelete,
   }) : super(key: key);
 
   final Pi pi;
   final int index;
+  final bool selected;
   final VoidCallback? onTap;
   final VoidCallback? onDelete;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ReorderableDelayedDragStartListener(
       index: index,
       child: ListTile(
-        minVerticalPadding: 16.0,
+        // minVerticalPadding: 16.0,
+        leading: Icon(
+          KIcons.selected,
+          color: selected
+              ? Theme.of(context).colorScheme.secondary
+              : Colors.transparent,
+        ),
         title: Text(pi.title),
         subtitle: Text(
           pi.baseUrl,
@@ -98,15 +108,9 @@ class _Tile extends StatelessWidget {
             // ),
             PopupMenuButton<String>(
               tooltip: '',
-              onSelected: (selected) {
-                if (selected == 'Delete') {
-                  //   if (await showDeletePiholeConfirmationDialog(context, pi) == true) {
-                  // ref
-                  //     .read(UserPreferencesNotifier.provider.notifier)
-                  //     .deletePihole(pi);
-                  // Navigator.of(context).pop();
-                  // }
-
+              onSelected: (String value) {
+                print(value);
+                if (value == 'Delete') {
                   showDeletePiholeConfirmationDialog(context, pi)
                       .then((isDeleted) {
                     if (isDeleted ?? false) {
@@ -114,13 +118,23 @@ class _Tile extends StatelessWidget {
                       // Navigator.of(context).pop();
                     }
                   });
-                } else if (selected == 'Admin page') {
-                  WebService.launchUrlInBrowser(Formatting.piToAdminUrl(pi));
                 }
               },
               itemBuilder: (context) => [
-                PopupMenuItem<String>(
-                  value: 'Admin page',
+                PopupMenuItem(
+                  enabled: !selected,
+                  onTap: () {
+                    // WebService.launchUrlInBrowser(Formatting.piToAdminUrl(pi));
+                    ref
+                        .read(UserPreferencesNotifier.provider.notifier)
+                        .selectPihole(pi);
+                  },
+                  child: const Text('Select'),
+                ),
+                PopupMenuItem(
+                  onTap: () {
+                    WebService.launchUrlInBrowser(Formatting.piToAdminUrl(pi));
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -132,13 +146,24 @@ class _Tile extends StatelessWidget {
                   ),
                 ),
                 if (onDelete != null) ...[
-                  PopupMenuItem<String>(
+                  PopupMenuItem(
                     value: 'Delete',
+                    // onTap: () async {
+                    //
+                    // },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text('Delete'),
-                        Icon(KIcons.delete),
+                      children: [
+                        Text(
+                          'Delete',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                        Icon(
+                          KIcons.delete,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                       ],
                     ),
                   )
