@@ -60,3 +60,23 @@ class UrlOutlinedButton extends StatelessWidget {
     );
   }
 }
+
+class PushViewIconButton extends StatelessWidget {
+  const PushViewIconButton({
+    Key? key,
+    required this.iconData,
+    required this.view,
+  }) : super(key: key);
+
+  final IconData iconData;
+  final Widget view;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => view));
+        },
+        icon: Icon(iconData));
+  }
+}

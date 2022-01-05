@@ -142,6 +142,14 @@ class DashboardEntry with _$DashboardEntry {
         id: DashboardID.topPermittedDomains,
         enabled: true,
         constraints: DashboardTileConstraints.count(3, 1)),
+    DashboardEntry(
+        id: DashboardID.versions,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(3, 3)),
+    DashboardEntry(
+        id: DashboardID.versions,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(1, 3)),
   ];
 }
 

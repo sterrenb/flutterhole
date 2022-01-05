@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/urls.dart';
-import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/onboarding/demo_dashboard.dart';
 import 'package:flutterhole/widgets/onboarding/demo_log_list.dart';
