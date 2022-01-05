@@ -143,11 +143,11 @@ class DashboardEntry with _$DashboardEntry {
         enabled: true,
         constraints: DashboardTileConstraints.count(3, 1)),
     DashboardEntry(
-        id: DashboardID.versions,
+        id: DashboardID.totalQueries,
         enabled: true,
         constraints: DashboardTileConstraints.count(3, 3)),
     DashboardEntry(
-        id: DashboardID.versions,
+        id: DashboardID.forwardDestinations,
         enabled: true,
         constraints: DashboardTileConstraints.count(1, 3)),
   ];

@@ -59,11 +59,6 @@ final summaryProvider =
     final pihole = ref.watch(piholeProvider(params));
     final cancelToken = CancelToken();
     ref.onDispose(() => cancelToken.cancel());
-
-    if (kDebugMode) {
-      await Future.delayed(const Duration(milliseconds: 200));
-    }
-
     return pihole.fetchSummary(cancelToken);
   },
   dependencies: [piholeProvider, paramsProvider],
@@ -73,6 +68,22 @@ final activeSummaryProvider =
     Provider.autoDispose<AsyncValue<PiSummary>>((ref) {
   return ref.watch(summaryProvider(ref.watch(activePiholeParamsProvider)));
 }, dependencies: [piProvider, summaryProvider, activePiholeParamsProvider]);
+
+final versionsProvider =
+    FutureProvider.autoDispose.family<PiVersions, PiholeRepositoryParams>(
+  (ref, params) async {
+    final pihole = ref.watch(piholeProvider(params));
+    final cancelToken = CancelToken();
+    ref.onDispose(() => cancelToken.cancel());
+    return pihole.fetchVersions(cancelToken);
+  },
+  dependencies: [piholeProvider, paramsProvider],
+);
+
+final activeVersionsProvider =
+    Provider.autoDispose<AsyncValue<PiVersions>>((ref) {
+  return ref.watch(versionsProvider(ref.watch(activePiholeParamsProvider)));
+}, dependencies: [piProvider, versionsProvider, activePiholeParamsProvider]);
 
 final forwardDestinationsProvider = FutureProvider.autoDispose
     .family<PiForwardDestinations, PiholeRepositoryParams>((ref, params) async {
