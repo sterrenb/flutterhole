@@ -29,10 +29,10 @@ import 'dashboard_edit_view.dart';
 class SinglePiEditView extends HookConsumerWidget {
   const SinglePiEditView({
     Key? key,
-    this.title,
+    required this.isNew,
   }) : super(key: key);
 
-  final String? title;
+  final bool isNew;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -71,7 +71,7 @@ class SinglePiEditView extends HookConsumerWidget {
     return BaseView(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(title ?? 'Editing ${oldPi.title}'),
+          title: Text(isNew ? 'New Pi-hole' : 'Editing ${oldPi.title}'),
           actions: [
             DevWidget(
               child: IconButton(
@@ -109,16 +109,18 @@ class SinglePiEditView extends HookConsumerWidget {
                   IconOutlinedButton(
                     iconData: KIcons.dashboard,
                     text: 'Manage dashboard',
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ProviderScope(overrides: [
-                          piProvider.overrideWithValue(oldPi),
-                          activePiholeParamsProvider
-                              .overrideWithProvider(paramsProvider(oldPi)),
-                        ], child: const DashboardEditView()),
-                        fullscreenDialog: true,
-                      ));
-                    },
+                    onPressed: isNew
+                        ? null
+                        : () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ProviderScope(overrides: [
+                                piProvider.overrideWithValue(oldPi),
+                                activePiholeParamsProvider.overrideWithProvider(
+                                    paramsProvider(oldPi)),
+                              ], child: const DashboardEditView()),
+                              fullscreenDialog: true,
+                            ));
+                          },
                   ),
                   UrlOutlinedButton(
                     url: Formatting.piToAdminUrl(newPi.value),

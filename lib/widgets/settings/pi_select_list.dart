@@ -43,7 +43,7 @@ class PiSelectList extends HookConsumerWidget {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => ProviderScope(overrides: [
                 piProvider.overrideWithValue(pi),
-              ], child: const SinglePiEditView()),
+              ], child: const SinglePiEditView(isNew: false)),
               // fullscreenDialog: true,
             ));
           },
