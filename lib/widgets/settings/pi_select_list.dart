@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
@@ -128,10 +127,10 @@ class _Tile extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Admin page'),
+                      const Text('Admin page'),
                       Tooltip(
                           message: Formatting.piToAdminUrl(pi),
-                          child: Icon(KIcons.openUrl)),
+                          child: const Icon(KIcons.openUrl)),
                     ],
                   ),
                 ),

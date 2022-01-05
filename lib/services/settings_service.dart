@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/models/settings_models.dart';
@@ -92,13 +91,10 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
 
   void savePihole({Pi? oldValue, required Pi newValue}) {
     if (oldValue != null && state.piholes.contains(oldValue)) {
-      print('updating ${oldValue.title} to ${newValue.title}');
-      final index = state.piholes.indexOf(oldValue);
       final list = List<Pi>.from(state.piholes);
-      list[index] = newValue;
+      list[state.piholes.indexOf(oldValue)] = newValue;
       savePiholes(list);
     } else {
-      print('adding ${newValue.title}');
       savePiholes([...state.piholes, newValue]);
     }
   }

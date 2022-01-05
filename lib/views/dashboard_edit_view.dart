@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
@@ -24,17 +23,9 @@ class DashboardEditView extends HookConsumerWidget {
 
     return BaseView(
       child: LeftRightScaffold(
-        title: Row(
-          mainAxisAlignment:
-              kIsWeb ? MainAxisAlignment.center : MainAxisAlignment.start,
-          children: [
-            Text(
-              pi.title,
-              overflow: TextOverflow.fade,
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            ),
-            Text(' Dashboard'),
-          ],
+        title: Text(
+          '${pi.title} Dashboard',
+          overflow: TextOverflow.fade,
         ),
         actions: [
           PopupMenuButton<String>(

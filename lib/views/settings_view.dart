@@ -1,15 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
-import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/about_view.dart';
 import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/single_pi_edit_view.dart';
-import 'package:flutterhole/widgets/api/ping_api_button.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
-import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/settings/pi_select_list.dart';
@@ -32,22 +29,13 @@ class SettingsView extends HookConsumerWidget {
     return BaseView(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Settings"),
-          centerTitle: kIsWeb,
+          title: const Text('Settings'),
         ),
         body: MobileMaxWidth(
           child: ListView(
             children: [
-              ListTile(
-                title: const Text("About"),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const AboutView()));
-                },
-              ),
-              const PingApiButton(),
               const AppSection(
-                title: "Customization",
+                title: 'Customization',
                 children: [
                   ThemePopupMenu(),
                   Padding(
@@ -60,7 +48,7 @@ class SettingsView extends HookConsumerWidget {
               ),
               const Divider(),
               AppSection(
-                title: "My Pi-holes",
+                title: 'My Pi-holes',
                 children: [
                   const PiSelectList(
                     shrinkWrap: true,
@@ -92,7 +80,7 @@ class SettingsView extends HookConsumerWidget {
                 ],
               ),
               const Divider(),
-              AppSection(title: "Danger zone", children: [
+              AppSection(title: 'Danger zone', children: [
                 const DevModeButton(),
                 DevWidget(
                     child: Column(
@@ -108,7 +96,15 @@ class SettingsView extends HookConsumerWidget {
                     //     ),
                     //   ],
                     // ),
-                    const ThemeShowcaseButton(),
+                    if (kDebugMode) ...[const ThemeShowcaseButton()],
+                    ListTile(
+                      title: const Text('About'),
+                      trailing: const Icon(KIcons.openDialog),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const AboutView()));
+                      },
+                    ),
                   ],
                 )),
                 const PreferenceButtonTile(),

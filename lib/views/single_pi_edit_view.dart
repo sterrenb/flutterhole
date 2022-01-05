@@ -1,5 +1,4 @@
 import 'package:animations/animations.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterhole/constants/icons.dart';
@@ -114,6 +113,8 @@ class SinglePiEditView extends HookConsumerWidget {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ProviderScope(overrides: [
                           piProvider.overrideWithValue(oldPi),
+                          activePiholeParamsProvider
+                              .overrideWithProvider(paramsProvider(oldPi)),
                         ], child: const DashboardEditView()),
                         fullscreenDialog: true,
                       ));

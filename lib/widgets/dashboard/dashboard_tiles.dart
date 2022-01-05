@@ -278,7 +278,7 @@ class FittedText extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Text(
           text,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),

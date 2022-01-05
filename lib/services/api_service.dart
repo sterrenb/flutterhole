@@ -61,6 +61,7 @@ final summaryProvider =
 
     return pihole.fetchSummary(cancelToken);
   },
+  dependencies: [piholeProvider, paramsProvider],
 );
 
 final activeSummaryProvider =

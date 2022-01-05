@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole/services/settings_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class BaseView extends HookConsumerWidget {
