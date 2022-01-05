@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
+import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/services/settings_service.dart';
+import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/dashboard/dashboard_grid.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+
+import 'dashboard_edit_view.dart';
 
 class DashboardView extends HookConsumerWidget {
   const DashboardView({
@@ -32,7 +36,9 @@ class DashboardView extends HookConsumerWidget {
         appBar: AppBar(
           title: Text(pi.title),
           actions: const [
+            _DashPopupMenuButton(),
             PushViewIconButton(
+              tooltip: 'Settings',
               iconData: KIcons.settings,
               view: SettingsView(),
             )
@@ -111,6 +117,98 @@ class ClientsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text('Clients'),
+    );
+  }
+}
+
+class _DashPopupMenuButton extends HookConsumerWidget {
+  const _DashPopupMenuButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pi = ref.watch(piProvider);
+    final piholes = ref.watch(allPiholesProvider);
+    return PopupMenuButton<String>(
+      tooltip: '',
+      onSelected: (selected) {
+        if (selected == 'Manage dashboard') {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const DashboardEditView(),
+            fullscreenDialog: true,
+          ));
+        } else if (selected == 'Admin page') {
+          WebService.launchUrlInBrowser(Formatting.piToAdminUrl(pi));
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem<String>(
+          value: 'Manage dashboard',
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Manage dashboard'),
+              Icon(
+                KIcons.selectDashboardTiles,
+                color: Theme.of(context).dividerColor,
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'Admin page',
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Admin page'),
+              Tooltip(
+                  message: Formatting.piToAdminUrl(pi),
+                  child: Icon(
+                    KIcons.openUrl,
+                    color: Theme.of(context).dividerColor,
+                  )),
+            ],
+          ),
+        ),
+        const PopupMenuDivider(),
+        PopupMenuItem<String>(
+          value: 'Select',
+          enabled: false,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'Select Pi-hole',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
+            ],
+          ),
+        ),
+        ...piholes
+            .map((e) => PopupMenuItem<String>(
+                  value: e.title,
+                  onTap: () {
+                    print(e.title);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          e.title,
+                          overflow: TextOverflow.fade,
+                        ),
+                      ),
+                      Icon(
+                        KIcons.selected,
+                        color: e == pi
+                            ? Theme.of(context).colorScheme.secondary
+                            : Colors.transparent,
+                      ),
+                    ],
+                  ),
+                ))
+            .toList(),
+      ],
     );
   }
 }

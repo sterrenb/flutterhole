@@ -116,9 +116,6 @@ class _Tile extends StatelessWidget {
                   });
                 } else if (selected == 'Admin page') {
                   WebService.launchUrlInBrowser(Formatting.piToAdminUrl(pi));
-                  // entries.value = entries.value
-                  //     .map((e) => e.copyWith(enabled: false))
-                  //     .toList();
                 }
               },
               itemBuilder: (context) => [

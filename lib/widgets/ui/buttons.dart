@@ -66,14 +66,17 @@ class PushViewIconButton extends StatelessWidget {
     Key? key,
     required this.iconData,
     required this.view,
+    this.tooltip,
   }) : super(key: key);
 
   final IconData iconData;
   final Widget view;
+  final String? tooltip;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
+        tooltip: tooltip,
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (_) => view));
         },
