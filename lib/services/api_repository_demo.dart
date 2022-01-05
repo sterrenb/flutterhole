@@ -118,20 +118,24 @@ class PiholeRepositoryDemo implements PiholeRepository {
     throw UnimplementedError();
   }
 
+  int count = 0;
+
   @override
   Future<PiVersions> fetchVersions(_) async {
-    await _sleep();
+    await _sleep(Duration(seconds: 1));
+    count++;
+    if (count % 2 == 0) throw PiholeApiFailure.general('Failure #${count}');
 
     return PiVersions(
       hasCoreUpdate: false,
       hasWebUpdate: false,
       hasFtlUpdate: true,
-      currentCoreVersion: '1.2.3',
-      currentWebVersion: '1.2.3',
-      currentFtlVersion: '1.2.3',
-      latestCoreVersion: '1.2.3',
-      latestWebVersion: '1.2.3',
-      latestFtlVersion: '1.3.4',
+      currentCoreVersion: 'v1.2.3',
+      currentWebVersion: 'v5.8',
+      currentFtlVersion: 'v1.2.3',
+      latestCoreVersion: 'v1.2.3',
+      latestWebVersion: 'v5.8',
+      latestFtlVersion: 'v1.3.4',
       coreBranch: 'master',
       webBranch: 'develop',
       ftlBranch: 'master',

@@ -94,7 +94,7 @@ extension DashboardIDX on DashboardID {
       case DashboardID.forwardDestinations:
         return 'Forward destinations';
       case DashboardID.topPermittedDomains:
-        return 'Top permitted domains';
+        return 'Domains';
     }
   }
 }

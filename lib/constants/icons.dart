@@ -87,6 +87,7 @@ class KIcons {
   static const IconData logInfo = Icons.info;
   static const IconData logWarning = Icons.warning;
   static const IconData logError = Icons.error;
+  static const IconData loading = Icons.cloud_download;
   static const IconData unknown = Icons.device_unknown;
 
   static const IconData forwarded = Icons.check_circle;

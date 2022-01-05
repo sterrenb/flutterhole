@@ -125,17 +125,18 @@ class DashboardEntry with _$DashboardEntry {
     DashboardEntry(
         id: DashboardID.percentBlocked,
         enabled: true,
-        constraints: DashboardTileConstraints.count(2, 1)),
+        constraints: DashboardTileConstraints.count(2, 2)),
     DashboardEntry(
         id: DashboardID.domainsOnBlocklist,
         enabled: true,
-        constraints: DashboardTileConstraints.count(2, 1)),
+        constraints: DashboardTileConstraints.count(2, 2)),
     DashboardEntry(
         id: DashboardID.versions,
         enabled: true,
-        constraints: DashboardTileConstraints.count(4, 2)),
+        constraints: DashboardTileConstraints.fit(4)),
+    // constraints: DashboardTileConstraints.count(4, 3)),
     DashboardEntry(
-        id: DashboardID.forwardDestinations,
+        id: DashboardID.topPermittedDomains,
         enabled: true,
         constraints: DashboardTileConstraints.count(1, 1)),
     DashboardEntry(

@@ -27,11 +27,6 @@ final activePiholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
   return ref.watch(paramsProvider(pi));
 });
 
-extension WidgetRefX on WidgetRef {
-  refreshSummary() =>
-      refresh(summaryProvider(read(activePiholeParamsProvider)));
-}
-
 final piholeProvider =
     Provider.family<PiholeRepository, PiholeRepositoryParams>((ref, params) {
   if (params.baseUrl.contains('example.com')) {
@@ -95,3 +90,11 @@ final forwardDestinationsProvider = FutureProvider.autoDispose
   ref.onDispose(() => cancelToken.cancel());
   return pihole.fetchForwardDestinations(cancelToken);
 });
+
+extension WidgetRefX on WidgetRef {
+  refreshSummary() =>
+      refresh(summaryProvider(read(activePiholeParamsProvider)));
+
+  refreshVersions() =>
+      refresh(versionsProvider(read(activePiholeParamsProvider)));
+}
