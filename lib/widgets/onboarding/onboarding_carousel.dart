@@ -15,9 +15,11 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class OnboardingCarousel extends HookConsumerWidget {
   const OnboardingCarousel({
     Key? key,
+    required this.onGetStarted,
   }) : super(key: key);
 
   final bool isInitialPage = true;
+  final ValueChanged<BuildContext> onGetStarted;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -335,11 +337,7 @@ class OnboardingCarousel extends HookConsumerWidget {
                       visible: isInitialPage,
                       child: OutlinedButton(
                         child: const Text('Get started'),
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => const SettingsView()));
-                        },
+                        onPressed: () => onGetStarted(context),
                         // onPressed: () => ExtendedNavigator.of(context)
                         //     .pushSignInPage(
                         //         startingIndex: SignInStartingIndex.signIn),

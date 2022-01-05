@@ -149,7 +149,7 @@ class AboutView extends HookConsumerWidget {
                             SizedBox(height: 8.0),
                             Text('Thank you in advance!'),
                             SizedBox(height: 24.0),
-                            AppWrap(children: [
+                            AppWrap(alignment: WrapAlignment.center, children: [
                               UrlOutlinedButton(
                                 url: KUrls.payPalUrl,
                                 text: 'Paypal',

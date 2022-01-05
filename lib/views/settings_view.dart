@@ -5,6 +5,7 @@ import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/about_view.dart';
 import 'package:flutterhole/views/base_view.dart';
+import 'package:flutterhole/views/onboarding_view.dart';
 import 'package:flutterhole/views/single_pi_edit_view.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
@@ -103,6 +104,14 @@ class SettingsView extends HookConsumerWidget {
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const AboutView()));
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Introduction'),
+                      trailing: const Icon(KIcons.openDialog),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const OnboardingView()));
                       },
                     ),
                   ],

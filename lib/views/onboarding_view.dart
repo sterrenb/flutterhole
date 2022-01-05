@@ -18,6 +18,9 @@ class OnboardingView extends HookConsumerWidget {
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.transparent,
+        leading: Navigator.canPop(context)
+            ? BackButton(color: Theme.of(context).appBarTheme.backgroundColor)
+            : null,
         actions: [
           DevWidget(
             child: IconButton(
@@ -30,8 +33,15 @@ class OnboardingView extends HookConsumerWidget {
         ],
       ),
       extendBodyBehindAppBar: true,
-      body: const DoubleBackToCloseApp(
-        child: MobileMaxWidth(child: OnboardingCarousel()),
+      body: DoubleBackToCloseApp(
+        child: MobileMaxWidth(child: OnboardingCarousel(
+          onGetStarted: (BuildContext context) {
+            Navigator.canPop(context)
+                ? Navigator.of(context).pop()
+                : Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const SettingsView()));
+          },
+        )),
       ),
     );
   }
