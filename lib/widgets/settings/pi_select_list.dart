@@ -21,19 +21,16 @@ class PiSelectList extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final active = ref.watch(piProvider);
     final piholes = ref.watch(allPiholesProvider);
+    final activeIndex = ref.watch(activeIndexProvider);
+
     return ReorderableListView.builder(
       shrinkWrap: shrinkWrap,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: piholes.length,
       onReorder: (from, to) {
-        if (from < to) {
-          to -= 1;
-        }
-
-        final list = List<Pi>.from(piholes, growable: true);
-        final item = list.removeAt(from);
-        list.insert(to, item);
-        ref.read(UserPreferencesNotifier.provider.notifier).savePiholes(list);
+        ref
+            .read(UserPreferencesNotifier.provider.notifier)
+            .reorderPiholes(from, to);
       },
       itemBuilder: (context, index) {
         final pi = piholes.elementAt(index);

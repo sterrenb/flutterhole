@@ -95,6 +95,21 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     _save();
   }
 
+  void reorderPiholes(int from, int to) {
+    if (from == to) return;
+    if (from < to) {
+      to -= 1;
+    }
+
+    final active = state.piholes.elementAt(state.activeIndex);
+    final list = List<Pi>.from(state.piholes, growable: true);
+    final item = list.removeAt(from);
+    list.insert(to, item);
+    final activeIndex = list.indexOf(active);
+    state = state.copyWith(piholes: list, activeIndex: activeIndex);
+    _save();
+  }
+
   void savePihole({Pi? oldValue, required Pi newValue}) {
     if (oldValue != null && state.piholes.contains(oldValue)) {
       final list = List<Pi>.from(state.piholes);
@@ -148,6 +163,10 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     _save();
   }
 }
+
+final activeIndexProvider = Provider<int>((ref) {
+  return ref.watch(UserPreferencesNotifier.provider).activeIndex;
+});
 
 final allPiholesProvider = Provider<List<Pi>>((ref) {
   return ref.watch(UserPreferencesNotifier.provider).piholes;
