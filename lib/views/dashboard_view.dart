@@ -7,11 +7,16 @@ import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/dashboard/dashboard_grid.dart';
+import 'package:flutterhole/widgets/layout/responsiveness.dart';
+import 'package:flutterhole/widgets/query_log/query_log_list.dart';
+import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/scaffold_messenger.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'dashboard_edit_view.dart';
+
+final _selectedIndexProvider = StateProvider<int>((ref) => 1);
 
 class DashboardView extends HookConsumerWidget {
   const DashboardView({
@@ -23,14 +28,13 @@ class DashboardView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pi = ref.watch(piProvider);
-    final selectedIndex = useState(0);
-    final page = usePageController();
+    final selectedIndex = ref.watch(_selectedIndexProvider);
+    final page = usePageController(initialPage: selectedIndex);
 
-    useValueChanged<int, void>(selectedIndex.value, (oldValue, _) {
+    useValueChanged<int, void>(selectedIndex, (oldValue, _) {
       page.animateToPage(
-        selectedIndex.value,
-        duration:
-            kThemeAnimationDuration * (oldValue - selectedIndex.value).abs(),
+        selectedIndex,
+        duration: kThemeAnimationDuration * (oldValue - selectedIndex).abs(),
         curve: Curves.easeOutCubic,
       );
     });
@@ -47,9 +51,8 @@ class DashboardView extends HookConsumerWidget {
                   children: [
                     ...labels.map((e) => AnimatedOpacity(
                           duration: kThemeAnimationDuration,
-                          opacity: labels.elementAt(selectedIndex.value) == e
-                              ? 1.0
-                              : 0.0,
+                          opacity:
+                              labels.elementAt(selectedIndex) == e ? 1.0 : 0.0,
                           child: Text(e),
                         ))
                   ],
@@ -67,9 +70,9 @@ class DashboardView extends HookConsumerWidget {
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: selectedIndex.value,
+          currentIndex: selectedIndex,
           onTap: (index) {
-            selectedIndex.value = index;
+            ref.read(_selectedIndexProvider.state).state = index;
           },
           landscapeLayout: BottomNavigationBarLandscapeLayout.linear,
           items: const [
@@ -124,13 +127,9 @@ class QueriesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: 20,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text('Query $index'),
-          );
-        });
+    return const MobileMaxWidth(
+      child: QueryLogList(),
+    );
   }
 }
 
@@ -160,8 +159,6 @@ class _DashPopupMenuButton extends HookConsumerWidget {
             builder: (context) => const DashboardEditView(),
             fullscreenDialog: true,
           ));
-        } else if (selected == 'Admin page') {
-          WebService.launchUrlInBrowser(Formatting.piToAdminUrl(pi));
         }
       },
       itemBuilder: (context) => [
@@ -179,7 +176,9 @@ class _DashPopupMenuButton extends HookConsumerWidget {
           ),
         ),
         PopupMenuItem<String>(
-          value: 'Admin page',
+          onTap: () {
+            WebService.launchUrlInBrowser(Formatting.piToAdminUrl(pi));
+          },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -190,6 +189,24 @@ class _DashPopupMenuButton extends HookConsumerWidget {
                     KIcons.openUrl,
                     color: Theme.of(context).dividerColor,
                   )),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          onTap: () {
+            switch (ref.read(_selectedIndexProvider)) {
+              case 0:
+                ref.refreshDashboard();
+            }
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Refresh'),
+              Icon(
+                KIcons.refresh,
+                color: Theme.of(context).dividerColor,
+              ),
             ],
           ),
         ),

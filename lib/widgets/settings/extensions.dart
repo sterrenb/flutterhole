@@ -17,6 +17,12 @@ extension WidgetRefX on WidgetRef {
   void refreshDetails() =>
       refresh(detailsProvider(read(activePiholeParamsProvider)));
 
+  void refreshDashboard() {
+    refreshSummary();
+    refreshVersions();
+    refreshDetails();
+  }
+
   void updatePihole(BuildContext context, Pi oldValue, Pi newValue,
       [String? message]) {
     final notifier = read(UserPreferencesNotifier.provider.notifier);
