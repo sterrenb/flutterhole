@@ -74,6 +74,9 @@ class Formatting {
 
   static String enumToString(dynamic x) =>
       x.toString().split('.').skip(1).join();
+
+  static String numToPercentage(num x, [int fractionDigits = 1]) =>
+      x.toStringAsFixed(fractionDigits) + '%';
 }
 
 extension Numx on num {
@@ -81,7 +84,7 @@ extension Numx on num {
 }
 
 extension DashboardIDX on DashboardID {
-  String toReadable() {
+  String get humanString {
     switch (this) {
       case DashboardID.versions:
         return 'Versions';
@@ -98,7 +101,7 @@ extension DashboardIDX on DashboardID {
       case DashboardID.domainsOnBlocklist:
         return 'Domains';
       case DashboardID.forwardDestinations:
-        return 'Forward destinations';
+        return 'Upstream servers';
       case DashboardID.topPermittedDomains:
         return 'Domains';
     }

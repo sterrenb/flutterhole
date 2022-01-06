@@ -23,7 +23,7 @@ class VersionsTile extends HookConsumerWidget {
       builder: (context, versions, isLoading, error) {
         return DashboardCard(
           header: DashboardCardHeader(
-            title: DashboardID.versions.toReadable(),
+            title: DashboardID.versions.humanString,
             isLoading: isLoading,
             error: error,
           ),

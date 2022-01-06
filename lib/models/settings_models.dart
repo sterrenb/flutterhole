@@ -128,11 +128,7 @@ class DashboardEntry with _$DashboardEntry {
   factory DashboardEntry.fromJson(Map<String, dynamic> json) =>
       _$DashboardEntryFromJson(json);
 
-  static const all = [
-    DashboardEntry(
-        id: DashboardID.forwardDestinations,
-        enabled: true,
-        constraints: DashboardTileConstraints.count(4, 4)),
+  static const defaultDashboard = [
     DashboardEntry(
         id: DashboardID.totalQueries,
         enabled: true,
@@ -149,6 +145,10 @@ class DashboardEntry with _$DashboardEntry {
         id: DashboardID.domainsOnBlocklist,
         enabled: true,
         constraints: DashboardTileConstraints.count(2, 2)),
+    DashboardEntry(
+        id: DashboardID.forwardDestinations,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(4, 4)),
     DashboardEntry(
         id: DashboardID.versions,
         enabled: true,
@@ -177,7 +177,7 @@ class Pi with _$Pi {
     @Default("") String apiToken,
     @Default(false) bool allowSelfSignedCertificates,
     @Default("/admin") String adminHome,
-    @Default(DashboardEntry.all) List<DashboardEntry> dashboard,
+    @Default(DashboardEntry.defaultDashboard) List<DashboardEntry> dashboard,
   }) = _Pi;
 
   factory Pi.fromJson(Map<String, dynamic> json) => _$PiFromJson(json);

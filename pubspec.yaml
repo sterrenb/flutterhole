@@ -32,6 +32,8 @@ dependencies:
   flutter_markdown: ^0.6.9
   smooth_page_indicator: ^1.0.0+2
   auto_size_text: ^3.0.0
+  graphic: ^0.7.0
+  fl_chart: ^0.40.6
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
+import 'package:flutterhole/widgets/dashboard/pie_chart.dart';
 import 'package:flutterhole/widgets/dashboard/versions_tile.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/cache.dart';
@@ -41,7 +42,7 @@ class DashboardEntryTileBuilder extends StatelessWidget {
       default:
         return DashboardCard(
           header: DashboardCardHeader(
-              title: entry.id.toReadable(), isLoading: false),
+              title: entry.id.humanString, isLoading: false),
           content: const Expanded(child: Center(child: Text('TODO'))),
           // showTitle: entry.constraints.when(
           //   count: (cross, main) => cross > 1 || main > 1,
@@ -62,7 +63,7 @@ class TotalQueriesTile extends HookConsumerWidget {
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
         return DashboardFittedTile(
-          title: DashboardID.totalQueries.toReadable(),
+          title: DashboardID.totalQueries.humanString,
           text: summary?.dnsQueriesToday.toFormatted(),
           isLoading: isLoading,
           error: error,
@@ -84,7 +85,7 @@ class QueriesBlockedTile extends HookConsumerWidget {
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
         return DashboardFittedTile(
-          title: DashboardID.queriesBlocked.toReadable(),
+          title: DashboardID.queriesBlocked.humanString,
           text: summary?.adsBlockedToday.toFormatted(),
           isLoading: isLoading,
           error: error,
@@ -106,7 +107,7 @@ class PercentBlockedTile extends HookConsumerWidget {
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
         return DashboardFittedTile(
-          title: DashboardID.percentBlocked.toReadable(),
+          title: DashboardID.percentBlocked.humanString,
           text: summary != null
               ? summary.adsPercentageToday.toStringAsFixed(2) + '%'
               : null,
@@ -130,7 +131,7 @@ class DomainsBlockedTile extends HookConsumerWidget {
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
         return DashboardFittedTile(
-          title: DashboardID.domainsOnBlocklist.toReadable(),
+          title: DashboardID.domainsOnBlocklist.humanString,
           text: summary?.domainsBeingBlocked.toFormatted(),
           isLoading: isLoading,
           error: error,
@@ -154,7 +155,7 @@ class TemperatureTile extends HookConsumerWidget {
       provider: activeDetailsProvider,
       builder: (context, details, isLoading, error) {
         return DashboardFittedTile(
-          title: DashboardID.temperature.toReadable(),
+          title: DashboardID.temperature.humanString,
           text: details?.temperatureInCelcius,
           isLoading: isLoading,
           error: error,
@@ -176,7 +177,7 @@ class MemoryUsageTile extends HookConsumerWidget {
       provider: activeDetailsProvider,
       builder: (context, details, isLoading, error) {
         return DashboardFittedTile(
-          title: DashboardID.memoryUsage.toReadable(),
+          title: DashboardID.memoryUsage.humanString,
           text: details?.memoryUsage != null
               ? details!.memoryUsage!.toStringAsFixed(2) + '%'
               : null,
@@ -202,16 +203,28 @@ class ForwardDestinationsTile extends HookConsumerWidget {
         return DashboardCard(
           // title: DashboardID.memoryUsage.toReadable(),
           header: DashboardCardHeader(
-            title: 'Forward',
+            title: DashboardID.forwardDestinations.humanString,
             isLoading: isLoading,
             error: error,
           ),
+          onTap: () => ref.refreshForwardDestinations(),
           content: destinations != null
-              ? Text(destinations.toString())
+              ? Expanded(
+                  child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth: 400.0,
+                          maxHeight: 400.0,
+                        ),
+                        child: ForwardDestinationsPieChart(
+                            destinations: destinations)),
+                  ),
+                ))
               : Container(),
           // isLoading: isLoading,
           // error: error,
-          onTap: () => ref.refreshForwardDestinations(),
         );
       },
     );

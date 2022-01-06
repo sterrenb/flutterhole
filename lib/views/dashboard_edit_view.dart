@@ -58,7 +58,7 @@ class DashboardEditView extends HookConsumerWidget {
                       .map((e) => e.copyWith(enabled: false))
                       .toList();
                 } else if (selected == 'Use defaults') {
-                  entries.value = DashboardEntry.all;
+                  entries.value = DashboardEntry.defaultDashboard;
                 }
               },
               itemBuilder: (context) => [
@@ -141,7 +141,7 @@ class _Tile extends StatelessWidget {
     return ReorderableDelayedDragStartListener(
       index: index,
       child: ListTile(
-        title: Text(entry.id.toReadable()),
+        title: Text(entry.id.humanString),
         onTap: onToggle,
         trailing: Row(
           mainAxisAlignment: MainAxisAlignment.end,

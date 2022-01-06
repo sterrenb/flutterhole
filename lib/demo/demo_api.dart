@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 import 'demo_generators.dart';
@@ -25,8 +26,8 @@ class DemoApi implements PiholeRepository {
   ];
 
   Future<void> _sleep(
-      [Duration duration = const Duration(milliseconds: 200)]) async {
-    return;
+      [Duration duration = const Duration(milliseconds: 400)]) async {
+    if (kDebugMode) return;
     await Future.delayed(duration);
   }
 
@@ -57,21 +58,20 @@ class DemoApi implements PiholeRepository {
   Future<PiForwardDestinations> fetchForwardDestinations(_) async {
     await _sleep();
 
-    print('forwards');
     if (params.apiTokenRequired && params.apiToken.isEmpty) {
       throw const PiholeApiFailure.notAuthenticated();
     }
 
-    count = count + 1;
-    print(count);
-    if (count % 2 == 0) throw const PiholeApiFailure.hostname();
+    final google = 25 + _random.nextInt(24) + _random.nextDouble();
+    final cache = 10 + _random.nextInt(4) + _random.nextDouble();
+    final cloudflare = 30 + _random.nextInt(4) + _random.nextDouble();
+    final blocklist = 100.0 - google - cache - cloudflare;
 
-    var other = _random.nextDouble() * 10;
     return PiForwardDestinations(destinations: {
-      "blocklist|blocklist": 7.27 + other,
-      "cache|cache": 2.26,
-      "dns.opendns.com#53|208.67.222.222#53": 54.11 + other,
-      "dns.opendns.com#53|208.67.220.220#53": 36.35,
+      'google': google,
+      'cache': cache,
+      'cloudflare': cloudflare,
+      'blocklist': blocklist,
     });
   }
 
@@ -95,11 +95,9 @@ class DemoApi implements PiholeRepository {
   Future<List<QueryItem>> fetchQueryItems(_, int maxResults) async {
     await _sleep();
 
-    // if (count++ % 2 == 0) return [];
     _items = [
       ...List.generate(1, (_) => randomQueryItem()),
       ..._items,
-      // ...List.filled(_random.nextInt(5) + 1, randomQueryItem())
     ];
     return _items;
   }
@@ -174,7 +172,7 @@ class DemoApi implements PiholeRepository {
 
     if (params.apiPath != '/admin/api.php') {
       throw const PiholeApiFailure.general(
-          'The API path should be "/admin/api.php"');
+          'Demo Failure: The API path should be "/admin/api.php"');
     }
 
     return _status;
