@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/models/settings_models.dart';
@@ -112,6 +113,7 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
   }
 
   void savePihole({Pi? oldValue, required Pi newValue}) {
+    log('savePihole:${newValue.title}:${newValue.toString().length} bytes');
     if (oldValue != null && state.piholes.contains(oldValue)) {
       final list = List<Pi>.from(state.piholes);
       list[state.piholes.indexOf(oldValue)] = newValue;
@@ -122,6 +124,7 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
   }
 
   void deletePihole(Pi value) {
+    log('deletePihole:${value.title}');
     if (state.piholes.length > 1) {
       final list = List<Pi>.from(state.piholes)
         ..removeWhere((element) => element == value);
@@ -130,10 +133,9 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
   }
 
   void markNotificationsAsRead(List<String> values) {
-    print('marking as read:');
-    values.forEach((element) {
-      print('- ' + element);
-    });
+    for (final notification in values) {
+      log('markNotificationsAsRead:$notification');
+    }
     state = state.copyWith(
         notificationsRead: {...state.notificationsRead, ...values}.toList());
     _save();

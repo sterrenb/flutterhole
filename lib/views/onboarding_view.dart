@@ -14,7 +14,6 @@ class OnboardingView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('onboarding can pop: ${Navigator.canPop(context)}');
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,

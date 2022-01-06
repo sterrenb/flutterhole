@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/services/web_service.dart';
@@ -81,5 +83,17 @@ class PushViewIconButton extends StatelessWidget {
           Navigator.of(context).push(MaterialPageRoute(builder: (_) => view));
         },
         icon: Icon(iconData));
+  }
+}
+
+class SaveIconButton extends StatelessWidget {
+  const SaveIconButton({Key? key, required this.onPressed}) : super(key: key);
+
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        tooltip: 'Save', onPressed: onPressed, icon: const Icon(KIcons.save));
   }
 }

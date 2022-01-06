@@ -7,30 +7,42 @@ import 'package:flutterhole/widgets/layout/responsiveness.dart';
 Future<bool?> showConfirmationDialog(
   BuildContext context, {
   required String title,
-  required Widget body,
-}) {
-  return showDialog(
-      context: context,
-      builder: (context) => ModalAlertDialog<bool>(
-            title: title,
-            body: body,
-            popValue: true,
-          ));
-}
+  Widget? body,
+  bool canCancel = true,
+  String? cancelLabel,
+  String? okLabel,
+}) =>
+    showDialog(
+        context: context,
+        builder: (context) => ModalAlertDialog<bool>(
+              title: title,
+              body: body,
+              popValue: true,
+              cancelValue: false,
+              canCancel: canCancel,
+              cancelLabel: cancelLabel,
+              okLabel: okLabel,
+            ));
 
 class ModalAlertDialog<T> extends StatelessWidget {
   const ModalAlertDialog({
     Key? key,
     required this.title,
-    required this.body,
+    this.body,
     this.popValue,
+    this.cancelValue,
     this.canCancel = true,
+    this.cancelLabel,
+    this.okLabel,
   }) : super(key: key);
 
   final String title;
-  final Widget body;
+  final Widget? body;
   final T? popValue;
+  final T? cancelValue;
   final bool canCancel;
+  final String? cancelLabel;
+  final String? okLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +52,14 @@ class ModalAlertDialog<T> extends StatelessWidget {
       actions: <Widget>[
         canCancel
             ? TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child:
-                    Text(MaterialLocalizations.of(context).cancelButtonLabel))
+                onPressed: () => Navigator.of(context).pop(cancelValue),
+                child: Text(cancelLabel?.toUpperCase() ??
+                    MaterialLocalizations.of(context).cancelButtonLabel))
             : Container(),
         TextButton(
             onPressed: () => Navigator.of(context).pop(popValue),
-            child: Text(MaterialLocalizations.of(context).okButtonLabel)),
+            child: Text(okLabel?.toUpperCase() ??
+                MaterialLocalizations.of(context).okButtonLabel)),
       ],
       actionsPadding: const EdgeInsets.symmetric(horizontal: 16),
     );

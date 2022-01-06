@@ -81,18 +81,14 @@ class SinglePiEditView extends HookConsumerWidget {
                   },
                   icon: const Icon(KIcons.settings)),
             ),
-            IconButton(
-                tooltip: 'Save',
-                onPressed: () {
-                  // final pi = ref.read(piProvider);
-                  // debugPrint(pi.toJson().toString());
-
-                  ref
-                      .read(UserPreferencesNotifier.provider.notifier)
-                      .savePihole(oldValue: oldPi, newValue: newPi.value);
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(KIcons.save)),
+            SaveIconButton(
+              onPressed: () {
+                ref
+                    .read(UserPreferencesNotifier.provider.notifier)
+                    .savePihole(oldValue: oldPi, newValue: newPi.value);
+                Navigator.of(context).pop();
+              },
+            ),
           ],
         ),
         body: GestureDetector(
