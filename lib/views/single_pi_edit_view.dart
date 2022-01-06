@@ -139,7 +139,7 @@ class SinglePiEditView extends HookConsumerWidget {
                     ),
                     UrlOutlinedButton(
                       url: Formatting.piToAdminUrl(newPi.value),
-                      text: 'Admin page',
+                      text: 'Open in browser',
                     ),
                     DeletePiholeButton(pi: oldPi),
                   ]),

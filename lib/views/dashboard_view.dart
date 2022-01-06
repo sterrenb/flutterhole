@@ -61,7 +61,7 @@ class DashboardView extends HookConsumerWidget {
             ],
           ),
           actions: const [
-            _DashPopupMenuButton(),
+            _DashboardPopupMenuButton(),
             PushViewIconButton(
               tooltip: 'Settings',
               iconData: KIcons.settings,
@@ -144,13 +144,14 @@ class ClientsTab extends StatelessWidget {
   }
 }
 
-class _DashPopupMenuButton extends HookConsumerWidget {
-  const _DashPopupMenuButton({Key? key}) : super(key: key);
+class _DashboardPopupMenuButton extends HookConsumerWidget {
+  const _DashboardPopupMenuButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pi = ref.watch(piProvider);
     final piholes = ref.watch(allPiholesProvider);
+    final index = ref.watch(_selectedIndexProvider);
     return PopupMenuButton<String>(
       tooltip: '',
       onSelected: (selected) {
@@ -162,39 +163,41 @@ class _DashPopupMenuButton extends HookConsumerWidget {
         }
       },
       itemBuilder: (context) => [
-        PopupMenuItem<String>(
-          value: 'Manage dashboard',
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Manage dashboard'),
-              Icon(
-                KIcons.selectDashboardTiles,
-                color: Theme.of(context).dividerColor,
-              ),
-            ],
+        if (index == 0) ...[
+          PopupMenuItem<String>(
+            value: 'Manage dashboard',
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Manage dashboard'),
+                Icon(
+                  KIcons.selectDashboardTiles,
+                  color: Theme.of(context).dividerColor,
+                ),
+              ],
+            ),
           ),
-        ),
-        PopupMenuItem<String>(
-          onTap: () {
-            WebService.launchUrlInBrowser(Formatting.piToAdminUrl(pi));
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Admin page'),
-              Tooltip(
-                  message: Formatting.piToAdminUrl(pi),
-                  child: Icon(
-                    KIcons.openUrl,
-                    color: Theme.of(context).dividerColor,
-                  )),
-            ],
+          PopupMenuItem<String>(
+            onTap: () {
+              WebService.launchUrlInBrowser(Formatting.piToAdminUrl(pi));
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Open in browser'),
+                Tooltip(
+                    message: Formatting.piToAdminUrl(pi),
+                    child: Icon(
+                      KIcons.openUrl,
+                      color: Theme.of(context).dividerColor,
+                    )),
+              ],
+            ),
           ),
-        ),
+        ],
         PopupMenuItem(
           onTap: () {
-            switch (ref.read(_selectedIndexProvider)) {
+            switch (index) {
               case 0:
                 return ref.refreshDashboard();
               case 1:

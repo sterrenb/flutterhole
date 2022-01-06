@@ -15,9 +15,11 @@ QueryItem randomQueryItem([Duration duration = Duration.zero]) {
   return QueryItem(
       timestamp: DateTime.now().subtract(duration),
       queryType: 'A',
-      domain: _faker.internet.domainName(),
+      domain: _random.nextDouble() > .97
+          ? 'https://tster.nl'
+          : _faker.internet.domainName(),
       clientName: _faker.internet.ipv4Address(),
-      queryStatus: _random.nextDouble() > .5
+      queryStatus: _random.nextDouble() > .33
           ? QueryStatus.Forwarded
           : QueryStatus.values[_random.nextInt(5) + 1],
       // .elementAt(random.nextInt(QueryStatus.values.length)),

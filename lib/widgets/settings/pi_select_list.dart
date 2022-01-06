@@ -133,7 +133,7 @@ class _Tile extends HookConsumerWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Admin page'),
+                      const Text('Open in browser'),
                       Tooltip(
                           message: Formatting.piToAdminUrl(pi),
                           child: const Icon(KIcons.openUrl)),

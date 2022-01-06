@@ -86,7 +86,6 @@ class _Tile extends StatelessWidget {
         color: item.queryStatus.color,
       ),
       trailing: Column(
-        // mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
