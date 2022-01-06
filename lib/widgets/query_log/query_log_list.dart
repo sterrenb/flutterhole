@@ -26,23 +26,36 @@ class QueryLogList extends HookConsumerWidget {
         return Stack(
           alignment: Alignment.topRight,
           children: [
-            Container(),
-            AnimatedFader(
-                child: data != null && data.isEmpty
-                    ? const Center(child: Text('No queries found.'))
-                    : Container()),
-            if (data != null) ...[],
-            AnimatedFader(
-                child: data != null && data.isNotEmpty
-                    ? ListView.builder(
-                        itemCount: data.length,
-                        itemBuilder: (context, index) {
-                          return _Tile(
-                            item: data.elementAt(index),
-                          );
-                        },
-                      )
-                    : Container()),
+            // Container(
+            //   color: Colors.purple,
+            // ),
+            // AnimatedFader(
+            //     child: data != null && data.isEmpty
+            //         ? const Center(child: Text('No queries found.'))
+            //         : Container(
+            //             color: Theme.of(context).scaffoldBackgroundColor,
+            //           )),
+            // if (data != null) ...[
+            //   Container(
+            //     color: Theme.of(context).primaryColor,
+            //   ),
+            // ],
+            if (data != null && data.isEmpty) ...[
+              const Center(child: Text('No queries found.'))
+            ],
+            if (data != null && data.isNotEmpty) ...[
+              ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  return _Tile(
+                    item: data.elementAt(index),
+                  );
+                },
+              )
+            ],
+            AnimatedColorFader(
+              show: data == null || (data.isEmpty && isLoading),
+            ),
             Positioned(
               left: 8.0,
               top: 8.0,

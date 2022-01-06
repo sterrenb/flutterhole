@@ -17,7 +17,7 @@ class DemoApi implements PiholeRepository {
   int domainsBeingBlocked = 999894;
   List<QueryItem> _items = [
     ...List.generate(
-        10, (index) => randomQueryItem(Duration(seconds: 30 + index * 90))),
+        10, (index) => randomQueryItem(Duration(seconds: 30 + index * 130))),
     ...List.generate(
         10,
         (index) => randomQueryItem(
@@ -83,10 +83,12 @@ class DemoApi implements PiholeRepository {
     throw UnimplementedError();
   }
 
+  int count = 0;
   @override
   Future<List<QueryItem>> fetchQueryItems(_, int maxResults) async {
-    // await _sleep(const Duration(milliseconds: 1000));
+    await _sleep(const Duration(milliseconds: 1000));
 
+    // if (count++ % 2 == 0) return [];
     _items = [
       ...List.generate(1, (_) => randomQueryItem()),
       ..._items,
@@ -134,8 +136,6 @@ class DemoApi implements PiholeRepository {
     // TODO: implement fetchTopItems
     throw UnimplementedError();
   }
-
-  int count = 0;
 
   @override
   Future<PiVersions> fetchVersions(_) async {

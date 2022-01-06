@@ -23,11 +23,11 @@ const kWelcomeNotification = '''Hello!
 
 const defaultNotifications = [
   kWelcomeNotification,
-  if (kIsWeb) ...[
-    'This is a demo. Only connections over HTTPS are allowed.',
-    'The demo simulates a Pi-hole for "example.com".',
-  ],
   if (kDebugMode) ...['Running in debug mode.'],
+  if (kIsWeb) ...[
+    '''This is a demo. Only connections over HTTPS are allowed. You can use your own Pi-hole if it is setup with HTTPS.
+To simulate a Pi-hole, use "example.com" in the Base URL.''',
+  ],
 ];
 
 const defaultPiholes = kDebugMode

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:faker/faker.dart';
+import 'package:flutterhole/constants/urls.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 final _faker = Faker();
@@ -15,8 +16,8 @@ QueryItem randomQueryItem([Duration duration = Duration.zero]) {
   return QueryItem(
       timestamp: DateTime.now().subtract(duration),
       queryType: 'A',
-      domain: _random.nextDouble() > .97
-          ? 'https://tster.nl'
+      domain: _random.nextDouble() > .96
+          ? KUrls.developerHomeUrl
           : _faker.internet.domainName(),
       clientName: _faker.internet.ipv4Address(),
       queryStatus: _random.nextDouble() > .33
