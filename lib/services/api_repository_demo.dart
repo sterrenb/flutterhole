@@ -77,8 +77,26 @@ class PiholeRepositoryDemo implements PiholeRepository {
   Future<List<QueryItem>> fetchQueryItems(_, int maxResults) async {
     await _sleep(const Duration(milliseconds: 1000));
     c++;
-    if (c % 2 == 0) throw PiholeApiFailure.cancelled();
-    return [];
+    // if (c % 2 == 0) throw PiholeApiFailure.cancelled();
+    if (c % 2 == 0) return [];
+    return [
+      QueryItem(
+          timestamp: DateTime.now(),
+          queryType: 'my typ',
+          domain: 'http://test.com',
+          clientName: '10.0.1.1',
+          queryStatus: QueryStatus.Forwarded,
+          dnsSecStatus: DnsSecStatus.Secure,
+          delta: 0.0),
+      QueryItem(
+          timestamp: DateTime.now(),
+          queryType: 'my typ',
+          domain: 'https://example.org',
+          clientName: 'mintows',
+          queryStatus: QueryStatus.BlockedWithBlacklist,
+          dnsSecStatus: DnsSecStatus.Bogus,
+          delta: 0.0),
+    ];
   }
 
   @override

@@ -1,9 +1,5 @@
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole/constants/icons.dart';
-import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/loading_indicator.dart';
-import 'package:flutterhole/widgets/ui/dialogs.dart';
 
 class DashboardCardHeader extends StatelessWidget {
   final String title;

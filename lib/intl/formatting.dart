@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterhole/constants/colors.dart';
+import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -68,6 +71,9 @@ class Formatting {
 
   static String packageInfoToString(PackageInfo info, [bool build = true]) =>
       'v${info.version}${build ? '#${info.buildNumber}' : ''}'.trim();
+
+  static String enumToString(dynamic x) =>
+      x.toString().split('.').skip(1).join();
 }
 
 extension Numx on num {
@@ -96,5 +102,95 @@ extension DashboardIDX on DashboardID {
       case DashboardID.topPermittedDomains:
         return 'Domains';
     }
+  }
+}
+
+extension QueryStatusX on QueryStatus {
+  String get description {
+    switch (this) {
+      case QueryStatus.BlockedWithGravity:
+        return 'Blocked (gravity)';
+      case QueryStatus.Forwarded:
+        return 'OK (forwarded)';
+      case QueryStatus.Cached:
+        return 'OK (cached)';
+      case QueryStatus.BlockedWithRegexWildcard:
+        return 'Blocked (regex/wildcard)';
+      case QueryStatus.BlockedWithBlacklist:
+        return 'Blocked (blacklist)';
+      case QueryStatus.BlockedWithExternalIP:
+        return 'Blocked (external, IP)';
+      case QueryStatus.BlockedWithExternalNull:
+        return 'Blocked (external, NULL)';
+      case QueryStatus.BlockedWithExternalNXRA:
+        return 'Blocked (external, NXRA)';
+      case QueryStatus.Unknown:
+        return 'Unknown';
+    }
+  }
+
+  IconData get iconData {
+    switch (this) {
+      case QueryStatus.Forwarded:
+        return KIcons.forwarded;
+      case QueryStatus.Cached:
+        return KIcons.cached;
+      case QueryStatus.BlockedWithGravity:
+      case QueryStatus.BlockedWithRegexWildcard:
+      case QueryStatus.BlockedWithBlacklist:
+      case QueryStatus.BlockedWithExternalIP:
+      case QueryStatus.BlockedWithExternalNull:
+      case QueryStatus.BlockedWithExternalNXRA:
+        return KIcons.blocked;
+      case QueryStatus.Unknown:
+      default:
+        return KIcons.unknown;
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case QueryStatus.Forwarded:
+        return KColors.forwarded;
+      case QueryStatus.Cached:
+        return KColors.cached;
+      case QueryStatus.BlockedWithGravity:
+      case QueryStatus.BlockedWithRegexWildcard:
+      case QueryStatus.BlockedWithBlacklist:
+      case QueryStatus.BlockedWithExternalIP:
+      case QueryStatus.BlockedWithExternalNull:
+      case QueryStatus.BlockedWithExternalNXRA:
+        return KColors.blocked;
+      case QueryStatus.Unknown:
+      default:
+        return KColors.unknown;
+    }
+  }
+}
+
+final _hm = DateFormat.Hm();
+final _hms = DateFormat.Hms();
+final _jms = DateFormat('H:m:s.S');
+final _full = DateFormat.yMd().addPattern(_hms.pattern);
+
+extension DateTimeX on DateTime {
+  String beforeAfter(Duration duration) {
+    final before = _hm.format(subtract(duration));
+    final after = _hm.format(add(duration));
+    return '$before - $after';
+  }
+
+  String get hm => _hm.format(this);
+
+  String get hms => _hms.format(this);
+
+  String get jms => _jms.format(this);
+
+  String get full => _full.format(this);
+}
+
+extension StringX on String {
+  String capitalizeFirstLetter() {
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 }

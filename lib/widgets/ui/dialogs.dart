@@ -7,7 +7,7 @@ import 'package:flutterhole/widgets/layout/responsiveness.dart';
 
 Future<bool?> showConfirmationDialog(
   BuildContext context, {
-  required String title,
+  String? title,
   Widget? body,
   bool canCancel = true,
   String? cancelLabel,
@@ -25,6 +25,30 @@ Future<bool?> showConfirmationDialog(
               cancelLabel: cancelLabel,
               okLabel: okLabel,
               okColor: okColor,
+            ));
+
+Future<bool?> showScrollableConfirmationDialog(
+  BuildContext context, {
+  String? title,
+  Widget? body,
+  bool canCancel = true,
+  String? cancelLabel,
+  String? okLabel,
+  Color? okColor,
+  EdgeInsetsGeometry? contentPadding,
+}) =>
+    showDialog(
+        context: context,
+        builder: (context) => ModalAlertDialog<bool>(
+              title: title,
+              body: SingleChildScrollView(child: body),
+              popValue: true,
+              cancelValue: false,
+              canCancel: canCancel,
+              cancelLabel: cancelLabel,
+              okLabel: okLabel,
+              okColor: okColor,
+              contentPadding: contentPadding,
             ));
 
 Future<bool?> showDeleteConfirmationDialog(
@@ -54,9 +78,10 @@ class ModalAlertDialog<T> extends StatelessWidget {
     this.cancelLabel,
     this.okLabel,
     this.okColor,
+    this.contentPadding,
   }) : super(key: key);
 
-  final String title;
+  final String? title;
   final Widget? body;
   final T? popValue;
   final T? cancelValue;
@@ -64,12 +89,15 @@ class ModalAlertDialog<T> extends StatelessWidget {
   final String? cancelLabel;
   final String? okLabel;
   final Color? okColor;
+  final EdgeInsetsGeometry? contentPadding;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title),
+      title: title != null ? Text(title!) : null,
       content: body,
+      contentPadding:
+          contentPadding ?? const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),
       actions: <Widget>[
         canCancel
             ? TextButton(
@@ -150,12 +178,14 @@ class CenteredErrorMessage extends StatelessWidget {
     this.error, {
     this.stackTrace,
     this.message,
+    this.showIcon = false,
     Key? key,
   }) : super(key: key);
 
   final Object error;
   final StackTrace? stackTrace;
   final String? message;
+  final bool showIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -165,11 +195,13 @@ class CenteredErrorMessage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              KIcons.error,
-              color: Theme.of(context).colorScheme.error,
-            ),
-            const SizedBox(height: 24.0),
+            if (showIcon) ...[
+              Icon(
+                KIcons.error,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 24.0),
+            ],
             Text(message ?? error.toString()),
             const SizedBox(height: 8.0),
             TextButton(

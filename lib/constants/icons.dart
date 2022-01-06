@@ -44,6 +44,12 @@ class KIcons {
   static const IconData clientActivity = Icons.stacked_bar_chart;
   static const IconData developerMode = Icons.bug_report;
 
+  static const IconData queryDomain = Icons.public;
+  static const IconData queryClient = Icons.computer;
+  static const IconData queryType = Icons.select_all;
+  static const IconData queryTimestamp = Icons.timelapse;
+  static const IconData queryDnsSec = Icons.security;
+
   static const IconData enablePihole = Icons.play_arrow;
   static const IconData disablePihole = Icons.pause;
   static const IconData sleepPihole = Icons.alarm;

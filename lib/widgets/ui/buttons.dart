@@ -23,16 +23,27 @@ class IconOutlinedButton extends StatelessWidget {
         primary: color,
         side: color != null ? BorderSide(color: color!) : null,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(text),
-          const SizedBox(width: 8.0),
-          Icon(
-            iconData,
-            size: Theme.of(context).textTheme.bodyText2!.fontSize!,
-          ),
-        ],
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: 300.0,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(
+                text,
+                overflow: TextOverflow.fade,
+                // maxLines: 1,
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            Icon(
+              iconData,
+              size: Theme.of(context).textTheme.bodyText2!.fontSize!,
+            ),
+          ],
+        ),
       ),
       onPressed: onPressed,
     );
@@ -48,13 +59,14 @@ class UrlOutlinedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final href = url.contains('://') ? url : 'https://$url';
     return Tooltip(
-      message: url,
+      message: href,
       child: IconOutlinedButton(
         iconData: KIcons.openUrl,
         text: text ?? url,
         onPressed: () {
-          WebService.launchUrlInBrowser(url);
+          WebService.launchUrlInBrowser(href);
         },
       ),
     );
