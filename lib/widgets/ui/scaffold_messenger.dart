@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/onboarding/introduction_button.dart';
 import 'package:flutterhole/widgets/onboarding/onboarding_carousel.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

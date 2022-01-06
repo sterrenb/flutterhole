@@ -6,8 +6,9 @@ import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/dashboard/dashboard_grid.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
+import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/snackbars.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -27,25 +28,14 @@ class DashboardEditView extends HookConsumerWidget {
     final pi = ref.watch(piProvider);
     final entries = useState(pi.dashboard);
 
-    void saveDashboard() {
-      ref.read(UserPreferencesNotifier.provider.notifier).savePihole(
-          oldValue: pi, newValue: pi.copyWith(dashboard: entries.value));
-      highlightSnackBar(context, const Text('Dashboard saved.'));
-    }
-
     return WillPopScope(
       onWillPop: () async {
         if (_eq(pi.dashboard, entries.value)) return true;
 
-        final save = await showConfirmationDialog(
-          context,
-          title: 'Save changes?',
-          okLabel: 'Save',
-          cancelLabel: 'Discard',
-        );
+        final save = await showSaveChangesDialog(context);
 
         if (save == true) {
-          saveDashboard();
+          ref.saveDashboard(context, pi, entries.value);
           return true;
         }
 
@@ -84,13 +74,11 @@ class DashboardEditView extends HookConsumerWidget {
             ),
             SaveIconButton(onPressed: () {
               if (!_eq(pi.dashboard, entries.value)) {
-                saveDashboard();
+                ref.saveDashboard(context, pi, entries.value);
               }
 
               Navigator.of(context).pop();
-            }
-                // Navigator.of(context).pop();
-                ),
+            }),
           ],
           tabs: const [
             Tab(icon: Icon(KIcons.tileList)),

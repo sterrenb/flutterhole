@@ -106,14 +106,3 @@ final forwardDestinationsProvider = FutureProvider.autoDispose
   ref.onDispose(() => cancelToken.cancel());
   return pihole.fetchForwardDestinations(cancelToken);
 });
-
-extension WidgetRefX on WidgetRef {
-  refreshSummary() =>
-      refresh(summaryProvider(read(activePiholeParamsProvider)));
-
-  refreshVersions() =>
-      refresh(versionsProvider(read(activePiholeParamsProvider)));
-
-  refreshDetails() =>
-      refresh(detailsProvider(read(activePiholeParamsProvider)));
-}

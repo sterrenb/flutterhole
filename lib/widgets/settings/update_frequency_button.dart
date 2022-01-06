@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/services/settings_service.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class UpdateFrequencyButton extends HookConsumerWidget {

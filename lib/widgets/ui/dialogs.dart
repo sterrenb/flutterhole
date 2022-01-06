@@ -24,6 +24,13 @@ Future<bool?> showConfirmationDialog(
               okLabel: okLabel,
             ));
 
+Future<bool?> showSaveChangesDialog(context) => showConfirmationDialog(
+      context,
+      title: 'Save changes?',
+      okLabel: 'Save',
+      cancelLabel: 'Discard',
+    );
+
 class ModalAlertDialog<T> extends StatelessWidget {
   const ModalAlertDialog({
     Key? key,

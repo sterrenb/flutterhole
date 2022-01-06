@@ -5,6 +5,7 @@ import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
+import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/cache.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

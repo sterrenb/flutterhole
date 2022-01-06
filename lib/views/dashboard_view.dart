@@ -9,8 +9,10 @@ import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/dashboard/dashboard_grid.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
+import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/scaffold_messenger.dart';
+import 'package:flutterhole/widgets/ui/snackbars.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -60,8 +62,14 @@ class DashboardView extends HookConsumerWidget {
               ),
             ],
           ),
-          actions: const [
+          actions: [
             _DashPopupMenuButton(),
+            OutlinedButton(
+                onPressed: () {
+                  ref.updatePihole(context, pi,
+                      pi.copyWith(title: pi.title.split('').reversed.join()));
+                },
+                child: Text('Demo')),
             PushViewIconButton(
               tooltip: 'Settings',
               iconData: KIcons.settings,

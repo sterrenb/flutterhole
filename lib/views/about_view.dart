@@ -7,7 +7,7 @@ import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/privacy_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/about/app_version.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';

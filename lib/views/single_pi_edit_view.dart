@@ -11,10 +11,11 @@ import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
-import 'package:flutterhole/widgets/layout/dialogs.dart';
+import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/settings/delete_pihole_button.dart';
+import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/settings/qr_scan.dart';
 import 'package:flutterhole/widgets/settings/single_pi_form.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
@@ -39,7 +40,6 @@ class SinglePiEditView extends HookConsumerWidget {
     final oldPi = ref.watch(piProvider);
     final newPi = useState(oldPi);
     final params = ref.watch(paramsProvider(newPi.value));
-    // final params = ref.watch(_paramsProvider(pi.value));
 
     final titleController = useTextEditingController(text: oldPi.title);
     useEffect(() {
@@ -47,6 +47,7 @@ class SinglePiEditView extends HookConsumerWidget {
         newPi.value = newPi.value.copyWith(title: titleController.text);
       });
     }, [titleController]);
+
     final baseUrlController = useTextEditingController(text: oldPi.baseUrl);
     useEffect(() {
       baseUrlController.addListener(() {
@@ -68,195 +69,211 @@ class SinglePiEditView extends HookConsumerWidget {
       });
     }, [apiTokenController]);
 
-    return BaseView(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(isNew ? 'New Pi-hole' : 'Editing ${oldPi.title}'),
-          actions: [
-            DevWidget(
-              child: IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const SettingsView()));
-                  },
-                  icon: const Icon(KIcons.settings)),
-            ),
-            SaveIconButton(
-              onPressed: () {
-                ref
-                    .read(UserPreferencesNotifier.provider.notifier)
-                    .savePihole(oldValue: oldPi, newValue: newPi.value);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: MobileMaxWidth(
-            child: ListView(
-              padding: const EdgeInsets.all(24.0),
-              children: [
-                _PiTitleField(titleController),
-                const SizedBox(height: 20.0),
-                AppWrap(children: [
-                  IconOutlinedButton(
-                    iconData: KIcons.dashboard,
-                    text: 'Manage dashboard',
-                    onPressed: isNew
-                        ? null
-                        : () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ProviderScope(overrides: [
-                                piProvider.overrideWithValue(oldPi),
-                                activePiholeParamsProvider.overrideWithProvider(
-                                    paramsProvider(oldPi)),
-                              ], child: const DashboardEditView()),
-                              fullscreenDialog: true,
-                            ));
-                          },
-                  ),
-                  UrlOutlinedButton(
-                    url: Formatting.piToAdminUrl(newPi.value),
-                    text: 'Admin page',
-                  ),
-                  DeletePiholeButton(pi: oldPi),
-                ]),
-                const SizedBox(height: 20.0),
-                const Divider(),
-                const GridSectionHeader('Host', KIcons.host),
-                const SizedBox(height: 20.0),
-                _BaseUrlField(baseUrlController),
-                const SizedBox(height: 20.0),
-                _ApiPathField(apiPathController),
-                const SizedBox(height: 20.0),
-                AppWrap(
-                  children: [
-                    _ApiStatusButton(params: params),
-                    UrlOutlinedButton(
-                      url: params.apiUrl,
-                      text: 'API base',
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20.0),
-                const Divider(),
-                const GridSectionHeader(
-                    'Authentication', KIcons.authentication),
-                const SizedBox(height: 20.0),
-                _ApiTokenField(apiTokenController),
-                const SizedBox(height: 20.0),
-                AppWrap(
-                  children: [
-                    _AuthenticationStatusButton(params: params),
-                    IconOutlinedButton(
-                      iconData: KIcons.qrCode,
-                      text: 'Scan QR code',
-                      onPressed: () async {
-                        final barcode = await showModal<String>(
-                          context: context,
-                          builder: (context) {
-                            return const QrScanDialog();
-                          },
-                        );
+    return WillPopScope(
+      onWillPop: () async {
+        print('comparing ${oldPi.title} -> ${newPi.value.title}');
+        if (oldPi == newPi.value) return true;
 
-                        if (barcode != null) {
-                          newPi.value = newPi.value.copyWith(apiToken: barcode);
-                          apiTokenController.text = barcode;
-                        }
-                      },
-                    ),
-                    UrlOutlinedButton(
-                      url: params.adminUrl +
-                          '/scripts/pi-hole/php/api_token.php',
-                      text: 'Token page',
-                    ),
+        final save = await showSaveChangesDialog(context);
+
+        if (save == true) {
+          ref.updatePihole(context, oldPi, newPi.value);
+          return true;
+        }
+
+        return save == false;
+      },
+      child: BaseView(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(isNew ? 'New Pi-hole' : 'Editing ${oldPi.title}'),
+            actions: [
+              DevWidget(
+                child: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => const SettingsView()));
+                    },
+                    icon: const Icon(KIcons.settings)),
+              ),
+              SaveIconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ref.updatePihole(context, oldPi, newPi.value);
+                },
+              ),
+            ],
+          ),
+          body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: MobileMaxWidth(
+              child: ListView(
+                padding: const EdgeInsets.all(24.0),
+                children: [
+                  _PiTitleField(titleController),
+                  const SizedBox(height: 20.0),
+                  AppWrap(children: [
                     IconOutlinedButton(
-                      text: 'Share token',
-                      iconData: KIcons.qrShare,
-                      onPressed: newPi.value.apiToken.isEmpty
+                      iconData: KIcons.dashboard,
+                      text: 'Manage dashboard',
+                      onPressed: isNew
                           ? null
-                          : () async {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  final size =
-                                      ((MediaQuery.of(context).size.width / 5) *
-                                              3)
-                                          .clamp(200.0, 500.0);
-                                  return AlertDialog(
-                                    // backgroundColor: Colors.white,
-                                    // title: Center(child: Text('API token')),
-                                    // titlePadding: EdgeInsets.all(16.0),
-                                    titleTextStyle:
-                                        Theme.of(context).textTheme.headline4,
-                                    contentPadding: EdgeInsets.zero,
-                                    content: Container(
-                                      width: size,
-                                      color: Colors.white,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          QrImage(
-                                            // backgroundColor: Colors.white,
-                                            data: newPi.value.apiToken,
-                                            version: QrVersions.auto,
-                                            size: size,
-                                          ),
-                                          CodeCard(newPi.value.apiToken),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
+                          : () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ProviderScope(overrides: [
+                                  piProvider.overrideWithValue(oldPi),
+                                  activePiholeParamsProvider
+                                      .overrideWithProvider(
+                                          paramsProvider(oldPi)),
+                                ], child: const DashboardEditView()),
+                                fullscreenDialog: true,
+                              ));
                             },
                     ),
-                    CheckboxListTile(
-                      title: const Text('Allow self-signed certificates'),
-                      subtitle: const Text(
-                          'Trust all certificates, even when the TLS handshake fails.'),
-                      value: newPi.value.allowSelfSignedCertificates,
-                      onChanged: (value) {
-                        newPi.value = newPi.value.copyWith(
-                            allowSelfSignedCertificates: value ?? false);
-                      },
+                    UrlOutlinedButton(
+                      url: Formatting.piToAdminUrl(newPi.value),
+                      text: 'Admin page',
                     ),
-                    CheckboxListTile(
-                      title: const Text('Skip authentication'),
-                      subtitle: const Text(
-                          'Use the default token. Only useful if your Pi-hole does not have an API token.'),
-                      value: !newPi.value.apiTokenRequired,
-                      onChanged: (value) {
-                        if (value != null) {
-                          value = !value;
-                        }
-                        newPi.value = newPi.value
-                            .copyWith(apiTokenRequired: value ?? true);
-                      },
-                    ),
-                    // CodeCard(pi.value.toJson().toString()),
-                  ],
-                ),
-                // Row(
-                //   children: [
-                //     Expanded(child: _ApiTokenField(apiTokenController)),
-                //     const SizedBox(width: 8.0),
-                //     OutlinedButton(
-                //       onPressed: () {},
-                //       child: Row(
-                //         children: const [
-                //           Icon(KIcons.qrCode),
-                //           SizedBox(width: 8.0),
-                //           Text('Scan QR code'),
-                //         ],
-                //       ),
-                //     ),
-                //   ],
-                // ),
-              ],
+                    DeletePiholeButton(pi: oldPi),
+                  ]),
+                  const SizedBox(height: 20.0),
+                  const Divider(),
+                  const GridSectionHeader('Host', KIcons.host),
+                  const SizedBox(height: 20.0),
+                  _BaseUrlField(baseUrlController),
+                  const SizedBox(height: 20.0),
+                  _ApiPathField(apiPathController),
+                  const SizedBox(height: 20.0),
+                  AppWrap(
+                    children: [
+                      _ApiStatusButton(params: params),
+                      UrlOutlinedButton(
+                        url: params.apiUrl,
+                        text: 'API base',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20.0),
+                  const Divider(),
+                  const GridSectionHeader(
+                      'Authentication', KIcons.authentication),
+                  const SizedBox(height: 20.0),
+                  _ApiTokenField(apiTokenController),
+                  const SizedBox(height: 20.0),
+                  AppWrap(
+                    children: [
+                      _AuthenticationStatusButton(params: params),
+                      IconOutlinedButton(
+                        iconData: KIcons.qrCode,
+                        text: 'Scan QR code',
+                        onPressed: () async {
+                          final barcode = await showModal<String>(
+                            context: context,
+                            builder: (context) {
+                              return const QrScanDialog();
+                            },
+                          );
+
+                          if (barcode != null) {
+                            newPi.value =
+                                newPi.value.copyWith(apiToken: barcode);
+                            apiTokenController.text = barcode;
+                          }
+                        },
+                      ),
+                      UrlOutlinedButton(
+                        url: params.adminUrl +
+                            '/scripts/pi-hole/php/api_token.php',
+                        text: 'Token page',
+                      ),
+                      IconOutlinedButton(
+                        text: 'Share token',
+                        iconData: KIcons.qrShare,
+                        onPressed: newPi.value.apiToken.isEmpty
+                            ? null
+                            : () async {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    final size =
+                                        ((MediaQuery.of(context).size.width /
+                                                    5) *
+                                                3)
+                                            .clamp(200.0, 500.0);
+                                    return AlertDialog(
+                                      // backgroundColor: Colors.white,
+                                      // title: Center(child: Text('API token')),
+                                      // titlePadding: EdgeInsets.all(16.0),
+                                      titleTextStyle:
+                                          Theme.of(context).textTheme.headline4,
+                                      contentPadding: EdgeInsets.zero,
+                                      content: Container(
+                                        width: size,
+                                        color: Colors.white,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            QrImage(
+                                              // backgroundColor: Colors.white,
+                                              data: newPi.value.apiToken,
+                                              version: QrVersions.auto,
+                                              size: size,
+                                            ),
+                                            CodeCard(newPi.value.apiToken),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                      ),
+                      CheckboxListTile(
+                        title: const Text('Allow self-signed certificates'),
+                        subtitle: const Text(
+                            'Trust all certificates, even when the TLS handshake fails.'),
+                        value: newPi.value.allowSelfSignedCertificates,
+                        onChanged: (value) {
+                          newPi.value = newPi.value.copyWith(
+                              allowSelfSignedCertificates: value ?? false);
+                        },
+                      ),
+                      CheckboxListTile(
+                        title: const Text('Skip authentication'),
+                        subtitle: const Text(
+                            'Use the default token. Only useful if your Pi-hole does not have an API token.'),
+                        value: !newPi.value.apiTokenRequired,
+                        onChanged: (value) {
+                          if (value != null) {
+                            value = !value;
+                          }
+                          newPi.value = newPi.value
+                              .copyWith(apiTokenRequired: value ?? true);
+                        },
+                      ),
+                      // CodeCard(pi.value.toJson().toString()),
+                    ],
+                  ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(child: _ApiTokenField(apiTokenController)),
+                  //     const SizedBox(width: 8.0),
+                  //     OutlinedButton(
+                  //       onPressed: () {},
+                  //       child: Row(
+                  //         children: const [
+                  //           Icon(KIcons.qrCode),
+                  //           SizedBox(width: 8.0),
+                  //           Text('Scan QR code'),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                ],
+              ),
             ),
           ),
         ),
