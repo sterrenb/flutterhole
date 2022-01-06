@@ -121,3 +121,13 @@ final forwardDestinationsProvider = FutureProvider.autoDispose
   ref.onDispose(() => cancelToken.cancel());
   return pihole.fetchForwardDestinations(cancelToken);
 });
+
+final activeForwardDestinationsProvider =
+    Provider.autoDispose<AsyncValue<PiForwardDestinations>>((ref) {
+  return ref.watch(
+      forwardDestinationsProvider(ref.watch(activePiholeParamsProvider)));
+}, dependencies: [
+  piProvider,
+  forwardDestinationsProvider,
+  activePiholeParamsProvider
+]);

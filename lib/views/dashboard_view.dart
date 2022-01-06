@@ -16,7 +16,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'dashboard_edit_view.dart';
 
-final _selectedIndexProvider = StateProvider<int>((ref) => 1);
+final _selectedIndexProvider = StateProvider<int>((ref) => 0);
 
 class DashboardView extends HookConsumerWidget {
   const DashboardView({

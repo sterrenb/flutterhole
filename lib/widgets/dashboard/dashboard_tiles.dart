@@ -35,6 +35,8 @@ class DashboardEntryTileBuilder extends StatelessWidget {
         return const TemperatureTile();
       case DashboardID.memoryUsage:
         return const MemoryUsageTile();
+      case DashboardID.forwardDestinations:
+        return const ForwardDestinationsTile();
 
       default:
         return DashboardCard(
@@ -181,6 +183,35 @@ class MemoryUsageTile extends HookConsumerWidget {
           isLoading: isLoading,
           error: error,
           onTap: () => ref.refreshDetails(),
+        );
+      },
+    );
+  }
+}
+
+class ForwardDestinationsTile extends HookConsumerWidget {
+  const ForwardDestinationsTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CacheBuilder<PiForwardDestinations>(
+      provider: activeForwardDestinationsProvider,
+      builder: (context, destinations, isLoading, error) {
+        return DashboardCard(
+          // title: DashboardID.memoryUsage.toReadable(),
+          header: DashboardCardHeader(
+            title: 'Forward',
+            isLoading: isLoading,
+            error: error,
+          ),
+          content: destinations != null
+              ? Text(destinations.toString())
+              : Container(),
+          // isLoading: isLoading,
+          // error: error,
+          onTap: () => ref.refreshForwardDestinations(),
         );
       },
     );

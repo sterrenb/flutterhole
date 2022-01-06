@@ -130,6 +130,10 @@ class DashboardEntry with _$DashboardEntry {
 
   static const all = [
     DashboardEntry(
+        id: DashboardID.forwardDestinations,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(4, 4)),
+    DashboardEntry(
         id: DashboardID.totalQueries,
         enabled: true,
         constraints: DashboardTileConstraints.count(4, 1)),
