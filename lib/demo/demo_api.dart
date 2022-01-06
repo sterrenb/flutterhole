@@ -2,16 +2,27 @@ import 'dart:math';
 
 import 'package:pihole_api/pihole_api.dart';
 
+import 'demo_generators.dart';
+
+final _random = Random();
+
 class DemoApi implements PiholeRepository {
   DemoApi(this.params);
 
   final PiholeRepositoryParams params;
-  final _random = Random();
 
   PiholeStatus _status = const PiholeStatus.enabled();
   int dnsQueriesToday = 10000;
   int adsBlockedToday = 5600;
   int domainsBeingBlocked = 999894;
+  List<QueryItem> _items = [
+    ...List.generate(
+        10, (index) => randomQueryItem(Duration(seconds: 30 + index * 90))),
+    ...List.generate(
+        10,
+        (index) => randomQueryItem(
+            Duration(days: 1 + index * index * index) + randomDayDuration()))
+  ];
 
   Future<void> _sleep(
       [Duration duration = const Duration(milliseconds: 200)]) async {
@@ -72,31 +83,16 @@ class DemoApi implements PiholeRepository {
     throw UnimplementedError();
   }
 
-  int c = 0;
   @override
   Future<List<QueryItem>> fetchQueryItems(_, int maxResults) async {
-    await _sleep(const Duration(milliseconds: 1000));
-    c++;
-    // if (c % 2 == 0) throw PiholeApiFailure.cancelled();
-    if (c % 2 == 0) return [];
-    return [
-      QueryItem(
-          timestamp: DateTime.now(),
-          queryType: 'my typ',
-          domain: 'http://test.com',
-          clientName: '10.0.1.1',
-          queryStatus: QueryStatus.Forwarded,
-          dnsSecStatus: DnsSecStatus.Secure,
-          delta: 0.0),
-      QueryItem(
-          timestamp: DateTime.now(),
-          queryType: 'my typ',
-          domain: 'https://example.org',
-          clientName: 'mintows',
-          queryStatus: QueryStatus.BlockedWithBlacklist,
-          dnsSecStatus: DnsSecStatus.Bogus,
-          delta: 0.0),
+    // await _sleep(const Duration(milliseconds: 1000));
+
+    _items = [
+      ...List.generate(1, (_) => randomQueryItem()),
+      ..._items,
+      // ...List.filled(_random.nextInt(5) + 1, randomQueryItem())
     ];
+    return _items;
   }
 
   @override
