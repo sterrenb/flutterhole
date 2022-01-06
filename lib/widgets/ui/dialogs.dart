@@ -11,6 +11,7 @@ Future<bool?> showConfirmationDialog(
   bool canCancel = true,
   String? cancelLabel,
   String? okLabel,
+  Color? okColor,
 }) =>
     showDialog(
         context: context,
@@ -22,6 +23,7 @@ Future<bool?> showConfirmationDialog(
               canCancel: canCancel,
               cancelLabel: cancelLabel,
               okLabel: okLabel,
+              okColor: okColor,
             ));
 
 Future<bool?> showSaveChangesDialog(context) => showConfirmationDialog(
@@ -41,6 +43,7 @@ class ModalAlertDialog<T> extends StatelessWidget {
     this.canCancel = true,
     this.cancelLabel,
     this.okLabel,
+    this.okColor,
   }) : super(key: key);
 
   final String title;
@@ -50,6 +53,7 @@ class ModalAlertDialog<T> extends StatelessWidget {
   final bool canCancel;
   final String? cancelLabel;
   final String? okLabel;
+  final Color? okColor;
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +69,11 @@ class ModalAlertDialog<T> extends StatelessWidget {
             : Container(),
         TextButton(
             onPressed: () => Navigator.of(context).pop(popValue),
-            child: Text(okLabel?.toUpperCase() ??
-                MaterialLocalizations.of(context).okButtonLabel)),
+            child: Text(
+              okLabel?.toUpperCase() ??
+                  MaterialLocalizations.of(context).okButtonLabel,
+              style: TextStyle(color: okColor),
+            )),
       ],
       actionsPadding: const EdgeInsets.symmetric(horizontal: 16),
     );

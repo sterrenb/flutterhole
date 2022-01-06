@@ -16,12 +16,6 @@ extension WidgetRefX on WidgetRef {
   void refreshDetails() =>
       refresh(detailsProvider(read(activePiholeParamsProvider)));
 
-  void saveDashboard(
-      BuildContext context, Pi oldValue, List<DashboardEntry> dashboard) {
-    final newValue = oldValue.copyWith(dashboard: dashboard);
-    updatePihole(context, oldValue, newValue, 'Dash saved.');
-  }
-
   void updatePihole(BuildContext context, Pi oldValue, Pi newValue,
       [String? message]) {
     final notifier = read(UserPreferencesNotifier.provider.notifier);
@@ -29,10 +23,35 @@ extension WidgetRefX on WidgetRef {
     highlightSnackBar(
       context,
       content: Text(
-        message ?? '${newValue.title} saved.',
+        message ?? '${newValue.title} updated.',
       ),
       undo: () {
         notifier.savePihole(oldValue: newValue, newValue: oldValue);
+      },
+    );
+  }
+
+  void updateDashboard(
+      BuildContext context, Pi oldValue, List<DashboardEntry> dashboard) {
+    updatePihole(
+      context,
+      oldValue,
+      oldValue.copyWith(dashboard: dashboard),
+      'Dashboard updated.',
+    );
+  }
+
+  void deletePihole(BuildContext context, Pi oldValue) {
+    final notifier = read(UserPreferencesNotifier.provider.notifier);
+    final index = notifier.deletePihole(oldValue);
+
+    highlightSnackBar(
+      context,
+      content: Text(
+        '${oldValue.title} deleted.',
+      ),
+      undo: () {
+        notifier.addPihole(oldValue, index);
       },
     );
   }

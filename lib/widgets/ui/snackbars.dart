@@ -4,7 +4,7 @@ void highlightSnackBar(
   BuildContext context, {
   required Widget content,
   VoidCallback? undo,
-  Duration duration = const Duration(seconds: 20),
+  Duration duration = const Duration(seconds: 4),
 }) {
   ScaffoldMessenger.of(context).clearSnackBars();
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

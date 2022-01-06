@@ -79,7 +79,7 @@ class SettingsView extends HookConsumerWidget {
               ),
               const Divider(),
               AppSection(title: 'Other', children: [
-                ShowIntroductionListTile(),
+                const ShowIntroductionListTile(),
                 ListTile(
                   title: const Text('About'),
                   trailing: const Icon(KIcons.openDialog),
@@ -90,20 +90,11 @@ class SettingsView extends HookConsumerWidget {
                 ),
                 DevWidget(
                     child: Column(
-                  children: [
-                    const DevModeButton(),
-                    const LogLevelButton(),
-                    const ThemeToggleButton(),
-                    // Row(
-                    //   children: [
-                    //     Expanded(
-                    //       child: CodeCard(Formatting.jsonToCode(ref
-                    //           .watch(UserPreferencesNotifier.provider)
-                    //           .toJson())),
-                    //     ),
-                    //   ],
-                    // ),
-                    if (kDebugMode) ...[const ThemeShowcaseButton()],
+                  children: const [
+                    DevModeButton(),
+                    LogLevelButton(),
+                    ThemeToggleButton(),
+                    if (kDebugMode) ...[ThemeShowcaseButton()],
                   ],
                 )),
                 const PreferenceButtonTile(),

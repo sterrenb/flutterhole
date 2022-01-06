@@ -5,6 +5,7 @@ import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/single_pi_edit_view.dart';
+import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'delete_pihole_button.dart';
@@ -49,9 +50,10 @@ class PiSelectList extends HookConsumerWidget {
           },
           onDelete: piholes.length > 1
               ? () {
-                  ref
-                      .read(UserPreferencesNotifier.provider.notifier)
-                      .deletePihole(pi);
+                  // ref
+                  //     .read(UserPreferencesNotifier.provider.notifier)
+                  //     .deletePihole(pi);
+                  ref.deletePihole(context, pi);
                 }
               : null,
         );
@@ -120,7 +122,6 @@ class _Tile extends HookConsumerWidget {
                 PopupMenuItem(
                   enabled: !selected,
                   onTap: () {
-                    // WebService.launchUrlInBrowser(Formatting.piToAdminUrl(pi));
                     ref
                         .read(UserPreferencesNotifier.provider.notifier)
                         .selectPihole(pi);
@@ -144,9 +145,6 @@ class _Tile extends HookConsumerWidget {
                 if (onDelete != null) ...[
                   PopupMenuItem(
                     value: 'Delete',
-                    // onTap: () async {
-                    //
-                    // },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

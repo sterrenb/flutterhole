@@ -35,7 +35,7 @@ class DashboardEditView extends HookConsumerWidget {
         final save = await showSaveChangesDialog(context);
 
         if (save == true) {
-          ref.saveDashboard(context, pi, entries.value);
+          ref.updateDashboard(context, pi, entries.value);
           return true;
         }
 
@@ -74,7 +74,7 @@ class DashboardEditView extends HookConsumerWidget {
             ),
             SaveIconButton(onPressed: () {
               if (!_eq(pi.dashboard, entries.value)) {
-                ref.saveDashboard(context, pi, entries.value);
+                ref.updateDashboard(context, pi, entries.value);
               }
 
               Navigator.of(context).pop();

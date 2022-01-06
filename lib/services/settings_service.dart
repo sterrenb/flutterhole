@@ -123,13 +123,23 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     }
   }
 
-  void deletePihole(Pi value) {
-    log('deletePihole:${value.title}');
+  void addPihole(Pi value, int index) {
+    log('addPihole:${value.title}:$index');
+    final list = List<Pi>.from(state.piholes, growable: true);
+    list.insert(index.clamp(0, state.piholes.length - 1), value);
+    state = state.copyWith(piholes: list);
+    _save();
+  }
+
+  int deletePihole(Pi value) {
+    final index = state.piholes.indexOf(value);
     if (state.piholes.length > 1) {
-      final list = List<Pi>.from(state.piholes)
-        ..removeWhere((element) => element == value);
+      log('deletePihole:${value.title}:$index');
+      final list = List<Pi>.from(state.piholes, growable: true)
+        ..removeAt(index);
       savePiholes(list);
     }
+    return index;
   }
 
   void markNotificationsAsRead(List<String> values) {
