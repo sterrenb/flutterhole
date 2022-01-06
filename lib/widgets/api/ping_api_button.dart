@@ -5,8 +5,8 @@ import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/centered_leading.dart';
-import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/layout/loading_indicator.dart';
+import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PingApiButton extends HookConsumerWidget {

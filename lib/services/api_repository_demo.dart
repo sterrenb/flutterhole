@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 class PiholeRepositoryDemo implements PiholeRepository {
@@ -60,7 +59,7 @@ class PiholeRepositoryDemo implements PiholeRepository {
 
   @override
   Future<PiDetails> fetchPiDetails(_) async {
-    await _sleep(Duration(milliseconds: 500));
+    await _sleep(const Duration(milliseconds: 500));
     return PiDetails(
         temperature: _random.nextDouble() * 5 + 45,
         cpuLoads: [],
@@ -123,10 +122,11 @@ class PiholeRepositoryDemo implements PiholeRepository {
 
   @override
   Future<PiVersions> fetchVersions(_) async {
-    await _sleep(Duration(seconds: 1));
+    await _sleep(const Duration(seconds: 1));
     count++;
-    if (count % 2 == 0)
-      throw PiholeApiFailure.general('Failure demonstration #${count}');
+    if (count % 2 == 0) {
+      throw PiholeApiFailure.general('Failure demonstration #$count');
+    }
 
     return PiVersions(
       hasCoreUpdate: false,

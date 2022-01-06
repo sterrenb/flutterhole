@@ -4,8 +4,8 @@ import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
-import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
+import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class DeletePiholeButton extends HookConsumerWidget {

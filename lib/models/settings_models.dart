@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'settings_models.freezed.dart';
-
 part 'settings_models.g.dart';
 
 enum TemperatureReading {

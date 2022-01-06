@@ -5,9 +5,14 @@ import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/about_view.dart';
 import 'package:flutterhole/views/base_view.dart';
-import 'package:flutterhole/views/onboarding_view.dart';
 import 'package:flutterhole/views/single_pi_edit_view.dart';
+import 'package:flutterhole/widgets/developer/dev_mode_button.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
+import 'package:flutterhole/widgets/developer/log_level_button.dart';
+import 'package:flutterhole/widgets/developer/temperature_button.dart';
+import 'package:flutterhole/widgets/developer/theme_mode_button.dart';
+import 'package:flutterhole/widgets/developer/theme_showcase.dart';
+import 'package:flutterhole/widgets/developer/theme_toggle_button.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/onboarding/introduction_button.dart';
@@ -16,12 +21,6 @@ import 'package:flutterhole/widgets/settings/preference_button_tile.dart';
 import 'package:flutterhole/widgets/settings/theme_popup_menu.dart';
 import 'package:flutterhole/widgets/settings/update_frequency_button.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutterhole/widgets/developer/theme_showcase.dart';
-import 'package:flutterhole/widgets/developer/dev_mode_button.dart';
-import 'package:flutterhole/widgets/developer/log_level_button.dart';
-import 'package:flutterhole/widgets/developer/temperature_button.dart';
-import 'package:flutterhole/widgets/developer/theme_mode_button.dart';
-import 'package:flutterhole/widgets/developer/theme_toggle_button.dart';
 
 class SettingsView extends HookConsumerWidget {
   const SettingsView({Key? key}) : super(key: key);

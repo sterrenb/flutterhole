@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
-import 'package:flutterhole/services/settings_service.dart';
-import 'package:flutterhole/widgets/settings/extensions.dart';
-import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
+import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
+import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PreferenceButtonTile extends HookConsumerWidget {

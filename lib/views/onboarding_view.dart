@@ -4,7 +4,6 @@ import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/onboarding/onboarding_carousel.dart';
-import 'package:flutterhole/widgets/ui/double_back_to_close_app.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class OnboardingView extends HookConsumerWidget {

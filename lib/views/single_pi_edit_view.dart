@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
@@ -11,7 +12,6 @@ import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
-import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/settings/delete_pihole_button.dart';
@@ -19,9 +19,9 @@ import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/settings/qr_scan.dart';
 import 'package:flutterhole/widgets/settings/single_pi_form.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
+import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:pihole_api/pihole_api.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 

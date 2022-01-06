@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
+import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
-import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/widgets/layout/drop_down_button_builder.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
