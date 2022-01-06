@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole/constants/urls.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
-import 'package:flutterhole/widgets/onboarding/demo_dashboard.dart';
-import 'package:flutterhole/widgets/onboarding/demo_log_list.dart';
+import 'package:flutterhole/widgets/onboarding/onboarding_dashboard.dart';
+import 'package:flutterhole/widgets/onboarding/onboarding_log_list.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/images.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -127,7 +127,7 @@ for full functionality!''',
                   width: 500.0,
                   child: Opacity(
                       opacity: .8,
-                      child: Center(child: AnimatedDemoLogList()))),
+                      child: Center(child: AnimatedOnboardingLogList()))),
               title: Text.rich(
                 TextSpan(
                   text: '',
@@ -157,7 +157,7 @@ for full functionality!''',
               leading: const SizedBox(
                 width: 300.0,
                 child: Center(
-                  child: Opacity(opacity: .8, child: DemoDashboard()),
+                  child: Opacity(opacity: .8, child: OnboardingDashboard()),
                 ),
               ),
               title: Text.rich(

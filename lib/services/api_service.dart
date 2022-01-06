@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutterhole/models/settings_models.dart';
-import 'package:flutterhole/services/api_repository_demo.dart';
+import 'package:flutterhole/demo/demo_api.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
@@ -26,7 +26,7 @@ final activePiholeParamsProvider = Provider<PiholeRepositoryParams>((ref) {
 final piholeProvider =
     Provider.family<PiholeRepository, PiholeRepositoryParams>((ref, params) {
   if (params.baseUrl.contains('example')) {
-    return PiholeRepositoryDemo(params);
+    return DemoApi(params);
   }
   return PiholeRepositoryDio(params);
 });
