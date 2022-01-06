@@ -26,14 +26,14 @@ Future<bool?> showConfirmationDialog(
               okColor: okColor,
             ));
 
-Future<bool?> showDeleteConfirmationDialog(BuildContext context, String message) =>
+Future<bool?> showDeleteConfirmationDialog(
+        BuildContext context, String message) =>
     showConfirmationDialog(
       context,
       title: message,
       okLabel: 'Delete',
       okColor: Theme.of(context).colorScheme.error,
     );
-
 
 Future<bool?> showSaveChangesDialog(context) => showConfirmationDialog(
       context,

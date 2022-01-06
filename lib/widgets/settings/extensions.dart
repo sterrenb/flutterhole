@@ -5,7 +5,6 @@ import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/widgets/ui/snackbars.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 extension WidgetRefX on WidgetRef {

@@ -9,8 +9,6 @@ import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'delete_pihole_button.dart';
-
 class PiSelectList extends HookConsumerWidget {
   const PiSelectList({
     Key? key,
@@ -23,7 +21,6 @@ class PiSelectList extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final active = ref.watch(piProvider);
     final piholes = ref.watch(allPiholesProvider);
-    final activeIndex = ref.watch(activeIndexProvider);
 
     return ReorderableListView.builder(
       shrinkWrap: shrinkWrap,

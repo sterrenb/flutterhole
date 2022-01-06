@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -12,14 +11,6 @@ class BaseView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (kIsWeb && false) {
-      return Banner(
-          message: 'Demo',
-          textDirection: TextDirection.ltr,
-          location: BannerLocation.bottomStart,
-          child: child);
-    }
-
     return child;
   }
 }

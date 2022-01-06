@@ -67,7 +67,7 @@ class DashboardCardHeader extends StatelessWidget {
                           KIcons.error,
                           color: Theme.of(context).colorScheme.error,
                         ))
-                    : Text(''),
+                    : const Text(''),
               ),
       ),
     );
@@ -156,7 +156,7 @@ class FittedText extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w600,
         ),
         // style: GoogleFonts.firaMono(

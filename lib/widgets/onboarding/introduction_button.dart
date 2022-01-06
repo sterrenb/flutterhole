@@ -23,16 +23,12 @@ Future<void> showOnboardingDialog(
               content: SizedBox(
                 width: 500,
                 height: 500,
-                child: false
-                    ? Container(
-                        color: Colors.red,
-                      )
-                    : OnboardingCarousel(
-                        onGetStarted: (context) {
-                          if (onGetStarted != null) onGetStarted();
-                          Navigator.of(context).pop();
-                        },
-                      ),
+                child: OnboardingCarousel(
+                  onGetStarted: (context) {
+                    if (onGetStarted != null) onGetStarted();
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
             ),
           );
