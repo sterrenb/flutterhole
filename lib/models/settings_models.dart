@@ -36,7 +36,7 @@ const defaultPiholes = kDebugMode
           title: 'Demo',
           baseUrl: 'http://example.com',
           apiToken:
-              String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""),
+              String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: "token"),
         ),
         Pi(
           title: 'Home',
@@ -58,8 +58,6 @@ const defaultPiholes = kDebugMode
         Pi(
           title: 'Demo',
           baseUrl: 'http://example.com',
-          apiToken:
-              String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""),
         )
       ];
 

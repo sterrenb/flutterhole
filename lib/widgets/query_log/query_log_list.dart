@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/services/api_service.dart';
+import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/loading_indicator.dart';
@@ -56,15 +57,17 @@ class QueryLogList extends HookConsumerWidget {
             AnimatedColorFader(
               show: data == null || (data.isEmpty && isLoading),
             ),
-            Positioned(
-              left: 8.0,
-              top: 8.0,
-              child: Card(
-                child: TextButton(
-                    onPressed: () {
-                      ref.refreshQueryItems();
-                    },
-                    child: const Text('Refresh')),
+            DevWidget(
+              child: Positioned(
+                left: 8.0,
+                top: 8.0,
+                child: Card(
+                  child: TextButton(
+                      onPressed: () {
+                        ref.refreshQueryItems();
+                      },
+                      child: const Text('Refresh')),
+                ),
               ),
             ),
             if (data == null && error != null) ...[CenteredErrorMessage(error)],
