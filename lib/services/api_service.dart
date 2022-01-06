@@ -6,10 +6,6 @@ import 'package:flutterhole/services/settings_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
 
-class ApiService {
-  ApiService._();
-}
-
 final paramsProvider = Provider.family<PiholeRepositoryParams, Pi>((ref, pi) {
   return PiholeRepositoryParams(
     dio: Dio(BaseOptions(baseUrl: pi.baseUrl)),
@@ -91,10 +87,29 @@ final detailsProvider =
   dependencies: [piholeProvider, paramsProvider],
 );
 
+// TODO userprefs
+const maxResults = 50;
+
 final activeDetailsProvider =
     Provider.autoDispose<AsyncValue<PiDetails>>((ref) {
   return ref.watch(detailsProvider(ref.watch(activePiholeParamsProvider)));
 }, dependencies: [piProvider, detailsProvider, activePiholeParamsProvider]);
+
+final queryItemsProvider =
+    FutureProvider.autoDispose.family<List<QueryItem>, PiholeRepositoryParams>(
+  (ref, params) async {
+    final pihole = ref.watch(piholeProvider(params));
+    final cancelToken = CancelToken();
+    ref.onDispose(() => cancelToken.cancel());
+    return pihole.fetchQueryItems(cancelToken, maxResults);
+  },
+  dependencies: [piholeProvider, paramsProvider],
+);
+
+final activeQueryItemsProvider =
+    Provider.autoDispose<AsyncValue<List<QueryItem>>>((ref) {
+  return ref.watch(queryItemsProvider(ref.watch(activePiholeParamsProvider)));
+}, dependencies: [piProvider, queryItemsProvider, activePiholeParamsProvider]);
 
 final forwardDestinationsProvider = FutureProvider.autoDispose
     .family<PiForwardDestinations, PiholeRepositoryParams>((ref, params) async {

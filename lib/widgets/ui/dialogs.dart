@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
@@ -146,8 +147,8 @@ class ErrorDialog extends StatelessWidget {
 
 class CenteredErrorMessage extends StatelessWidget {
   const CenteredErrorMessage(
-    this.error,
-    this.stackTrace, {
+    this.error, {
+    this.stackTrace,
     this.message,
     Key? key,
   }) : super(key: key);
@@ -164,6 +165,11 @@ class CenteredErrorMessage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Icon(
+              KIcons.error,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            const SizedBox(height: 24.0),
             Text(message ?? error.toString()),
             const SizedBox(height: 8.0),
             TextButton(

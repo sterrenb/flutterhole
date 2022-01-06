@@ -44,7 +44,7 @@ class PrivacyView extends HookConsumerWidget {
           loading: () => const Center(
             child: CircularProgressIndicator(),
           ),
-          error: (e, s) => CenteredErrorMessage(e, s),
+          error: (e, s) => CenteredErrorMessage(e, stackTrace: s),
         ),
       ),
     );

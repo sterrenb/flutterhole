@@ -196,7 +196,9 @@ class _DashPopupMenuButton extends HookConsumerWidget {
           onTap: () {
             switch (ref.read(_selectedIndexProvider)) {
               case 0:
-                ref.refreshDashboard();
+                return ref.refreshDashboard();
+              case 1:
+                return ref.refreshQueryItems();
             }
           },
           child: Row(

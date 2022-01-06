@@ -72,10 +72,13 @@ class PiholeRepositoryDemo implements PiholeRepository {
     throw UnimplementedError();
   }
 
+  int c = 0;
   @override
-  Future<List<QueryItem>> fetchQueryItems(_, int maxResults) {
-    // TODO: implement fetchQueryItems
-    throw UnimplementedError();
+  Future<List<QueryItem>> fetchQueryItems(_, int maxResults) async {
+    await _sleep(const Duration(milliseconds: 1000));
+    c++;
+    if (c % 2 == 0) throw PiholeApiFailure.cancelled();
+    return [];
   }
 
   @override

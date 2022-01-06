@@ -17,6 +17,9 @@ extension WidgetRefX on WidgetRef {
   void refreshDetails() =>
       refresh(detailsProvider(read(activePiholeParamsProvider)));
 
+  void refreshQueryItems() =>
+      refresh(queryItemsProvider(read(activePiholeParamsProvider)));
+
   void refreshDashboard() {
     refreshSummary();
     refreshVersions();

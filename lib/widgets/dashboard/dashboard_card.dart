@@ -38,37 +38,11 @@ class DashboardCardHeader extends StatelessWidget {
           ),
         ],
       ),
-      trailing: AnimatedFader(
-        child: isLoading
-            ? IconButton(
-                onPressed: null,
-                enableFeedback: false,
-                mouseCursor: SystemMouseCursors.click,
-                icon: LoadingIndicator(
-                  size: Theme.of(context).textTheme.subtitle1?.fontSize,
-                ),
-              )
-            : AnimatedFader(
-                child: error != null
-                    ? IconButton(
-                        iconSize:
-                            Theme.of(context).textTheme.subtitle1?.fontSize ??
-                                24.0,
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          showModal(
-                              context: context,
-                              builder: (context) => ErrorDialog(
-                                    title: title,
-                                    error: error!,
-                                  ));
-                        },
-                        icon: Icon(
-                          KIcons.error,
-                          color: Theme.of(context).colorScheme.error,
-                        ))
-                    : const Text(''),
-              ),
+      trailing: AnimatedLoadingErrorIndicatorIcon(
+        mouseCursor: SystemMouseCursors.click,
+        isLoading: isLoading,
+        error: error,
+        title: title,
       ),
     );
   }
