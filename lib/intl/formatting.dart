@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 const JsonEncoder _jsonEncoder = JsonEncoder.withIndent('  ');
@@ -65,6 +66,9 @@ class Formatting {
 
   static final whitespaceFormatter =
       FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'));
+
+  static String packageInfoToString(PackageInfo info, [bool build = true]) =>
+      'v${info.version} ${build ? '(build #${info.buildNumber})' : ''}'.trim();
 }
 
 extension Numx on num {

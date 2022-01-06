@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhole/constants/urls.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/services/settings_service.dart';
+import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/widgets/ui/snackbars.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -80,5 +82,19 @@ extension WidgetRefX on WidgetRef {
         notifier.setPreferences(oldValue);
       },
     );
+  }
+
+  void submitGithubIssue({String? title, bool feature = false}) {
+    final t = title == null ? '' : '&title=FlutterHole ' + title;
+
+    WebService.launchUrlInBrowser(
+        (feature ? KUrls.githubFeatureRequestUrl : KUrls.githubBugReportUrl) +
+            t);
+  }
+
+  void submitRedditPost(String title, String text) {
+    //https://www.reddit.com/r/pihole/submit?title=hello&text=I%20am%20using%20%5BFlutterHole%5D(http%3A%2F%2Fpi.hole)%20v1.2.3.
+    WebService.launchUrlInBrowser(
+        KUrls.piholeCommunity + 'submit?title=$title&text=$text');
   }
 }

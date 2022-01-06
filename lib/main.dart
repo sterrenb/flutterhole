@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/services/settings_service.dart';
+import 'package:flutterhole/views/about_view.dart';
 import 'package:flutterhole/views/dashboard_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/ui/double_back_to_close_app.dart';
@@ -34,7 +35,7 @@ class MyApp extends HookConsumerWidget {
       darkTheme: darkTheme,
       themeMode: themeMode,
       showSemanticsDebugger: false,
-      home: DoubleBackToCloseApp(child: const DashboardView()),
+      home: DoubleBackToCloseApp(child: const AboutView()),
       // home: const SinglePiEditView(),
     );
   }

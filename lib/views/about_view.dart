@@ -7,6 +7,7 @@ import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/privacy_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/about/app_version.dart';
+import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
@@ -75,45 +76,11 @@ class AboutView extends HookConsumerWidget {
                     fullscreenDialog: true));
               },
             ),
-            // ListTile(
-            //   leading: Opacity(
-            //     opacity: context.isLight ? 0.5 : 1.0,
-            //     child: const ThemedLogoImage(
-            //       width: 24.0,
-            //       height: 24.0,
-            //     ),
-            //   ),
-            //   title: const Text('View the introduction'),
-            //   trailing: const Icon(KIcons.push),
-            //   onTap: () {
-            //     // context.router.push(OnboardingRoute(isInitialPage: false));
-            //   },
-            // ),
-            ListTile(
-              leading: const Icon(KIcons.bugReport),
-              title: const Text('Submit a bug report'),
-              trailing: const Icon(KIcons.openUrl),
-              onTap: () {
-                WebService.launchUrlInBrowser(KUrls.githubIssuesUrl);
-              },
-            ),
-            ListTile(
-              leading: const Icon(KIcons.community),
-              title: Row(
-                children: [
-                  const Text('Support from '),
-                  Text(
-                    '/r/pihole/',
-                    style: GoogleFonts.firaMono(),
-                  ),
-                  // const Text(' on Reddit'),
-                ],
-              ),
-              trailing: const Icon(KIcons.openUrl),
-              onTap: () {
-                WebService.launchUrlInBrowser(KUrls.piholeCommunity);
-              },
-            ),
+
+            const RedditSupportListTile(),
+
+            const SubmitBugReportListTile(),
+            const SubmitFeatureRequestListTile(),
             const Divider(),
             const ListTitle('Support the developer'),
             ListTile(
@@ -148,7 +115,7 @@ class AboutView extends HookConsumerWidget {
                                 'Your donation supports the development of this free app.'),
                             SizedBox(height: 8.0),
                             Text('Thank you in advance!'),
-                            SizedBox(height: 24.0),
+                            SizedBox(height: 48.0),
                             AppWrap(alignment: WrapAlignment.center, children: [
                               UrlOutlinedButton(
                                 url: KUrls.payPalUrl,
@@ -163,7 +130,6 @@ class AboutView extends HookConsumerWidget {
                                 text: 'Ko-fi',
                               ),
                             ]),
-                            SizedBox(height: 24.0),
                           ],
                         ),
                       );

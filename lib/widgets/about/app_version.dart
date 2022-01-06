@@ -2,14 +2,15 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/constants/urls.dart';
+import 'package:flutterhole/intl/formatting.dart';
+import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
+import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-final _packageInfoProvider =
-    FutureProvider<PackageInfo>((_) => PackageInfo.fromPlatform());
 
 class AppVersionListTile extends HookConsumerWidget {
   const AppVersionListTile({
@@ -21,12 +22,18 @@ class AppVersionListTile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final packageInfo = ref.watch(_packageInfoProvider);
+    final packageInfo = ref.watch(packageInfoProvider);
     return ListTile(
       leading: const Icon(KIcons.appVersion),
       title: Text(title),
-      // subtitle: Text('${packageInfo.toString()}'),
-      subtitle: const PackageVersionText(),
+      subtitle: packageInfo.when(
+        data: (PackageInfo info) => Text(
+          Formatting.packageInfoToString(info),
+          style: GoogleFonts.firaMono(),
+        ),
+        loading: () => const Text(''),
+        error: (o, s) => Text(o.toString()),
+      ),
       trailing: AppWrap(
         children: [
           const UrlOutlinedButton(
@@ -99,33 +106,113 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
   );
 }
 
-class PackageVersionText extends HookConsumerWidget {
-  const PackageVersionText({
+class PackageInfoBuilder extends HookConsumerWidget {
+  const PackageInfoBuilder({
     Key? key,
-    this.includeBuild = true,
-    this.textStyle,
+    required this.builder,
   }) : super(key: key);
 
-  final bool includeBuild;
-  final TextStyle? textStyle;
+  final ValueWidgetBuilder<PackageInfo?> builder;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final packageInfo = ref.watch(_packageInfoProvider);
+    final packageInfo = ref.watch(packageInfoProvider);
     return packageInfo.when(
       data: (PackageInfo info) => Text(
-        'v${info.version}' +
-            (includeBuild ? ' (build #${info.buildNumber})' : ''),
-        style: textStyle,
+        Formatting.packageInfoToString(info),
+        style: GoogleFonts.firaMono(),
       ),
-      loading: () => Text(
+      loading: () => const Text(
         '',
-        style: textStyle,
       ),
-      error: (o, s) => Text(
+      error: (o, s) => const Text(
         'No version information found',
-        style: textStyle,
       ),
+    );
+  }
+}
+
+class SubmitBugReportListTile extends HookConsumerWidget {
+  const SubmitBugReportListTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final packageInfo = ref.watch(packageInfoProvider);
+
+    return ListTile(
+      leading: const Icon(KIcons.bugReport),
+      title: const Text('Submit a bug report'),
+      trailing: const Icon(KIcons.openUrl),
+      onTap: () {
+        ref.submitGithubIssue(
+            title: packageInfo.whenOrNull(
+          data: (PackageInfo info) =>
+              Formatting.packageInfoToString(info, false),
+        ));
+      },
+    );
+  }
+}
+
+class SubmitFeatureRequestListTile extends HookConsumerWidget {
+  const SubmitFeatureRequestListTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final packageInfo = ref.watch(packageInfoProvider);
+
+    return ListTile(
+      leading: const Icon(KIcons.featureRequest),
+      title: const Text('Request a feature'),
+      trailing: const Icon(KIcons.openUrl),
+      onTap: () {
+        ref.submitGithubIssue(
+            feature: true,
+            title: packageInfo.whenOrNull(
+              data: (PackageInfo info) =>
+                  Formatting.packageInfoToString(info, false),
+            ));
+      },
+    );
+  }
+}
+
+class RedditSupportListTile extends HookConsumerWidget {
+  const RedditSupportListTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final packageInfo = ref.watch(packageInfoProvider);
+
+    return ListTile(
+      leading: const Icon(KIcons.community),
+      title: Row(
+        children: [
+          const Text('Support from the '),
+          Text(
+            '/r/pihole/',
+            style: GoogleFonts.firaMono(),
+          ),
+          Text(' community')
+          // const Text(' on Reddit'),
+        ],
+      ),
+      trailing: const Icon(KIcons.openUrl),
+      onTap: () {
+        ref.submitRedditPost(
+            'FlutterHole',
+            packageInfo.whenOrNull(
+                  data: (PackageInfo info) =>
+                      'Hello, %0D%0A%0D%0AI am using [FlutterHole](${KUrls.githubHomeUrl}) ${Formatting.packageInfoToString(info, false)}.',
+                ) ??
+                '');
+      },
     );
   }
 }

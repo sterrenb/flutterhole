@@ -13,6 +13,10 @@ class KUrls {
   static const String developerHomeUrl = 'https://tster.nl';
   static const String githubIssuesUrl =
       'https://github.com/sterrenburg/flutterhole/issues/new/choose';
+  static const String githubBugReportUrl =
+      'https://github.com/sterrenburg/flutterhole/issues/new?template=bug_report.md';
+  static const String githubFeatureRequestUrl =
+      'https://github.com/sterrenburg/flutterhole/issues/new?template=feature_request.md';
   static const String logoDesignerUrl = 'https://mathijssterrenburg.com/';
   static const String payPalUrl = 'https://paypal.me/tsterrenburg';
   static const String koFiUrl = 'https://ko-fi.com/sterrenburg';
