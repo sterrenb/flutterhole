@@ -35,7 +35,7 @@ class MyApp extends HookConsumerWidget {
       darkTheme: darkTheme,
       themeMode: themeMode,
       showSemanticsDebugger: false,
-      home: DoubleBackToCloseApp(child: const AboutView()),
+      home: const DoubleBackToCloseApp(child: DashboardView()),
       // home: const SinglePiEditView(),
     );
   }

@@ -48,7 +48,7 @@ class AboutView extends HookConsumerWidget {
                 children: [
                   const Text('Made by '),
                   Text(
-                    'TSter',
+                    'tster.nl',
                     style:
                         TextStyle(color: Theme.of(context).colorScheme.primary),
                   ),

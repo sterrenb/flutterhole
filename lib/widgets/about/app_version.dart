@@ -34,20 +34,12 @@ class AppVersionListTile extends HookConsumerWidget {
         loading: () => const Text(''),
         error: (o, s) => Text(o.toString()),
       ),
-      trailing: AppWrap(
-        children: [
-          const UrlOutlinedButton(
-            url: KUrls.githubHomeUrl,
-            text: 'GitHub',
+      trailing: OutlinedButton(
+          onPressed: packageInfo.maybeWhen(
+            data: (info) => () => showAppDetailsDialog(context, info),
+            orElse: () => null,
           ),
-          OutlinedButton(
-              onPressed: packageInfo.maybeWhen(
-                data: (info) => () => showAppDetailsDialog(context, info),
-                orElse: () => null,
-              ),
-              child: const Text('Licences')),
-        ],
-      ),
+          child: const Text('Licences')),
     );
   }
 }
@@ -194,12 +186,12 @@ class RedditSupportListTile extends HookConsumerWidget {
       leading: const Icon(KIcons.community),
       title: Row(
         children: [
-          const Text('Support from the '),
+          const Text('Ask the '),
           Text(
             '/r/pihole/',
             style: GoogleFonts.firaMono(),
           ),
-          Text(' community')
+          const Text(' community')
           // const Text(' on Reddit'),
         ],
       ),

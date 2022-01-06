@@ -62,14 +62,8 @@ class DashboardView extends HookConsumerWidget {
               ),
             ],
           ),
-          actions: [
+          actions: const [
             _DashPopupMenuButton(),
-            OutlinedButton(
-                onPressed: () {
-                  ref.updatePihole(context, pi,
-                      pi.copyWith(title: pi.title.split('').reversed.join()));
-                },
-                child: Text('Demo')),
             PushViewIconButton(
               tooltip: 'Settings',
               iconData: KIcons.settings,

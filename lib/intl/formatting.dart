@@ -68,19 +68,11 @@ class Formatting {
       FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'));
 
   static String packageInfoToString(PackageInfo info, [bool build = true]) =>
-      'v${info.version} ${build ? '(build #${info.buildNumber})' : ''}'.trim();
+      'v${info.version}${build ? '#${info.buildNumber}' : ''}'.trim();
 }
 
 extension Numx on num {
   toFormatted() => _numberFormat.format(this);
-}
-
-// TODO remove
-extension AsyncValueX on AsyncValue {
-  bool isLoading() => maybeWhen(
-        loading: () => true,
-        orElse: () => false,
-      );
 }
 
 extension DashboardIDX on DashboardID {
