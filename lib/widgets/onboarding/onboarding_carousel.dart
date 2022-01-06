@@ -102,8 +102,8 @@ class OnboardingCarousel extends HookConsumerWidget {
                       Text(' and ', style: descriptionStyle),
                       Text('sleep', style: codeStyle),
                       _TooltipDirect(
-                        message:
-                            'HTTPS & API token required for full functionality!',
+                        message: '''HTTPS & API token required 
+for full functionality!''',
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

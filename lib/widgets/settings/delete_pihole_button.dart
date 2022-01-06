@@ -8,14 +8,6 @@ import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-Future<bool?> showDeletePiholeConfirmationDialog(BuildContext context, Pi pi) =>
-    showConfirmationDialog(
-      context,
-      title: 'Delete ${pi.title}?',
-      okLabel: 'Delete',
-      okColor: Theme.of(context).colorScheme.error,
-    );
-
 class DeletePiholeButton extends HookConsumerWidget {
   const DeletePiholeButton({
     Key? key,
@@ -34,8 +26,9 @@ class DeletePiholeButton extends HookConsumerWidget {
         text: 'Delete',
         color: Theme.of(context).colorScheme.error,
         onPressed: () async {
-          if (kDebugMode ||
-              await showDeletePiholeConfirmationDialog(context, pi) == true) {
+          if (await showDeleteConfirmationDialog(
+                  context, 'Delete ${pi.title}?') ==
+              true) {
             ref.deletePihole(context, pi);
             Navigator.of(context).pop();
           }

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/services/settings_service.dart';
+import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
@@ -22,54 +23,39 @@ class PreferenceButtonTile extends HookConsumerWidget {
           children: [
             IconOutlinedButton(
               iconData: KIcons.refresh,
-              text: "Reset preferences",
+              text: 'Reset preferences',
               color: Theme.of(context).colorScheme.error,
               onPressed: () async {
                 if (await showConfirmationDialog(context,
-                        title: "Reset preferences?",
+                        title: 'Reset preferences?',
                         body: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           // mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
                             Text(
-                              "All preferences will be reset to the default value.",
+                              'All preferences will be reset to the default value.',
                             ),
                             SizedBox(height: 8.0),
-                            Text("Pi-hole configurations are unaffected."),
+                            Text('Pi-hole configurations are unaffected.'),
                           ],
                         )) ==
                     true) {
-                  ref
-                      .read(UserPreferencesNotifier.provider.notifier)
-                      .clearPreferences();
+                  ref.resetPreferences(context);
                 }
               },
             ),
             IconOutlinedButton(
               iconData: KIcons.delete,
               color: Theme.of(context).colorScheme.error,
-              text: "Delete Pi-holes",
+              text: 'Delete Pi-holes',
               onPressed: () async {
-                if (kDebugMode ||
-                    await showConfirmationDialog(context,
-                            title: "Delete Pi-holes?",
-                            body: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              // mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  "All Pi-hole configurations will be deleted.",
-                                ),
-                                SizedBox(height: 8.0),
-                                Text("This action cannot be undone."),
-                              ],
-                            )) ==
-                        true) {
-                  ref
-                      .read(UserPreferencesNotifier.provider.notifier)
-                      .deletePiholes();
+                if (await showDeleteConfirmationDialog(
+                      context,
+                      'Delete all Pi-holes?',
+                    ) ==
+                    true) {
+                  ref.deletePiholes(context);
                 }
               },
             ),

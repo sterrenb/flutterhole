@@ -75,10 +75,17 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     }
   }
 
-  void clearPreferences() {
+  void setPreferences(UserPreferences value) {
+    state = value;
+    _save();
+  }
+
+  UserPreferences clearPreferences() {
+    final oldValue = state;
     state =
         UserPreferences(piholes: state.piholes, activeIndex: state.activeIndex);
     _save();
+    return oldValue;
   }
 
   void selectPihole(Pi pi) {
@@ -87,9 +94,11 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     _save();
   }
 
-  void deletePiholes() {
+  List<Pi> deletePiholes() {
+    final list = state.piholes;
     state = state.copyWith(piholes: defaultPiholes);
     _save();
+    return list;
   }
 
   void savePiholes(List<Pi> value) {
@@ -126,7 +135,7 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
   void addPihole(Pi value, int index) {
     log('addPihole:${value.title}:$index');
     final list = List<Pi>.from(state.piholes, growable: true);
-    list.insert(index.clamp(0, state.piholes.length - 1), value);
+    list.insert(index.clamp(0, state.piholes.length), value);
     state = state.copyWith(piholes: list);
     _save();
   }

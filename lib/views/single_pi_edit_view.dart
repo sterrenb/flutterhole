@@ -71,8 +71,7 @@ class SinglePiEditView extends HookConsumerWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        print('comparing ${oldPi.title} -> ${newPi.value.title}');
-        if (oldPi == newPi.value) return true;
+        if (oldPi == newPi.value || isNew) return true;
 
         final save = await showSaveChangesDialog(context);
 
@@ -98,8 +97,14 @@ class SinglePiEditView extends HookConsumerWidget {
               ),
               SaveIconButton(
                 onPressed: () {
+                  if (isNew) {
+                    ref
+                        .read(UserPreferencesNotifier.provider.notifier)
+                        .savePihole(oldValue: oldPi, newValue: newPi.value);
+                  } else {
+                    ref.updatePihole(context, oldPi, newPi.value);
+                  }
                   Navigator.of(context).pop();
-                  ref.updatePihole(context, oldPi, newPi.value);
                 },
               ),
             ],

@@ -6,6 +6,7 @@ import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/single_pi_edit_view.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
+import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'delete_pihole_button.dart';
@@ -109,7 +110,7 @@ class _Tile extends HookConsumerWidget {
               tooltip: '',
               onSelected: (String value) {
                 if (value == 'Delete') {
-                  showDeletePiholeConfirmationDialog(context, pi)
+                  showDeleteConfirmationDialog(context, 'Delete ${pi.title}?')
                       .then((isDeleted) {
                     if (isDeleted ?? false) {
                       if (onDelete != null) onDelete!();

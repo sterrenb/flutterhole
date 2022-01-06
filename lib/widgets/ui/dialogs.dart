@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/intl/formatting.dart';
+import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 
@@ -25,6 +26,15 @@ Future<bool?> showConfirmationDialog(
               okLabel: okLabel,
               okColor: okColor,
             ));
+
+Future<bool?> showDeleteConfirmationDialog(BuildContext context, String message) =>
+    showConfirmationDialog(
+      context,
+      title: message,
+      okLabel: 'Delete',
+      okColor: Theme.of(context).colorScheme.error,
+    );
+
 
 Future<bool?> showSaveChangesDialog(context) => showConfirmationDialog(
       context,

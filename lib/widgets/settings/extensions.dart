@@ -55,4 +55,30 @@ extension WidgetRefX on WidgetRef {
       },
     );
   }
+
+  void deletePiholes(BuildContext context) {
+    final notifier = read(UserPreferencesNotifier.provider.notifier);
+    final oldValue = notifier.deletePiholes();
+
+    highlightSnackBar(
+      context,
+      content: const Text('All Pi-holes deleted.'),
+      undo: () {
+        notifier.savePiholes(oldValue);
+      },
+    );
+  }
+
+  void resetPreferences(BuildContext context) {
+    final notifier = read(UserPreferencesNotifier.provider.notifier);
+    final oldValue = notifier.clearPreferences();
+
+    highlightSnackBar(
+      context,
+      content: const Text('Preferences reset.'),
+      undo: () {
+        notifier.setPreferences(oldValue);
+      },
+    );
+  }
 }
