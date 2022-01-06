@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutterhole/constants/colors.dart';
@@ -40,7 +41,7 @@ class Formatting {
         notFound: () => "Not found.",
         notAuthenticated: () => "Not authenticated.",
         invalidResponse: (response) =>
-            "The server responded with status code $response.",
+            "The server responded with status code $response.${kIsWeb ? '\nCheck the browser console for errors.' : ''}",
         emptyString: () => "Empty string response.",
         emptyList: () => "Empty list response.",
         cancelled: () => "Request cancelled.",

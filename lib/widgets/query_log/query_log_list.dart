@@ -58,18 +58,17 @@ class QueryLogList extends HookConsumerWidget {
               show: data == null || (data.isEmpty && isLoading),
             ),
             DevWidget(
-              child: Positioned(
-                left: 8.0,
-                top: 8.0,
-                child: Card(
-                  child: TextButton(
-                      onPressed: () {
-                        ref.refreshQueryItems();
-                      },
-                      child: const Text('Refresh')),
-                ),
+                child: Positioned(
+              left: 8.0,
+              top: 8.0,
+              child: Card(
+                child: TextButton(
+                    onPressed: () {
+                      ref.refreshQueryItems();
+                    },
+                    child: const Text('Refresh')),
               ),
-            ),
+            )),
             if (data == null && error != null) ...[CenteredErrorMessage(error)],
             AnimatedLoadingErrorIndicatorIcon(
               isLoading: isLoading,

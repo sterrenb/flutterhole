@@ -10,6 +10,7 @@ import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
+import 'package:flutterhole/widgets/ui/scaffold_messenger.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -25,6 +26,10 @@ class DashboardEditView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pi = ref.watch(piProvider);
     final entries = useState(pi.dashboard);
+
+    useAsyncEffect(() {
+      ref.refreshDashboard();
+    }, () {}, [entries.value]);
 
     return WillPopScope(
       onWillPop: () async {

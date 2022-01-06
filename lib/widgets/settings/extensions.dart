@@ -27,6 +27,8 @@ extension WidgetRefX on WidgetRef {
     refreshSummary();
     refreshVersions();
     refreshDetails();
+    refreshForwardDestinations();
+    refreshQueryItems();
   }
 
   void updatePihole(BuildContext context, Pi oldValue, Pi newValue,
