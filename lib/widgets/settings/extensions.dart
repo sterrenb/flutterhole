@@ -5,7 +5,6 @@ import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
-import 'package:flutterhole/widgets/settings/theme_mode_button.dart';
 import 'package:flutterhole/widgets/ui/snackbars.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

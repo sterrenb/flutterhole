@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
+import 'package:flutterhole/widgets/ui/snackbars.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class LogoImage extends HookConsumerWidget {
@@ -10,8 +11,9 @@ class LogoImage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final count = useState(0);
-    final devMode = ref.watch(devModeProvider);
-    const max = 10;
+    final isDev = ref.watch(isDevProvider);
+    final isAlreadyDev = useState(isDev);
+    const max = 6;
 
     return InkWell(
       child: AspectRatio(
@@ -26,25 +28,23 @@ class LogoImage extends HookConsumerWidget {
         ),
       ),
       onTap: () {
-        ScaffoldMessenger.of(context).clearSnackBars();
-
-        if (devMode) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('You are already a developer.'),
-          ));
+        if (isAlreadyDev.value) {
+          highlightSnackBar(context,
+              content: const Text('You are already a developer.'));
           return;
         }
 
         count.value = count.value + 1;
+
         if (count.value >= max) {
-          ref.read(UserPreferencesNotifier.provider.notifier).toggleDevMode();
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('You are now a developer!'),
-          ));
+          ref.read(UserPreferencesNotifier.provider.notifier).enableIsDev();
+          highlightSnackBar(context,
+              content: Text(count.value < max + 5
+                  ? 'You are now a developer! ${count.value}'
+                  : 'Yes, you really are a developer!'));
         } else if (count.value >= max ~/ 2) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("Tap ${max - count.value} more times..."),
-          ));
+          highlightSnackBar(context,
+              content: Text("Tap ${max - count.value} more times..."));
         }
       },
     );

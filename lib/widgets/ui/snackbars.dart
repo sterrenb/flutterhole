@@ -11,6 +11,7 @@ void highlightSnackBar(
     content: content,
     duration: duration,
     behavior: SnackBarBehavior.floating,
+    width: MediaQuery.of(context).size.width > 800.0 ? 770 : null,
     action: undo == null
         ? null
         : SnackBarAction(

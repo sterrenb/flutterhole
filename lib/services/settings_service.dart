@@ -188,8 +188,13 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     _save();
   }
 
+  void enableIsDev() {
+    state = state.copyWith(isDev: true);
+    _save();
+  }
+
   void toggleDevMode() {
-    state = state.copyWith(devMode: !state.devMode, isDev: true);
+    state = state.copyWith(devMode: !state.devMode);
     _save();
   }
 
