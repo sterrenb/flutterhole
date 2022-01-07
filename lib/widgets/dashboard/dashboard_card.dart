@@ -94,6 +94,7 @@ class DashboardCard extends HookConsumerWidget {
             );
           },
           child: Column(
+            mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (header != null) ...[header!],

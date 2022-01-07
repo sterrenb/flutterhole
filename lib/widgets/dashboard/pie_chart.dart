@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,20 +7,22 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 class ForwardDestinationsPieChart extends HookConsumerWidget {
-  const ForwardDestinationsPieChart({Key? key, required this.destinations})
-      : super(key: key);
+  const ForwardDestinationsPieChart({
+    Key? key,
+    required this.destinations,
+    this.radius,
+    this.touchRadius,
+    this.centerSpaceRadius,
+  }) : super(key: key);
 
   final PiForwardDestinations destinations;
+  final double? radius;
+  final double? touchRadius;
+  final double? centerSpaceRadius;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final touchedIndex = useState<int>(-1);
-
-    final int? lastTouched =
-        useValueChanged<int, int>(touchedIndex.value, (oldValue, _) {
-      return math.max(oldValue, touchedIndex.value);
-    });
-
     final sections = useMemoized(() {
       return destinations.destinations.entries
           .toList()
@@ -64,51 +64,34 @@ class ForwardDestinationsPieChart extends HookConsumerWidget {
               .textTheme
               .subtitle2
               ?.merge(GoogleFonts.firaMono()),
-          radius: isTouched ? 82.0 : 80.0,
+          radius: isTouched
+              ? (touchRadius ?? (radius != null ? radius! + 5 : radius))
+              : radius,
         );
       }).toList();
     }, [destinations, touchedIndex.value]);
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        PieChart(
-          PieChartData(
-            pieTouchData: PieTouchData(touchCallback:
-                (FlTouchEvent event, PieTouchResponse? pieTouchResponse) {
-              if (!event.isInterestedForInteractions ||
-                  pieTouchResponse == null ||
-                  pieTouchResponse.touchedSection == null) {
-                touchedIndex.value = -1;
-                return;
-              }
-              touchedIndex.value =
-                  pieTouchResponse.touchedSection!.touchedSectionIndex;
-            }),
-            startDegreeOffset: 270,
-            borderData: FlBorderData(
-              show: false,
-            ),
-            sectionsSpace: touchedIndex.value >= 0 ? 4.0 : 1.0,
-            sections: sections,
-          ),
-          swapAnimationCurve: Curves.easeOutCubic,
+    return PieChart(
+      PieChartData(
+        pieTouchData: PieTouchData(touchCallback:
+            (FlTouchEvent event, PieTouchResponse? pieTouchResponse) {
+          if (!event.isInterestedForInteractions ||
+              pieTouchResponse == null ||
+              pieTouchResponse.touchedSection == null) {
+            touchedIndex.value = -1;
+            return;
+          }
+          touchedIndex.value =
+              pieTouchResponse.touchedSection!.touchedSectionIndex;
+        }),
+        startDegreeOffset: 270,
+        borderData: FlBorderData(
+          show: false,
         ),
-        AnimatedOpacity(
-          duration: const Duration(milliseconds: 100),
-          opacity: touchedIndex.value >= 0 ? 1.0 : 0.0,
-          child: Text(
-            (lastTouched?.clamp(
-                            -1, destinations.destinations.keys.length - 1) ??
-                        -1) >=
-                    0
-                ? Formatting.numToPercentage(
-                    destinations.destinations.values.elementAt(lastTouched!))
-                : '',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.subtitle2,
-          ),
-        ),
-      ],
+        sectionsSpace: touchedIndex.value >= 0 ? 4.0 : 1.0,
+        centerSpaceRadius: centerSpaceRadius,
+        sections: sections,
+      ),
+      swapAnimationCurve: Curves.easeOutCubic,
     );
   }
 }

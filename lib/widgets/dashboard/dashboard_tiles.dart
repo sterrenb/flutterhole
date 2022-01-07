@@ -222,17 +222,20 @@ class ForwardDestinationsTile extends HookConsumerWidget {
           content: destinations != null
               ? Expanded(
                   child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          maxWidth: 400.0,
-                          maxHeight: 400.0,
-                        ),
-                        child: ForwardDestinationsPieChart(
-                            destinations: destinations)),
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: LayoutBuilder(builder: (context, constraints) {
+                        final radius =
+                            (constraints.biggest.shortestSide / 2) - 5.0;
+                        return ForwardDestinationsPieChart(
+                          destinations: destinations,
+                          radius: radius > 150.0 ? radius / 2 : radius,
+                          centerSpaceRadius: radius > 150.0 ? radius / 2 : 0.0,
+                        );
+                      }),
+                    ),
                   ),
-                ))
+          )
               : Container(),
           // isLoading: isLoading,
           // error: error,
