@@ -64,8 +64,8 @@ class SettingsView extends HookConsumerWidget {
                         builder: (context) => const AboutView()));
                   },
                 ),
-                const PreferenceButtonTile(),
                 const _DeveloperSection(),
+                const PreferenceButtonTile(),
                 const SizedBox(height: 20.0),
               ]),
             ],
@@ -129,23 +129,17 @@ class _DeveloperSection extends HookConsumerWidget {
       visible: isDev,
       child: Column(
         children: [
-          const Divider(),
-          AppSection(
-            title: 'Developer',
-            children: [
-              const DevModeButton(),
-              DefaultAnimatedSize(
-                child: devMode
-                    ? Column(
-                        children: const [
-                          LogLevelButton(),
-                          ShowThemeToggleButton(),
-                          if (kDebugMode) ...[ThemeShowcaseButton()],
-                        ],
-                      )
-                    : Container(),
-              ),
-            ],
+          const DevModeButton(),
+          DefaultAnimatedSize(
+            child: devMode
+                ? Column(
+                    children: const [
+                      LogLevelButton(),
+                      ShowThemeToggleButton(),
+                      if (kDebugMode) ...[ThemeShowcaseButton()],
+                    ],
+                  )
+                : Container(),
           ),
         ],
       ),

@@ -494,7 +494,7 @@ class _PiTitleField extends StatelessWidget {
       style: Theme.of(context).textTheme.headline6!,
       labelStyle: Theme.of(context).textTheme.headline6,
       textCapitalization: TextCapitalization.sentences,
-      labelText: 'Title',
+      labelText: 'Name',
       hintText: const Pi().title,
     );
   }

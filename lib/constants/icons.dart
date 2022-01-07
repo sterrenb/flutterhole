@@ -11,7 +11,7 @@ class KIcons {
   static const IconData themeDark = MdiIcons.moonWaningCrescent;
   static const IconData toggle = Icons.toggle_on;
 
-  static const IconData piholeTitle = Icons.handyman_sharp;
+  static const IconData piholeTitle = MdiIcons.raspberryPi;
 
   static const IconData temperature = MdiIcons.fire;
   static const IconData temperatureReading = Icons.device_thermostat;
@@ -24,7 +24,7 @@ class KIcons {
   static const IconData dot = Icons.brightness_1;
 
   static const IconData appVersion = Icons.developer_board;
-  static const IconData pihole = dot;
+  static const IconData pihole = MdiIcons.piHole;
   static const IconData playStore = Icons.storefront;
 
   static const IconData dashboard = Icons.dashboard;
@@ -34,7 +34,7 @@ class KIcons {
   static const IconData about = Icons.favorite;
   static const IconData onboarding = Icons.favorite;
   static const IconData info = Icons.info;
-  static const IconData github = Icons.favorite;
+  static const IconData github = MdiIcons.github;
   static const IconData review = Icons.star;
 
   static const IconData totalQueries = Icons.public;

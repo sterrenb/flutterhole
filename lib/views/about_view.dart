@@ -14,6 +14,7 @@ import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:flutterhole/widgets/ui/images.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:share_plus/share_plus.dart';
@@ -137,11 +138,13 @@ class AboutView extends HookConsumerWidget {
               },
             ),
             ListTile(
-              leading: Opacity(
-                opacity: context.isLight ? 0.5 : 1.0,
-                child: const GithubImage(width: 24.0),
+              leading: const Icon(KIcons.github),
+              title: Row(
+                children: [
+                  const Text('Star on '),
+                  Text('GitHub', style: GoogleFonts.firaMono()),
+                ],
               ),
-              title: const Text('Star on GitHub'),
               trailing: const Icon(KIcons.openUrl),
               onTap: () => WebService.launchUrlInBrowser(KUrls.githubHomeUrl),
             ),
