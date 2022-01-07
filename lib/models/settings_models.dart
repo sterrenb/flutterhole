@@ -67,6 +67,7 @@ class UserPreferences with _$UserPreferences {
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory UserPreferences({
     @Default(kDebugMode) bool devMode,
+    @Default(kDebugMode) bool isDev,
     @Default(LogLevel.info) LogLevel logLevel,
     @Default(30) int updateFrequency,
     @Default(false) bool showThemeToggle,

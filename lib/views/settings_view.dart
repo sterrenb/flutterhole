@@ -52,37 +52,7 @@ class SettingsView extends HookConsumerWidget {
                 ],
               ),
               const Divider(),
-              Visibility(
-                visible: true,
-                child: AppSection(
-                  title: 'My Pi-holes',
-                  children: [
-                    const PiSelectList(
-                      shrinkWrap: true,
-                    ),
-                    const SizedBox(height: 20.0),
-                    AppWrap(
-                      children: [
-                        OutlinedButton.icon(
-                          icon: const Icon(KIcons.add),
-                          onPressed: () {
-                            final pis = ref.read(allPiholesProvider);
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ProviderScope(overrides: [
-                                piProvider.overrideWithValue(
-                                    Pi(title: 'Pi-hole #${pis.length}')),
-                              ], child: const SinglePiEditView(isNew: true)),
-                              fullscreenDialog: true,
-                            ));
-                          },
-                          label: const Text('New Pi-hole'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20.0),
-                  ],
-                ),
-              ),
+              const _MyPiholesSection(),
               const Divider(),
               AppSection(title: 'Other', children: [
                 const ShowIntroductionListTile(),
@@ -94,14 +64,53 @@ class SettingsView extends HookConsumerWidget {
                         builder: (context) => const AboutView()));
                   },
                 ),
-                const _DeveloperSection(),
                 const PreferenceButtonTile(),
+                const _DeveloperSection(),
                 const SizedBox(height: 20.0),
               ]),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _MyPiholesSection extends HookConsumerWidget {
+  const _MyPiholesSection({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return AppSection(
+      title: 'My Pi-holes',
+      children: [
+        const PiSelectList(
+          shrinkWrap: true,
+          max: 3,
+        ),
+        const SizedBox(height: 20.0),
+        AppWrap(
+          children: [
+            OutlinedButton.icon(
+              icon: const Icon(KIcons.add),
+              onPressed: () {
+                final pis = ref.read(allPiholesProvider);
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ProviderScope(overrides: [
+                    piProvider
+                        .overrideWithValue(Pi(title: 'Pi-hole #${pis.length}')),
+                  ], child: const SinglePiEditView(isNew: true)),
+                  fullscreenDialog: true,
+                ));
+              },
+              label: const Text('New Pi-hole'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20.0),
+      ],
     );
   }
 }
@@ -114,26 +123,29 @@ class _DeveloperSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final devMode = ref.watch(devModeProvider);
+    final isDev = ref.watch(isDevProvider);
 
     return Visibility(
-      visible: kDebugMode || devMode,
-      child: AppSection(
-        title: 'Developer',
+      visible: isDev,
+      child: Column(
         children: [
-          DevModeButton(),
-          DefaultAnimatedSize(
-            child: Container(
-              color: Colors.purple,
-              child: devMode
-                  ? Column(
-                      children: [
-                        LogLevelButton(),
-                        ShowThemeToggleButton(),
-                        if (kDebugMode) ...[ThemeShowcaseButton()],
-                      ],
-                    )
-                  : Container(),
-            ),
+          const Divider(),
+          AppSection(
+            title: 'Developer',
+            children: [
+              const DevModeButton(),
+              DefaultAnimatedSize(
+                child: devMode
+                    ? Column(
+                        children: const [
+                          LogLevelButton(),
+                          ShowThemeToggleButton(),
+                          if (kDebugMode) ...[ThemeShowcaseButton()],
+                        ],
+                      )
+                    : Container(),
+              ),
+            ],
           ),
         ],
       ),

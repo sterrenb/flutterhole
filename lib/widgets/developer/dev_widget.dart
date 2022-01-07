@@ -8,20 +8,22 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class DevWidget extends HookConsumerWidget {
   const DevWidget({
     required this.child,
-    this.show,
+    this.animate = true,
     Key? key,
   }) : super(key: key);
 
   final Widget child;
-  final bool? show;
+  final bool animate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final devMode = ref.watch(devModeProvider);
-    return Visibility(
-      visible: devMode,
-      child: child,
-    );
+    return animate
+        ? DefaultAnimatedOpacity(show: devMode, child: child)
+        : Visibility(
+            visible: devMode,
+            child: child,
+          );
   }
 }
 

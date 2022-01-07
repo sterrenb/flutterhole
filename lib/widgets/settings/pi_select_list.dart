@@ -13,9 +13,11 @@ class PiSelectList extends HookConsumerWidget {
   const PiSelectList({
     Key? key,
     this.shrinkWrap = false,
+    this.max,
   }) : super(key: key);
 
   final bool shrinkWrap;
+  final int? max;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,7 +27,7 @@ class PiSelectList extends HookConsumerWidget {
     return ReorderableListView.builder(
       shrinkWrap: shrinkWrap,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: piholes.length,
+      itemCount: piholes.length.clamp(1, max ?? piholes.length),
       onReorder: (from, to) {
         ref
             .read(UserPreferencesNotifier.provider.notifier)

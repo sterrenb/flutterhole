@@ -189,7 +189,7 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
   }
 
   void toggleDevMode() {
-    state = state.copyWith(devMode: !state.devMode);
+    state = state.copyWith(devMode: !state.devMode, isDev: true);
     _save();
   }
 
@@ -263,6 +263,10 @@ final themeModeProvider = Provider<ThemeMode>((ref) {
 
 final devModeProvider = Provider<bool>((ref) {
   return ref.watch(UserPreferencesNotifier.provider).devMode;
+});
+
+final isDevProvider = Provider<bool>((ref) {
+  return ref.watch(UserPreferencesNotifier.provider).isDev;
 });
 
 final temperatureReadingProvider = Provider<TemperatureReading>((ref) {
