@@ -236,9 +236,6 @@ final piProvider = Provider<Pi>((ref) {
 final dashboardTileConstraintsProvider =
     Provider.family<DashboardTileConstraints, DashboardID>((ref, id) {
   final pi = ref.watch(piProvider);
-  print(
-      'getting contraints for $id from ${pi.title} (${pi.dashboard.length} tiles)');
-  print(pi.dashboard.map((e) => {e.id: e.constraints}).toString());
   return pi.dashboard
       .firstWhere((element) => element.id == id,
           orElse: () => DashboardEntry.defaultDashboard.first)

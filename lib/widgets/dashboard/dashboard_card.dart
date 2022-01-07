@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
@@ -73,9 +72,8 @@ class DashboardCard extends HookConsumerWidget {
     return Card(
         color: cardColor,
         child: InkWell(
-          // onTap: onTap,
-          onTap: () {
-            // print(ref.read(dashboardTileConstraintsProvider(id)));
+          onTap: onTap,
+          onLongPress: () {
             showConfirmationDialog(
               context,
               title: id.humanString,
@@ -106,7 +104,6 @@ class _DashboardCardDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final oldValue = ref.read(dashboardTileConstraintsProvider(id));
-    final debugMode = ref.read(UserPreferencesNotifier.provider).devMode;
     final constraints = useState(oldValue);
     return Column(
         mainAxisSize: MainAxisSize.min,
@@ -114,20 +111,23 @@ class _DashboardCardDialog extends HookConsumerWidget {
         children: [
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text('Type'),
-            trailing: debugMode
+            title: const Text('Type'),
+            trailing: false
                 ? ToggleButtons(
-                    onPressed: (index) {},
                     children: [
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 4.0),
-                        child: Text('Count'),
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: Text(
+                          'Count',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary),
+                        ),
                       ),
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 4.0),
                         child: Text('Extent'),
                       ),
-                      Padding(
+                      const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 4.0),
                         child: Text('Fit'),
                       ),
@@ -147,15 +147,17 @@ class _DashboardCardDialog extends HookConsumerWidget {
                       ),
                     ],
                   )
-                : Text(constraints.value.map(
-                    count: (_) => 'Count',
-                    extent: (_) => 'Extent',
-                    fit: (_) => 'Fit',
-                  )),
+                : Text(
+                    constraints.value.map(
+                      count: (_) => 'Count',
+                      extent: (_) => 'Extent',
+                      fit: (_) => 'Fit',
+                    ),
+                  ),
           ),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text('Width'),
+            title: const Text('Width'),
             trailing: NumberToggleButtons(
                 onSelected: (index) {
                   constraints.value =
@@ -169,7 +171,7 @@ class _DashboardCardDialog extends HookConsumerWidget {
           ...[
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text('Height'),
+              title: const Text('Height'),
               trailing: constraints.value.when(
                 count: (cross, main) => NumberToggleButtons(
                     onSelected: (index) {
@@ -179,8 +181,14 @@ class _DashboardCardDialog extends HookConsumerWidget {
                     },
                     max: 4,
                     isSelected: List.generate(4, (index) => index + 1 == main)),
-                extent: (cross, extent) => Text(extent.toString()),
-                fit: (cross) => Text('fit'),
+                extent: (cross, extent) => OutlinedButton(
+                  onPressed: null,
+                  child: Text('$extent px'),
+                ),
+                fit: (cross) => const OutlinedButton(
+                  onPressed: null,
+                  child: Text('Fit to size'),
+                ),
               ),
             ),
           ]
