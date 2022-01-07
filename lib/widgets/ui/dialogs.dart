@@ -13,6 +13,7 @@ Future<bool?> showConfirmationDialog(
   String? cancelLabel,
   String? okLabel,
   Color? okColor,
+  Color? backgroundColor,
 }) =>
     showDialog(
         context: context,
@@ -25,6 +26,7 @@ Future<bool?> showConfirmationDialog(
               cancelLabel: cancelLabel,
               okLabel: okLabel,
               okColor: okColor,
+              backgroundColor: backgroundColor,
             ));
 
 Future<bool?> showScrollableConfirmationDialog(
@@ -78,6 +80,7 @@ class ModalAlertDialog<T> extends StatelessWidget {
     this.cancelLabel,
     this.okLabel,
     this.okColor,
+    this.backgroundColor,
     this.contentPadding,
   }) : super(key: key);
 
@@ -89,11 +92,13 @@ class ModalAlertDialog<T> extends StatelessWidget {
   final String? cancelLabel;
   final String? okLabel;
   final Color? okColor;
+  final Color? backgroundColor;
   final EdgeInsetsGeometry? contentPadding;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: backgroundColor,
       title: title != null ? Text(title!) : null,
       content: body,
       contentPadding:

@@ -38,14 +38,6 @@ class SettingsService {
   }
 }
 
-// final activePiProvider = Provider<Pi>((ref) {
-//   return const Pi(
-//     title: 'Demo',
-//     baseUrl: 'http://example.com',
-//     apiToken: String.fromEnvironment("PIHOLE_API_TOKEN", defaultValue: ""),
-//   );
-// });
-
 final sharedPreferencesProvider = FutureProvider<SharedPreferences>(
     (_) async => await SharedPreferences.getInstance());
 
@@ -134,6 +126,25 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     }
   }
 
+  void updateDashboardTileConstraints(
+      DashboardID id, DashboardTileConstraints value) {
+    final active = state.piholes.elementAt(state.activeIndex);
+    log('updateDashboardTileConstraints:${active.title}:$id:$value');
+    final index = active.dashboard.map((e) => e.id).toList().indexOf(id);
+    if (index < 0) {
+      log(
+        'updateDashboardTileConstraints:missing id:$id',
+        level: LogLevel.warning.index,
+        error: active.dashboard,
+      );
+      return;
+    }
+
+    final list = List<DashboardEntry>.from(active.dashboard);
+    list[index] = list[index].copyWith(constraints: value);
+    savePihole(oldValue: active, newValue: active.copyWith(dashboard: list));
+  }
+
   void addPihole(Pi value, int index) {
     log('addPihole:${value.title}:$index');
     final list = List<Pi>.from(state.piholes, growable: true);
@@ -220,6 +231,18 @@ final piProvider = Provider<Pi>((ref) {
   final prefs = ref.watch(UserPreferencesNotifier.provider);
   return prefs.piholes
       .elementAt(prefs.activeIndex.clamp(0, prefs.piholes.length - 1));
+});
+
+final dashboardTileConstraintsProvider =
+    Provider.family<DashboardTileConstraints, DashboardID>((ref, id) {
+  final pi = ref.watch(piProvider);
+  print(
+      'getting contraints for $id from ${pi.title} (${pi.dashboard.length} tiles)');
+  print(pi.dashboard.map((e) => {e.id: e.constraints}).toString());
+  return pi.dashboard
+      .firstWhere((element) => element.id == id,
+          orElse: () => DashboardEntry.defaultDashboard.first)
+      .constraints;
 });
 
 final themeModeProvider = Provider<ThemeMode>((ref) {

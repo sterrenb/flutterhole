@@ -41,6 +41,7 @@ class DashboardEntryTileBuilder extends StatelessWidget {
 
       default:
         return DashboardCard(
+          id: entry.id,
           header: DashboardCardHeader(
               title: entry.id.humanString, isLoading: false),
           content: const Expanded(child: Center(child: Text('TODO'))),
@@ -63,6 +64,7 @@ class TotalQueriesTile extends HookConsumerWidget {
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
         return DashboardFittedTile(
+          id: DashboardID.totalQueries,
           title: DashboardID.totalQueries.humanString,
           text: summary?.dnsQueriesToday.toFormatted(),
           isLoading: isLoading,
@@ -85,6 +87,7 @@ class QueriesBlockedTile extends HookConsumerWidget {
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
         return DashboardFittedTile(
+          id: DashboardID.queriesBlocked,
           title: DashboardID.queriesBlocked.humanString,
           text: summary?.adsBlockedToday.toFormatted(),
           isLoading: isLoading,
@@ -107,6 +110,7 @@ class PercentBlockedTile extends HookConsumerWidget {
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
         return DashboardFittedTile(
+          id: DashboardID.percentBlocked,
           title: DashboardID.percentBlocked.humanString,
           text: summary != null
               ? summary.adsPercentageToday.toStringAsFixed(2) + '%'
@@ -131,6 +135,7 @@ class DomainsBlockedTile extends HookConsumerWidget {
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
         return DashboardFittedTile(
+          id: DashboardID.domainsOnBlocklist,
           title: DashboardID.domainsOnBlocklist.humanString,
           text: summary?.domainsBeingBlocked.toFormatted(),
           isLoading: isLoading,
@@ -155,6 +160,7 @@ class TemperatureTile extends HookConsumerWidget {
       provider: activeDetailsProvider,
       builder: (context, details, isLoading, error) {
         return DashboardFittedTile(
+          id: DashboardID.temperature,
           title: DashboardID.temperature.humanString,
           text: details?.temperatureInCelcius,
           isLoading: isLoading,
@@ -177,6 +183,7 @@ class MemoryUsageTile extends HookConsumerWidget {
       provider: activeDetailsProvider,
       builder: (context, details, isLoading, error) {
         return DashboardFittedTile(
+          id: DashboardID.memoryUsage,
           title: DashboardID.memoryUsage.humanString,
           text: details?.memoryUsage != null
               ? details!.memoryUsage!.toStringAsFixed(2) + '%'
@@ -201,7 +208,7 @@ class ForwardDestinationsTile extends HookConsumerWidget {
       provider: activeForwardDestinationsProvider,
       builder: (context, destinations, isLoading, error) {
         return DashboardCard(
-          // title: DashboardID.memoryUsage.toReadable(),
+          id: DashboardID.forwardDestinations,
           header: DashboardCardHeader(
             title: DashboardID.forwardDestinations.humanString,
             isLoading: isLoading,

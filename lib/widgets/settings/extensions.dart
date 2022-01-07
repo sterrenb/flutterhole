@@ -56,6 +56,14 @@ extension WidgetRefX on WidgetRef {
     );
   }
 
+  void updateDashboardTileConstraints(
+    DashboardID id,
+    DashboardTileConstraints constraints,
+  ) {
+    read(UserPreferencesNotifier.provider.notifier)
+        .updateDashboardTileConstraints(id, constraints);
+  }
+
   void deletePihole(BuildContext context, Pi oldValue) {
     final notifier = read(UserPreferencesNotifier.provider.notifier);
     final index = notifier.deletePihole(oldValue);
