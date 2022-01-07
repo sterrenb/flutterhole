@@ -160,12 +160,15 @@ class TemperatureTile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final entry = ref.watch(dashboardEntryProvider);
     return CacheBuilder<PiDetails>(
       provider: activeDetailsProvider,
       builder: (context, details, isLoading, error) {
         return DashboardFittedTile(
           id: DashboardID.temperature,
-          title: DashboardID.temperature.humanString,
+          title: entry.constraints.crossAxisCount > 1
+              ? DashboardID.temperature.humanString
+              : DashboardID.temperature.humanString.substring(0, 4),
           text: details?.temperatureInCelcius,
           isLoading: isLoading,
           error: error,
@@ -235,7 +238,7 @@ class ForwardDestinationsTile extends HookConsumerWidget {
                       }),
                     ),
                   ),
-          )
+                )
               : Container(),
           // isLoading: isLoading,
           // error: error,

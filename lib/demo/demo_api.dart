@@ -145,10 +145,10 @@ class DemoApi implements PiholeRepository {
   Future<PiVersions> fetchVersions(_) async {
     await _sleep();
 
-    count++;
-    if (count % 2 == 1) {
-      throw PiholeApiFailure.general('Failure demonstration #$count');
-    }
+    // count++;
+    // if (count % 2 == 1) {
+    //   throw PiholeApiFailure.general('Failure demonstration #$count');
+    // }
 
     return PiVersions(
       hasCoreUpdate: false,

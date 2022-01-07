@@ -36,7 +36,8 @@ class ForwardDestinationsPieChart extends HookConsumerWidget {
 
         return PieChartSectionData(
           color: Colors.primaries.reversed
-              .elementAt(index % Colors.primaries.length),
+              .elementAt(index % Colors.primaries.length)
+              .withOpacity(.75),
           value: percentage,
           title: '',
           badgeWidget: Stack(

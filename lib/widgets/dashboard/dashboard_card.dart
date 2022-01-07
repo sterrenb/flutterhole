@@ -138,7 +138,7 @@ class _DashboardCardDialog extends HookConsumerWidget {
             ),
           ),
           CheckboxListTile(
-            title: const Text('Visible'),
+            title: const Text('Enabled'),
             value: entry.value.enabled,
             onChanged: (value) {
               entry.value = entry.value.copyWith(enabled: value ?? false);

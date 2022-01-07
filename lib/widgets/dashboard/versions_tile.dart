@@ -3,6 +3,7 @@ import 'package:flutterhole/constants/urls.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
+import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
@@ -78,7 +79,7 @@ class _VersionsList extends StatelessWidget {
           updateUrl: KUrls.piUpdateUrl,
         ),
         _ListTile(
-          title: 'Web Interface',
+          title: 'Web',
           currentVersion: versions.currentWebVersion,
           latestVersion: versions.latestWebVersion,
           branch: versions.webBranch,
@@ -96,7 +97,7 @@ class _VersionsList extends StatelessWidget {
   }
 }
 
-class _ListTile extends StatelessWidget {
+class _ListTile extends HookConsumerWidget {
   const _ListTile({
     Key? key,
     required this.title,
@@ -115,7 +116,11 @@ class _ListTile extends StatelessWidget {
   bool get updateIsAvailable => currentVersion != latestVersion;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final entry = ref.watch(dashboardEntryProvider);
+
+    final bool isBig = entry.constraints.crossAxisCount > 2;
+
     return Tooltip(
       waitDuration: const Duration(seconds: 1),
       message: updateUrl,
@@ -124,14 +129,15 @@ class _ListTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(title),
-            const Text('Branch'),
+            Visibility(visible: isBig, child: const Text('Branch')),
           ],
         ),
         subtitle: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Row(
+            Wrap(
+              direction: Axis.vertical,
               children: <Widget>[
                 Text(
                   currentVersion,
@@ -140,7 +146,7 @@ class _ListTile extends StatelessWidget {
                 Visibility(
                   visible: updateIsAvailable,
                   child: Text(
-                    ' (update available: $latestVersion)',
+                    '${isBig ? 'Update available: ' : ''}$latestVersion',
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary),
                   ),
@@ -148,9 +154,12 @@ class _ListTile extends StatelessWidget {
               ],
             ),
             // Text('Branch'),
-            Text(
-              branch,
-              style: GoogleFonts.firaMono(),
+            Visibility(
+              visible: isBig,
+              child: Text(
+                branch,
+                style: GoogleFonts.firaMono(),
+              ),
             ),
           ],
         ),
