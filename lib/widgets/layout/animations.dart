@@ -39,11 +39,13 @@ class AnimatedColorFader extends StatelessWidget {
     required this.show,
     this.child = const Text(''),
     this.color,
+    this.centerChild = true,
   }) : super(key: key);
 
   final bool show;
   final Widget? child;
   final Color? color;
+  final bool centerChild;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class AnimatedColorFader extends StatelessWidget {
       child: show
           ? Container(
               color: color ?? Theme.of(context).scaffoldBackgroundColor,
-              child: Center(child: child),
+              child: centerChild ? Center(child: child) : child,
             )
           : Center(child: Container(child: child)),
     );

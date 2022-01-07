@@ -56,12 +56,13 @@ extension WidgetRefX on WidgetRef {
     );
   }
 
-  void updateDashboardTileConstraints(
-    DashboardID id,
-    DashboardTileConstraints constraints,
-  ) {
+  void updateDashboardEntry(DashboardEntry entry) {
+    read(UserPreferencesNotifier.provider.notifier).updateDashboardEntry(entry);
+  }
+
+  void moveDashboardEntry(int oldIndex, int newIndex) {
     read(UserPreferencesNotifier.provider.notifier)
-        .updateDashboardTileConstraints(id, constraints);
+        .moveDashboardEntry(oldIndex, newIndex);
   }
 
   void deletePihole(BuildContext context, Pi oldValue) {

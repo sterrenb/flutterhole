@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 import 'demo_generators.dart';
@@ -27,7 +26,7 @@ class DemoApi implements PiholeRepository {
 
   Future<void> _sleep(
       [Duration duration = const Duration(milliseconds: 400)]) async {
-    if (kDebugMode) return;
+    // if (kDebugMode) return;
     await Future.delayed(duration);
   }
 
@@ -144,9 +143,10 @@ class DemoApi implements PiholeRepository {
 
   @override
   Future<PiVersions> fetchVersions(_) async {
-    await _sleep(const Duration(seconds: 1));
+    await _sleep();
+
     count++;
-    if (count % 2 == 0) {
+    if (count % 2 == 1) {
       throw PiholeApiFailure.general('Failure demonstration #$count');
     }
 

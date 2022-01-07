@@ -126,22 +126,37 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     }
   }
 
-  void updateDashboardTileConstraints(
-      DashboardID id, DashboardTileConstraints value) {
+  void updateDashboardEntry(DashboardEntry entry) {
     final active = state.piholes.elementAt(state.activeIndex);
-    log('updateDashboardTileConstraints:${active.title}:$id:$value');
-    final index = active.dashboard.map((e) => e.id).toList().indexOf(id);
+    log('updateDashboardEntry:${active.title}:$entry');
+    final index = active.dashboard.indexWhere((v) => v.id == entry.id);
     if (index < 0) {
       log(
-        'updateDashboardTileConstraints:missing id:$id',
+        'updateDashboardEntry:missing entry:${entry.id}',
         level: LogLevel.warning.index,
-        error: active.dashboard,
+        error: entry,
       );
       return;
     }
 
     final list = List<DashboardEntry>.from(active.dashboard);
-    list[index] = list[index].copyWith(constraints: value);
+    list[index] = entry;
+    savePihole(oldValue: active, newValue: active.copyWith(dashboard: list));
+  }
+
+  void moveDashboardEntry(int from, int to) {
+    final active = state.piholes.elementAt(state.activeIndex);
+
+    if (to < 0 || from == to || to > active.dashboard.length - 1) return;
+
+    log('moveDashboardEntry:${active.title}:$from->$to');
+    // if (from < to) {
+    //   to -= 1;
+    // }
+
+    final list = List<DashboardEntry>.from(active.dashboard);
+    final entry = list.removeAt(from);
+    list.insert(to, entry);
     savePihole(oldValue: active, newValue: active.copyWith(dashboard: list));
   }
 
@@ -295,3 +310,7 @@ final darkThemeProvider = Provider<ThemeData>((ref) {
 
 final packageInfoProvider =
     FutureProvider<PackageInfo>((_) => PackageInfo.fromPlatform());
+
+final dashboardEntryProvider = Provider<DashboardEntry>((ref) {
+  throw UnimplementedError('no entry selected');
+});
