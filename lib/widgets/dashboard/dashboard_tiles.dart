@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
@@ -71,6 +72,7 @@ class TotalQueriesTile extends HookConsumerWidget {
           id: DashboardID.totalQueries,
           title: DashboardID.totalQueries.humanString,
           text: summary?.dnsQueriesToday.toFormatted(),
+          background: const DashboardBackgroundIcon(KIcons.totalQueries),
           isLoading: isLoading,
           error: error,
           onTap: () {
@@ -94,6 +96,7 @@ class QueriesBlockedTile extends HookConsumerWidget {
           id: DashboardID.queriesBlocked,
           title: DashboardID.queriesBlocked.humanString,
           text: summary?.adsBlockedToday.toFormatted(),
+          background: const DashboardBackgroundIcon(KIcons.blocked),
           isLoading: isLoading,
           error: error,
           onTap: () {
@@ -119,6 +122,7 @@ class PercentBlockedTile extends HookConsumerWidget {
           text: summary != null
               ? summary.adsPercentageToday.toStringAsFixed(2) + '%'
               : null,
+          background: const DashboardBackgroundIcon(KIcons.percentBlocked),
           isLoading: isLoading,
           error: error,
           onTap: () {
@@ -142,6 +146,7 @@ class DomainsBlockedTile extends HookConsumerWidget {
           id: DashboardID.domainsOnBlocklist,
           title: DashboardID.domainsOnBlocklist.humanString,
           text: summary?.domainsBeingBlocked.toFormatted(),
+          background: const DashboardBackgroundIcon(KIcons.domainsOnBlocklist),
           isLoading: isLoading,
           error: error,
           onTap: () {
@@ -170,6 +175,7 @@ class TemperatureTile extends HookConsumerWidget {
               ? DashboardID.temperature.humanString
               : DashboardID.temperature.humanString.substring(0, 4),
           text: details?.temperatureInCelcius,
+          background: const DashboardBackgroundIcon(KIcons.temperature),
           isLoading: isLoading,
           error: error,
           onTap: () => ref.refreshDetails(),
@@ -195,6 +201,7 @@ class MemoryUsageTile extends HookConsumerWidget {
           text: details?.memoryUsage != null
               ? details!.memoryUsage!.toStringAsFixed(2) + '%'
               : null,
+          background: const DashboardBackgroundIcon(KIcons.memoryUsage),
           isLoading: isLoading,
           error: error,
           onTap: () => ref.refreshDetails(),
@@ -240,8 +247,6 @@ class ForwardDestinationsTile extends HookConsumerWidget {
                   ),
                 )
               : Container(),
-          // isLoading: isLoading,
-          // error: error,
         );
       },
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class KIcons {
   KIcons._();
@@ -11,6 +12,7 @@ class KIcons {
 
   static const IconData piholeTitle = Icons.handyman_sharp;
 
+  static const IconData temperature = MdiIcons.fire;
   static const IconData temperatureReading = Icons.device_thermostat;
   static const IconData memoryUsage = Icons.memory;
   static const IconData updateFrequency = Icons.update;

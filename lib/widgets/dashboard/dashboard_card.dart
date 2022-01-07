@@ -57,6 +57,27 @@ class DashboardCardHeader extends HookConsumerWidget {
   }
 }
 
+class DashboardBackgroundIcon extends StatelessWidget {
+  const DashboardBackgroundIcon(
+    this.iconData, {
+    Key? key,
+  }) : super(key: key);
+
+  final IconData iconData;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      return Icon(
+        iconData,
+        // size: (constraints.biggest.shortestSide / 2),
+        size: constraints.biggest.shortestSide,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(.05),
+      );
+    });
+  }
+}
+
 class DashboardCard extends HookConsumerWidget {
   const DashboardCard({
     Key? key,
@@ -65,6 +86,8 @@ class DashboardCard extends HookConsumerWidget {
     this.header,
     this.onTap,
     this.cardColor,
+    this.background,
+    this.backgroundAlignment,
   }) : super(key: key);
 
   final DashboardID id;
@@ -72,6 +95,8 @@ class DashboardCard extends HookConsumerWidget {
   final Widget? header;
   final VoidCallback? onTap;
   final Color? cardColor;
+  final Widget? background;
+  final Alignment? backgroundAlignment;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -93,12 +118,19 @@ class DashboardCard extends HookConsumerWidget {
               ], child: _DashboardCardDialog(id: id)),
             );
           },
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: Stack(
+            alignment: backgroundAlignment ?? Alignment.center,
             children: [
-              if (header != null) ...[header!],
-              content,
+              if (background != null) ...[background!],
+              // DashboardBackgroundIcon(KIcons.totalQueries),
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (header != null) ...[header!],
+                  content,
+                ],
+              ),
             ],
           ),
         ));
@@ -239,6 +271,8 @@ class DashboardFittedTile extends StatelessWidget {
     this.onTap,
     this.cardColor,
     this.error,
+    this.background,
+    this.backgroundAlignment,
   }) : super(key: key);
 
   final DashboardID id;
@@ -248,6 +282,8 @@ class DashboardFittedTile extends StatelessWidget {
   final VoidCallback? onTap;
   final Color? cardColor;
   final Object? error;
+  final Widget? background;
+  final Alignment? backgroundAlignment;
 
   @override
   Widget build(BuildContext context) {
@@ -263,6 +299,8 @@ class DashboardFittedTile extends StatelessWidget {
             const EdgeInsets.all(8.0).subtract(const EdgeInsets.only(top: 8.0)),
         child: FittedText(text: text ?? '-'),
       )),
+      background: background,
+      backgroundAlignment: backgroundAlignment,
       // content: const Expanded(child: Center(child: Text('TODO'))),
     );
   }
