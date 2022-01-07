@@ -58,6 +58,7 @@ const defaultPiholes = kDebugMode
         Pi(
           title: 'Demo',
           baseUrl: 'http://example.com',
+          apiToken: 'token',
         )
       ];
 
