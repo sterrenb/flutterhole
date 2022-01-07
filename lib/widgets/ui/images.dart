@@ -40,7 +40,7 @@ class LogoImage extends HookConsumerWidget {
           ref.read(UserPreferencesNotifier.provider.notifier).enableIsDev();
           highlightSnackBar(context,
               content: Text(count.value < max + 5
-                  ? 'You are now a developer! ${count.value}'
+                  ? 'You are now a developer!'
                   : 'Yes, you really are a developer!'));
         } else if (count.value >= max ~/ 2) {
           highlightSnackBar(context,

@@ -39,6 +39,7 @@ class KIcons {
 
   static const IconData totalQueries = Icons.public;
   static const IconData queriesBlocked = Icons.block;
+  // static const IconData percentBlocked = MdiIcons.abacus;
   static const IconData percentBlocked = Icons.pie_chart;
   static const IconData domainsOnBlocklist = Icons.list;
   static const IconData domainsPermittedTile = Icons.domain;

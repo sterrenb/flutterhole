@@ -96,7 +96,7 @@ class QueriesBlockedTile extends HookConsumerWidget {
           id: DashboardID.queriesBlocked,
           title: DashboardID.queriesBlocked.humanString,
           text: summary?.adsBlockedToday.toFormatted(),
-          background: const DashboardBackgroundIcon(KIcons.blocked),
+          background: const DashboardBackgroundIcon(KIcons.queriesBlocked),
           isLoading: isLoading,
           error: error,
           onTap: () {

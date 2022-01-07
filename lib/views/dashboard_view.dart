@@ -17,7 +17,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'dashboard_edit_view.dart';
 
-final _selectedIndexProvider = StateProvider<int>((ref) => 0);
+final _selectedIndexProvider = StateProvider<int>((ref) => 1);
 
 class DashboardView extends HookConsumerWidget {
   const DashboardView({
@@ -61,8 +61,15 @@ class DashboardView extends HookConsumerWidget {
               ),
             ],
           ),
-          actions: const [
+          actions: [
             DevToolBar(),
+            DevWidget(
+                child: IconButton(
+              onPressed: () {
+                ref.refreshQueryItems();
+              },
+              icon: Icon(KIcons.refresh),
+            )),
             _DashboardPopupMenuButton(),
             PushViewIconButton(
               tooltip: 'Settings',

@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/services/api_service.dart';
-import 'package:flutterhole/widgets/developer/dev_widget.dart';
-import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/loading_indicator.dart';
-import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/cache.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
@@ -27,20 +24,6 @@ class QueryLogList extends HookConsumerWidget {
         return Stack(
           alignment: Alignment.topRight,
           children: [
-            // Container(
-            //   color: Colors.purple,
-            // ),
-            // AnimatedFader(
-            //     child: data != null && data.isEmpty
-            //         ? const Center(child: Text('No queries found.'))
-            //         : Container(
-            //             color: Theme.of(context).scaffoldBackgroundColor,
-            //           )),
-            // if (data != null) ...[
-            //   Container(
-            //     color: Theme.of(context).primaryColor,
-            //   ),
-            // ],
             if (data != null && data.isEmpty) ...[
               const Center(child: Text('No queries found.'))
             ],
@@ -54,26 +37,15 @@ class QueryLogList extends HookConsumerWidget {
                 },
               )
             ],
-            AnimatedColorFader(
-              show: data == null || (data.isEmpty && isLoading),
-            ),
-            DevWidget(
-                child: Positioned(
-              left: 8.0,
-              top: 8.0,
-              child: Card(
-                child: TextButton(
-                    onPressed: () {
-                      ref.refreshQueryItems();
-                    },
-                    child: const Text('Refresh')),
-              ),
-            )),
             if (data == null && error != null) ...[CenteredErrorMessage(error)],
-            AnimatedLoadingErrorIndicatorIcon(
-              isLoading: isLoading,
-              error: error,
-              mouseCursor: SystemMouseCursors.basic,
+            Positioned(
+              right: 0,
+              child: AnimatedLoadingErrorIndicatorIcon(
+                isLoading: isLoading,
+                // isLoading: true,
+                error: error,
+                mouseCursor: SystemMouseCursors.basic,
+              ),
             ),
           ],
         );
