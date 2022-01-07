@@ -8,6 +8,7 @@ class KIcons {
   static const IconData darkTheme = Icons.lightbulb_outline;
   static const IconData systemTheme = Icons.flashlight_on;
   static const IconData theme = Icons.wb_sunny;
+  static const IconData themeDark = MdiIcons.moonWaningCrescent;
   static const IconData toggle = Icons.toggle_on;
 
   static const IconData piholeTitle = Icons.handyman_sharp;

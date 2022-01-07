@@ -6,6 +6,7 @@ import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/widgets/dashboard/dashboard_grid.dart';
+import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
@@ -47,10 +48,11 @@ class DashboardEditView extends HookConsumerWidget {
       child: BaseView(
         child: LeftRightScaffold(
           title: Text(
-            '${pi.title} Dashboard',
+            pi.title,
             overflow: TextOverflow.fade,
           ),
           actions: [
+            const DevToolBar(),
             PopupMenuButton<String>(
               tooltip: '',
               onSelected: (selected) {

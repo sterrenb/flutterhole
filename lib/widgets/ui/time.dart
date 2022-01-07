@@ -23,7 +23,7 @@ class DifferenceText extends HookConsumerWidget {
         now.value = now.value.add(kPeriodicInterval);
       },
       child: Text(
-        timeago.format(dif).capitalizeFirstLetter(),
+        timeago.format(dif).capitalizeFirstLetter,
         style: textStyle ?? Theme.of(context).textTheme.caption,
       ),
     );

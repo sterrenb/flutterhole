@@ -7,6 +7,7 @@ import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/privacy_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/about/app_version.dart';
+import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/list_title.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
@@ -28,6 +29,7 @@ class AboutView extends HookConsumerWidget {
       appBar: AppBar(
         title: const Text('About'),
         actions: [
+          const DevToolBar(),
           IconButton(
               onPressed: () {
                 Navigator.of(context).push(

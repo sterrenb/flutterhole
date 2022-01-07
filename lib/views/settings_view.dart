@@ -9,8 +9,9 @@ import 'package:flutterhole/views/single_pi_edit_view.dart';
 import 'package:flutterhole/widgets/developer/dev_mode_button.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/developer/log_level_button.dart';
-import 'package:flutterhole/widgets/developer/temperature_button.dart';
-import 'package:flutterhole/widgets/developer/theme_mode_button.dart';
+import 'package:flutterhole/widgets/layout/animations.dart';
+import 'package:flutterhole/widgets/settings/temperature_button.dart';
+import 'package:flutterhole/widgets/settings/theme_mode_button.dart';
 import 'package:flutterhole/widgets/developer/theme_showcase.dart';
 import 'package:flutterhole/widgets/developer/theme_toggle_button.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
@@ -31,6 +32,9 @@ class SettingsView extends HookConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Settings'),
+          actions: const [
+            DevToolBar(),
+          ],
         ),
         body: MobileMaxWidth(
           child: ListView(
@@ -48,33 +52,36 @@ class SettingsView extends HookConsumerWidget {
                 ],
               ),
               const Divider(),
-              AppSection(
-                title: 'My Pi-holes',
-                children: [
-                  const PiSelectList(
-                    shrinkWrap: true,
-                  ),
-                  const SizedBox(height: 20.0),
-                  AppWrap(
-                    children: [
-                      OutlinedButton.icon(
-                        icon: const Icon(KIcons.add),
-                        onPressed: () {
-                          final pis = ref.read(allPiholesProvider);
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ProviderScope(overrides: [
-                              piProvider.overrideWithValue(
-                                  Pi(title: 'Pi-hole #${pis.length}')),
-                            ], child: const SinglePiEditView(isNew: true)),
-                            fullscreenDialog: true,
-                          ));
-                        },
-                        label: const Text('New Pi-hole'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20.0),
-                ],
+              Visibility(
+                visible: true,
+                child: AppSection(
+                  title: 'My Pi-holes',
+                  children: [
+                    const PiSelectList(
+                      shrinkWrap: true,
+                    ),
+                    const SizedBox(height: 20.0),
+                    AppWrap(
+                      children: [
+                        OutlinedButton.icon(
+                          icon: const Icon(KIcons.add),
+                          onPressed: () {
+                            final pis = ref.read(allPiholesProvider);
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ProviderScope(overrides: [
+                                piProvider.overrideWithValue(
+                                    Pi(title: 'Pi-hole #${pis.length}')),
+                              ], child: const SinglePiEditView(isNew: true)),
+                              fullscreenDialog: true,
+                            ));
+                          },
+                          label: const Text('New Pi-hole'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20.0),
+                  ],
+                ),
               ),
               const Divider(),
               AppSection(title: 'Other', children: [
@@ -87,21 +94,48 @@ class SettingsView extends HookConsumerWidget {
                         builder: (context) => const AboutView()));
                   },
                 ),
-                DevWidget(
-                    child: Column(
-                  children: const [
-                    DevModeButton(),
-                    LogLevelButton(),
-                    ThemeToggleButton(),
-                    if (kDebugMode) ...[ThemeShowcaseButton()],
-                  ],
-                )),
+                const _DeveloperSection(),
                 const PreferenceButtonTile(),
                 const SizedBox(height: 20.0),
               ]),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _DeveloperSection extends HookConsumerWidget {
+  const _DeveloperSection({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final devMode = ref.watch(devModeProvider);
+
+    return Visibility(
+      visible: kDebugMode || devMode,
+      child: AppSection(
+        title: 'Developer',
+        children: [
+          DevModeButton(),
+          DefaultAnimatedSize(
+            child: Container(
+              color: Colors.purple,
+              child: devMode
+                  ? Column(
+                      children: [
+                        LogLevelButton(),
+                        ShowThemeToggleButton(),
+                        if (kDebugMode) ...[ThemeShowcaseButton()],
+                      ],
+                    )
+                  : Container(),
+            ),
+          ),
+        ],
       ),
     );
   }

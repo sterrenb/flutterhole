@@ -7,6 +7,7 @@ import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/dashboard/dashboard_grid.dart';
+import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/query_log/query_log_list.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
@@ -61,6 +62,7 @@ class DashboardView extends HookConsumerWidget {
             ],
           ),
           actions: const [
+            DevToolBar(),
             _DashboardPopupMenuButton(),
             PushViewIconButton(
               tooltip: 'Settings',

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/urls.dart';
+import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
+import 'package:flutterhole/widgets/settings/theme_mode_button.dart';
 import 'package:flutterhole/widgets/ui/snackbars.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -29,6 +31,22 @@ extension WidgetRefX on WidgetRef {
     refreshDetails();
     refreshForwardDestinations();
     refreshQueryItems();
+  }
+
+  void updateThemeMode(
+      BuildContext context, ThemeMode oldMode, ThemeMode newMode,
+      [String? message]) {
+    final notifier = read(UserPreferencesNotifier.provider.notifier);
+    notifier.setThemeMode(newMode);
+    highlightSnackBar(
+      context,
+      content: Text(
+        message ?? 'Using ${Formatting.enumToString(newMode)} mode.',
+      ),
+      undo: () {
+        notifier.setThemeMode(oldMode);
+      },
+    );
   }
 
   void updatePihole(BuildContext context, Pi oldValue, Pi newValue,

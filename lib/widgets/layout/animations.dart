@@ -60,3 +60,42 @@ class AnimatedColorFader extends StatelessWidget {
     );
   }
 }
+
+class DefaultAnimatedSize extends StatelessWidget {
+  const DefaultAnimatedSize({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: kThemeAnimationDuration,
+      curve: Curves.easeOutCubic,
+      child: child,
+    );
+  }
+}
+
+class DefaultAnimatedOpacity extends StatelessWidget {
+  const DefaultAnimatedOpacity({
+    Key? key,
+    required this.show,
+    required this.child,
+  }) : super(key: key);
+
+  final bool show;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      duration: kThemeAnimationDuration,
+      curve: Curves.easeOutCubic,
+      opacity: show ? 1.0 : 0.0,
+      child: child,
+    );
+  }
+}

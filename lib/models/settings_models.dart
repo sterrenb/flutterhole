@@ -71,7 +71,7 @@ class UserPreferences with _$UserPreferences {
     @Default(30) int updateFrequency,
     @Default(false) bool showThemeToggle,
     @Default(ThemeMode.light) ThemeMode themeMode,
-    @Default(FlexScheme.mallardGreen) FlexScheme flexScheme,
+    @Default(FlexScheme.rosewood) FlexScheme flexScheme,
     @Default(TemperatureReading.fahrenheit)
         TemperatureReading temperatureReading,
     @Default(defaultPiholes) List<Pi> piholes,
