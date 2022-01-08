@@ -50,17 +50,23 @@ class DashboardView extends HookConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(pi.title + ' '),
-              Opacity(
-                opacity: .5,
-                child: Stack(
-                  children: [
-                    ...labels.map((e) => AnimatedOpacity(
-                          duration: kThemeAnimationDuration,
-                          opacity:
-                              labels.elementAt(selectedIndex) == e ? 1.0 : 0.0,
-                          child: Text(e),
-                        ))
-                  ],
+              Expanded(
+                child: Opacity(
+                  opacity: .5,
+                  child: Stack(
+                    children: [
+                      ...labels.map((e) => AnimatedOpacity(
+                            duration: kThemeAnimationDuration,
+                            opacity: labels.elementAt(selectedIndex) == e
+                                ? 1.0
+                                : 0.0,
+                            child: Text(
+                              e,
+                              overflow: TextOverflow.fade,
+                            ),
+                          ))
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -124,7 +130,8 @@ class DashboardView extends HookConsumerWidget {
                       child: SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              bottom: kBottomNavigationBarHeight + 20),
+                                  bottom: kBottomNavigationBarHeight + 16.0)
+                              .add(const EdgeInsets.all(4.0)),
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.center,

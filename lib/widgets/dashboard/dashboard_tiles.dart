@@ -239,8 +239,8 @@ class ForwardDestinationsTile extends HookConsumerWidget {
                             (constraints.biggest.shortestSide / 2) - 5.0;
                         return ForwardDestinationsPieChart(
                           destinations: destinations,
-                          radius: radius > 150.0 ? radius / 2 : radius,
-                          centerSpaceRadius: radius > 150.0 ? radius / 2 : 0.0,
+                          radius: radius > 120.0 ? radius / 2 : radius,
+                          centerSpaceRadius: radius > 120.0 ? radius / 2 : 0.0,
                         );
                       }),
                     ),

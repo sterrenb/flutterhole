@@ -83,6 +83,9 @@ class DemoApi implements PiholeRepository {
       'cache': cache,
       'cloudflare': cloudflare,
       'blocklist': blocklist,
+      'more': 12,
+      'and': 22,
+      'lots': 2,
     });
   }
 
@@ -135,8 +138,8 @@ class DemoApi implements PiholeRepository {
           },
         ),
       ...List.generate(_random.nextInt(2) + 1, (_) => randomQueryItem()),
+      ..._items,
       ..._startItems,
-      // ..._items,
     ];
 
     return _items;

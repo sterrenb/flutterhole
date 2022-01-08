@@ -12,7 +12,7 @@ void highlightSnackBar(
     duration: duration,
     behavior: SnackBarBehavior.fixed,
     // behavior: SnackBarBehavior.floating,
-    dismissDirection: DismissDirection.horizontal,
+    // dismissDirection: DismissDirection.horizontal,
     // width: MediaQuery.of(context).size.width > 800.0 ? 770 : null,
     action: undo == null
         ? null

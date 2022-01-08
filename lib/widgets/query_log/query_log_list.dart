@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/services/api_service.dart';
@@ -15,7 +16,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 class QueryLogList extends HookConsumerWidget {
   const QueryLogList({
     Key? key,
-    this.max = 10,
+    this.max = 5,
     this.animate = true,
   }) : super(key: key);
 
@@ -40,6 +41,11 @@ class QueryLogList extends HookConsumerWidget {
       k.currentState?.insertItem(index, duration: duration);
     }
 
+    void hideAtIndex(int index, QueryItem item) async {
+      data.value = [...data.value]..removeAt(index);
+      deleted.value = [...deleted.value, item];
+    }
+
     void deleteAtIndex(int index, QueryItem item) async {
       print('deleting ${item.domain} @ $index, currently ${data.value.length}');
       k.currentState?.removeItem(
@@ -48,6 +54,7 @@ class QueryLogList extends HookConsumerWidget {
               animation: animation,
               child: _Tile(
                 item: item,
+                onHide: () {},
               )),
           duration: duration);
       data.value = [...data.value]..removeAt(index);
@@ -92,7 +99,6 @@ class QueryLogList extends HookConsumerWidget {
     return Stack(
       alignment: Alignment.topRight,
       children: [
-        Text('allQueries: ${allQueries?.length}'),
         if (data.value.isEmpty) ...[
           const Center(child: Text('No queries found.'))
         ],
@@ -102,10 +108,11 @@ class QueryLogList extends HookConsumerWidget {
                   key: k,
                   initialItemCount: data.value.length,
                   itemBuilder: (context, index, animation) {
+                    var item = data.value.elementAt(index);
                     return DefaultAnimatedSize(
                         animation: animation,
                         child: _Tile(
-                          item: data.value.elementAt(index),
+                          item: item,
                           onTap: () {
                             // final index = data.value.length - 1;
                             // deleteAtIndex(index, data.value.elementAt(index));
@@ -113,6 +120,7 @@ class QueryLogList extends HookConsumerWidget {
                             //     'delete ${data.value.elementAt(index).domain}');
                             // deleteAtIndex(index, data.value.elementAt(index));
                           },
+                          onHide: () => deleteAtIndex(index, item),
                         ));
                   },
                 )
@@ -165,46 +173,92 @@ class _Tile extends StatelessWidget {
     Key? key,
     required this.item,
     this.onTap,
+    this.onHide,
   }) : super(key: key);
 
   final QueryItem item;
   final VoidCallback? onTap;
+  final VoidCallback? onHide;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      // dense: true,
-      title: Text(
-        item.domain,
+    return Slidable(
+      key: Key(item.toString()),
+      // startActionPane: ActionPane(
+      //   motion: BehindMotion(),
+      //   children: [
+      //     SlidableStyleAction(
+      //       onPressed: (context) {},
+      //       backgroundColor: Theme.of(context).colorScheme.primary,
+      //       label: 'Hide',
+      //       labelStyle:
+      //           TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+      //       icon: KIcons.delete,
+      //     ),
+      //     SlidableStyleAction(
+      //       onPressed: (context) {},
+      //       backgroundColor: Theme.of(context).colorScheme.secondary,
+      //       label: 'Show',
+      //       labelStyle:
+      //           TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+      //       icon: KIcons.delete,
+      //     ),
+      //   ],
+      // ),
+      endActionPane: onHide != null
+          ? ActionPane(
+              motion: BehindMotion(),
+              extentRatio: .2,
+              children: [
+                SlidableStyleAction(
+                  onPressed: (context) {
+                    // deleteAtIndex(index, item);
+                    onHide!();
+                  },
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  label: 'Hide',
+                  labelStyle:
+                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                  icon: KIcons.toggleInvisible,
+                  autoClose: false,
+                ),
+              ],
+            )
+          : null,
+      child: ListTile(
+        // dense: true,
+        title: Text(
+          item.domain,
+        ),
+        subtitle: Text(
+          item.queryStatus.description,
+        ),
+        leading: Icon(
+          item.queryStatus.iconData,
+          color: item.queryStatus.color,
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              item.timestamp.hms,
+              style: Theme.of(context).textTheme.caption,
+            ),
+            DifferenceText(item.timestamp),
+          ],
+        ),
+        onTap: onTap,
+        onLongPress: () {
+          showScrollableConfirmationDialog(
+            context,
+            contentPadding: EdgeInsets.zero,
+            canCancel: false,
+            // title: item.domain,
+            body: QueryItemDialog(item: item),
+          );
+        },
       ),
-      subtitle: Text(
-        item.queryStatus.description,
-      ),
-      leading: Icon(
-        item.queryStatus.iconData,
-        color: item.queryStatus.color,
-      ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            item.timestamp.hms,
-            style: Theme.of(context).textTheme.caption,
-          ),
-          DifferenceText(item.timestamp),
-        ],
-      ),
-      onTap: onTap,
-      onLongPress: () {
-        showScrollableConfirmationDialog(
-          context,
-          contentPadding: EdgeInsets.zero,
-          canCancel: false,
-          // title: item.domain,
-          body: QueryItemDialog(item: item),
-        );
-      },
     );
   }
 }
@@ -267,6 +321,100 @@ class QueryItemDialog extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class SlidableStyleAction extends StatelessWidget {
+  const SlidableStyleAction({
+    Key? key,
+    this.flex = 1,
+    this.backgroundColor = Colors.purple,
+    this.foregroundColor,
+    this.autoClose = true,
+    required this.onPressed,
+    this.icon,
+    this.spacing = 4,
+    this.label,
+    this.labelStyle,
+  })  : assert(flex > 0),
+        assert(icon != null || label != null),
+        super(key: key);
+
+  /// {@macro slidable.actions.flex}
+  final int flex;
+
+  /// {@macro slidable.actions.backgroundColor}
+  final Color backgroundColor;
+
+  /// {@macro slidable.actions.foregroundColor}
+  final Color? foregroundColor;
+
+  /// {@macro slidable.actions.autoClose}
+  final bool autoClose;
+
+  /// {@macro slidable.actions.onPressed}
+  final SlidableActionCallback? onPressed;
+
+  /// An icon to display above the [label].
+  final IconData? icon;
+
+  /// The space between [icon] and [label] if both set.
+  ///
+  /// Defaults to 4.
+  final double spacing;
+
+  /// A label to display below the [icon].
+  final String? label;
+
+  final TextStyle? labelStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final children = <Widget>[];
+
+    if (icon != null) {
+      children.add(
+        Icon(icon),
+      );
+    }
+
+    if (label != null) {
+      if (children.isNotEmpty) {
+        children.add(
+          SizedBox(height: spacing),
+        );
+      }
+
+      children.add(
+        Text(
+          label!,
+          overflow: TextOverflow.ellipsis,
+          style: labelStyle,
+        ),
+      );
+    }
+
+    final child = children.length == 1
+        ? children.first
+        : Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...children.map(
+                (child) => Flexible(
+                  child: child,
+                ),
+              )
+            ],
+          );
+
+    return CustomSlidableAction(
+      onPressed: onPressed,
+      autoClose: autoClose,
+      backgroundColor: backgroundColor,
+      foregroundColor: foregroundColor,
+      flex: flex,
+      child: child,
     );
   }
 }
