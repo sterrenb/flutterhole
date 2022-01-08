@@ -5,6 +5,7 @@ import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
+import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/loading_indicator.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
@@ -34,7 +35,7 @@ class DashboardCardHeader extends HookConsumerWidget {
           mouseCursor: SystemMouseCursors.click,
           title: Text(
             title,
-            style: (entry.constraints.crossAxisCount > 1
+            style: (entry.constraints.crossAxisCount > 0
                     ? Theme.of(context).textTheme.subtitle1
                     : Theme.of(context).textTheme.caption)
                 ?.copyWith(color: Theme.of(context).colorScheme.primary),
@@ -110,6 +111,7 @@ class DashboardCard extends HookConsumerWidget {
             // () {
             showScrollableConfirmationDialog(
               context,
+              canOk: false,
               canCancel: false,
               title: id.humanString,
               contentPadding: EdgeInsets.zero,

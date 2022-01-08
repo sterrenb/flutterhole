@@ -177,6 +177,20 @@ final _hms = DateFormat.Hms();
 final _jms = DateFormat('H:m:s.S');
 final _full = DateFormat.yMd().addPattern(_hms.pattern);
 
+String _twoDigits(int n) => n.toString().padLeft(2, "0");
+
+extension DurationX on Duration {
+  String get twoDigitSeconds => _twoDigits(inSeconds.remainder(60));
+  String get twoDigitMinutes => _twoDigits(inMinutes.remainder(60));
+  String get twoDigitHours => _twoDigits(inHours.remainder(60));
+
+  String toHms() => [
+        if (inHours > 0) ...['$inHours hours'],
+        if (inMinutes % 60 != 0) ...['${inMinutes.remainder(60)} minutes'],
+        if (inSeconds % 60 != 0) ...['${inSeconds.remainder(60)} seconds'],
+      ].join(', ');
+}
+
 extension DateTimeX on DateTime {
   String beforeAfter(Duration duration) {
     final before = _hm.format(subtract(duration));

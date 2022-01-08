@@ -90,14 +90,17 @@ class DashboardView extends HookConsumerWidget {
             BottomNavigationBarItem(
               icon: Icon(KIcons.dashboard),
               label: 'Dashboard',
+              tooltip: '',
             ),
             BottomNavigationBarItem(
               icon: Icon(KIcons.queryLog),
               label: 'Queries',
+              tooltip: '',
             ),
             BottomNavigationBarItem(
               icon: Icon(KIcons.clientActivity),
               label: 'Clients',
+              tooltip: '',
             ),
           ],
         ),

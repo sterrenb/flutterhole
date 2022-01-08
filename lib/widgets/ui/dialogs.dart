@@ -14,6 +14,7 @@ Future<bool?> showConfirmationDialog(
   String? okLabel,
   Color? okColor,
   Color? backgroundColor,
+  EdgeInsetsGeometry? contentPadding,
 }) =>
     showDialog(
         context: context,
@@ -27,6 +28,7 @@ Future<bool?> showConfirmationDialog(
               okLabel: okLabel,
               okColor: okColor,
               backgroundColor: backgroundColor,
+              contentPadding: contentPadding,
             ));
 
 Future<bool?> showScrollableConfirmationDialog(
@@ -34,6 +36,7 @@ Future<bool?> showScrollableConfirmationDialog(
   String? title,
   Widget? body,
   bool canCancel = true,
+  bool canOk = true,
   String? cancelLabel,
   String? okLabel,
   Color? okColor,
@@ -48,6 +51,7 @@ Future<bool?> showScrollableConfirmationDialog(
               cancelValue: false,
               canCancel: canCancel,
               cancelLabel: cancelLabel,
+              canOk: canOk,
               okLabel: okLabel,
               okColor: okColor,
               contentPadding: contentPadding,
@@ -74,11 +78,12 @@ class ModalAlertDialog<T> extends StatelessWidget {
     Key? key,
     required this.title,
     this.body,
-    this.popValue,
     this.cancelValue,
     this.canCancel = true,
     this.cancelLabel,
     this.okLabel,
+    this.popValue,
+    this.canOk = true,
     this.okColor,
     this.backgroundColor,
     this.contentPadding,
@@ -89,6 +94,7 @@ class ModalAlertDialog<T> extends StatelessWidget {
   final T? popValue;
   final T? cancelValue;
   final bool canCancel;
+  final bool canOk;
   final String? cancelLabel;
   final String? okLabel;
   final Color? okColor;
@@ -104,19 +110,21 @@ class ModalAlertDialog<T> extends StatelessWidget {
       contentPadding:
           contentPadding ?? const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),
       actions: <Widget>[
-        canCancel
-            ? TextButton(
-                onPressed: () => Navigator.of(context).pop(cancelValue),
-                child: Text(cancelLabel?.toUpperCase() ??
-                    MaterialLocalizations.of(context).cancelButtonLabel))
-            : Container(),
-        TextButton(
-            onPressed: () => Navigator.of(context).pop(popValue),
-            child: Text(
-              okLabel?.toUpperCase() ??
-                  MaterialLocalizations.of(context).okButtonLabel,
-              style: TextStyle(color: okColor),
-            )),
+        if (canCancel) ...[
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(cancelValue),
+              child: Text(cancelLabel?.toUpperCase() ??
+                  MaterialLocalizations.of(context).cancelButtonLabel))
+        ],
+        if (canOk) ...[
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(popValue),
+              child: Text(
+                okLabel?.toUpperCase() ??
+                    MaterialLocalizations.of(context).okButtonLabel,
+                style: TextStyle(color: okColor),
+              ))
+        ],
       ],
       actionsPadding: const EdgeInsets.symmetric(horizontal: 16),
     );
