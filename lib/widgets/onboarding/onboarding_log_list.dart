@@ -69,7 +69,7 @@ class _DemoLogTile extends HookWidget {
       return Theme.of(context).colorScheme.onSurface;
     }, [id]);
 
-    return AnimatedListTile(
+    return DefaultAnimatedSize(
       animation: animation,
       child: ListTile(
         title: LayoutBuilder(

@@ -44,8 +44,10 @@ class DashboardView extends HookConsumerWidget {
     return BaseView(
       child: Scaffold(
         floatingActionButton: const PingFloatingActionButton(),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
         appBar: AppBar(
           title: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(pi.title + ' '),
               Opacity(
@@ -112,28 +114,32 @@ class DashboardView extends HookConsumerWidget {
               Container(
                 color: Theme.of(context).colorScheme.secondary.withOpacity(.1),
               ),
-              PageView(
-                controller: page,
-                children: [
-                  Center(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: kBottomNavigationBarHeight * 2 + 20),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            DashboardGrid(entries: pi.dashboard),
-                            // const TabFooter(),
-                          ],
+              Padding(
+                padding:
+                    const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
+                child: PageView(
+                  controller: page,
+                  children: [
+                    Center(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: kBottomNavigationBarHeight + 20),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              DashboardGrid(entries: pi.dashboard),
+                              // const TabFooter(),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const QueriesTab(),
-                  const ClientsTab(),
-                ],
+                    const QueriesTab(),
+                    const ClientsTab(),
+                  ],
+                ),
               )
             ],
           ),

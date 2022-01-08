@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AnimatedListTile extends StatelessWidget {
-  const AnimatedListTile({
+class DefaultAnimatedSize extends StatelessWidget {
+  const DefaultAnimatedSize({
     Key? key,
     required this.animation,
     required this.child,

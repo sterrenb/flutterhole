@@ -52,8 +52,8 @@ class _DevThemeToggle extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ThemeMode themeMode = ref.watch(themeModeProvider);
     final showThemeToggle = ref.watch(showThemeToggleProvider);
-    return DefaultAnimatedOpacity(
-      show: showThemeToggle,
+    return Visibility(
+      visible: showThemeToggle,
       child: Tooltip(
         message: 'Toggle theme',
         child: Stack(

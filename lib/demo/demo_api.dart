@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:faker/faker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pihole_api/pihole_api.dart';
 
@@ -16,11 +17,21 @@ class DemoApi implements PiholeRepository {
   int dnsQueriesToday = 10000;
   int adsBlockedToday = 5600;
   int domainsBeingBlocked = 999894;
+
+  List<QueryItem> _startItems = [
+    ...List.generate(
+        5, (index) => randomQueryItem(Duration(seconds: 30 + index * 130))),
+    ...List.generate(
+        5,
+        (index) => randomQueryItem(
+            Duration(days: 1 + index * index * index) + randomDayDuration()))
+  ];
+
   List<QueryItem> _items = [
     ...List.generate(
-        10, (index) => randomQueryItem(Duration(seconds: 30 + index * 130))),
+        5, (index) => randomQueryItem(Duration(seconds: 30 + index * 130))),
     ...List.generate(
-        10,
+        5,
         (index) => randomQueryItem(
             Duration(days: 1 + index * index * index) + randomDayDuration()))
   ];
@@ -95,24 +106,39 @@ class DemoApi implements PiholeRepository {
   @override
   Future<List<QueryItem>> fetchQueryItems(_, int maxResults) async {
     await _sleep();
+    count++;
+
+    // if (count % 2 == 0) return _items;
+    // if (count == 3) throw 'Nope';
 
     _items = [
-      ...List.generate(
-        1,
-        (_) => QueryItem(
-          timestamp: DateTime(2008),
-          queryType: 'A',
-          domain: 'my.domain',
-          clientName: 'the.client',
-          queryStatus: QueryStatus.Cached,
-          // .elementAt(random.nextInt(QueryStatus.values.length)),
-          dnsSecStatus: DnsSecStatus.Secure,
-          delta: 0.0,
+      if (false)
+        ...List.generate(
+          1,
+          (_) {
+            String domain = Faker().sport.name() + count.toString();
+            if (count % 10 == 0) domain = 'my.domain';
+
+            return QueryItem(
+              timestamp: DateTime.now(),
+              // timestamp: DateTime(2008),
+              queryType: 'A',
+              domain: domain,
+              clientName: 'the.client',
+              queryStatus:
+                  // QueryStatus.Cached,
+                  QueryStatus.values
+                      .elementAt(_random.nextInt(QueryStatus.values.length)),
+              dnsSecStatus: DnsSecStatus.Secure,
+              delta: 0.0,
+            );
+          },
         ),
-      ),
-      // ...List.generate(1, (_) => randomQueryItem()),
-      ..._items,
+      ...List.generate(_random.nextInt(2) + 1, (_) => randomQueryItem()),
+      ..._startItems,
+      // ..._items,
     ];
+
     return _items;
   }
 
