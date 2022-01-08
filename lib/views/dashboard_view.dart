@@ -64,16 +64,16 @@ class DashboardView extends HookConsumerWidget {
             ],
           ),
           actions: [
-            DevToolBar(),
+            const DevToolBar(),
             DevWidget(
                 child: IconButton(
               onPressed: () {
                 ref.refreshQueryItems();
               },
-              icon: Icon(KIcons.refresh),
+              icon: const Icon(KIcons.refresh),
             )),
-            _DashboardPopupMenuButton(),
-            PushViewIconButton(
+            const _DashboardPopupMenuButton(),
+            const PushViewIconButton(
               tooltip: 'Settings',
               iconData: KIcons.settings,
               view: SettingsView(),
@@ -165,7 +165,7 @@ class QueriesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MobileMaxWidth(
+    return const MobileMaxWidth(
       child: QueryLogList(),
     );
   }

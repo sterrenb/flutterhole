@@ -7,11 +7,13 @@ import 'package:flutterhole/widgets/ui/dialogs.dart';
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({
     Key? key,
+    this.value,
     this.size,
     this.strokeWidth = 4.0,
     this.color,
   }) : super(key: key);
 
+  final double? value;
   final double? size;
   final double strokeWidth;
   final Color? color;
@@ -23,6 +25,7 @@ class LoadingIndicator extends StatelessWidget {
       height: size,
       child: CircularProgressIndicator(
         strokeWidth: strokeWidth,
+        value: value,
         valueColor:
             color != null ? AlwaysStoppedAnimation<Color>(color!) : null,
       ),

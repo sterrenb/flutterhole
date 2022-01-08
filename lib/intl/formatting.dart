@@ -198,3 +198,20 @@ extension StringX on String {
     return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 }
+
+extension TimeOfDayX on TimeOfDay {
+  int get inMinutes => hour * 60 + minute;
+
+  Duration absoluteDuration() {
+    final now = TimeOfDay.now();
+    if (inMinutes == now.inMinutes) {
+      return Duration.zero;
+    }
+
+    int minutes = inMinutes - now.inMinutes;
+    if (inMinutes < now.inMinutes) {
+      minutes += 24 * 60;
+    }
+    return Duration(hours: (minutes / 60).floor(), minutes: minutes % 60);
+  }
+}

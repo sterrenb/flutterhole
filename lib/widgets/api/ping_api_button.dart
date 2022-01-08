@@ -83,64 +83,119 @@ class PingFloatingActionButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final status = useState(PiholeStatus.enabled());
+    final status = useState(const PiholeStatus.disabled());
     final isLoading = useState(false);
 
-    void onTap() async {
-      if (isLoading.value) return;
+    void onSleep() async {
+      final now = TimeOfDay.now();
+      final result = await showModal<TimeOfDay>(
+          context: context,
+          builder: (context) {
+            return TimePickerDialog(
+              initialTime: now,
+              confirmText: 'Sleep'.toUpperCase(),
+              helpText: 'Sleep until...'.toUpperCase(),
+            );
+          });
+
+      if (result == null || result == now) return;
+
       isLoading.value = true;
-      await Future.delayed(Duration(milliseconds: 500));
-      status.value = status.value.map(
-        enabled: (_) => PiholeStatus.disabled(),
-        disabled: (_) => PiholeStatus.enabled(),
-        sleeping: (_) => PiholeStatus.enabled(),
-      );
+      await Future.delayed(const Duration(milliseconds: 500));
+      status.value =
+          PiholeStatus.sleeping(result.absoluteDuration(), DateTime.now());
       isLoading.value = false;
     }
 
-    final label = status.value.when(
-      enabled: () => 'Disable',
-      disabled: () => 'Enable',
-      sleeping: (duration, start) => 'Enable',
-    );
-
     return BreakpointBuilder(builder: (context, isBig) {
-      return isBig || true
-          ? FloatingActionButton.extended(
-              onPressed: onTap,
-              icon: Stack(
-                children: [
-                  // Icon(KIcons.disablePihole),
-                  _StatusIcon(
-                    status.value,
-                    isLoading: isLoading.value,
-                  ),
+      return GestureDetector(
+        onLongPress: onSleep,
+        child: Tooltip(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.background,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          textStyle: Theme.of(context)
+              .textTheme
+              .caption
+              ?.copyWith(color: Theme.of(context).colorScheme.onBackground),
+          message: status.value.whenOrNull(
+                  sleeping: (duration, start) =>
+                      'Sleeping until ${start.add(duration).hms}') ??
+              '',
+          preferBelow: false,
+          child: FloatingActionButton.extended(
+            onPressed: () async {
+              if (isLoading.value) return;
+              isLoading.value = true;
+              await Future.delayed(const Duration(milliseconds: 500));
+              status.value = status.value.map(
+                enabled: (_) => const PiholeStatus.disabled(),
+                disabled: (_) => const PiholeStatus.enabled(),
+                sleeping: (_) => const PiholeStatus.enabled(),
+              );
+              isLoading.value = false;
+            },
+            icon: _StatusIcon(
+              status.value,
+              isLoading: isLoading.value,
+            ),
+            label: DefaultAnimatedSize(
+              child: AnimatedStack(
+                children: const [
+                  Text('Disable'),
+                  Text('Enable'),
+                  Text('Wake up'),
                 ],
+                active: status.value.when(
+                  enabled: () => 0,
+                  disabled: () => 1,
+                  sleeping: (duration, start) => 2,
+                ),
               ),
-              label: DefaultAnimatedSize(
-                child: Text(label),
-                // child: AnimatedStack(
-                //   children: [
-                //     Text('Disable'),
-                //     Text('Enable'),
-                //     Text('Enable'),
-                //   ],
-                //   active: status.value.when(
-                //     enabled: () => 0,
-                //     disabled: () => 1,
-                //     sleeping: (duration, start) => 2,
-                //   ),
-                // ),
-              ),
-            )
-          : FloatingActionButton(
-              onPressed: onTap,
-              child: _StatusIcon(
-                status.value,
-                isLoading: isLoading.value,
-              ),
-            );
+            ),
+          ),
+        ),
+      );
     });
+  }
+}
+
+class _SleepingProgressIndicator extends HookConsumerWidget {
+  const _SleepingProgressIndicator({
+    Key? key,
+    required this.status,
+  }) : super(key: key);
+
+  final PiholeStatusSleeping status;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final remaining =
+        useState(status.duration - DateTime.now().difference(status.start));
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        LoadingIndicator(
+          size: 18.0,
+          color: Theme.of(context).dividerColor,
+          strokeWidth: 2.0,
+          value: 1.0,
+        ),
+        if (remaining.value.inSeconds > 0) ...[
+          TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0.0, end: 1.0),
+            duration: remaining.value,
+            builder: (context, value, _) => LoadingIndicator(
+              size: 18.0,
+              color: Theme.of(context).colorScheme.onSecondary,
+              strokeWidth: 2.0,
+              value: value,
+            ),
+          )
+        ],
+      ],
+    );
   }
 }
 
@@ -158,29 +213,26 @@ class _StatusIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return animate
-        ? AnimatedStack(
-            children: [
-                LoadingIndicator(
-                  size: 18.0,
-                  color: Theme.of(context).colorScheme.onSecondary,
-                  strokeWidth: 2.0,
-                ),
-                Icon(KIcons.disablePihole),
-                Icon(KIcons.enablePihole),
-                Icon(KIcons.enablePihole),
-              ],
-            active: isLoading
-                ? 0
-                : status.map(
-                    enabled: (_) => 1,
-                    disabled: (_) => 2,
-                    sleeping: (_) => 3,
-                  ))
-        : Icon(status.map(
-            enabled: (_) => KIcons.disablePihole,
-            disabled: (_) => KIcons.enablePihole,
-            sleeping: (_) => KIcons.enablePihole,
-          ));
+    return AnimatedStack(
+        children: [
+          LoadingIndicator(
+            size: 18.0,
+            color: Theme.of(context).colorScheme.onSecondary,
+            strokeWidth: 2.0,
+          ),
+          const Icon(KIcons.disablePihole),
+          const Icon(KIcons.enablePihole),
+          status.maybeMap(
+              sleeping: (status) => _SleepingProgressIndicator(
+                  status: status.copyWith(start: status.start)),
+              orElse: () => const Text('?')),
+        ],
+        active: isLoading
+            ? 0
+            : status.map(
+                enabled: (_) => 1,
+                disabled: (_) => 2,
+                sleeping: (_) => 3,
+              ));
   }
 }

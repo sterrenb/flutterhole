@@ -57,6 +57,7 @@ class KIcons {
   // static const IconData enablePihole = Icons.play_arrow;
   static const IconData enablePihole = MdiIcons.motionPlayOutline;
   static const IconData disablePihole = MdiIcons.motionPauseOutline;
+  static const IconData sleeping = MdiIcons.sleep;
   static const IconData sleepPihole = Icons.alarm;
   static const IconData wakePihole = Icons.alarm_on;
 
