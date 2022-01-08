@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 import 'demo_generators.dart';
@@ -26,7 +27,7 @@ class DemoApi implements PiholeRepository {
 
   Future<void> _sleep(
       [Duration duration = const Duration(milliseconds: 400)]) async {
-    // if (kDebugMode) return;
+    if (kDebugMode) return;
     await Future.delayed(duration);
   }
 
@@ -90,12 +91,26 @@ class DemoApi implements PiholeRepository {
   }
 
   int count = 0;
+
   @override
   Future<List<QueryItem>> fetchQueryItems(_, int maxResults) async {
     await _sleep();
 
     _items = [
-      ...List.generate(1, (_) => randomQueryItem()),
+      ...List.generate(
+        1,
+        (_) => QueryItem(
+          timestamp: DateTime(2008),
+          queryType: 'A',
+          domain: 'my.domain',
+          clientName: 'the.client',
+          queryStatus: QueryStatus.Cached,
+          // .elementAt(random.nextInt(QueryStatus.values.length)),
+          dnsSecStatus: DnsSecStatus.Secure,
+          delta: 0.0,
+        ),
+      ),
+      // ...List.generate(1, (_) => randomQueryItem()),
       ..._items,
     ];
     return _items;

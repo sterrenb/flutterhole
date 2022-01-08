@@ -27,16 +27,7 @@ class QueryLogList extends HookConsumerWidget {
             if (data != null && data.isEmpty) ...[
               const Center(child: Text('No queries found.'))
             ],
-            if (data != null && data.isNotEmpty) ...[
-              ListView.builder(
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  return _Tile(
-                    item: data.elementAt(index),
-                  );
-                },
-              )
-            ],
+            if (data != null && data.isNotEmpty) ...[_ListBuilder(items: data)],
             if (data == null && error != null) ...[CenteredErrorMessage(error)],
             Positioned(
               right: 0,
@@ -48,6 +39,27 @@ class QueryLogList extends HookConsumerWidget {
               ),
             ),
           ],
+        );
+      },
+    );
+  }
+}
+
+class _ListBuilder extends StatelessWidget {
+  const _ListBuilder({
+    Key? key,
+    required this.items,
+  }) : super(key: key);
+
+  final List<QueryItem> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        return _Tile(
+          item: items.elementAt(index),
         );
       },
     );
