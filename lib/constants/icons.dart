@@ -8,7 +8,7 @@ class KIcons {
   static const IconData darkTheme = Icons.lightbulb_outline;
   static const IconData systemTheme = Icons.flashlight_on;
   static const IconData theme = Icons.wb_sunny;
-  static const IconData themeDark = MdiIcons.moonWaningCrescent;
+  static const IconData themeDark = MdiIcons.powerSleep;
   static const IconData toggle = Icons.toggle_on;
 
   static const IconData piholeTitle = MdiIcons.raspberryPi;
@@ -54,8 +54,9 @@ class KIcons {
   static const IconData queryTimestamp = Icons.timelapse;
   static const IconData queryDnsSec = Icons.security;
 
-  static const IconData enablePihole = Icons.play_arrow;
-  static const IconData disablePihole = Icons.pause;
+  // static const IconData enablePihole = Icons.play_arrow;
+  static const IconData enablePihole = MdiIcons.motionPlayOutline;
+  static const IconData disablePihole = MdiIcons.motionPauseOutline;
   static const IconData sleepPihole = Icons.alarm;
   static const IconData wakePihole = Icons.alarm_on;
 

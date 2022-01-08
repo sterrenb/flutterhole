@@ -99,3 +99,27 @@ class DefaultAnimatedOpacity extends StatelessWidget {
     );
   }
 }
+
+class AnimatedStack extends StatelessWidget {
+  const AnimatedStack({
+    Key? key,
+    required this.children,
+    required this.active,
+    this.alignment,
+  }) : super(key: key);
+
+  final List<Widget> children;
+  final int active;
+  final Alignment? alignment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: alignment ?? Alignment.center,
+      children: List.generate(
+          children.length,
+          (index) => DefaultAnimatedOpacity(
+              show: index == active, child: children.elementAt(index))),
+    );
+  }
+}

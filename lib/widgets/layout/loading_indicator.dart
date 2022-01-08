@@ -5,16 +5,27 @@ import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
 
 class LoadingIndicator extends StatelessWidget {
-  const LoadingIndicator({Key? key, this.size}) : super(key: key);
+  const LoadingIndicator({
+    Key? key,
+    this.size,
+    this.strokeWidth = 4.0,
+    this.color,
+  }) : super(key: key);
 
   final double? size;
+  final double strokeWidth;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: size,
       height: size,
-      child: const CircularProgressIndicator(),
+      child: CircularProgressIndicator(
+        strokeWidth: strokeWidth,
+        valueColor:
+            color != null ? AlwaysStoppedAnimation<Color>(color!) : null,
+      ),
     );
   }
 }

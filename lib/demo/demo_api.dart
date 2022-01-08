@@ -156,13 +156,13 @@ class DemoApi implements PiholeRepository {
       hasFtlUpdate: true,
       currentCoreVersion: 'v1.2.3',
       currentWebVersion: 'v5.8',
-      currentFtlVersion: 'v1.2.3',
+      currentFtlVersion: 'v2.3.1',
       latestCoreVersion: 'v1.2.3',
       latestWebVersion: 'v5.8',
-      latestFtlVersion: 'v1.3.4',
-      coreBranch: 'master',
-      webBranch: 'develop',
-      ftlBranch: 'master',
+      latestFtlVersion: 'v2.3.4',
+      coreBranch: 'main',
+      webBranch: 'main',
+      ftlBranch: 'develop',
     );
   }
 

@@ -6,6 +6,7 @@ import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/settings_view.dart';
+import 'package:flutterhole/widgets/api/ping_api_button.dart';
 import 'package:flutterhole/widgets/dashboard/dashboard_grid.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
@@ -17,7 +18,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'dashboard_edit_view.dart';
 
-final _selectedIndexProvider = StateProvider<int>((ref) => 1);
+final _selectedIndexProvider = StateProvider<int>((ref) => 0);
 
 class DashboardView extends HookConsumerWidget {
   const DashboardView({
@@ -42,6 +43,7 @@ class DashboardView extends HookConsumerWidget {
 
     return BaseView(
       child: Scaffold(
+        floatingActionButton: const PingFloatingActionButton(),
         appBar: AppBar(
           title: Row(
             children: [
@@ -102,21 +104,28 @@ class DashboardView extends HookConsumerWidget {
         extendBody: true,
         body: UnreadNotificationsBanner(
           child: Stack(
+            alignment: Alignment.center,
             children: [
               Container(
                 color: Theme.of(context).colorScheme.secondary.withOpacity(.1),
-                // child: Center(
-                //   child: Text("Center"),
-                // ),
               ),
               PageView(
                 controller: page,
                 children: [
-                  SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: kBottomNavigationBarHeight),
-                      child: DashboardGrid(entries: pi.dashboard),
+                  Center(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: kBottomNavigationBarHeight * 2 + 20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            DashboardGrid(entries: pi.dashboard),
+                            // const TabFooter(),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                   const QueriesTab(),
@@ -131,12 +140,32 @@ class DashboardView extends HookConsumerWidget {
   }
 }
 
+class TabFooter extends StatelessWidget {
+  const TabFooter({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        height: kBottomNavigationBarHeight + 24.0,
+        child: Center(
+            child: Text(
+          'FlutterHole',
+          style: Theme.of(context)
+              .textTheme
+              .caption
+              ?.copyWith(color: Theme.of(context).primaryColor.withOpacity(.2)),
+        )));
+  }
+}
+
 class QueriesTab extends StatelessWidget {
   const QueriesTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const MobileMaxWidth(
+    return MobileMaxWidth(
       child: QueryLogList(),
     );
   }

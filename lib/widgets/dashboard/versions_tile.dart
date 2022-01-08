@@ -138,16 +138,16 @@ class _ListTile extends HookConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Wrap(
-              direction: Axis.vertical,
+              // direction: Axis.vertical,
               children: <Widget>[
                 Text(
                   currentVersion,
-                  style: GoogleFonts.firaMono(),
+                  // style: GoogleFonts.firaMono(),
                 ),
                 Visibility(
                   visible: updateIsAvailable,
                   child: Text(
-                    '${isBig ? 'Update available: ' : ''}$latestVersion',
+                    '${isBig ? ' Update available: ' : ' '}$latestVersion',
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary),
                   ),

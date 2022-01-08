@@ -10,8 +10,10 @@ void highlightSnackBar(
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     content: content,
     duration: duration,
+    // behavior: SnackBarBehavior.fixed,
     behavior: SnackBarBehavior.floating,
-    width: MediaQuery.of(context).size.width > 800.0 ? 770 : null,
+    dismissDirection: DismissDirection.horizontal,
+    // width: MediaQuery.of(context).size.width > 800.0 ? 770 : null,
     action: undo == null
         ? null
         : SnackBarAction(
