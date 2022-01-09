@@ -16,7 +16,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 class QueryLogList extends HookConsumerWidget {
   const QueryLogList({
     Key? key,
-    this.max = 30,
+    this.max = 20,
     this.animate = true,
   }) : super(key: key);
 

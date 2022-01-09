@@ -18,7 +18,7 @@ enum LogLevel {
   error,
 }
 
-const kWelcomeNotification = '''Hello!
+const kWelcomeNotification = '''Welcome to FlutterHole!
 ''';
 
 const defaultNotifications = [

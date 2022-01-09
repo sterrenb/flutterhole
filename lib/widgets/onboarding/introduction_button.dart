@@ -17,6 +17,7 @@ Future<void> showOnboardingDialog(
           return WillPopScope(
             onWillPop: () async => barrierDismissible,
             child: AlertDialog(
+              backgroundColor: Colors.orange,
               insetPadding:
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 24.0),
               contentPadding: const EdgeInsets.symmetric(vertical: 24.0),
