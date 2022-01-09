@@ -2,6 +2,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:pihole_api/pihole_api.dart';
 
 part 'settings_models.freezed.dart';
 part 'settings_models.g.dart';
@@ -172,8 +173,6 @@ class DashboardEntry with _$DashboardEntry {
 
 @freezed
 class Pi with _$Pi {
-  // Pi._();
-
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Pi({
     @Default("My Pi-hole") String title,
@@ -190,4 +189,13 @@ class Pi with _$Pi {
 
 // late final String apiUrl = '$baseUrl$apiPath';
 // late final String adminUrl = '$baseUrl$adminHome';
+}
+
+@freezed
+class PingStatus with _$PingStatus {
+  const factory PingStatus({
+    required bool loading,
+    required PiholeStatus status,
+    Object? error,
+  }) = _PingStatus;
 }

@@ -31,6 +31,11 @@ final piholeProvider =
   return PiholeRepositoryDio(params);
 });
 
+final activePiholeProvider = Provider<PiholeRepository>((ref) {
+  final params = ref.watch(activePiholeParamsProvider);
+  return ref.watch(piholeProvider(params));
+});
+
 final pingProvider = FutureProvider.autoDispose
     .family<PiholeStatus, PiholeRepositoryParams>((ref, params) async {
   final pihole = ref.watch(piholeProvider(params));
@@ -147,3 +152,26 @@ final activeQueryTypesProvider =
     Provider.autoDispose<AsyncValue<PiQueryTypes>>((ref) {
   return ref.watch(queryTypesProvider(ref.watch(activePiholeParamsProvider)));
 }, dependencies: [piProvider, queryTypesProvider, activePiholeParamsProvider]);
+
+class PingNotifier extends StateNotifier<PingStatus> {
+  static final provider =
+      StateNotifierProvider<PingNotifier, PingStatus>((ref) {
+    return PingNotifier(ref.watch(activePiholeProvider));
+  });
+
+  PingNotifier(this.api)
+      : cancelToken = CancelToken(),
+        super(const PingStatus(
+          loading: true,
+          status: PiholeStatus.enabled(),
+        ));
+
+  final PiholeRepository api;
+  final CancelToken cancelToken;
+
+  Future<void> enable() async {
+    state = state.copyWith(loading: true);
+    final x = await api.enable(cancelToken);
+    state = state.copyWith(loading: false, status: x);
+  }
+}
