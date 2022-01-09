@@ -26,11 +26,17 @@ class DashboardEditView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pi = ref.watch(piProvider);
-    final entries = useState(pi.dashboard);
+    final entries = useState([
+      ...pi.dashboard,
+      ...DashboardEntry.defaultDashboard
+          .whereNot(
+              (element) => pi.dashboard.map((e) => e.id).contains(element.id))
+          .map((e) => e.copyWith(enabled: false)),
+    ]);
 
-    useAsyncEffect(() {
-      ref.refreshDashboard();
-    }, () {}, [entries.value]);
+    // useAsyncEffect(() {
+    //   ref.refreshDashboard();
+    // }, () {}, [entries.value]);
 
     return WillPopScope(
       onWillPop: () async {
