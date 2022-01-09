@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/urls.dart';
 import 'package:flutterhole/intl/formatting.dart';
@@ -27,12 +29,13 @@ extension WidgetRefX on WidgetRef {
   void refreshForwardDestinations() =>
       refresh(forwardDestinationsProvider(read(activePiholeParamsProvider)));
 
-  void refreshDashboard() {
+  void refreshDashboard() async {
     refreshSummary();
     refreshVersions();
     refreshDetails();
     refreshForwardDestinations();
     refreshQueryItems();
+    refreshQueryTypes();
   }
 
   void updateThemeMode(

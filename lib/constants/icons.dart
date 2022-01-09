@@ -38,10 +38,11 @@ class KIcons {
   static const IconData review = Icons.star;
 
   static const IconData totalQueries = Icons.public;
-  static const IconData queriesBlocked = Icons.block;
-  // static const IconData percentBlocked = MdiIcons.abacus;
-  static const IconData percentBlocked = Icons.pie_chart;
-  static const IconData domainsOnBlocklist = Icons.list;
+  static const IconData queriesBlocked = MdiIcons.shieldCheck;
+  static const IconData queryTypes = Icons.pie_chart;
+// static const IconData percentBlocked = MdiIcons.abacus;
+  static const IconData percentBlocked = Icons.block;
+  static const IconData domainsOnBlocklist = MdiIcons.formatListBulleted;
   static const IconData domainsPermittedTile = Icons.domain;
   static const IconData domainsBlockedTile = Icons.domain_disabled;
   static const IconData queriesOverTime = Icons.stacked_line_chart;

@@ -312,11 +312,13 @@ class AnimatedCardContent extends HookConsumerWidget {
   const AnimatedCardContent({
     required this.isLoading,
     required this.child,
+    this.loadingIndicator,
     Key? key,
   }) : super(key: key);
 
   final bool isLoading;
   final Widget child;
+  final Widget? loadingIndicator;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -329,7 +331,9 @@ class AnimatedCardContent extends HookConsumerWidget {
       child: AnimatedFader(
         duration: kThemeAnimationDuration,
         layoutBuilder: AnimatedFader.centerExpandLayoutBuilder,
-        child: !finishedFirstLoading.value ? Container() : child,
+        child: !finishedFirstLoading.value
+            ? (loadingIndicator ?? Container())
+            : child,
       ),
     );
   }

@@ -92,15 +92,15 @@ extension DashboardIDX on DashboardID {
       case DashboardID.temperature:
         return 'Temperature';
       case DashboardID.memoryUsage:
-        return 'Memory';
+        return 'Memory usage';
       case DashboardID.totalQueries:
         return 'Total queries';
       case DashboardID.queriesBlocked:
         return 'Queries blocked';
       case DashboardID.percentBlocked:
-        return 'Blocked';
+        return 'Blocked (%)';
       case DashboardID.domainsOnBlocklist:
-        return 'Domains';
+        return 'Domains on blocklist';
       case DashboardID.forwardDestinations:
         return 'Upstream servers';
       case DashboardID.queryTypes:

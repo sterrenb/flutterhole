@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
@@ -61,24 +62,26 @@ class ForwardDestinationsTile extends HookConsumerWidget {
           ),
           onTap: () => ref.refreshForwardDestinations(),
           content: AnimatedCardContent(
-              isLoading: isLoading,
-              child: destinations == null
-                  ? Container()
-                  : PieChartRadiusBuilder(
-                      builder: (context, radius, _) => PercentPieChart(
-                            data: destinations.destinations,
-                            titleBuilder: (title, value, index) =>
-                                title.split('|').first,
-                            colorBuilder: (title, value, index) =>
-                                _colors.elementAt(index % _colors.length),
-                            radius: radius > PercentPieChart.splitRadius
-                                ? radius / 2
-                                : radius,
-                            centerSpaceRadius:
-                                radius > PercentPieChart.splitRadius
-                                    ? radius / 2
-                                    : 0.0,
-                          ))),
+            isLoading: isLoading,
+            child: destinations == null
+                ? Container()
+                : PieChartRadiusBuilder(
+                    builder: (context, radius, _) => PercentPieChart(
+                          data: destinations.destinations,
+                          titleBuilder: (title, value, index) =>
+                              title.split('|').first,
+                          colorBuilder: (title, value, index) =>
+                              _colors.elementAt(index % _colors.length),
+                          radius: radius > PercentPieChart.splitRadius
+                              ? radius / 2
+                              : radius,
+                          centerSpaceRadius:
+                              radius > PercentPieChart.splitRadius
+                                  ? radius / 2
+                                  : 0.0,
+                        )),
+            loadingIndicator: const DashboardBackgroundIcon(KIcons.host),
+          ),
         );
       },
     );
@@ -115,24 +118,26 @@ class QueryTypesTile extends HookConsumerWidget {
           ),
           onTap: () => ref.refreshQueryTypes(),
           content: AnimatedCardContent(
-              isLoading: isLoading,
-              child: queryTypes == null
-                  ? Container()
-                  : PieChartRadiusBuilder(
-                      builder: (context, radius, _) => PercentPieChart(
-                            data: queryTypes.types,
-                            titleBuilder: (title, value, index) =>
-                                title.split('|').first,
-                            colorBuilder: (title, value, index) =>
-                                _colors.elementAt((index + 2) % _colors.length),
-                            radius: radius > PercentPieChart.splitRadius
-                                ? radius / 2
-                                : radius,
-                            centerSpaceRadius:
-                                radius > PercentPieChart.splitRadius
-                                    ? radius / 2
-                                    : 0.0,
-                          ))),
+            isLoading: isLoading,
+            child: queryTypes == null
+                ? Container()
+                : PieChartRadiusBuilder(
+                    builder: (context, radius, _) => PercentPieChart(
+                          data: queryTypes.types,
+                          titleBuilder: (title, value, index) =>
+                              title.split('|').first,
+                          colorBuilder: (title, value, index) =>
+                              _colors.elementAt((index + 2) % _colors.length),
+                          radius: radius > PercentPieChart.splitRadius
+                              ? radius / 2
+                              : radius,
+                          centerSpaceRadius:
+                              radius > PercentPieChart.splitRadius
+                                  ? radius / 2
+                                  : 0.0,
+                        )),
+            loadingIndicator: const DashboardBackgroundIcon(KIcons.queryTypes),
+          ),
         );
       },
     );
