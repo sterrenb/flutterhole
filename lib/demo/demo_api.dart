@@ -158,7 +158,7 @@ class DemoApi implements PiholeRepository {
       // "ANY": 0,
       // "SRV": 0.99,
       // "SOA": 0.03,
-      // "PTR": 1.29,
+      "PTR": 1.29,
       // "TXT": 0,
       // "NAPTR": 0,
       // "MX": 0,
@@ -168,7 +168,7 @@ class DemoApi implements PiholeRepository {
       // "NS": 0.02,
       // "OTHER": 0,
       // "SVCB": 0,
-      // "HTTPS": 2.7
+      "HTTPS": 2.7
     });
   }
 

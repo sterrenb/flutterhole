@@ -131,3 +131,19 @@ final activeForwardDestinationsProvider =
   forwardDestinationsProvider,
   activePiholeParamsProvider
 ]);
+
+final queryTypesProvider = FutureProvider.autoDispose
+    .family<PiQueryTypes, PiholeRepositoryParams>((ref, params) async {
+  final pihole = ref.watch(piholeProvider(params));
+  final cancelToken = CancelToken();
+  if (kDebugMode) {
+    await Future.delayed(const Duration(milliseconds: 200));
+  }
+  ref.onDispose(() => cancelToken.cancel());
+  return pihole.fetchQueryTypes(cancelToken);
+});
+
+final activeQueryTypesProvider =
+    Provider.autoDispose<AsyncValue<PiQueryTypes>>((ref) {
+  return ref.watch(queryTypesProvider(ref.watch(activePiholeParamsProvider)));
+}, dependencies: [piProvider, queryTypesProvider, activePiholeParamsProvider]);

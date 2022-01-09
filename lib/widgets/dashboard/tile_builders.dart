@@ -43,6 +43,8 @@ class DashboardEntryTileBuilder extends StatelessWidget {
                 return const MemoryUsageTile();
               case DashboardID.forwardDestinations:
                 return const ForwardDestinationsTile();
+              case DashboardID.queryTypes:
+                return const QueryTypesTile();
 
               default:
                 return DashboardCard(

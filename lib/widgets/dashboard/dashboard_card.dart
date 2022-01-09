@@ -298,7 +298,7 @@ class DashboardFittedCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0)
               .subtract(const EdgeInsets.only(top: 8.0)),
-          child: FittedText(text: text ?? '-'),
+          child: FittedText(text: text ?? ''),
         ),
       ),
       background: background,
