@@ -50,7 +50,6 @@ class QueryLogList extends HookConsumerWidget {
               animation: animation,
               child: _Tile(
                 item: item,
-                onHide: () {},
               )),
           duration: duration);
       data.value = [...data.value]..removeAt(index);
@@ -111,20 +110,12 @@ class QueryLogList extends HookConsumerWidget {
                         animation: animation,
                         child: _Tile(
                           item: item,
-                          onTap: () {
-                            // final index = data.value.length - 1;
-                            // deleteAtIndex(index, data.value.elementAt(index));
-                            // print(
-                            //     'delete ${data.value.elementAt(index).domain}');
-                            // deleteAtIndex(index, data.value.elementAt(index));
-                          },
-                          onHide: () => deleteAtIndex(index, item),
+                          // onHide: () => deleteAtIndex(index, item),
                         ));
                   },
                 )
               : _ListBuilder(
                   items: data.value,
-                  onTap: (index) {},
                 ),
         ],
         AnimatedColorFader(
@@ -156,11 +147,11 @@ class _ListBuilder extends StatelessWidget {
   const _ListBuilder({
     Key? key,
     required this.items,
-    required this.onTap,
+    this.onTap,
   }) : super(key: key);
 
   final List<QueryItem> items;
-  final ValueChanged<int> onTap;
+  final ValueChanged<int>? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +160,7 @@ class _ListBuilder extends StatelessWidget {
       itemBuilder: (context, index) {
         return _Tile(
           item: items.elementAt(index),
-          onTap: () => onTap(index),
+          onTap: onTap == null ? null : () => onTap!(index),
         );
       },
     );
@@ -190,31 +181,11 @@ class _Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Slidable(
-      key: Key(item.toString()),
-      // startActionPane: ActionPane(
-      //   motion: BehindMotion(),
-      //   children: [
-      //     SlidableStyleAction(
-      //       onPressed: (context) {},
-      //       backgroundColor: Theme.of(context).colorScheme.primary,
-      //       label: 'Hide',
-      //       labelStyle:
-      //           TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-      //       icon: KIcons.delete,
-      //     ),
-      //     SlidableStyleAction(
-      //       onPressed: (context) {},
-      //       backgroundColor: Theme.of(context).colorScheme.secondary,
-      //       label: 'Show',
-      //       labelStyle:
-      //           TextStyle(color: Theme.of(context).colorScheme.onSecondary),
-      //       icon: KIcons.delete,
-      //     ),
-      //   ],
-      // ),
-      endActionPane: onHide != null
-          ? ActionPane(
+    return onHide == null
+        ? _QueryTile(item: item, onTap: onTap)
+        : Slidable(
+            key: Key(item.toString()),
+            endActionPane: ActionPane(
               motion: const BehindMotion(),
               extentRatio: .2,
               children: [
@@ -231,42 +202,57 @@ class _Tile extends StatelessWidget {
                   autoClose: false,
                 ),
               ],
-            )
-          : null,
-      child: ListTile(
-        // dense: true,
-        title: Text(
-          item.domain,
-        ),
-        subtitle: Text(
-          item.queryStatus.description,
-        ),
-        leading: Icon(
-          item.queryStatus.iconData,
-          color: item.queryStatus.color,
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              item.timestamp.hms,
-              style: Theme.of(context).textTheme.caption,
             ),
-            DifferenceText(item.timestamp),
-          ],
-        ),
-        onTap: onTap,
-        onLongPress: () {
-          showScrollableConfirmationDialog(
-            context,
-            contentPadding: EdgeInsets.zero,
-            canCancel: false,
-            // title: item.domain,
-            body: QueryItemDialog(item: item),
+            child: _QueryTile(item: item, onTap: onTap),
           );
-        },
+  }
+}
+
+class _QueryTile extends StatelessWidget {
+  const _QueryTile({
+    Key? key,
+    required this.item,
+    required this.onTap,
+  }) : super(key: key);
+
+  final QueryItem item;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      // dense: true,
+      title: Text(
+        item.domain,
       ),
+      subtitle: Text(
+        item.queryStatus.description,
+      ),
+      leading: Icon(
+        item.queryStatus.iconData,
+        color: item.queryStatus.color,
+      ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            item.timestamp.hms,
+            style: Theme.of(context).textTheme.caption,
+          ),
+          DifferenceText(item.timestamp),
+        ],
+      ),
+      onTap: onTap ??
+          () {
+            showScrollableConfirmationDialog(
+              context,
+              contentPadding: EdgeInsets.zero,
+              canCancel: false,
+              // title: item.domain,
+              body: QueryItemDialog(item: item),
+            );
+          },
     );
   }
 }

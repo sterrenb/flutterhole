@@ -30,6 +30,8 @@ To simulate a Pi-hole, use "example.com" in the Base URL.''',
   ],
 ];
 
+const kDefaultThemeMode = kIsWeb ? ThemeMode.light : ThemeMode.system;
+
 const defaultPiholes = kDebugMode
     ? [
         Pi(
@@ -71,7 +73,7 @@ class UserPreferences with _$UserPreferences {
     @Default(LogLevel.info) LogLevel logLevel,
     @Default(30) int updateFrequency,
     @Default(kDebugMode) bool showThemeToggle,
-    @Default(ThemeMode.system) ThemeMode themeMode,
+    @Default(kDefaultThemeMode) ThemeMode themeMode,
     @Default(FlexScheme.rosewood) FlexScheme flexScheme,
     @Default(TemperatureReading.celcius) TemperatureReading temperatureReading,
     @Default(defaultPiholes) List<Pi> piholes,

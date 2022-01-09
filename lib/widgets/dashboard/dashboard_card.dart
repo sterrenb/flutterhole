@@ -312,13 +312,11 @@ class AnimatedCardContent extends HookConsumerWidget {
   const AnimatedCardContent({
     required this.isLoading,
     required this.child,
-    this.onlyFirst = false,
     Key? key,
   }) : super(key: key);
 
   final bool isLoading;
   final Widget child;
-  final bool onlyFirst;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
