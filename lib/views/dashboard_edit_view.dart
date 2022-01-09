@@ -82,7 +82,7 @@ class DashboardEditView extends HookConsumerWidget {
                       PopupMenuItem<String>(value: choice, child: Text(choice)))
                   .toList(),
             ),
-            SaveIconButton(onPressed: () {
+            SaveButton(onPressed: () {
               if (!_eq(pi.dashboard, entries.value)) {
                 ref.updateDashboard(context, pi, entries.value);
               }
@@ -167,6 +167,7 @@ class _Tile extends StatelessWidget {
       child: ListTile(
         title: Text(entry.id.humanString),
         onTap: onToggle,
+        leading: Icon(entry.id.iconData),
         trailing: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,

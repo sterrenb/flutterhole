@@ -95,7 +95,7 @@ class SinglePiEditView extends HookConsumerWidget {
                     },
                     icon: const Icon(KIcons.settings)),
               ),
-              SaveIconButton(
+              SaveButton(
                 onPressed: () {
                   if (isNew) {
                     ref

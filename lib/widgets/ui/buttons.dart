@@ -74,6 +74,29 @@ class UrlOutlinedButton extends StatelessWidget {
   }
 }
 
+class SquareTextButton extends StatelessWidget {
+  const SquareTextButton({
+    Key? key,
+    required this.label,
+    this.onPressed,
+  }) : super(key: key);
+
+  final VoidCallback? onPressed;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      style: ButtonStyle(
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero, side: BorderSide.none))),
+      onPressed: onPressed,
+      child: Text(label),
+    );
+  }
+}
+
 class PushViewButton extends StatelessWidget {
   const PushViewButton({
     Key? key,
@@ -88,11 +111,18 @@ class PushViewButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void onPressed() {
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => view));
+    }
+
+    return IconButton(
+      onPressed: onPressed,
+      tooltip: label,
+      icon: Icon(iconData),
+    );
     return IconButton(
       tooltip: label,
-      onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) => view));
-      },
+      onPressed: onPressed,
       icon: Icon(iconData),
     );
   }
@@ -123,15 +153,15 @@ class MenuIconButton extends StatelessWidget {
   }
 }
 
-class SaveIconButton extends StatelessWidget {
-  const SaveIconButton({Key? key, required this.onPressed}) : super(key: key);
+class SaveButton extends StatelessWidget {
+  const SaveButton({Key? key, required this.onPressed}) : super(key: key);
 
   final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      child: const Text('Save'),
+    return SquareTextButton(
+      label: 'Save',
       onPressed: onPressed,
     );
   }
