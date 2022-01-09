@@ -6,6 +6,7 @@ import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/widgets/dashboard/pie_chart.dart';
 import 'package:flutterhole/widgets/dashboard/versions_tile.dart';
+import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/cache.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -68,7 +69,7 @@ class TotalQueriesTile extends HookConsumerWidget {
     return CacheBuilder<PiSummary>(
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
-        return DashboardFittedTile(
+        return DashboardFittedCard(
           id: DashboardID.totalQueries,
           title: DashboardID.totalQueries.humanString,
           text: summary?.dnsQueriesToday.toFormatted(),
@@ -92,7 +93,7 @@ class QueriesBlockedTile extends HookConsumerWidget {
     return CacheBuilder<PiSummary>(
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
-        return DashboardFittedTile(
+        return DashboardFittedCard(
           id: DashboardID.queriesBlocked,
           title: DashboardID.queriesBlocked.humanString,
           text: summary?.adsBlockedToday.toFormatted(),
@@ -116,7 +117,7 @@ class PercentBlockedTile extends HookConsumerWidget {
     return CacheBuilder<PiSummary>(
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
-        return DashboardFittedTile(
+        return DashboardFittedCard(
           id: DashboardID.percentBlocked,
           title: DashboardID.percentBlocked.humanString,
           text: summary != null
@@ -142,7 +143,7 @@ class DomainsBlockedTile extends HookConsumerWidget {
     return CacheBuilder<PiSummary>(
       provider: activeSummaryProvider,
       builder: (context, summary, isLoading, error) {
-        return DashboardFittedTile(
+        return DashboardFittedCard(
           id: DashboardID.domainsOnBlocklist,
           title: DashboardID.domainsOnBlocklist.humanString,
           text: summary?.domainsBeingBlocked.toFormatted(),
@@ -169,7 +170,7 @@ class TemperatureTile extends HookConsumerWidget {
     return CacheBuilder<PiDetails>(
       provider: activeDetailsProvider,
       builder: (context, details, isLoading, error) {
-        return DashboardFittedTile(
+        return DashboardFittedCard(
           id: DashboardID.temperature,
           title: entry.constraints.crossAxisCount > 1
               ? DashboardID.temperature.humanString
@@ -195,7 +196,7 @@ class MemoryUsageTile extends HookConsumerWidget {
     return CacheBuilder<PiDetails>(
       provider: activeDetailsProvider,
       builder: (context, details, isLoading, error) {
-        return DashboardFittedTile(
+        return DashboardFittedCard(
           id: DashboardID.memoryUsage,
           title: DashboardID.memoryUsage.humanString,
           text: details?.memoryUsage != null
@@ -229,24 +230,25 @@ class ForwardDestinationsTile extends HookConsumerWidget {
             error: error,
           ),
           onTap: () => ref.refreshForwardDestinations(),
-          content: destinations != null
-              ? Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: LayoutBuilder(builder: (context, constraints) {
-                        final radius =
-                            (constraints.biggest.shortestSide / 2) - 5.0;
-                        return ForwardDestinationsPieChart(
-                          destinations: destinations,
-                          radius: radius > 120.0 ? radius / 2 : radius,
-                          centerSpaceRadius: radius > 120.0 ? radius / 2 : 0.0,
-                        );
-                      }),
-                    ),
-                  ),
-                )
-              : Container(),
+          content: AnimatedCardContent(
+              isLoading: isLoading,
+              child: destinations == null
+                  ? Container()
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: LayoutBuilder(builder: (context, constraints) {
+                          final radius =
+                              (constraints.biggest.shortestSide / 2) - 5.0;
+                          return ForwardDestinationsPieChart(
+                            destinations: destinations,
+                            radius: radius > 120.0 ? radius / 2 : radius,
+                            centerSpaceRadius:
+                                radius > 120.0 ? radius / 2 : 0.0,
+                          );
+                        }),
+                      ),
+                    )),
         );
       },
     );

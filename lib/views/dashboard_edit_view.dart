@@ -120,10 +120,22 @@ class DashboardEditView extends HookConsumerWidget {
           ),
           right: Container(
             color: Theme.of(context).colorScheme.secondary.withOpacity(.1),
-            child: SingleChildScrollView(
-                child: DashboardGrid(
-              entries: entries.value,
-            )),
+            child: Center(
+              child: SingleChildScrollView(
+                  child: Padding(
+                padding: const EdgeInsets.only(
+                        bottom: kBottomNavigationBarHeight + 16.0)
+                    .add(const EdgeInsets.all(4.0)),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DashboardGrid(entries: entries.value),
+                    // const TabFooter(),
+                  ],
+                ),
+              )),
+            ),
           ),
         ),
       ),

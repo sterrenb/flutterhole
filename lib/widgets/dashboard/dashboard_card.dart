@@ -5,6 +5,7 @@ import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
+import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/loading_indicator.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
@@ -105,9 +106,7 @@ class DashboardCard extends HookConsumerWidget {
         color: cardColor,
         child: InkWell(
           onTap: onTap,
-          // onTap:
           onLongPress: () {
-            // () {
             showScrollableConfirmationDialog(
               context,
               canOk: false,
@@ -123,7 +122,6 @@ class DashboardCard extends HookConsumerWidget {
             alignment: backgroundAlignment ?? Alignment.center,
             children: [
               if (background != null) ...[background!],
-              // DashboardBackgroundIcon(KIcons.totalQueries),
               Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -262,8 +260,8 @@ class NumberToggleButtons extends StatelessWidget {
   }
 }
 
-class DashboardFittedTile extends StatelessWidget {
-  const DashboardFittedTile({
+class DashboardFittedCard extends StatelessWidget {
+  const DashboardFittedCard({
     Key? key,
     required this.id,
     required this.title,
@@ -294,15 +292,47 @@ class DashboardFittedTile extends StatelessWidget {
           DashboardCardHeader(title: title, isLoading: isLoading, error: error),
       onTap: onTap,
       cardColor: cardColor,
-      content: Expanded(
-          child: Padding(
-        padding:
-            const EdgeInsets.all(8.0).subtract(const EdgeInsets.only(top: 8.0)),
-        child: FittedText(text: text ?? '-'),
-      )),
+
+      content: AnimatedCardContent(
+        isLoading: isLoading,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0)
+              .subtract(const EdgeInsets.only(top: 8.0)),
+          child: FittedText(text: text ?? '-'),
+        ),
+      ),
       background: background,
       backgroundAlignment: backgroundAlignment,
       // content: const Expanded(child: Center(child: Text('TODO'))),
+    );
+  }
+}
+
+class AnimatedCardContent extends HookConsumerWidget {
+  const AnimatedCardContent({
+    required this.isLoading,
+    required this.child,
+    this.onlyFirst = false,
+    Key? key,
+  }) : super(key: key);
+
+  final bool isLoading;
+  final Widget child;
+  final bool onlyFirst;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final finishedFirstLoading = useState(false);
+    useValueChanged<bool, void>(isLoading, (oldValue, __) {
+      finishedFirstLoading.value = isLoading || oldValue;
+    });
+
+    return Expanded(
+      child: AnimatedFader(
+        duration: kThemeAnimationDuration,
+        layoutBuilder: AnimatedFader.centerExpandLayoutBuilder,
+        child: !finishedFirstLoading.value ? Container() : child,
+      ),
     );
   }
 }
@@ -324,9 +354,6 @@ class FittedText extends StatelessWidget {
         style: const TextStyle(
           fontWeight: FontWeight.w600,
         ),
-        // style: GoogleFonts.firaMono(
-        //     // fontWeight: FontWeight.bold,
-        //     ),
       ),
     );
   }

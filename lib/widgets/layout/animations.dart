@@ -4,18 +4,31 @@ class AnimatedFader extends StatelessWidget {
   const AnimatedFader({
     Key? key,
     required this.child,
-    this.layoutBuilder = startLayoutBuilder,
+    this.layoutBuilder = AnimatedFader.startLayoutBuilder,
     this.duration = kThemeAnimationDuration,
   }) : super(key: key);
 
   final Widget child;
   final AnimatedSwitcherLayoutBuilder layoutBuilder;
+
   final Duration duration;
 
   static Widget startLayoutBuilder(
       Widget? currentChild, List<Widget> previousChildren) {
     return Stack(
       alignment: Alignment.centerLeft,
+      children: <Widget>[
+        ...previousChildren,
+        if (currentChild != null) currentChild,
+      ],
+    );
+  }
+
+  static Widget centerExpandLayoutBuilder(
+      Widget? currentChild, List<Widget> previousChildren) {
+    return Stack(
+      alignment: Alignment.center,
+      fit: StackFit.expand,
       children: <Widget>[
         ...previousChildren,
         if (currentChild != null) currentChild,
