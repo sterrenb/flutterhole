@@ -5,7 +5,6 @@ import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
-import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/loading_indicator.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';

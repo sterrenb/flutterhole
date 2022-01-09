@@ -18,7 +18,7 @@ class DemoApi implements PiholeRepository {
   int adsBlockedToday = 5600;
   int domainsBeingBlocked = 999894;
 
-  List<QueryItem> _startItems = [
+  final List<QueryItem> _startItems = [
     ...List.generate(
         5, (index) => randomQueryItem(Duration(seconds: 30 + index * 130))),
     ...List.generate(
@@ -83,9 +83,6 @@ class DemoApi implements PiholeRepository {
       'cache': cache,
       'cloudflare': cloudflare,
       'blocklist': blocklist,
-      'more': 12,
-      'and': 22,
-      'lots': 2,
     });
   }
 

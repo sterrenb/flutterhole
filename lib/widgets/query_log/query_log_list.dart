@@ -16,7 +16,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 class QueryLogList extends HookConsumerWidget {
   const QueryLogList({
     Key? key,
-    this.max = 5,
+    this.max = 30,
     this.animate = true,
   }) : super(key: key);
 
@@ -41,13 +41,7 @@ class QueryLogList extends HookConsumerWidget {
       k.currentState?.insertItem(index, duration: duration);
     }
 
-    void hideAtIndex(int index, QueryItem item) async {
-      data.value = [...data.value]..removeAt(index);
-      deleted.value = [...deleted.value, item];
-    }
-
     void deleteAtIndex(int index, QueryItem item) async {
-      print('deleting ${item.domain} @ $index, currently ${data.value.length}');
       k.currentState?.removeItem(
           index,
           (context, animation) => DefaultAnimatedSize(
@@ -61,7 +55,7 @@ class QueryLogList extends HookConsumerWidget {
       deleted.value = [...deleted.value, item];
     }
 
-    final allQueries = useValueChanged<AsyncValue, List<QueryItem>>(
+    useValueChanged<AsyncValue, List<QueryItem>>(
       queries,
       (AsyncValue oldQueries, oldResult) {
         final newResult = queries.whenOrNull(data: (update) => update);
@@ -207,7 +201,7 @@ class _Tile extends StatelessWidget {
       // ),
       endActionPane: onHide != null
           ? ActionPane(
-              motion: BehindMotion(),
+              motion: const BehindMotion(),
               extentRatio: .2,
               children: [
                 SlidableStyleAction(

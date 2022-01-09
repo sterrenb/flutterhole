@@ -21,6 +21,7 @@ import 'package:flutterhole/widgets/settings/pi_select_list.dart';
 import 'package:flutterhole/widgets/settings/preference_button_tile.dart';
 import 'package:flutterhole/widgets/settings/theme_popup_menu.dart';
 import 'package:flutterhole/widgets/settings/update_frequency_button.dart';
+import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SettingsView extends HookConsumerWidget {
@@ -86,9 +87,32 @@ class _MyPiholesSection extends HookConsumerWidget {
     return AppSection(
       title: 'My Pi-holes',
       children: [
+        ListTile(
+          title: const Text('Open dialog'),
+          trailing: const Icon(KIcons.openDialog),
+          onTap: () {
+            showScrollableConfirmationDialog(
+              context,
+              title: 'My Pi-holes',
+              contentPadding: EdgeInsets.zero,
+              canOk: false,
+              canCancel: false,
+              body: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 8.0),
+                  ...List.generate(
+                      3,
+                      (index) => ListTile(
+                            title: Text(index.toString()),
+                          )),
+                ],
+              ),
+            );
+          },
+        ),
         const PiSelectList(
           shrinkWrap: true,
-          max: 3,
         ),
         const SizedBox(height: 20.0),
         AppWrap(

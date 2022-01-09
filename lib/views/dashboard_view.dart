@@ -18,7 +18,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'dashboard_edit_view.dart';
 
-final _selectedIndexProvider = StateProvider<int>((ref) => 1);
+final _selectedIndexProvider = StateProvider<int>((ref) => 0);
 
 class DashboardView extends HookConsumerWidget {
   const DashboardView({
@@ -218,34 +218,20 @@ class _DashboardPopupMenuButton extends HookConsumerWidget {
       },
       itemBuilder: (context) => [
         if (index == 0) ...[
-          PopupMenuItem<String>(
+          const PopupMenuItem<String>(
             value: 'Manage dashboard',
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Manage dashboard'),
-                Icon(
-                  KIcons.selectDashboardTiles,
-                  color: Theme.of(context).dividerColor,
-                ),
-              ],
+            child: MenuIconButton(
+              label: 'Manage dashboard',
+              iconData: KIcons.selectDashboardTiles,
             ),
           ),
-          PopupMenuItem<String>(
+          PopupMenuItem(
             onTap: () {
               WebService.launchUrlInBrowser(Formatting.piToAdminUrl(pi));
             },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Open in browser'),
-                Tooltip(
-                    message: Formatting.piToAdminUrl(pi),
-                    child: Icon(
-                      KIcons.openUrl,
-                      color: Theme.of(context).dividerColor,
-                    )),
-              ],
+            child: const MenuIconButton(
+              label: 'Open in browser',
+              iconData: KIcons.openUrl,
             ),
           ),
         ],
@@ -258,15 +244,9 @@ class _DashboardPopupMenuButton extends HookConsumerWidget {
                 return ref.refreshQueryItems();
             }
           },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Refresh'),
-              Icon(
-                KIcons.refresh,
-                color: Theme.of(context).dividerColor,
-              ),
-            ],
+          child: const MenuIconButton(
+            label: 'Refresh',
+            iconData: KIcons.refresh,
           ),
         ),
         const PopupMenuDivider(),

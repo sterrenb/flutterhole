@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
@@ -99,14 +97,14 @@ class PingFloatingActionButton extends HookConsumerWidget {
         content: Text('Sleeping for ${duration.toHms()}.'),
         undo: () {
           isLoading.value = false;
-          status.value = PiholeStatus.enabled();
+          status.value = const PiholeStatus.enabled();
         },
       );
       isLoading.value = false;
       Future.delayed(duration).then((_) {
         if (status.value is PiholeStatusSleeping) {
           isLoading.value = false;
-          status.value = PiholeStatus.enabled();
+          status.value = const PiholeStatus.enabled();
         }
       });
     }
@@ -206,7 +204,7 @@ class _SleepForDialog extends StatelessWidget {
               const Duration(seconds: 0, minutes: 0, hours: 3),
               const Duration(seconds: 0, minutes: 0, hours: 24),
             ].map((duration) => duration == Duration.zero
-                ? Divider(
+                ? const Divider(
                     height: 0,
                     indent: 16.0,
                     endIndent: 16.0,

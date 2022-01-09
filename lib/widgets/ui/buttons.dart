@@ -96,6 +96,31 @@ class PushViewIconButton extends StatelessWidget {
   }
 }
 
+class MenuIconButton extends StatelessWidget {
+  const MenuIconButton({
+    Key? key,
+    required this.label,
+    required this.iconData,
+  }) : super(key: key);
+
+  final String label;
+  final IconData iconData;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label),
+        Icon(
+          iconData,
+          color: Theme.of(context).dividerColor,
+        ),
+      ],
+    );
+  }
+}
+
 class SaveIconButton extends StatelessWidget {
   const SaveIconButton({Key? key, required this.onPressed}) : super(key: key);
 
@@ -103,7 +128,9 @@ class SaveIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-        tooltip: 'Save', onPressed: onPressed, icon: const Icon(KIcons.save));
+    return TextButton(
+      child: const Text('Save'),
+      onPressed: onPressed,
+    );
   }
 }
