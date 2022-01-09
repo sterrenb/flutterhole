@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/urls.dart';
 import 'package:flutterhole/intl/formatting.dart';

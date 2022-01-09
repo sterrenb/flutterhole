@@ -11,7 +11,6 @@ import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
-import 'package:flutterhole/widgets/ui/scaffold_messenger.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

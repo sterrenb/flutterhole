@@ -60,17 +60,17 @@ class DashboardCardHeader extends HookConsumerWidget {
 
 class DashboardBackgroundIcon extends StatelessWidget {
   const DashboardBackgroundIcon(
-    this.iconData, {
+    this.id, {
     Key? key,
   }) : super(key: key);
 
-  final IconData iconData;
+  final DashboardID id;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Icon(
-        iconData,
+        id.iconData,
         // size: (constraints.biggest.shortestSide / 2),
         size: constraints.biggest.shortestSide,
         color: Theme.of(context).colorScheme.secondary.withOpacity(.05),

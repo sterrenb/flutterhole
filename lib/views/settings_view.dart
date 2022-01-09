@@ -100,7 +100,7 @@ class _MyPiholesSection extends HookConsumerWidget {
               body: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   ...List.generate(
                       3,
                       (index) => ListTile(

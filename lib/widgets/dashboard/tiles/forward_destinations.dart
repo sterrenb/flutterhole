@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
@@ -80,7 +79,8 @@ class ForwardDestinationsTile extends HookConsumerWidget {
                                   ? radius / 2
                                   : 0.0,
                         )),
-            loadingIndicator: const DashboardBackgroundIcon(KIcons.host),
+            loadingIndicator:
+                const DashboardBackgroundIcon(DashboardID.forwardDestinations),
           ),
         );
       },
@@ -136,7 +136,8 @@ class QueryTypesTile extends HookConsumerWidget {
                                   ? radius / 2
                                   : 0.0,
                         )),
-            loadingIndicator: const DashboardBackgroundIcon(KIcons.queryTypes),
+            loadingIndicator:
+                const DashboardBackgroundIcon(DashboardID.queryTypes),
           ),
         );
       },

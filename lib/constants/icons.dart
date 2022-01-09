@@ -41,8 +41,9 @@ class KIcons {
   static const IconData queriesBlocked = MdiIcons.shieldCheck;
   static const IconData queryTypes = Icons.pie_chart;
 // static const IconData percentBlocked = MdiIcons.abacus;
+  static const IconData forwardDestinations = MdiIcons.chartDonut;
   static const IconData percentBlocked = Icons.block;
-  static const IconData domainsOnBlocklist = MdiIcons.formatListBulleted;
+  static const IconData domainsOnBlocklist = MdiIcons.formatListBulletedType;
   static const IconData domainsPermittedTile = Icons.domain;
   static const IconData domainsBlockedTile = Icons.domain_disabled;
   static const IconData queriesOverTime = Icons.stacked_line_chart;

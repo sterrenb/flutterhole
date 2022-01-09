@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:faker/faker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 import 'demo_generators.dart';
@@ -58,6 +57,12 @@ class DemoApi implements PiholeRepository {
   Future<PiholeStatus> enable(_) async {
     await _sleep();
     return _setStatus(const PiholeStatus.enabled());
+  }
+
+  @override
+  Future<PiholeStatus> sleep(Duration duration, _) {
+    // TODO: implement sleep
+    throw UnimplementedError();
   }
 
   @override
@@ -241,11 +246,5 @@ class DemoApi implements PiholeRepository {
     }
 
     return _status;
-  }
-
-  @override
-  Future<PiholeStatus> sleep(Duration duration, _) {
-    // TODO: implement sleep
-    throw UnimplementedError();
   }
 }

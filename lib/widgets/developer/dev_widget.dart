@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/services/settings_service.dart';
-import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 

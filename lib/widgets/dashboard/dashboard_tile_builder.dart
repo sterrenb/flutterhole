@@ -10,8 +10,8 @@ import 'dashboard_card.dart';
 import 'tiles/details.dart';
 import 'tiles/forward_destinations.dart';
 
-class DashboardEntryTileBuilder extends StatelessWidget {
-  const DashboardEntryTileBuilder({
+class DashboardTileBuilder extends StatelessWidget {
+  const DashboardTileBuilder({
     Key? key,
     required this.entry,
   }) : super(key: key);
@@ -34,7 +34,7 @@ class DashboardEntryTileBuilder extends StatelessWidget {
               case DashboardID.percentBlocked:
                 return const PercentBlockedTile();
               case DashboardID.domainsOnBlocklist:
-                return const DomainsBlockedTile();
+                return const DomainsOnBlocklistTile();
               case DashboardID.versions:
                 return const VersionsTile();
               case DashboardID.temperature:
@@ -51,7 +51,9 @@ class DashboardEntryTileBuilder extends StatelessWidget {
                   id: entry.id,
                   header: DashboardCardHeader(
                       title: entry.id.humanString, isLoading: false),
-                  content: const Expanded(child: Center(child: Text('TODO'))),
+                  content: const Expanded(
+                      child: Center(child: Text('Coming soon!'))),
+                  background: DashboardBackgroundIcon(entry.id),
                 );
             }
           },

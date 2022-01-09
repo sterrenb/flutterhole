@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
@@ -27,7 +26,7 @@ class TemperatureTile extends HookConsumerWidget {
               ? DashboardID.temperature.humanString
               : DashboardID.temperature.humanString.substring(0, 4),
           text: details?.temperatureInCelcius,
-          background: const DashboardBackgroundIcon(KIcons.temperature),
+          background: const DashboardBackgroundIcon(DashboardID.temperature),
           isLoading: isLoading,
           error: error,
           onTap: () => ref.refreshDetails(),
@@ -53,7 +52,7 @@ class MemoryUsageTile extends HookConsumerWidget {
           text: details?.memoryUsage != null
               ? details!.memoryUsage!.toStringAsFixed(2) + '%'
               : null,
-          background: const DashboardBackgroundIcon(KIcons.memoryUsage),
+          background: const DashboardBackgroundIcon(DashboardID.memoryUsage),
           isLoading: isLoading,
           error: error,
           onTap: () => ref.refreshDetails(),

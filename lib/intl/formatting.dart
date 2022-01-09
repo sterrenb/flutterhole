@@ -109,6 +109,32 @@ extension DashboardIDX on DashboardID {
         return 'Domains';
     }
   }
+
+  IconData get iconData {
+    switch(this) {
+
+      case DashboardID.versions:
+        return KIcons.appVersion;
+      case DashboardID.temperature:
+        return KIcons.temperature;
+      case DashboardID.memoryUsage:
+        return KIcons.memoryUsage;
+      case DashboardID.totalQueries:
+        return KIcons.totalQueries;
+      case DashboardID.queriesBlocked:
+        return KIcons.queriesBlocked;
+      case DashboardID.percentBlocked:
+        return KIcons.percentBlocked;
+      case DashboardID.domainsOnBlocklist:
+        return KIcons.domainsOnBlocklist;
+      case DashboardID.forwardDestinations:
+        return KIcons.forwardDestinations;
+      case DashboardID.queryTypes:
+        return KIcons.queryTypes;
+      case DashboardID.topPermittedDomains:
+        return KIcons.domainsPermittedTile;
+    }
+  }
 }
 
 extension QueryStatusX on QueryStatus {

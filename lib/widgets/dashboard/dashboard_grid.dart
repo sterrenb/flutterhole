@@ -5,7 +5,7 @@ import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'tile_builders.dart';
+import 'dashboard_tile_builder.dart';
 
 class DashboardGrid extends HookConsumerWidget {
   const DashboardGrid({
@@ -41,14 +41,14 @@ class DashboardGrid extends HookConsumerWidget {
                   count: (cross, main) => StaggeredGridTile.count(
                       crossAxisCellCount: cross,
                       mainAxisCellCount: main,
-                      child: DashboardEntryTileBuilder(entry: entry)),
+                      child: DashboardTileBuilder(entry: entry)),
                   extent: (cross, extent) => StaggeredGridTile.extent(
                       crossAxisCellCount: cross,
                       mainAxisExtent: extent,
-                      child: DashboardEntryTileBuilder(entry: entry)),
+                      child: DashboardTileBuilder(entry: entry)),
                   fit: (cross) => StaggeredGridTile.fit(
                       crossAxisCellCount: cross,
-                      child: DashboardEntryTileBuilder(entry: entry)),
+                      child: DashboardTileBuilder(entry: entry)),
                 ))
             .toList(),
       );

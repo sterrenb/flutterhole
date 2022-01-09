@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
@@ -21,7 +20,7 @@ class TotalQueriesTile extends HookConsumerWidget {
           id: DashboardID.totalQueries,
           title: DashboardID.totalQueries.humanString,
           text: summary?.dnsQueriesToday.toFormatted(),
-          background: const DashboardBackgroundIcon(KIcons.totalQueries),
+          background: const DashboardBackgroundIcon(DashboardID.totalQueries),
           isLoading: isLoading,
           error: error,
           onTap: () {
@@ -45,7 +44,7 @@ class QueriesBlockedTile extends HookConsumerWidget {
           id: DashboardID.queriesBlocked,
           title: DashboardID.queriesBlocked.humanString,
           text: summary?.adsBlockedToday.toFormatted(),
-          background: const DashboardBackgroundIcon(KIcons.queriesBlocked),
+          background: const DashboardBackgroundIcon(DashboardID.queriesBlocked),
           isLoading: isLoading,
           error: error,
           onTap: () {
@@ -71,7 +70,7 @@ class PercentBlockedTile extends HookConsumerWidget {
           text: summary != null
               ? summary.adsPercentageToday.toStringAsFixed(2) + '%'
               : null,
-          background: const DashboardBackgroundIcon(KIcons.percentBlocked),
+          background: const DashboardBackgroundIcon(DashboardID.percentBlocked),
           isLoading: isLoading,
           error: error,
           onTap: () {
@@ -83,8 +82,8 @@ class PercentBlockedTile extends HookConsumerWidget {
   }
 }
 
-class DomainsBlockedTile extends HookConsumerWidget {
-  const DomainsBlockedTile({Key? key}) : super(key: key);
+class DomainsOnBlocklistTile extends HookConsumerWidget {
+  const DomainsOnBlocklistTile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -95,7 +94,8 @@ class DomainsBlockedTile extends HookConsumerWidget {
           id: DashboardID.domainsOnBlocklist,
           title: DashboardID.domainsOnBlocklist.humanString,
           text: summary?.domainsBeingBlocked.toFormatted(),
-          background: const DashboardBackgroundIcon(KIcons.domainsOnBlocklist),
+          background:
+              const DashboardBackgroundIcon(DashboardID.domainsOnBlocklist),
           isLoading: isLoading,
           error: error,
           onTap: () {
