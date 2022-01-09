@@ -133,10 +133,6 @@ class DashboardEntry with _$DashboardEntry {
 
   static const defaultDashboard = [
     DashboardEntry(
-        id: DashboardID.queryTypes,
-        enabled: true,
-        constraints: DashboardTileConstraints.count(4, 4)),
-    DashboardEntry(
         id: DashboardID.totalQueries,
         enabled: true,
         constraints: DashboardTileConstraints.count(4, 1)),
@@ -157,10 +153,6 @@ class DashboardEntry with _$DashboardEntry {
         enabled: true,
         constraints: DashboardTileConstraints.count(4, 4)),
     DashboardEntry(
-        id: DashboardID.versions,
-        enabled: true,
-        constraints: DashboardTileConstraints.fit(4)),
-    DashboardEntry(
         id: DashboardID.temperature,
         enabled: true,
         constraints: DashboardTileConstraints.count(2, 1)),
@@ -168,6 +160,14 @@ class DashboardEntry with _$DashboardEntry {
         id: DashboardID.memoryUsage,
         enabled: true,
         constraints: DashboardTileConstraints.count(2, 1)),
+    DashboardEntry(
+        id: DashboardID.queryTypes,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(4, 4)),
+    DashboardEntry(
+        id: DashboardID.versions,
+        enabled: true,
+        constraints: DashboardTileConstraints.fit(4)),
   ];
 }
 
