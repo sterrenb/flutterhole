@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class DefaultAnimatedSize extends StatelessWidget {
-  const DefaultAnimatedSize({
+class AnimatedSizeFade extends StatelessWidget {
+  const AnimatedSizeFade({
     Key? key,
     required this.animation,
     required this.child,

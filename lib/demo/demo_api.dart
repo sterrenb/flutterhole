@@ -37,8 +37,8 @@ class DemoApi implements PiholeRepository {
   ];
 
   Future<void> _sleep(
-      [Duration duration = const Duration(milliseconds: 400)]) async {
-    if (kDebugMode) return;
+      [Duration duration = const Duration(milliseconds: 800)]) async {
+    // if (kDebugMode) return;
     await Future.delayed(duration);
   }
 
@@ -109,7 +109,8 @@ class DemoApi implements PiholeRepository {
     count++;
 
     // if (count % 2 == 0) return _items;
-    // if (count == 3) throw 'Nope';
+    // if (count == 1) throw 'Nope';
+    // return [];
 
     _items = [
       if (false)
@@ -135,7 +136,7 @@ class DemoApi implements PiholeRepository {
           },
         ),
       ...List.generate(_random.nextInt(2) + 1, (_) => randomQueryItem()),
-      ..._items,
+      // ..._items,
       ..._startItems,
     ];
 

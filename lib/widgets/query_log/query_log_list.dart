@@ -4,6 +4,7 @@ import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/widgets/layout/animated_list.dart';
+import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/loading_indicator.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
@@ -30,6 +31,7 @@ class QueryLogList extends HookConsumerWidget {
     final k = useState(GlobalKey<AnimatedListState>()).value;
     final data = useState(<QueryItem>[]);
     final deleted = useState(<QueryItem>[]);
+    final hideList = useState(true);
     final queries = ref.watch(activeQueryItemsProvider);
     final isLoading = queries.maybeWhen(
       loading: () => true,
@@ -44,7 +46,7 @@ class QueryLogList extends HookConsumerWidget {
     void deleteAtIndex(int index, QueryItem item) async {
       k.currentState?.removeItem(
           index,
-          (context, animation) => DefaultAnimatedSize(
+          (context, animation) => AnimatedSizeFade(
               animation: animation,
               child: _Tile(
                 item: item,
@@ -73,6 +75,8 @@ class QueryLogList extends HookConsumerWidget {
           for (QueryItem element in difference) {
             insertAtIndex(0, element);
           }
+
+          hideList.value = false;
         }
         return newResult ?? oldResult;
       },
@@ -103,7 +107,7 @@ class QueryLogList extends HookConsumerWidget {
                   initialItemCount: data.value.length,
                   itemBuilder: (context, index, animation) {
                     var item = data.value.elementAt(index);
-                    return DefaultAnimatedSize(
+                    return AnimatedSizeFade(
                         animation: animation,
                         child: _Tile(
                           item: item,
@@ -123,7 +127,17 @@ class QueryLogList extends HookConsumerWidget {
                   onTap: (index) {},
                 ),
         ],
-        if (error != null) ...[CenteredErrorMessage(error)],
+        AnimatedColorFader(
+          show: hideList.value,
+          // color: Colors.orange,
+          // child: Text('hi'),
+        ),
+        if (error != null) ...[
+          CenteredErrorMessage(
+            error,
+            message: 'Something went wrong.',
+          )
+        ],
         Positioned(
           right: 0,
           child: AnimatedLoadingErrorIndicatorIcon(
