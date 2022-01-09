@@ -37,9 +37,10 @@ class DemoApi implements PiholeRepository {
   ];
 
   Future<void> _sleep(
-      [Duration duration = const Duration(milliseconds: 800)]) async {
+      [Duration duration = const Duration(milliseconds: 500)]) async {
     // if (kDebugMode) return;
-    await Future.delayed(duration);
+    await Future.delayed(duration +
+        Duration(milliseconds: _random.nextInt(duration.inMilliseconds)));
   }
 
   PiholeStatus _setStatus(PiholeStatus status) {
@@ -145,8 +146,30 @@ class DemoApi implements PiholeRepository {
 
   @override
   Future<PiQueryTypes> fetchQueryTypes(_) async {
-    // TODO: implement fetchQueryTypes
-    throw UnimplementedError();
+    await _sleep();
+
+    return PiQueryTypes(types: {
+      "A (IPv4)": 44.18,
+      "AAAA (IPv6)": 23.79,
+      "ANY": 0,
+      "SRV": 18.99,
+      // "A (IPv4)": 93.18,
+      // "AAAA (IPv6)": 1.79,
+      // "ANY": 0,
+      // "SRV": 0.99,
+      // "SOA": 0.03,
+      // "PTR": 1.29,
+      // "TXT": 0,
+      // "NAPTR": 0,
+      // "MX": 0,
+      // "DS": 0,
+      // "RRSIG": 0,
+      // "DNSKEY": 0,
+      // "NS": 0.02,
+      // "OTHER": 0,
+      // "SVCB": 0,
+      // "HTTPS": 2.7
+    });
   }
 
   @override

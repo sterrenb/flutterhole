@@ -5,7 +5,7 @@ import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'dashboard_tiles.dart';
+import 'tile_builders.dart';
 
 class DashboardGrid extends HookConsumerWidget {
   const DashboardGrid({

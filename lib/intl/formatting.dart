@@ -103,6 +103,8 @@ extension DashboardIDX on DashboardID {
         return 'Domains';
       case DashboardID.forwardDestinations:
         return 'Upstream servers';
+      case DashboardID.queryTypes:
+        return 'Query types';
       case DashboardID.topPermittedDomains:
         return 'Domains';
     }

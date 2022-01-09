@@ -112,6 +112,7 @@ enum DashboardID {
   percentBlocked,
   domainsOnBlocklist,
   forwardDestinations,
+  queryTypes,
   topPermittedDomains,
 }
 
@@ -128,6 +129,10 @@ class DashboardEntry with _$DashboardEntry {
       _$DashboardEntryFromJson(json);
 
   static const defaultDashboard = [
+    DashboardEntry(
+        id: DashboardID.queryTypes,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(4, 4)),
     DashboardEntry(
         id: DashboardID.totalQueries,
         enabled: true,
