@@ -13,11 +13,14 @@ Future<void> showOnboardingDialog(
 }) =>
     showModal(
         context: context,
-        builder: (c) {
+        builder: (context) {
           return WillPopScope(
             onWillPop: () async => barrierDismissible,
             child: AlertDialog(
-              backgroundColor: Colors.orange,
+              // backgroundColor: Colors.orange,
+              // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              // backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context).dialogBackgroundColor,
               insetPadding:
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 24.0),
               contentPadding: const EdgeInsets.symmetric(vertical: 24.0),

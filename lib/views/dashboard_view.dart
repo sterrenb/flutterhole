@@ -55,13 +55,13 @@ class DashboardView extends HookConsumerWidget {
                   opacity: .5,
                   child: Stack(
                     children: [
-                      ...labels.map((e) => AnimatedOpacity(
+                      ...labels.map((label) => AnimatedOpacity(
                             duration: kThemeAnimationDuration,
-                            opacity: labels.elementAt(selectedIndex) == e
+                            opacity: labels.elementAt(selectedIndex) == label
                                 ? 1.0
                                 : 0.0,
                             child: Text(
-                              e,
+                              label,
                               overflow: TextOverflow.fade,
                             ),
                           ))

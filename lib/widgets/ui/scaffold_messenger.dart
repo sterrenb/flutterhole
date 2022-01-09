@@ -38,10 +38,9 @@ class UnreadNotificationsBanner extends HookConsumerWidget {
       if (kIsWeb && unread.contains(kWelcomeNotification)) {
         showOnboardingDialog(context, barrierDismissible: false,
             onGetStarted: () {
-          // TODO debug
-          // ref
-          //     .read(UserPreferencesNotifier.provider.notifier)
-          //     .markNotificationsAsRead([kWelcomeNotification]);
+          ref
+              .read(UserPreferencesNotifier.provider.notifier)
+              .markNotificationsAsRead([kWelcomeNotification]);
         });
       }
     }, () {}, [unread]);
