@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
+void clearSnackBars(BuildContext context) =>
+    ScaffoldMessenger.of(context).clearSnackBars();
+
 void highlightSnackBar(
   BuildContext context, {
   required Widget content,
   VoidCallback? undo,
   Duration duration = const Duration(seconds: 4),
 }) {
-  ScaffoldMessenger.of(context).clearSnackBars();
+  clearSnackBars(context);
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     content: content,
     duration: duration,

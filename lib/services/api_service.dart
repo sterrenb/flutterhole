@@ -153,25 +153,57 @@ final activeQueryTypesProvider =
   return ref.watch(queryTypesProvider(ref.watch(activePiholeParamsProvider)));
 }, dependencies: [piProvider, queryTypesProvider, activePiholeParamsProvider]);
 
+typedef PingCallback = Future<PiholeStatus> Function(CancelToken);
+
 class PingNotifier extends StateNotifier<PingStatus> {
   static final provider =
       StateNotifierProvider<PingNotifier, PingStatus>((ref) {
-    return PingNotifier(ref.watch(activePiholeProvider));
+    print('returning pinger');
+    final cancelToken = CancelToken();
+    ref.onDispose(() => cancelToken.cancel());
+    return PingNotifier(ref.watch(activePiholeProvider), cancelToken)..ping();
   });
 
-  PingNotifier(this.api)
-      : cancelToken = CancelToken(),
-        super(const PingStatus(
+  PingNotifier(this.api, this.cancelToken)
+      : super(const PingStatus(
           loading: true,
           status: PiholeStatus.enabled(),
+          error: 'Loading',
         ));
 
   final PiholeRepository api;
   final CancelToken cancelToken;
 
-  Future<void> enable() async {
+  Future<void> _try(PingCallback c) async {
     state = state.copyWith(loading: true);
-    final x = await api.enable(cancelToken);
-    state = state.copyWith(loading: false, status: x);
+    try {
+      final status = await c(cancelToken);
+      state = state.copyWith(loading: false, status: status, error: null);
+    } catch (e) {
+      state = state.copyWith(loading: false, error: e);
+    }
   }
+
+  Future<void> sleep(Duration duration, DateTime now) async {
+    state = state.copyWith(loading: true);
+    try {
+      final status = await api.sleep(duration, cancelToken);
+      state = state.copyWith(
+          loading: false,
+          status: status.maybeMap(
+            disabled: (_) => PiholeStatusSleeping(duration, now),
+            sleeping: (s) => s,
+            orElse: () => state.status,
+          ),
+          error: null);
+    } catch (e) {
+      state = state.copyWith(loading: false, error: e);
+    }
+  }
+
+  Future<void> ping() => _try(api.ping);
+
+  Future<void> enable() => _try(api.enable);
+
+  Future<void> disable() => _try(api.disable);
 }

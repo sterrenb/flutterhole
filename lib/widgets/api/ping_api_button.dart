@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
@@ -8,6 +9,7 @@ import 'package:flutterhole/widgets/layout/centered_leading.dart';
 import 'package:flutterhole/widgets/layout/loading_indicator.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
+import 'package:flutterhole/widgets/ui/scaffold_messenger.dart';
 import 'package:flutterhole/widgets/ui/snackbars.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -84,29 +86,55 @@ class PingFloatingActionButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final status = useState(const PiholeStatus.disabled());
-    final isLoading = useState(false);
+    // final status = useState(const PiholeStatus.disabled());
+    final ping = ref.watch(PingNotifier.provider);
+    final api = ref.watch(PingNotifier.provider.notifier);
+    final status = ping.status;
+    final isLoading = ping.loading;
+    final error = ping.error ?? 'Loading';
+    final isSleeping = useState(false);
+    final mounted = useIsMounted();
+
+    useAsyncEffect(
+      () {
+        if (error != 'Loading') {
+          highlightSnackBar(
+            context,
+            content:
+                Text('Disconnected: ${Formatting.errorToDescription(error)}.'),
+          );
+        }
+      },
+      () {},
+      [error],
+    );
+
+    useAsyncEffect(
+      () {
+        status.maybeWhen(
+          sleeping: (duration, start) {
+            highlightSnackBar(
+              context,
+              content: Text('Sleeping for ${duration.toHms()}.'),
+              undo: () => api.enable(),
+            );
+          },
+          orElse: () {
+            clearSnackBars(context);
+          },
+        );
+      },
+      () {},
+      [status],
+    );
 
     Future<void> sleep(Duration duration) async {
-      isLoading.value = true;
-      await Future.delayed(const Duration(milliseconds: 500));
       final now = DateTime.now();
-      status.value = PiholeStatus.sleeping(duration, now);
-      highlightSnackBar(
-        context,
-        content: Text('Sleeping for ${duration.toHms()}.'),
-        undo: () {
-          isLoading.value = false;
-          status.value = const PiholeStatus.enabled();
-        },
-      );
-      isLoading.value = false;
-      Future.delayed(duration).then((_) {
-        if (status.value is PiholeStatusSleeping) {
-          isLoading.value = false;
-          status.value = const PiholeStatus.enabled();
-        }
-      });
+      await api.sleep(duration, now);
+      await Future.delayed(duration);
+      if (mounted()) {
+        api.ping();
+      }
     }
 
     void showSleepDialog() async {
@@ -135,39 +163,51 @@ class PingFloatingActionButton extends HookConsumerWidget {
 
     return BreakpointBuilder(builder: (context, isBig) {
       return GestureDetector(
-        onLongPress: showSleepDialog,
+        onLongPress: status.maybeWhen(
+          enabled: () => showSleepDialog,
+          disabled: () => showSleepDialog,
+          orElse: () {},
+        ),
         child: FloatingActionButton.extended(
           extendedTextStyle: Theme.of(context)
               .textTheme
               .subtitle1
               ?.copyWith(color: Theme.of(context).colorScheme.secondary),
           onPressed: () async {
-            if (isLoading.value) return;
-            isLoading.value = true;
-            await Future.delayed(const Duration(milliseconds: 500));
-            status.value = status.value.map(
-              enabled: (_) => const PiholeStatus.disabled(),
-              disabled: (_) => const PiholeStatus.enabled(),
-              sleeping: (_) => const PiholeStatus.enabled(),
-            );
-            isLoading.value = false;
+            // if (isLoading.value) return;
+            // isLoading.value = true;
+            // await Future.delayed(const Duration(milliseconds: 500));
+            // status.value = status.value.map(
+            //   enabled: (_) => const PiholeStatus.disabled(),
+            //   disabled: (_) => const PiholeStatus.enabled(),
+            //   sleeping: (_) => const PiholeStatus.enabled(),
+            // );
+            // isLoading.value = false;
+
+            isLoading
+                ? api.ping()
+                : status.map(
+                    enabled: (_) => api.disable(),
+                    disabled: (_) => api.enable(),
+                    sleeping: (_) => api.enable(),
+                  );
           },
-          icon: _StatusIcon(
-            status.value,
-            isLoading: isLoading.value,
-          ),
+          icon: const _StatusIcon(),
           label: DefaultAnimatedSize(
             child: AnimatedStack(
               children: const [
                 Text('Disable'),
                 Text('Enable'),
                 Text('Enable'),
+                Text('Disconnected'),
               ],
-              active: status.value.when(
-                enabled: () => 0,
-                disabled: () => 1,
-                sleeping: (duration, start) => 2,
-              ),
+              active: ping.error != null
+                  ? 3
+                  : status.when(
+                      enabled: () => 0,
+                      disabled: () => 1,
+                      sleeping: (duration, start) => 2,
+                    ),
             ),
           ),
         ),
@@ -195,6 +235,10 @@ class _SleepForDialog extends StatelessWidget {
           children: [
             const SizedBox(height: 8.0),
             ...[
+              if (kDebugMode) ...[
+                const Duration(seconds: 1),
+                const Duration(seconds: 5),
+              ],
               const Duration(seconds: 10),
               const Duration(seconds: 30),
               const Duration(seconds: 0),
@@ -247,81 +291,106 @@ class _SleepingProgressIndicator extends HookConsumerWidget {
     final now = DateTime.now();
     final remaining = status.duration - now.difference(status.start);
 
-    return Tooltip(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.background,
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      textStyle: Theme.of(context)
-          .textTheme
-          .caption
-          ?.copyWith(color: Theme.of(context).colorScheme.onBackground),
-      message: status.whenOrNull(
-              sleeping: (duration, start) =>
-                  'Sleeping until ${start.add(duration).hms}') ??
-          '',
-      preferBelow: false,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          LoadingIndicator(
-            size: 18.0,
-            color: Theme.of(context).dividerColor,
-            strokeWidth: 2.0,
-            value: 1.0,
-          ),
-          if (remaining.inSeconds > 0 && remaining.inMinutes <= 5) ...[
-            TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 0.0, end: 1.0),
-              duration: remaining,
-              builder: (context, value, _) => LoadingIndicator(
-                size: 18.0,
-                color: Theme.of(context).colorScheme.onSecondary,
-                strokeWidth: 2.0,
-                value: value,
-              ),
-            )
-          ],
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        LoadingIndicator(
+          size: 18.0,
+          color: Theme.of(context).dividerColor,
+          strokeWidth: 2.0,
+          value: 1.0,
+        ),
+        if (remaining.inSeconds > 0 && remaining.inMinutes <= 5) ...[
+          TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0.0, end: 1.0),
+            duration: remaining,
+            builder: (context, value, _) => LoadingIndicator(
+              size: 18.0,
+              color: Theme.of(context).colorScheme.onSecondary,
+              strokeWidth: 2.0,
+              value: value,
+            ),
+          )
         ],
-      ),
+      ],
     );
   }
 }
 
-class _StatusIcon extends StatelessWidget {
-  const _StatusIcon(
-    this.status, {
+class _StatusIcon extends HookConsumerWidget {
+  const _StatusIcon({
     Key? key,
-    required this.isLoading,
     this.animate = true,
   }) : super(key: key);
 
-  final PiholeStatus status;
-  final bool isLoading;
   final bool animate;
 
   @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ping = ref.watch(PingNotifier.provider);
+    final status = ping.status;
+    final isLoading = ping.loading;
+
+    return _Tooltip(
+      message: status.maybeWhen(
+        sleeping: (duration, start) =>
+            'Sleeping until ${start.add(duration).hms}',
+        orElse: () => '',
+      ),
+      child: AnimatedStack(
+          children: [
+            LoadingIndicator(
+              size: 18.0,
+              color: Theme.of(context).colorScheme.onSecondary,
+              strokeWidth: 2.0,
+            ),
+            const Icon(KIcons.disablePihole),
+            const Icon(KIcons.enablePihole),
+            status.maybeMap(
+                sleeping: (status) => _SleepingProgressIndicator(
+                    status: status.copyWith(start: status.start)),
+                orElse: () => Container()),
+            _Tooltip(
+                message: Formatting.errorToDescription(ping.error ?? ''),
+                child: const Icon(KIcons.disconnected)),
+          ],
+          active: isLoading
+              ? 0
+              : ping.error != null
+                  ? 4
+                  : status.map(
+                      enabled: (_) => 1,
+                      disabled: (_) => 2,
+                      sleeping: (_) => 3,
+                    )),
+    );
+  }
+}
+
+class _Tooltip extends StatelessWidget {
+  const _Tooltip({
+    Key? key,
+    required this.message,
+    required this.child,
+  }) : super(key: key);
+
+  final String message;
+  final Widget child;
+
+  @override
   Widget build(BuildContext context) {
-    return AnimatedStack(
-        children: [
-          LoadingIndicator(
-            size: 18.0,
-            color: Theme.of(context).colorScheme.onSecondary,
-            strokeWidth: 2.0,
-          ),
-          const Icon(KIcons.disablePihole),
-          const Icon(KIcons.enablePihole),
-          status.maybeMap(
-              sleeping: (status) => _SleepingProgressIndicator(
-                  status: status.copyWith(start: status.start)),
-              orElse: () => Container()),
-        ],
-        active: isLoading
-            ? 0
-            : status.map(
-                enabled: (_) => 1,
-                disabled: (_) => 2,
-                sleeping: (_) => 3,
-              ));
+    return Tooltip(
+      // decoration: BoxDecoration(
+      //   color: Theme.of(context).colorScheme.background,
+      //   borderRadius: BorderRadius.circular(20.0),
+      // ),
+      // textStyle: Theme.of(context)
+      //     .textTheme
+      //     .caption
+      //     ?.copyWith(color: Theme.of(context).colorScheme.onBackground),
+      message: message,
+      preferBelow: false,
+      child: child,
+    );
   }
 }

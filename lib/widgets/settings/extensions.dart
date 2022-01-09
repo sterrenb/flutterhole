@@ -27,13 +27,16 @@ extension WidgetRefX on WidgetRef {
   void refreshForwardDestinations() =>
       refresh(forwardDestinationsProvider(read(activePiholeParamsProvider)));
 
+  void refreshStatus() => read(PingNotifier.provider.notifier).ping();
+
   void refreshDashboard() async {
-    refreshSummary();
-    refreshVersions();
-    refreshDetails();
-    refreshForwardDestinations();
-    refreshQueryItems();
-    refreshQueryTypes();
+    // refreshSummary();
+    // refreshVersions();
+    // refreshDetails();
+    // refreshForwardDestinations();
+    // refreshQueryItems();
+    // refreshQueryTypes();
+    refreshStatus();
   }
 
   void updateThemeMode(

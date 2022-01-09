@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/services/web_service.dart';
+import 'package:flutterhole/widgets/layout/responsiveness.dart';
 
 class IconOutlinedButton extends StatelessWidget {
   const IconOutlinedButton({
@@ -73,26 +74,27 @@ class UrlOutlinedButton extends StatelessWidget {
   }
 }
 
-class PushViewIconButton extends StatelessWidget {
-  const PushViewIconButton({
+class PushViewButton extends StatelessWidget {
+  const PushViewButton({
     Key? key,
+    required this.label,
     required this.iconData,
     required this.view,
-    this.tooltip,
   }) : super(key: key);
 
+  final String label;
   final IconData iconData;
   final Widget view;
-  final String? tooltip;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        tooltip: tooltip,
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => view));
-        },
-        icon: Icon(iconData));
+      tooltip: label,
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) => view));
+      },
+      icon: Icon(iconData),
+    );
   }
 }
 

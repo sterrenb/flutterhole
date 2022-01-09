@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:faker/faker.dart';
@@ -60,9 +61,15 @@ class DemoApi implements PiholeRepository {
   }
 
   @override
-  Future<PiholeStatus> sleep(Duration duration, _) {
-    // TODO: implement sleep
-    throw UnimplementedError();
+  Future<PiholeStatus> sleep(Duration duration, _) async {
+    await _sleep();
+    final oldStatus = _status;
+    scheduleMicrotask(() {
+      Future.delayed(duration).then((_) {
+        _status = oldStatus;
+      });
+    });
+    return _setStatus(const PiholeStatus.disabled());
   }
 
   @override

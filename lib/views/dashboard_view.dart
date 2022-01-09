@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
+import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
 import 'package:flutterhole/views/base_view.dart';
@@ -9,6 +10,8 @@ import 'package:flutterhole/views/settings_view.dart';
 import 'package:flutterhole/widgets/api/ping_api_button.dart';
 import 'package:flutterhole/widgets/dashboard/dashboard_grid.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
+import 'package:flutterhole/widgets/layout/animations.dart';
+import 'package:flutterhole/widgets/layout/loading_indicator.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/query_log/query_log_list.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
@@ -19,6 +22,55 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'dashboard_edit_view.dart';
 
 final _selectedIndexProvider = StateProvider<int>((ref) => 0);
+
+class _StatusIcon extends HookConsumerWidget {
+  const _StatusIcon({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ping = ref.watch(PingNotifier.provider);
+    final api = ref.watch(PingNotifier.provider.notifier);
+    final status = ping.status;
+    final isLoading = ping.loading;
+
+    final color = status.map(
+      enabled: (_) => Colors.green,
+      disabled: (_) => Colors.orange,
+      sleeping: (_) => Colors.blue,
+    );
+
+    return Tooltip(
+      message: isLoading
+          ? 'Loading...'
+          : status.when(
+              enabled: () => 'Enabled',
+              disabled: () => 'Disabled',
+              sleeping: (duration, start) =>
+                  'Sleeping until ${start.add(duration).hms}',
+            ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          DefaultAnimatedOpacity(
+              show: isLoading,
+              child: LoadingIndicator(
+                size: 12.0,
+                strokeWidth: 2.0,
+                color: Theme.of(context).colorScheme.onPrimary.withOpacity(.5),
+                // color: Theme.of(context).colorScheme.secondary,
+              )),
+          Icon(
+            KIcons.dot,
+            color: color,
+            size: 4.0,
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class DashboardView extends HookConsumerWidget {
   const DashboardView({
@@ -49,7 +101,11 @@ class DashboardView extends HookConsumerWidget {
           title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(pi.title + ' '),
+              Text(pi.title),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: const _StatusIcon(),
+              ),
               Expanded(
                 child: Opacity(
                   opacity: .5,
@@ -83,8 +139,8 @@ class DashboardView extends HookConsumerWidget {
               icon: const Icon(KIcons.refresh),
             )),
             const _DashboardPopupMenuButton(),
-            const PushViewIconButton(
-              tooltip: 'Settings',
+            const PushViewButton(
+              label: 'Settings',
               iconData: KIcons.settings,
               view: SettingsView(),
             ),

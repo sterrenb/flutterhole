@@ -112,5 +112,6 @@ class KIcons {
 
   static const IconData success = Icons.check;
   static const IconData error = Icons.warning;
+  static const IconData disconnected = MdiIcons.pipeDisconnected;
   static const IconData failure = Icons.clear;
 }
