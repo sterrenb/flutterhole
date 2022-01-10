@@ -86,13 +86,11 @@ class PingFloatingActionButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final status = useState(const PiholeStatus.disabled());
     final ping = ref.watch(PingNotifier.provider);
     final api = ref.watch(PingNotifier.provider.notifier);
     final status = ping.status;
     final isLoading = ping.loading;
     final error = ping.error ?? 'Loading';
-    final isSleeping = useState(false);
     final mounted = useIsMounted();
 
     useAsyncEffect(
@@ -173,25 +171,13 @@ class PingFloatingActionButton extends HookConsumerWidget {
               .textTheme
               .subtitle1
               ?.copyWith(color: Theme.of(context).colorScheme.secondary),
-          onPressed: () async {
-            // if (isLoading.value) return;
-            // isLoading.value = true;
-            // await Future.delayed(const Duration(milliseconds: 500));
-            // status.value = status.value.map(
-            //   enabled: (_) => const PiholeStatus.disabled(),
-            //   disabled: (_) => const PiholeStatus.enabled(),
-            //   sleeping: (_) => const PiholeStatus.enabled(),
-            // );
-            // isLoading.value = false;
-
-            isLoading
-                ? api.ping()
-                : status.map(
-                    enabled: (_) => api.disable(),
-                    disabled: (_) => api.enable(),
-                    sleeping: (_) => api.enable(),
-                  );
-          },
+          onPressed: () => isLoading
+              ? api.ping()
+              : status.map(
+                  enabled: (_) => api.disable(),
+                  disabled: (_) => api.enable(),
+                  sleeping: (_) => api.enable(),
+                ),
           icon: const _StatusIcon(),
           label: DefaultAnimatedSize(
             child: AnimatedStack(

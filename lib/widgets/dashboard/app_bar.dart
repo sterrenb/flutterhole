@@ -12,7 +12,9 @@ import 'package:flutterhole/widgets/layout/loading_indicator.dart';
 import 'package:flutterhole/widgets/layout/tab_view.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
+import 'package:flutterhole/widgets/ui/periodic_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 class DashboardAppBar extends HookConsumerWidget with PreferredSizeWidget {
   const DashboardAppBar({
@@ -76,6 +78,62 @@ class DashboardAppBar extends HookConsumerWidget with PreferredSizeWidget {
           view: SettingsView(),
         ),
       ],
+      bottom: const _Bottom(),
+    );
+  }
+}
+
+class _Bottom extends HookConsumerWidget with PreferredSizeWidget {
+  const _Bottom({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Size get preferredSize => const Size.fromHeight(4.0);
+
+  static const notLoadingHeight = 0.0;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final now = DateTime.now();
+    final pingStatus = ref.watch(PingNotifier.provider);
+    final status = pingStatus.status;
+    final remaining = useState(Duration.zero);
+
+    useEffect(() {
+      remaining.value = status.maybeWhen(
+          sleeping: (duration, start) {
+            return duration - now.difference(start);
+          },
+          orElse: () => Duration.zero);
+    }, [status]);
+
+    return AnimatedContainer(
+      duration: kThemeAnimationDuration,
+      curve: Curves.easeOutCubic,
+      height: remaining.value != Duration.zero
+          ? preferredSize.height
+          : notLoadingHeight,
+      child: status.maybeWhen(
+        sleeping: (duration, start) {
+          return PeriodicWidget(
+            interval: const Duration(seconds: 1),
+            onTimer: (_) {
+              remaining.value = remaining.value - const Duration(seconds: 1);
+            },
+            builder: (context) {
+              final left =
+                  remaining.value.inMilliseconds / duration.inMilliseconds;
+              return LinearProgressIndicator(
+                color: Theme.of(context).colorScheme.secondary,
+                backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+                value: left,
+              );
+            },
+          );
+        },
+        orElse: () => Container(height: 0.0),
+      ),
     );
   }
 }

@@ -78,13 +78,16 @@ class DefaultAnimatedSize extends StatelessWidget {
   const DefaultAnimatedSize({
     Key? key,
     required this.child,
+    this.alignment = Alignment.center,
   }) : super(key: key);
 
   final Widget child;
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedSize(
+      alignment: alignment,
       duration: kThemeAnimationDuration,
       curve: Curves.easeOutCubic,
       child: child,
