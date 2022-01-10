@@ -93,6 +93,14 @@ class DashboardView extends HookConsumerWidget {
       );
     });
 
+    useEffect(() {
+      page.addListener(() {
+        if (page.page != null) {
+          ref.read(_selectedIndexProvider.state).state = page.page!.round();
+        }
+      });
+    }, [page]);
+
     return BaseView(
       child: Scaffold(
         floatingActionButton: const PingFloatingActionButton(),

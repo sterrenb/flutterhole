@@ -43,7 +43,7 @@ const defaultPiholes = kDebugMode
         ),
         Pi(
           title: 'Home',
-          baseUrl: 'http://pi.hole',
+          baseUrl: 'http://10.0.1.5',
           apiToken:
               String.fromEnvironment('PIHOLE_API_TOKEN', defaultValue: ''),
         ),
@@ -175,8 +175,8 @@ class DashboardEntry with _$DashboardEntry {
 class Pi with _$Pi {
   @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
   const factory Pi({
-    @Default("My Pi-hole") String title,
-    @Default("http://10.0.1.5") String baseUrl,
+    @Default("Pi-hole") String title,
+    @Default("https://pi.hole") String baseUrl,
     @Default("/admin/api.php") String apiPath,
     @Default(true) bool apiTokenRequired,
     @Default("") String apiToken,

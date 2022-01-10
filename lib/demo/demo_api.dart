@@ -121,8 +121,8 @@ class DemoApi implements PiholeRepository {
     await _sleep();
     count++;
 
-    throw PiholeApiFailure.emptyList();
-    return [];
+    // throw PiholeApiFailure.emptyList();
+    // return [];
     // if (count % 2 == 0) return _items;
     // if (count == 1) throw 'Nope';
     // return [];
