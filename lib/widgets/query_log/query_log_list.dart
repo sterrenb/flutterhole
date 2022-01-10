@@ -100,8 +100,7 @@ class QueryLogList extends HookConsumerWidget {
           ListView(
             children: const [],
           ),
-          Center(child: Text('No queries found.')),
-          // const Center(child: Text('No queries found.'))
+          const Center(child: Text('No queries found.')),
         ],
         if (data.value.isNotEmpty) ...[
           animate

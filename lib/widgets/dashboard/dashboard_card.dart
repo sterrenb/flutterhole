@@ -11,7 +11,7 @@ import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class DashboardCardHeader extends HookConsumerWidget {
+class DashboardCardHeader extends StatelessWidget {
   final String title;
   final bool isLoading;
   final Object? error;
@@ -24,8 +24,7 @@ class DashboardCardHeader extends HookConsumerWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final entry = ref.watch(dashboardEntryProvider);
+  Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.centerRight,
       fit: StackFit.passthrough,
@@ -35,13 +34,11 @@ class DashboardCardHeader extends HookConsumerWidget {
           mouseCursor: SystemMouseCursors.click,
           title: Text(
             title,
-            style: (entry.constraints.crossAxisCount > 0
-                    ? Theme.of(context).textTheme.subtitle1
-                    : Theme.of(context).textTheme.caption)
+            style: Theme.of(context)
+                .textTheme
+                .subtitle1
                 ?.copyWith(color: Theme.of(context).colorScheme.primary),
-            overflow: TextOverflow.visible,
-            // maxLines: 2,
-            // softWrap: false,
+            overflow: TextOverflow.fade,
           ),
         ),
         Positioned(
@@ -71,7 +68,6 @@ class DashboardBackgroundIcon extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       return Icon(
         id.iconData,
-        // size: (constraints.biggest.shortestSide / 2),
         size: constraints.biggest.shortestSide,
         color: Theme.of(context).colorScheme.secondary.withOpacity(.05),
       );
@@ -106,7 +102,7 @@ class DashboardCard extends HookConsumerWidget {
         color: cardColor,
         child: InkWell(
           onTap: onTap,
-          onLongPress: () {
+          onDoubleTap: () {
             showScrollableConfirmationDialog(
               context,
               canOk: false,

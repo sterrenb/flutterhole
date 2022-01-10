@@ -58,6 +58,8 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
     reload();
   }
 
+  Pi get _active => state.piholes.elementAt(state.activeIndex);
+
   Future<void> _save() {
     return storage.saveJson(storageKey, state.toJson());
   }
@@ -106,11 +108,10 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
       to -= 1;
     }
 
-    final active = state.piholes.elementAt(state.activeIndex);
     final list = List<Pi>.from(state.piholes, growable: true);
     final item = list.removeAt(from);
     list.insert(to, item);
-    final activeIndex = list.indexOf(active);
+    final activeIndex = list.indexOf(_active);
     state = state.copyWith(piholes: list, activeIndex: activeIndex);
     _save();
   }
@@ -127,9 +128,9 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
   }
 
   void updateDashboardEntry(DashboardEntry entry) {
-    final active = state.piholes.elementAt(state.activeIndex);
-    log('updateDashboardEntry:${active.title}:$entry');
-    final index = active.dashboard.indexWhere((v) => v.id == entry.id);
+    log('updateDashboardEntry:${_active.title}:$entry');
+
+    final index = _active.dashboard.indexWhere((v) => v.id == entry.id);
     if (index < 0) {
       log(
         'updateDashboardEntry:missing entry:${entry.id}',
@@ -139,25 +140,49 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
       return;
     }
 
-    final list = List<DashboardEntry>.from(active.dashboard);
+    final list = List<DashboardEntry>.from(_active.dashboard);
     list[index] = entry;
-    savePihole(oldValue: active, newValue: active.copyWith(dashboard: list));
+
+    savePihole(oldValue: _active, newValue: _active.copyWith(dashboard: list));
   }
 
   void moveDashboardEntry(int from, int to) {
-    final active = state.piholes.elementAt(state.activeIndex);
+    if (to < 0 || from == to || to > _active.dashboard.length - 1) return;
 
-    if (to < 0 || from == to || to > active.dashboard.length - 1) return;
+    log('moveDashboardEntry:${_active.title}:$from->$to');
+    final list = List<DashboardEntry>.from(_active.dashboard);
 
-    log('moveDashboardEntry:${active.title}:$from->$to');
-    // if (from < to) {
-    //   to -= 1;
-    // }
-
-    final list = List<DashboardEntry>.from(active.dashboard);
     final entry = list.removeAt(from);
     list.insert(to, entry);
-    savePihole(oldValue: active, newValue: active.copyWith(dashboard: list));
+
+    savePihole(oldValue: _active, newValue: _active.copyWith(dashboard: list));
+  }
+
+  void swapDashboardEntries(DashboardEntry a, DashboardEntry b) {
+    log('swapDashboardEntries:${a.id}:${b.id}');
+    final dashboard = [..._active.dashboard];
+
+    final first = dashboard.indexWhere((element) => element.id == a.id);
+    final second = dashboard.indexWhere((element) => element.id == b.id);
+
+    DashboardEntry xa = dashboard[first];
+    DashboardEntry xy = dashboard[second];
+
+    if (xa.constraints is DashboardTileConstraintsCount &&
+        xy.constraints is DashboardTileConstraintsCount) {
+      xa = xa.copyWith(constraints: dashboard[second].constraints);
+      xy = xy.copyWith(constraints: dashboard[first].constraints);
+    } else {
+      xa = xa.copyWith.constraints(
+          crossAxisCount: dashboard[second].constraints.crossAxisCount);
+      xy = xy.copyWith.constraints(
+          crossAxisCount: dashboard[first].constraints.crossAxisCount);
+    }
+
+    dashboard[first] = xy;
+    dashboard[second] = xa;
+    savePihole(
+        oldValue: _active, newValue: _active.copyWith(dashboard: dashboard));
   }
 
   void addPihole(Pi value, int index) {

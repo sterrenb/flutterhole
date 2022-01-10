@@ -92,6 +92,11 @@ extension WidgetRefX on WidgetRef {
         .moveDashboardEntry(oldIndex, newIndex);
   }
 
+  void swapDashboardEntries(DashboardEntry oldIndex, DashboardEntry newIndex) {
+    read(UserPreferencesNotifier.provider.notifier)
+        .swapDashboardEntries(oldIndex, newIndex);
+  }
+
   void deletePihole(BuildContext context, Pi oldValue) {
     final notifier = read(UserPreferencesNotifier.provider.notifier);
     final index = notifier.deletePihole(oldValue);

@@ -100,17 +100,19 @@ class DefaultAnimatedOpacity extends StatelessWidget {
     Key? key,
     required this.show,
     required this.child,
+    this.hideOpacity = 0.0,
   }) : super(key: key);
 
   final bool show;
   final Widget child;
+  final double hideOpacity;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       duration: kThemeAnimationDuration,
       curve: Curves.easeOutCubic,
-      opacity: show ? 1.0 : 0.0,
+      opacity: show ? 1.0 : hideOpacity,
       child: child,
     );
   }

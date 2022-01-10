@@ -91,16 +91,16 @@ class DashboardTileConstraints with _$DashboardTileConstraints {
   const factory DashboardTileConstraints.count(
     int crossAxisCount,
     int mainAxisCount,
-  ) = _Count;
+  ) = DashboardTileConstraintsCount;
 
   const factory DashboardTileConstraints.extent(
     int crossAxisCount,
     double mainAxisExtent,
-  ) = _Extent;
+  ) = DashboardTileConstraintsExtent;
 
   const factory DashboardTileConstraints.fit(
     int crossAxisCount,
-  ) = _Fit;
+  ) = DashboardTileConstraintsFit;
 
   factory DashboardTileConstraints.fromJson(Map<String, dynamic> json) =>
       _$DashboardTileConstraintsFromJson(json);

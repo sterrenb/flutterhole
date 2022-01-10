@@ -1,6 +1,4 @@
-import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/widgets/layout/code_card.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
@@ -148,15 +146,10 @@ class ErrorDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      // backgroundColor: Theme.of(context).dialogBackgroundColor,
-      // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      // backgroundColor: Colors.transparent,
       title: Text(title),
       content: SingleChildScrollView(
         child: MobileMaxWidth(
           center: false,
-          // backgroundColor: Theme.of(context).dialogBackgroundColor,
-          // foregroundColor: Theme.of(context).dialogBackgroundColor,
           foregroundColor: Colors.transparent,
           backgroundColor: Colors.transparent,
           child: Column(
@@ -164,10 +157,6 @@ class ErrorDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(Formatting.errorToDescription(error)),
-              // SingleChildScrollView(
-              //   child: Column(
-              //     children: [
-              //       // SizedBox(height: 20.0),
               stackTrace != null
                   ? Padding(
                       padding: const EdgeInsets.only(top: 20.0),
@@ -175,9 +164,6 @@ class ErrorDialog extends StatelessWidget {
                           CodeCard(stackTrace.toString(), maxLines: maxLines),
                     )
                   : Container(),
-              //     ],
-              //   ),
-              // ),
             ],
           ),
         ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/services/web_service.dart';
-import 'package:flutterhole/widgets/layout/responsiveness.dart';
 
 class IconOutlinedButton extends StatelessWidget {
   const IconOutlinedButton({
@@ -118,11 +117,6 @@ class PushViewButton extends StatelessWidget {
     return IconButton(
       onPressed: onPressed,
       tooltip: label,
-      icon: Icon(iconData),
-    );
-    return IconButton(
-      tooltip: label,
-      onPressed: onPressed,
       icon: Icon(iconData),
     );
   }
