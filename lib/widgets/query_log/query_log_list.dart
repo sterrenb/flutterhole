@@ -97,7 +97,11 @@ class QueryLogList extends HookConsumerWidget {
       alignment: Alignment.topRight,
       children: [
         if (data.value.isEmpty) ...[
-          const Center(child: Text('No queries found.'))
+          ListView(
+            children: const [],
+          ),
+          Center(child: Text('No queries found.')),
+          // const Center(child: Text('No queries found.'))
         ],
         if (data.value.isNotEmpty) ...[
           animate
@@ -124,10 +128,10 @@ class QueryLogList extends HookConsumerWidget {
           // child: Text('hi'),
         ),
         if (error != null) ...[
-          CenteredErrorMessage(
-            error,
-            message: 'Something went wrong.',
-          )
+          ListView(
+            children: const [],
+          ),
+          CenteredErrorMessage(error),
         ],
         Positioned(
           right: 0,

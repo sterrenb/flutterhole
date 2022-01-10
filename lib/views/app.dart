@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/dashboard_view.dart';
@@ -16,12 +18,23 @@ class App extends HookConsumerWidget {
     return MaterialApp(
       title: 'FlutterHole',
       debugShowCheckedModeBanner: false,
+      showSemanticsDebugger: false,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
-      showSemanticsDebugger: false,
+      scrollBehavior: MyCustomScrollBehavior(),
       home: const DoubleBackToCloseApp(child: DashboardView()),
       // home: const SinglePiEditView(),
     );
   }
+}
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        // etc.
+      };
 }

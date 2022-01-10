@@ -158,7 +158,6 @@ typedef PingCallback = Future<PiholeStatus> Function(CancelToken);
 class PingNotifier extends StateNotifier<PingStatus> {
   static final provider =
       StateNotifierProvider<PingNotifier, PingStatus>((ref) {
-    print('returning pinger');
     final cancelToken = CancelToken();
     ref.onDispose(() => cancelToken.cancel());
     return PingNotifier(ref.watch(activePiholeProvider), cancelToken)..ping();
@@ -184,6 +183,12 @@ class PingNotifier extends StateNotifier<PingStatus> {
     }
   }
 
+  Future<void> ping() => _try(api.ping);
+
+  Future<void> enable() => _try(api.enable);
+
+  Future<void> disable() => _try(api.disable);
+
   Future<void> sleep(Duration duration, DateTime now) async {
     state = state.copyWith(loading: true);
     try {
@@ -200,10 +205,4 @@ class PingNotifier extends StateNotifier<PingStatus> {
       state = state.copyWith(loading: false, error: e);
     }
   }
-
-  Future<void> ping() => _try(api.ping);
-
-  Future<void> enable() => _try(api.enable);
-
-  Future<void> disable() => _try(api.disable);
 }

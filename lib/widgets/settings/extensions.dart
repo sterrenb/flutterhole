@@ -30,13 +30,14 @@ extension WidgetRefX on WidgetRef {
   void refreshStatus() => read(PingNotifier.provider.notifier).ping();
 
   void refreshDashboard() async {
-    // refreshSummary();
-    // refreshVersions();
-    // refreshDetails();
-    // refreshForwardDestinations();
-    // refreshQueryItems();
-    // refreshQueryTypes();
-    refreshStatus();
+    // TODO only refresh relevant tiles
+    refreshSummary();
+    refreshVersions();
+    refreshDetails();
+    refreshForwardDestinations();
+    refreshQueryItems();
+    refreshQueryTypes();
+    // refreshStatus();
   }
 
   void updateThemeMode(

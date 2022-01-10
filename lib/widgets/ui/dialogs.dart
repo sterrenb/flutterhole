@@ -191,45 +191,19 @@ class CenteredErrorMessage extends StatelessWidget {
     this.error, {
     this.stackTrace,
     this.message,
-    this.showIcon = false,
     Key? key,
   }) : super(key: key);
 
   final Object error;
   final StackTrace? stackTrace;
   final String? message;
-  final bool showIcon;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: SafeArea(
         minimum: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (showIcon) ...[
-              Icon(
-                KIcons.error,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              const SizedBox(height: 24.0),
-            ],
-            Text(message ?? error.toString()),
-            const SizedBox(height: 8.0),
-            TextButton(
-                child: const Text('View details'),
-                onPressed: () {
-                  showModal(
-                      context: context,
-                      builder: (context) => ErrorDialog(
-                          title: 'Error',
-                          error: error,
-                          stackTrace: stackTrace));
-                  // context.refresh(_markdownProvider);
-                }),
-          ],
-        ),
+        child: Text(message ?? Formatting.errorToDescription(error)),
       ),
     );
   }

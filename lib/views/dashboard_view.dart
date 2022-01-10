@@ -21,7 +21,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'dashboard_edit_view.dart';
 
-final _selectedIndexProvider = StateProvider<int>((ref) => 0);
+final _selectedIndexProvider = StateProvider<int>((ref) => 1);
 
 class _StatusIcon extends HookConsumerWidget {
   const _StatusIcon({
@@ -102,9 +102,9 @@ class DashboardView extends HookConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(pi.title),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: const _StatusIcon(),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                child: _StatusIcon(),
               ),
               Expanded(
                 child: Opacity(
@@ -184,20 +184,18 @@ class DashboardView extends HookConsumerWidget {
                 child: PageView(
                   controller: page,
                   children: [
-                    Center(
+                    DashboardRefreshIndicator(
+                      onRefresh: () async {
+                        ref.refreshDashboard();
+                        await Future.delayed(kThemeAnimationDuration);
+                      },
                       child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
                         child: Padding(
                           padding: const EdgeInsets.only(
                                   bottom: kBottomNavigationBarHeight + 16.0)
                               .add(const EdgeInsets.all(4.0)),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              DashboardGrid(entries: pi.dashboard),
-                              // const TabFooter(),
-                            ],
-                          ),
+                          child: DashboardGrid(entries: pi.dashboard),
                         ),
                       ),
                     ),
@@ -210,6 +208,30 @@ class DashboardView extends HookConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class DashboardRefreshIndicator extends StatelessWidget {
+  const DashboardRefreshIndicator({
+    Key? key,
+    required this.onRefresh,
+    required this.child,
+  }) : super(key: key);
+
+  final RefreshCallback onRefresh;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      displacement: 20.0,
+      triggerMode: RefreshIndicatorTriggerMode.anywhere,
+      onRefresh: () async {
+        await onRefresh();
+        await Future.delayed(kThemeAnimationDuration);
+      },
+      child: child,
     );
   }
 }
@@ -234,13 +256,19 @@ class TabFooter extends StatelessWidget {
   }
 }
 
-class QueriesTab extends StatelessWidget {
+class QueriesTab extends HookConsumerWidget {
   const QueriesTab({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return const MobileMaxWidth(
-      child: QueryLogList(),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MobileMaxWidth(
+      child: DashboardRefreshIndicator(
+          onRefresh: () async {
+            // ref.refreshDashboard();
+            ref.refreshQueryItems();
+            await Future.delayed(kThemeAnimationDuration);
+          },
+          child: const QueryLogList()),
     );
   }
 }
