@@ -40,6 +40,8 @@ extension WidgetRefX on WidgetRef {
     // refreshStatus();
   }
 
+  void refreshQueriesTab() => refreshQueryItems();
+
   void updateThemeMode(
       BuildContext context, ThemeMode oldMode, ThemeMode newMode,
       [String? message]) {

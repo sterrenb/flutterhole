@@ -162,27 +162,19 @@ class DemoApi implements PiholeRepository {
   Future<PiQueryTypes> fetchQueryTypes(_) async {
     await _sleep();
 
+    final ip4 = 10 + _random.nextInt(9) + _random.nextDouble();
+    final ip6 = 15 + _random.nextInt(14) + _random.nextDouble();
+    final srv = 25 + _random.nextInt(9) + _random.nextDouble();
+    final ptr = 5 + _random.nextInt(9) + _random.nextDouble();
+    final https = 100.0 - ip4 - ip6 - srv - ptr;
+
     return PiQueryTypes(types: {
-      "A (IPv4)": 44.18,
-      "AAAA (IPv6)": 23.79,
+      "A (IPv4)": ip4,
+      "AAAA (IPv6)": ip6,
+      "SRV": srv,
+      "PTR": ptr,
+      "HTTPS": https,
       "ANY": 0,
-      "SRV": 18.99,
-      // "A (IPv4)": 93.18,
-      // "AAAA (IPv6)": 1.79,
-      // "ANY": 0,
-      // "SRV": 0.99,
-      // "SOA": 0.03,
-      "PTR": 1.29,
-      // "TXT": 0,
-      // "NAPTR": 0,
-      // "MX": 0,
-      // "DS": 0,
-      // "RRSIG": 0,
-      // "DNSKEY": 0,
-      // "NS": 0.02,
-      // "OTHER": 0,
-      // "SVCB": 0,
-      "HTTPS": 2.7
     });
   }
 

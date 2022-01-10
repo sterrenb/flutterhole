@@ -80,7 +80,7 @@ class KIcons {
   static const IconData share = Icons.share;
   static const IconData donate = Icons.monetization_on;
 
-  static const IconData selectDashboardTiles = Icons.dashboard_customize;
+  static const IconData editDashboard = Icons.dashboard_customize;
 
   static const IconData dangerZone = Icons.warning;
   static const IconData delete = Icons.delete;

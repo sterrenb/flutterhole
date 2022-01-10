@@ -23,8 +23,7 @@ class App extends HookConsumerWidget {
       darkTheme: darkTheme,
       themeMode: themeMode,
       scrollBehavior: MyCustomScrollBehavior(),
-      home: const DoubleBackToCloseApp(child: DashboardView()),
-      // home: const SinglePiEditView(),
+      home: const DoubleBackToCloseApp(child: DashView()),
     );
   }
 }
