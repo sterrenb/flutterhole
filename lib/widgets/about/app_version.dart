@@ -10,6 +10,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+
+
 class AppVersionListTile extends HookConsumerWidget {
   const AppVersionListTile({
     Key? key,
@@ -21,6 +23,7 @@ class AppVersionListTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final packageInfo = ref.watch(packageInfoProvider);
+
     return ListTile(
       leading: const Icon(KIcons.appVersion),
       title: Text(title),

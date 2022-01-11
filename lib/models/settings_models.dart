@@ -167,7 +167,7 @@ class DashboardEntry with _$DashboardEntry {
     DashboardEntry(
         id: DashboardID.versions,
         enabled: true,
-        constraints: DashboardTileConstraints.fit(4)),
+        constraints: DashboardTileConstraints.count(4, 3)),
   ];
 }
 

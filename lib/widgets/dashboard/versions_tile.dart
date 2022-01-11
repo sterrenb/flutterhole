@@ -5,7 +5,6 @@ import 'package:flutterhole/models/settings_models.dart';
 import 'package:flutterhole/services/api_service.dart';
 import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/services/web_service.dart';
-import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/cache.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,37 +29,19 @@ class VersionsTile extends HookConsumerWidget {
             error: error,
           ),
           onTap: () => ref.refreshVersions(),
-          content: AnimatedFader(
-            child: versions != null
-                ? _VersionsList(versions: versions)
-                : const _EmptyList(),
+          content: AnimatedCardContent(
+            isLoading: isLoading,
+            child: versions == null
+                ? Container()
+                : _VersionsList(versions: versions),
           ),
-          // background: const DashboardBackgroundIcon(KIcons.appVersion),
         );
       },
     );
   }
 }
 
-class _EmptyList extends StatelessWidget {
-  const _EmptyList({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: List.filled(
-          3,
-          const ListTile(
-            title: Text(''),
-            subtitle: Text(''),
-          )),
-    );
-  }
-}
-
-class _VersionsList extends StatelessWidget {
+class _VersionsList extends HookConsumerWidget {
   const _VersionsList({
     Key? key,
     required this.versions,
@@ -69,8 +50,15 @@ class _VersionsList extends StatelessWidget {
   final PiVersions versions;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final packageInfo = ref.watch(packageInfoProvider);
+    final appVersionString = packageInfo.when(
+      data: (info) => Formatting.packageInfoToString(info),
+      error: (e, s) => '?',
+      loading: () => '...',
+    );
+
+    return ListView(
       children: [
         _ListTile(
           title: 'Pi-hole',
@@ -93,6 +81,13 @@ class _VersionsList extends StatelessWidget {
           branch: versions.ftlBranch,
           updateUrl: KUrls.ftlUpdateUrl,
         ),
+        _ListTile(
+          title: 'FlutterHole',
+          currentVersion: appVersionString,
+          latestVersion: appVersionString,
+          branch: 'web',
+          updateUrl: KUrls.githubHomeUrl,
+        )
       ],
     );
   }
@@ -133,33 +128,38 @@ class _ListTile extends HookConsumerWidget {
             Visibility(visible: isBig, child: const Text('Branch')),
           ],
         ),
-        subtitle: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Wrap(
-              // direction: Axis.vertical,
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(
-                  currentVersion,
-                  // style: GoogleFonts.firaMono(),
+                Row(
+                  children: <Widget>[
+                    Text(
+                      currentVersion,
+                      style: GoogleFonts.firaMono(),
+                    ),
+                  ],
                 ),
+                // Text('Branch'),
                 Visibility(
-                  visible: updateIsAvailable,
+                  visible: isBig,
                   child: Text(
-                    '${isBig ? ' Update available: ' : ' '}$latestVersion',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary),
+                    branch,
+                    style: GoogleFonts.firaMono(),
                   ),
                 ),
               ],
             ),
-            // Text('Branch'),
             Visibility(
-              visible: isBig,
+              visible: updateIsAvailable,
               child: Text(
-                branch,
-                style: GoogleFonts.firaMono(),
+                '${isBig ? 'Update available: ' : ''}$latestVersion${isBig ? '' : '+'}',
+                style: GoogleFonts.firaMono(
+                    color: Theme.of(context).colorScheme.secondary),
+                overflow: TextOverflow.fade,
               ),
             ),
           ],

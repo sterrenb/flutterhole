@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:faker/faker.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 import 'demo_generators.dart';
@@ -128,28 +127,6 @@ class DemoApi implements PiholeRepository {
     // return [];
 
     _items = [
-      if (false)
-        ...List.generate(
-          1,
-          (_) {
-            String domain = Faker().sport.name() + count.toString();
-            if (count % 10 == 0) domain = 'my.domain';
-
-            return QueryItem(
-              timestamp: DateTime.now(),
-              // timestamp: DateTime(2008),
-              queryType: 'A',
-              domain: domain,
-              clientName: 'the.client',
-              queryStatus:
-                  // QueryStatus.Cached,
-                  QueryStatus.values
-                      .elementAt(_random.nextInt(QueryStatus.values.length)),
-              dnsSecStatus: DnsSecStatus.Secure,
-              delta: 0.0,
-            );
-          },
-        ),
       ...List.generate(_random.nextInt(2) + 1, (_) => randomQueryItem()),
       // ..._items,
       ..._startItems,

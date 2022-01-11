@@ -71,7 +71,8 @@ class Formatting {
       FilteringTextInputFormatter.deny(RegExp(r'\s\b|\b\s'));
 
   static String packageInfoToString(PackageInfo info, [bool build = true]) =>
-      'v${info.version}${build ? '#${info.buildNumber}' : ''}'.trim();
+      'v${info.version}${build && info.buildNumber.isNotEmpty ? '#${info.buildNumber}' : ''}'
+          .trim();
 
   static String enumToString(dynamic x) =>
       x.toString().split('.').skip(1).join();
@@ -111,8 +112,7 @@ extension DashboardIDX on DashboardID {
   }
 
   IconData get iconData {
-    switch(this) {
-
+    switch (this) {
       case DashboardID.versions:
         return KIcons.appVersion;
       case DashboardID.temperature:
