@@ -77,8 +77,8 @@ class _Draggable extends HookConsumerWidget {
                       alignment: Alignment.topRight,
                       children: [
                         Center(child: DashboardBackgroundIcon(entry.id)),
-                        DashboardCardHeader(
-                            title: entry.id.humanString, isLoading: false),
+                        // DashboardCardHeader(
+                        //     title: entry.id.humanString, isLoading: false),
                       ],
                     )),
               ),

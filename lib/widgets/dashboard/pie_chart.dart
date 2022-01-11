@@ -17,7 +17,7 @@ class PieChartRadiusBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(24.0),
       child: Center(
         child: LayoutBuilder(builder: (context, constraints) {
           final radius = (constraints.biggest.shortestSide / 2) - 5.0;

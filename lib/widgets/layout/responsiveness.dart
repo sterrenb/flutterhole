@@ -65,22 +65,31 @@ class _Content extends StatelessWidget {
 }
 
 typedef BreakpointBuilderCallback = Widget Function(
-    BuildContext context, bool isBig);
+  BuildContext context,
+  bool isBig,
+  bool isHuge,
+);
 
 class BreakpointBuilder extends StatelessWidget {
   const BreakpointBuilder({
     Key? key,
     required this.builder,
-    this.bigBreakpoint = 800,
+    this.bigBreakpoint = 800.0,
+    this.hugeBreakpoint = 1400.0,
   }) : super(key: key);
 
   final BreakpointBuilderCallback builder;
   final double bigBreakpoint;
+  final double hugeBreakpoint;
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final isBig = constraints.maxWidth > bigBreakpoint;
-      return builder(context, isBig);
+      return builder(
+        context,
+        constraints.maxWidth > bigBreakpoint,
+        constraints.maxWidth > hugeBreakpoint,
+      );
     });
   }
 }
@@ -104,7 +113,7 @@ class LeftRightScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BreakpointBuilder(builder: (context, isBig) {
+    return BreakpointBuilder(builder: (context, isBig, isHuge) {
       return DefaultTabController(
         length: 2,
         child: Scaffold(

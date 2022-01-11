@@ -35,6 +35,7 @@ class VersionsTile extends HookConsumerWidget {
                 ? Container()
                 : _VersionsList(versions: versions),
           ),
+          background: const DashboardBackgroundIcon(DashboardID.versions),
         );
       },
     );

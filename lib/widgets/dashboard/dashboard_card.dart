@@ -292,9 +292,10 @@ class DashboardFittedCard extends StatelessWidget {
       content: AnimatedCardContent(
         isLoading: isLoading,
         child: Padding(
-          padding: const EdgeInsets.all(8.0)
-              .subtract(const EdgeInsets.only(top: 8.0)),
-          child: FittedText(text: text ?? ''),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: FittedText(
+            text: text ?? '',
+          ),
         ),
       ),
       background: background,
@@ -339,14 +340,16 @@ class FittedText extends StatelessWidget {
   const FittedText({
     Key? key,
     required this.text,
+    this.alignment = Alignment.center,
   }) : super(key: key);
 
   final String text;
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
     return FittedBox(
-      alignment: Alignment.center,
+      alignment: alignment,
       child: Text(
         text,
         style: const TextStyle(

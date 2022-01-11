@@ -33,9 +33,13 @@ class DashboardGrid extends HookConsumerWidget {
       );
     }
 
-    return BreakpointBuilder(builder: (context, isBig) {
+    return BreakpointBuilder(builder: (context, isBig, isHuge) {
       return StaggeredGrid.count(
-        crossAxisCount: isBig ? 8 : 4,
+        crossAxisCount: isHuge
+            ? 12
+            : isBig
+                ? 8
+                : 4,
         children: enabledEntries
             .map((entry) => entry.constraints.when(
                   count: (cross, main) => StaggeredGridTile.count(

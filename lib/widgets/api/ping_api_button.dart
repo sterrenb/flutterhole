@@ -159,46 +159,44 @@ class PingFloatingActionButton extends HookConsumerWidget {
       }
     }
 
-    return BreakpointBuilder(builder: (context, isBig) {
-      return GestureDetector(
-        onLongPress: status.maybeWhen(
-          enabled: () => showSleepDialog,
-          disabled: () => showSleepDialog,
-          orElse: () {},
-        ),
-        child: FloatingActionButton.extended(
-          extendedTextStyle: Theme.of(context)
-              .textTheme
-              .subtitle1
-              ?.copyWith(color: Theme.of(context).colorScheme.secondary),
-          onPressed: () => isLoading
-              ? api.ping()
-              : status.map(
-                  enabled: (_) => api.disable(),
-                  disabled: (_) => api.enable(),
-                  sleeping: (_) => api.enable(),
-                ),
-          icon: const _StatusIcon(),
-          label: DefaultAnimatedSize(
-            child: AnimatedStack(
-              children: const [
-                Text('Disable'),
-                Text('Enable'),
-                Text('Enable'),
-                Text('Disconnected'),
-              ],
-              active: ping.error != null
-                  ? 3
-                  : status.when(
-                      enabled: () => 0,
-                      disabled: () => 1,
-                      sleeping: (duration, start) => 2,
-                    ),
-            ),
+    return GestureDetector(
+      onLongPress: status.maybeWhen(
+        enabled: () => showSleepDialog,
+        disabled: () => showSleepDialog,
+        orElse: () {},
+      ),
+      child: FloatingActionButton.extended(
+        extendedTextStyle: Theme.of(context)
+            .textTheme
+            .subtitle1
+            ?.copyWith(color: Theme.of(context).colorScheme.secondary),
+        onPressed: () => isLoading
+            ? api.ping()
+            : status.map(
+                enabled: (_) => api.disable(),
+                disabled: (_) => api.enable(),
+                sleeping: (_) => api.enable(),
+              ),
+        icon: const _StatusIcon(),
+        label: DefaultAnimatedSize(
+          child: AnimatedStack(
+            children: const [
+              Text('Disable'),
+              Text('Enable'),
+              Text('Enable'),
+              Text('Disconnected'),
+            ],
+            active: ping.error != null
+                ? 3
+                : status.when(
+                    enabled: () => 0,
+                    disabled: () => 1,
+                    sleeping: (duration, start) => 2,
+                  ),
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 }
 
