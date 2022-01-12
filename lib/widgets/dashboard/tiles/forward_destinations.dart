@@ -79,11 +79,6 @@ class QueryTypesTile extends HookConsumerWidget {
       builder: (context, queryTypes, isLoading, error) {
         return DashboardCard(
           id: DashboardID.queryTypes,
-          // header: DashboardCardHeader(
-          //   title: DashboardID.queryTypes.humanString,
-          //   isLoading: isLoading,
-          //   error: error,
-          // ),
           onTap: () => ref.refreshQueryTypes(),
           content: AnimatedCardContent(
             isLoading: isLoading,

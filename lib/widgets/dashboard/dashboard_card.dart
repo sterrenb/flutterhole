@@ -11,6 +11,10 @@ import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+final dashboardEntryProvider = Provider<DashboardEntry>((ref) {
+  throw UnsupportedError('no dashboard entry selected');
+});
+
 class DashboardCardHeader extends StatelessWidget {
   final String title;
   final bool isLoading;
@@ -142,7 +146,7 @@ class _DashboardCardDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entry = useState(ref.read(dashboardEntryProvider));
+    final entry = useState(ref.watch(dashboardEntryProvider));
     final dashboard = ref.watch(piProvider.select((value) => value.dashboard));
     final currentIndex =
         dashboard.indexWhere((element) => element.id == entry.value.id);

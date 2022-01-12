@@ -344,7 +344,3 @@ final darkThemeProvider = Provider<ThemeData>((ref) {
 
 final packageInfoProvider =
     FutureProvider<PackageInfo>((_) => PackageInfo.fromPlatform());
-
-final dashboardEntryProvider = Provider<DashboardEntry>((ref) {
-  throw UnimplementedError('no entry selected');
-});
