@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:pihole_api/pihole_api.dart';
 
 import 'demo_generators.dart';
@@ -30,7 +31,7 @@ class DemoApi implements PiholeRepository {
 
   Future<void> _sleep(
       [Duration duration = const Duration(milliseconds: 500)]) async {
-    // if (kDebugMode) return;
+    if (kDebugMode) return;
     await Future.delayed(duration +
         Duration(milliseconds: _random.nextInt(duration.inMilliseconds)));
   }
@@ -104,11 +105,24 @@ class DemoApi implements PiholeRepository {
   Future<PiQueriesOverTime> fetchQueriesOverTime(_) async {
     await _sleep();
     return PiQueriesOverTime(
-      domainsOverTime: {
-        DateTime.fromMillisecondsSinceEpoch(1623071100 * 1000): 52,
-        DateTime.fromMillisecondsSinceEpoch(1623071700 * 1000): 46,
-        DateTime.fromMillisecondsSinceEpoch(1623072300 * 1000): 51,
-      },
+      domainsOverTime: randomDomainsOverTime(
+        seed: null,
+        // seed: kDebugMode ? 5 : null,
+      ),
+      // {
+      //   DateTime.fromMillisecondsSinceEpoch(1 * 1000): 22,
+      //   DateTime.fromMillisecondsSinceEpoch(2 * 1000): 12,
+      //   DateTime.fromMillisecondsSinceEpoch(3 * 1000): 34,
+      //   DateTime.fromMillisecondsSinceEpoch(4 * 1000): 10,
+      //   DateTime.fromMillisecondsSinceEpoch(5 * 1000): 0,
+      //   DateTime.fromMillisecondsSinceEpoch(6 * 1000): 0,
+      //   DateTime.fromMillisecondsSinceEpoch(1623071000 * 1000): 2,
+      //   DateTime.fromMillisecondsSinceEpoch(1623071100 * 1000): 32,
+      //   DateTime.fromMillisecondsSinceEpoch(1623071100 * 1000): 52,
+      //   DateTime.fromMillisecondsSinceEpoch(1623071100 * 1000): 22,
+      //   DateTime.fromMillisecondsSinceEpoch(1623071700 * 1000): 46,
+      //   DateTime.fromMillisecondsSinceEpoch(1623072300 * 1000): 51,
+      // },
       adsOverTime: {
         DateTime.fromMillisecondsSinceEpoch(1623071100 * 1000): 11,
         DateTime.fromMillisecondsSinceEpoch(1623071700 * 1000): 10,

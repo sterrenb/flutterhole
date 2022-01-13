@@ -27,6 +27,9 @@ extension WidgetRefX on WidgetRef {
   void refreshForwardDestinations() =>
       refresh(forwardDestinationsProvider(read(activePiholeParamsProvider)));
 
+  void refreshQueriesOverTime() =>
+      refresh(queriesOverTimeProvider(read(activePiholeParamsProvider)));
+
   void refreshStatus() => read(PingNotifier.provider.notifier).ping();
 
   void refreshDashboard() async {
@@ -37,6 +40,7 @@ extension WidgetRefX on WidgetRef {
     refreshForwardDestinations();
     refreshQueryItems();
     refreshQueryTypes();
+    refreshQueriesOverTime();
     // refreshStatus();
   }
 

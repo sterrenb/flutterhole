@@ -134,10 +134,6 @@ class DashboardEntry with _$DashboardEntry {
 
   static const defaultDashboard = [
     DashboardEntry(
-        id: DashboardID.queriesOverTime,
-        enabled: true,
-        constraints: DashboardTileConstraints.count(4, 3)),
-    DashboardEntry(
         id: DashboardID.totalQueries,
         enabled: true,
         constraints: DashboardTileConstraints.count(4, 1)),
@@ -171,6 +167,10 @@ class DashboardEntry with _$DashboardEntry {
         constraints: DashboardTileConstraints.count(4, 3)),
     DashboardEntry(
         id: DashboardID.versions,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(4, 3)),
+    DashboardEntry(
+        id: DashboardID.queriesOverTime,
         enabled: true,
         constraints: DashboardTileConstraints.count(4, 3)),
   ];

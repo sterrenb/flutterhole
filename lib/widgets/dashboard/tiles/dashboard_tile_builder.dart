@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/intl/formatting.dart';
 import 'package:flutterhole/models/settings_models.dart';
-import 'package:flutterhole/services/settings_service.dart';
+import 'package:flutterhole/widgets/dashboard/dashboard_card.dart';
+import 'package:flutterhole/widgets/dashboard/tiles/queries_over_time.dart';
 import 'package:flutterhole/widgets/dashboard/tiles/summary.dart';
-import 'package:flutterhole/widgets/dashboard/versions_tile.dart';
+import 'package:flutterhole/widgets/dashboard/tiles/versions_tile.dart';
 import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import 'dashboard_card.dart';
-import 'tiles/details.dart';
-import 'tiles/forward_destinations.dart';
+import 'details.dart';
+import 'forward_destinations.dart';
 
 class DashboardTileBuilder extends HookConsumerWidget {
   const DashboardTileBuilder({
@@ -73,14 +73,7 @@ class _Draggable extends HookConsumerWidget {
                     height: constraints.hasBoundedHeight
                         ? constraints.biggest.height
                         : 200.0,
-                    child: Stack(
-                      alignment: Alignment.topRight,
-                      children: [
-                        Center(child: DashboardBackgroundIcon(entry.id)),
-                        // DashboardCardHeader(
-                        //     title: entry.id.humanString, isLoading: false),
-                      ],
-                    )),
+                    child: Center(child: DashboardBackgroundIcon(entry.id))),
               ),
             ),
             child: DefaultAnimatedOpacity(
@@ -124,6 +117,8 @@ class _TileBuilder extends StatelessWidget {
         return const ForwardDestinationsTile();
       case DashboardID.queryTypes:
         return const QueryTypesTile();
+      case DashboardID.queriesOverTime:
+        return const QueriesOverTimeTile();
 
       default:
         return DashboardCard(

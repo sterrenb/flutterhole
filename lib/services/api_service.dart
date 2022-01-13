@@ -153,6 +153,27 @@ final activeQueryTypesProvider =
   return ref.watch(queryTypesProvider(ref.watch(activePiholeParamsProvider)));
 }, dependencies: [piProvider, queryTypesProvider, activePiholeParamsProvider]);
 
+final queriesOverTimeProvider = FutureProvider.autoDispose
+    .family<PiQueriesOverTime, PiholeRepositoryParams>((ref, params) async {
+  final pihole = ref.watch(piholeProvider(params));
+  final cancelToken = CancelToken();
+  if (kDebugMode) {
+    await Future.delayed(const Duration(milliseconds: 200));
+  }
+  ref.onDispose(() => cancelToken.cancel());
+  return pihole.fetchQueriesOverTime(cancelToken);
+});
+
+final activeQueriesOverTimeProvider =
+    Provider.autoDispose<AsyncValue<PiQueriesOverTime>>((ref) {
+  return ref
+      .watch(queriesOverTimeProvider(ref.watch(activePiholeParamsProvider)));
+}, dependencies: [
+  piProvider,
+  queriesOverTimeProvider,
+  activePiholeParamsProvider
+]);
+
 typedef PingCallback = Future<PiholeStatus> Function(CancelToken);
 
 class PingNotifier extends StateNotifier<PingStatus> {

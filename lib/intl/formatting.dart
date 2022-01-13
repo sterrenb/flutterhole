@@ -264,7 +264,6 @@ extension TimeOfDayX on TimeOfDay {
 
 extension PiDetailsX on PiDetails {
   String toReading(TemperatureReading reading) {
-    print('toReading: $reading');
     switch (reading) {
       case TemperatureReading.celcius:
         return temperatureInCelcius;
