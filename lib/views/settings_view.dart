@@ -53,7 +53,7 @@ class SettingsView extends HookConsumerWidget {
                 ],
               ),
               const Divider(),
-              const _MyPiholesSection(),
+              if (kDebugMode) ...[const _MyPiholesSection()],
               const Divider(),
               AppSection(title: 'Other', children: [
                 const ShowIntroductionListTile(),

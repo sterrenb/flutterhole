@@ -19,21 +19,14 @@ class DemoApi implements PiholeRepository {
 
   final List<QueryItem> _startItems = [
     ...List.generate(
-        5, (index) => randomQueryItem(Duration(seconds: 30 + index * 130))),
+        7, (index) => randomQueryItem(Duration(seconds: 30 + index * 130))),
     ...List.generate(
-        5,
+        7,
         (index) => randomQueryItem(
             Duration(days: 1 + index * index * index) + randomDayDuration()))
   ];
 
-  List<QueryItem> _items = [
-    ...List.generate(
-        5, (index) => randomQueryItem(Duration(seconds: 30 + index * 130))),
-    ...List.generate(
-        5,
-        (index) => randomQueryItem(
-            Duration(days: 1 + index * index * index) + randomDayDuration()))
-  ];
+  List<QueryItem> _items = [];
 
   Future<void> _sleep(
       [Duration duration = const Duration(milliseconds: 500)]) async {

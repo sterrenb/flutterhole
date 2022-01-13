@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutterhole/services/settings_service.dart';
-import 'package:flutterhole/views/dashboard_view.dart';
+import 'package:flutterhole/views/home_view.dart';
 import 'package:flutterhole/widgets/ui/double_back_to_close_app.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -23,7 +23,7 @@ class App extends HookConsumerWidget {
       darkTheme: darkTheme,
       themeMode: themeMode,
       scrollBehavior: MyCustomScrollBehavior(),
-      home: const DoubleBackToCloseApp(child: DashView()),
+      home: const DoubleBackToCloseApp(child: HomeView()),
     );
   }
 }

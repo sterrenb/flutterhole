@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhole/constants/icons.dart';
 import 'package:flutterhole/services/web_service.dart';
+import 'package:flutterhole/widgets/layout/responsiveness.dart';
 
 class IconOutlinedButton extends StatelessWidget {
   const IconOutlinedButton({
@@ -91,7 +92,13 @@ class SquareTextButton extends StatelessWidget {
               const RoundedRectangleBorder(
                   borderRadius: BorderRadius.zero, side: BorderSide.none))),
       onPressed: onPressed,
-      child: Text(label),
+      child: Text(
+        label,
+        style: TextStyle(
+            color: context.isLight
+                ? Theme.of(context).colorScheme.onPrimary
+                : Theme.of(context).colorScheme.onBackground),
+      ),
     );
   }
 }

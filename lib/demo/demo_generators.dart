@@ -20,9 +20,9 @@ QueryItem randomQueryItem([Duration duration = Duration.zero]) {
           ? KUrls.developerHomeUrl
           : _faker.internet.domainName(),
       clientName: _faker.internet.ipv4Address(),
-      queryStatus: _random.nextDouble() > .33
+      queryStatus: _random.nextDouble() > .66
           ? QueryStatus.Forwarded
-          : QueryStatus.values[_random.nextInt(5) + 1],
+          : QueryStatus.values[_random.nextInt(7) + 1],
       // .elementAt(random.nextInt(QueryStatus.values.length)),
       dnsSecStatus:
           DnsSecStatus.values[_random.nextInt(DnsSecStatus.values.length)],

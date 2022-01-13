@@ -40,7 +40,7 @@ class DashboardAppBar extends HookConsumerWidget with PreferredSizeWidget {
             padding: EdgeInsets.symmetric(horizontal: 4.0),
             child: _StatusIcon(),
           ),
-          Expanded(
+          Flexible(
             child: Opacity(
               opacity: .5,
               child: Stack(
@@ -62,6 +62,15 @@ class DashboardAppBar extends HookConsumerWidget with PreferredSizeWidget {
       ),
       actions: [
         const DevToolBar(),
+        const _DashboardPopupMenuButton(),
+        IconButton(
+          onPressed: () {
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => const SettingsView()));
+          },
+          icon: const Icon(KIcons.settings),
+          tooltip: 'Settings',
+        ),
         DevWidget(
             child: IconButton(
           tooltip: 'Refresh',
@@ -71,12 +80,6 @@ class DashboardAppBar extends HookConsumerWidget with PreferredSizeWidget {
           },
           icon: const Icon(KIcons.refresh),
         )),
-        const _DashboardPopupMenuButton(),
-        const PushViewButton(
-          label: 'Settings',
-          iconData: KIcons.settings,
-          view: SettingsView(),
-        ),
       ],
       bottom: const _Bottom(),
     );
