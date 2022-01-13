@@ -102,8 +102,19 @@ class DemoApi implements PiholeRepository {
 
   @override
   Future<PiQueriesOverTime> fetchQueriesOverTime(_) async {
-    // TODO: implement fetchQueriesOverTime
-    throw UnimplementedError();
+    await _sleep();
+    return PiQueriesOverTime(
+      domainsOverTime: {
+        DateTime.fromMillisecondsSinceEpoch(1623071100 * 1000): 52,
+        DateTime.fromMillisecondsSinceEpoch(1623071700 * 1000): 46,
+        DateTime.fromMillisecondsSinceEpoch(1623072300 * 1000): 51,
+      },
+      adsOverTime: {
+        DateTime.fromMillisecondsSinceEpoch(1623071100 * 1000): 11,
+        DateTime.fromMillisecondsSinceEpoch(1623071700 * 1000): 10,
+        DateTime.fromMillisecondsSinceEpoch(1623072300 * 1000): 12,
+      },
+    );
   }
 
   int count = 0;

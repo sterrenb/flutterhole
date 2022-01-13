@@ -108,6 +108,8 @@ extension DashboardIDX on DashboardID {
         return 'Query types';
       case DashboardID.topPermittedDomains:
         return 'Domains';
+      case DashboardID.queriesOverTime:
+        return 'Queries over time';
     }
   }
 
@@ -133,6 +135,8 @@ extension DashboardIDX on DashboardID {
         return KIcons.queryTypes;
       case DashboardID.topPermittedDomains:
         return KIcons.domainsPermittedTile;
+      case DashboardID.queriesOverTime:
+        return KIcons.queriesOverTime;
     }
   }
 }

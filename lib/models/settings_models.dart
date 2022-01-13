@@ -117,6 +117,7 @@ enum DashboardID {
   forwardDestinations,
   queryTypes,
   topPermittedDomains,
+  queriesOverTime,
 }
 
 @freezed
@@ -132,6 +133,10 @@ class DashboardEntry with _$DashboardEntry {
       _$DashboardEntryFromJson(json);
 
   static const defaultDashboard = [
+    DashboardEntry(
+        id: DashboardID.queriesOverTime,
+        enabled: true,
+        constraints: DashboardTileConstraints.count(4, 3)),
     DashboardEntry(
         id: DashboardID.totalQueries,
         enabled: true,
