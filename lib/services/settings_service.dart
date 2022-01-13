@@ -78,8 +78,11 @@ class UserPreferencesNotifier extends StateNotifier<UserPreferences> {
 
   UserPreferences clearPreferences() {
     final oldValue = state;
-    state =
-        UserPreferences(piholes: state.piholes, activeIndex: state.activeIndex);
+    state = UserPreferences(
+      piholes: state.piholes,
+      activeIndex: state.activeIndex,
+      notificationsRead: state.notificationsRead,
+    );
     _save();
     return oldValue;
   }

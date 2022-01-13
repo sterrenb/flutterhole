@@ -17,6 +17,8 @@ class TemperatureTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final entry = ref.watch(dashboardEntryProvider);
+    final reading = ref.watch(temperatureReadingProvider);
+
     return CacheBuilder<PiDetails>(
       provider: activeDetailsProvider,
       builder: (context, details, isLoading, error) {
@@ -25,7 +27,7 @@ class TemperatureTile extends HookConsumerWidget {
           title: entry.constraints.crossAxisCount > 1
               ? DashboardID.temperature.humanString
               : DashboardID.temperature.humanString.substring(0, 4),
-          text: details?.temperatureInCelcius,
+          text: details?.toReading(reading),
           background: const DashboardBackgroundIcon(DashboardID.temperature),
           isLoading: isLoading,
           error: error,

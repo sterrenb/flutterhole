@@ -31,12 +31,6 @@ class AboutView extends HookConsumerWidget {
         title: const Text('About'),
         actions: [
           const DevToolBar(),
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const SettingsView()));
-              },
-              icon: const Icon(KIcons.settings)),
         ],
       ),
       body: MobileMaxWidth(

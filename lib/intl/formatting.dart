@@ -257,3 +257,17 @@ extension TimeOfDayX on TimeOfDay {
     return Duration(hours: (minutes / 60).floor(), minutes: minutes % 60);
   }
 }
+
+extension PiDetailsX on PiDetails {
+  String toReading(TemperatureReading reading) {
+    print('toReading: $reading');
+    switch (reading) {
+      case TemperatureReading.celcius:
+        return temperatureInCelcius;
+      case TemperatureReading.fahrenheit:
+        return temperatureInFahrenheit;
+      case TemperatureReading.kelvin:
+        return temperatureInKelvin;
+    }
+  }
+}
