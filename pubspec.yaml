@@ -16,7 +16,7 @@ dependencies:
   intl: ^0.17.0
   shared_preferences: ^2.0.15
   pihole_api: ^0.1.6
-  dio: ^4.0.4
+  dio: ^4.0.6
   google_fonts: ^3.0.1
   animations: ^2.0.7
   url_launcher: ^6.1.7
@@ -34,7 +34,7 @@ dependencies:
   smooth_page_indicator: ^1.0.0+2
   auto_size_text: ^3.0.0
   fl_chart: ^0.55.2
-  flutter_slidable: ^1.2.0
+  flutter_slidable: ^2.0.0
 
 dev_dependencies:
   flutter_test:
