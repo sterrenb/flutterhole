@@ -332,7 +332,6 @@ final lightThemeProvider = Provider<ThemeData>((ref) {
   final flexScheme = ref.watch(flexSchemeProvider);
   return FlexThemeData.light(
     scheme: flexScheme,
-    useSubThemes: true,
   );
 });
 
@@ -340,7 +339,6 @@ final darkThemeProvider = Provider<ThemeData>((ref) {
   final flexScheme = ref.watch(flexSchemeProvider);
   return FlexThemeData.dark(
     scheme: flexScheme,
-    useSubThemes: true,
     subThemesData: const FlexSubThemesData(),
   );
 });
