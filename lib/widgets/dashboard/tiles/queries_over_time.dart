@@ -44,29 +44,30 @@ class QueriesOverTimeTile extends StatelessWidget {
                           right: 30.0,
                         ),
                         child: Builder(builder: (context) {
-                          DateTime valueToKey(double value) =>
-                              queries.domainsOverTime.keys
-                                  .elementAt(value.toInt());
+                          // DateTime valueToKey(double value) =>
+                          //     queries.domainsOverTime.keys
+                          //         .elementAt(value.toInt());
 
                           return LineChart(
                             LineChartData(
                                 borderData: FlBorderData(show: false),
                                 titlesData: FlTitlesData(
-                                  topTitles: SideTitles(showTitles: false),
-                                  rightTitles: SideTitles(showTitles: false),
-                                  bottomTitles: SideTitles(
-                                    showTitles: true,
-                                    getTitles: (double value) {
-                                      return valueToKey(value).hm;
-                                    },
-                                    checkToShowTitle: (double minValue,
-                                        double maxValue,
-                                        SideTitles sideTitles,
-                                        double appliedInterval,
-                                        double value) {
-                                      return value % 2 == 0;
-                                    },
-                                  ),
+                                  show: true,
+                                  topTitles: AxisTitles(),
+                                  rightTitles: AxisTitles(),
+                                  // bottomTitles: AxisTitles(
+                                  //   // TODO docs 0.50 migration
+                                  //   getTitles: (double value) {
+                                  //     return valueToKey(value).hm;
+                                  //   },
+                                  //   checkToShowTitle: (double minValue,
+                                  //       double maxValue,
+                                  //       SideTitles sideTitles,
+                                  //       double appliedInterval,
+                                  //       double value) {
+                                  //     return value % 2 == 0;
+                                  //   },
+                                  // ),
                                 ),
                                 gridData: FlGridData(
                                   show: true,
@@ -76,12 +77,14 @@ class QueriesOverTimeTile extends StatelessWidget {
                                 lineBarsData: [
                                   LineChartBarData(
                                     dotData: FlDotData(show: false),
-                                    colors: gradientColors,
+                                    // TODO use LinearGradient class
+                                    // colors: gradientColors,
+
                                     belowBarData: BarAreaData(
                                       show: true,
-                                      colors: [
-                                        gradientColors.last.withOpacity(.2)
-                                      ],
+                                      // colors: [
+                                      //   gradientColors.last.withOpacity(.2)
+                                      // ],
                                       // colors: [
                                       //   gradientColors.last.withOpacity(.5),
                                       //   gradientColors.first.withOpacity(0),

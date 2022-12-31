@@ -8,10 +8,10 @@ import 'demo_generators.dart';
 
 final _random = Random();
 
-class DemoApi implements PiholeRepository {
+class DemoApi implements PiholeApi {
   DemoApi(this.params);
 
-  final PiholeRepositoryParams params;
+  final PiholeApiParams params;
 
   PiholeStatus _status = const PiholeStatus.enabled();
   int dnsQueriesToday = 10000;

@@ -6,19 +6,20 @@ import 'package:flutterhole/services/settings_service.dart';
 import 'package:flutterhole/views/about_view.dart';
 import 'package:flutterhole/views/base_view.dart';
 import 'package:flutterhole/views/single_pi_edit_view.dart';
+import 'package:flutterhole/widgets/about/app_version.dart';
 import 'package:flutterhole/widgets/developer/dev_mode_button.dart';
 import 'package:flutterhole/widgets/developer/dev_widget.dart';
 import 'package:flutterhole/widgets/developer/log_level_button.dart';
-import 'package:flutterhole/widgets/layout/animations.dart';
-import 'package:flutterhole/widgets/settings/temperature_button.dart';
-import 'package:flutterhole/widgets/settings/theme_mode_button.dart';
 import 'package:flutterhole/widgets/developer/theme_showcase.dart';
 import 'package:flutterhole/widgets/developer/theme_toggle_button.dart';
+import 'package:flutterhole/widgets/layout/animations.dart';
 import 'package:flutterhole/widgets/layout/grids.dart';
 import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/onboarding/introduction_button.dart';
 import 'package:flutterhole/widgets/settings/pi_select_list.dart';
 import 'package:flutterhole/widgets/settings/preference_button_tile.dart';
+import 'package:flutterhole/widgets/settings/temperature_button.dart';
+import 'package:flutterhole/widgets/settings/theme_mode_button.dart';
 import 'package:flutterhole/widgets/settings/theme_popup_menu.dart';
 import 'package:flutterhole/widgets/settings/update_frequency_button.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
@@ -40,6 +41,18 @@ class SettingsView extends HookConsumerWidget {
         body: MobileMaxWidth(
           child: ListView(
             children: [
+              const AppVersionListTile(
+                title: 'FlutterHole',
+                showLicences: false,
+              ),
+              ListTile(
+                title: const Text('About'),
+                trailing: const Icon(KIcons.openDialog),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const AboutView()));
+                },
+              ),
               const AppSection(
                 title: 'Customization',
                 children: [
@@ -53,18 +66,10 @@ class SettingsView extends HookConsumerWidget {
                 ],
               ),
               const Divider(),
-              if (kDebugMode) ...[const _MyPiholesSection()],
+              if (kDebugMode || true) ...[const _MyPiholesSection()],
               const Divider(),
               AppSection(title: 'Other', children: [
                 const ShowIntroductionListTile(),
-                ListTile(
-                  title: const Text('About'),
-                  trailing: const Icon(KIcons.openDialog),
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const AboutView()));
-                  },
-                ),
                 const _DeveloperSection(),
                 const PreferenceButtonTile(),
                 const SizedBox(height: 20.0),

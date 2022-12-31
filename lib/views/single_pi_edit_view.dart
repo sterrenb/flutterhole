@@ -293,7 +293,7 @@ class _ApiStatusButton extends HookConsumerWidget {
     required this.params,
   }) : super(key: key);
 
-  final PiholeRepositoryParams params;
+  final PiholeApiParams params;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -354,7 +354,7 @@ class _AuthenticationStatusButton extends HookConsumerWidget {
     required this.params,
   }) : super(key: key);
 
-  final PiholeRepositoryParams params;
+  final PiholeApiParams params;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

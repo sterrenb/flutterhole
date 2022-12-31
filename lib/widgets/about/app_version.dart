@@ -10,15 +10,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-
-
 class AppVersionListTile extends HookConsumerWidget {
   const AppVersionListTile({
     Key? key,
     this.title = 'App version',
+    this.showLicences = true,
   }) : super(key: key);
 
   final String title;
+  final bool showLicences;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,12 +35,15 @@ class AppVersionListTile extends HookConsumerWidget {
         loading: () => const Text(''),
         error: (o, s) => Text(o.toString()),
       ),
-      trailing: OutlinedButton(
-          onPressed: packageInfo.maybeWhen(
-            data: (info) => () => showAppDetailsDialog(context, info),
-            orElse: () => null,
-          ),
-          child: const Text('Licences')),
+      trailing: Visibility(
+        visible: showLicences,
+        child: OutlinedButton(
+            onPressed: packageInfo.maybeWhen(
+              data: (info) => () => showAppDetailsDialog(context, info),
+              orElse: () => null,
+            ),
+            child: const Text('Licences')),
+      ),
     );
   }
 }
@@ -50,7 +53,7 @@ void showAppDetailsDialog(BuildContext context, PackageInfo packageInfo) {
     context: context,
     applicationName: packageInfo.appName,
     applicationVersion: packageInfo.version,
-    applicationLegalese: 'Made by tster.nl',
+    applicationLegalese: 'Made by sterrenburg',
     children: <Widget>[
       const SizedBox(height: 24),
       RichText(

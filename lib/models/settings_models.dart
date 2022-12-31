@@ -12,6 +12,7 @@ enum TemperatureReading {
   fahrenheit,
   kelvin,
 }
+
 enum LogLevel {
   debug,
   info,
@@ -43,7 +44,8 @@ const defaultPiholes = kDebugMode
         ),
         Pi(
           title: 'Home',
-          baseUrl: 'http://10.0.1.5',
+          baseUrl: String.fromEnvironment('PIHOLE_BASE_URL',
+              defaultValue: 'http://pi.hole'),
           apiToken:
               String.fromEnvironment('PIHOLE_API_TOKEN', defaultValue: ''),
         ),

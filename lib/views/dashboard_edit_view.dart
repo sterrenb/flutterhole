@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutterhole/constants/icons.dart';
@@ -11,7 +12,6 @@ import 'package:flutterhole/widgets/layout/responsiveness.dart';
 import 'package:flutterhole/widgets/settings/extensions.dart';
 import 'package:flutterhole/widgets/ui/buttons.dart';
 import 'package:flutterhole/widgets/ui/dialogs.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -28,8 +28,8 @@ class DashboardEditView extends HookConsumerWidget {
     final entries = useState([
       ...pi.dashboard,
       ...DashboardEntry.defaultDashboard
-          .whereNot(
-              (element) => pi.dashboard.map((e) => e.id).contains(element.id))
+          .where(
+              (element) => !pi.dashboard.map((e) => e.id).contains(element.id))
           .map((e) => e.copyWith(enabled: false)),
     ]);
 
