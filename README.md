@@ -8,7 +8,7 @@
 
 FlutterHole is a free third party Android application for interacting with your Pi-Hole® server.    
 
-> **Note**: Check the [`web` branch](https://github.com/sterrenburg/flutterhole/tree/web) to see updates on the future beta release.
+> **Note**: Currently archived. Check the [`web` branch](https://github.com/sterrenburg/flutterhole/tree/web) to check the archived beta release.
 
  [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"    
       alt="Get it on Google Play"    
